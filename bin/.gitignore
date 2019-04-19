@@ -1,0 +1,4 @@
+make-debian-package.sh
+publish-debian-package.sh
+install-debian-package.sh
+test-app.sh

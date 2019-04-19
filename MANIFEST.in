@@ -1,0 +1,30 @@
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+include little_brother/templates/*.html
+include little_brother/templates/*.txt
+include little_brother/static/icons/*.ico
+include little_brother/static/icons/*.jpg
+include little_brother/static/icons/*.png
+include little_brother/static/*.css
+include little_brother/static/*.js
+include little_brother/static/contrib/initializr/css/*.css
+include little_brother/static/contrib/initializr/js/vendor/*.js
+include little_brother/static/contrib/js-cookie/*.js
+include little_brother/test/resources/*
+include little_brother/translations/*/*/messages.mo

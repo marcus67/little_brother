@@ -1,0 +1,152 @@
+<!--
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<HTML>
+{% import 'bootstrap_accordion.macros.html' as accordion %}
+{% import 'helper.macros.html' as helper %}
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
+
+    <LINK REL="shortcut icon" TYPE="image/x-icon" HREF="{{ url_for('little_brother.static', filename='icons/baby-panda_32x32.ico') }}">
+	
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <TITLE>LittleBrother-{{_('Administration')}}</TITLE>
+    
+  </HEAD>
+
+  <BODY>
+	{% include 'navbar.include.html' %}
+
+	<FORM ACTION="{{ url_for('little_brother.admin') }}" METHOD="POST" CLASS="form-horizontal">
+		{{ forms['csrf'].csrf_token }}
+	    <DIV CLASS="container STANDARD_TABLE">
+	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+	    		<DIV CLASS="col-xs-2">{{_('User')}}</DIV>
+				<DIV CLASS="col-xs-10 hidden-xs"></DIV>
+	    	</DIV>
+	    	{% for admin_info in admin_infos %}
+	    	   	{% call accordion.begin() %}{{admin_info.html_key}}{% endcall %}	    			        
+	    	
+			    	<DIV CLASS="row ROWLEVEL_2">
+			    		<DIV CLASS="col-xs-2 col-md-2">
+							<!-- {{ _('Show configurations of upcoming days') }} -->
+		    				{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days") %}{{admin_info.html_key}}{% endcall %}
+		        				{{ admin_info.username }}
+								{% if admin_info.user_info.activity_permitted %}
+									<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_check.png') }}" WIDTH="16">
+								{% else %}
+									<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_denied.png') }}" WIDTH="16">
+								{% endif %}
+			        		{{ accordion.toggle_end() }}
+		        		</DIV>		        
+			    		<DIV CLASS="col-xs-7 col-md-8">
+							{{_("Today's Activity")}}: {{ admin_info.user_info.active_stat_info.todays_activity_duration|seconds_to_string }}/{{ admin_info.day_infos[0].effective_rule_set.max_time_per_day|seconds_to_string }}
+							<UL>
+							{% for rule_template in admin_info.user_info.active_rule_result_info.applying_rule_text_templates %}
+								<LI>{{ _(rule_template[0])|format(rule_template[1]) }}</LI>
+							{% endfor %}
+							</UL>
+						</DIV>
+		        		<DIV class="col-xs-3 col-md-2 text-right">
+		        			<button type="submit">{{_('Save')}}</button>
+		        		</DIV>		
+			    	</DIV>			    			        
+			    {% call accordion.details() %}{{admin_info.html_key}}{% endcall %}
+			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
+			    		<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+			    		<DIV CLASS="col-xs-3 col-md-2">{{_('Day')}}</DIV>
+			    		<DIV CLASS="col-xs-2 hidden-xs">{{_('Context')}}</DIV>
+			    		<DIV CLASS="col-xs-3 col-md-2">{{_('Min Time of Day')}}</DIV>
+			    		<DIV CLASS="col-xs-3 col-md-2">{{_('Max Time of Day')}}</DIV>
+			    		<DIV CLASS="col-xs-3 col-md-2">{{_('Time per Day')}}</DIV>
+			    		<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+			    	</DIV>
+			    	{% for day_info in admin_info.day_infos %}
+			    	   	{% call accordion.begin() %}{{day_info.html_key}}{% endcall %}
+				    		<DIV CLASS="row ROWLEVEL_3">
+				    			<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+				    			<DIV CLASS="col-xs-3 hidden-sm hidden-md hidden-lg">
+									<!-- {{ _('Show overrides for day') }}-->
+				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
+        								{{ _(day_info.short_label[0])|format(day_info.short_label[1]) }}
+				        			{{ accordion.toggle_end() }}
+					    		</DIV>
+				    			<DIV CLASS="col-md-2 hidden-xs">
+				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
+        								{{ _(day_info.label[0])|format(day_info.label[1]) }}
+				        			{{ accordion.toggle_end() }}
+					    		</DIV>
+					    		<DIV CLASS="col-xs-2 hidden-xs">{{_('effective')}}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ day_info.effective_rule_set.min_time_of_day|time_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ day_info.effective_rule_set.max_time_of_day|time_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ day_info.effective_rule_set.max_time_per_day|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+					    	</DIV>    		
+					    {% call accordion.details() %}{{day_info.html_key}}{% endcall %}
+				    		<DIV CLASS="row ROWLEVEL_4">
+				    			<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+				    			<DIV CLASS="col-md-2 hidden-xs"></DIV>
+				    			<DIV CLASS="col-md-2 hidden-xs">{{ _(day_info.rule_set.label) }}</DIV>
+					    		<DIV CLASS="col-xs-3 hidden-sm hidden-md hidden-lg">{{ _(day_info.rule_set.label) }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ day_info.rule_set.min_time_of_day|time_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ day_info.rule_set.max_time_of_day|time_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ day_info.rule_set.max_time_per_day|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+					    	</DIV>
+				    		<DIV CLASS="row ROWLEVEL_4">
+				    			<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+				    			<DIV CLASS="col-xs-3 col-md-2"></DIV>
+					    		<DIV CLASS="col-xs-2 hidden-xs">{{_('override')}}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ helper.render_field(forms[day_info.html_key].min_time_of_day) }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ helper.render_field(forms[day_info.html_key].max_time_of_day) }}</DIV>
+					    		<DIV CLASS="col-xs-3 col-md-2">{{ helper.render_field(forms[day_info.html_key].max_time_per_day) }}</DIV>
+					    		<DIV CLASS="col-xs-1 hidden-xs"></DIV>
+					    	</DIV>
+						{{ accordion.end() }}    	
+			    	{% endfor %}
+					    	
+				{{ accordion.end() }}    	
+					    		    	 
+	    	{% endfor %}
+	    </DIV>
+    </FORM>    		
+    
+    
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
+
+	{% for admin_info in admin_infos %}
+    	{% call accordion.script() %}{{admin_info.html_key}}{% endcall %}
+    	{% for day_info in admin_info.day_infos %}
+    		{% call accordion.script() %}{{day_info.html_key}}{% endcall %}    		    			        
+    	{% endfor %}
+	{% endfor %}
+
+  </BODY>
+  
+</HTML>

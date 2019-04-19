@@ -1,0 +1,51 @@
+<!--
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+    <nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+      		<a class="navbar-brand" href="#">
+        		<div><img alt="Brand" src="{{ url_for('little_brother.static', filename='icons/icon_baby-panda_128x128.png') }}" WIDTH="24">&nbsp;Little&nbsp;Brother</div>
+      		</a>
+    	</div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+
+	      <ul class="nav navbar-nav">
+	        <li {% if navigation.current_view == "index" %}class="active"{% endif %}><a href="{{ url_for('little_brother.index') }}">{{_('Status')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "admin" %}class="active"{% endif %}><a href="{{ url_for('little_brother.admin') }}">{{_('Admin')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "about" %}class="active"{% endif %}><a href="{{ url_for('little_brother.about') }}">{{_('About')}} <span class="sr-only">(current)</span></a></li>
+	      </ul>
+	      {% if authentication.is_authenticated %}
+    	  <p class="navbar-text">{{_('Signed in as')}} <CODE>{{ authentication.username }}</CODE></p>
+	      <form class="navbar-form navbar-right" ACTION="{{ url_for('auth.logout') }}" METHOD="POST">
+	        <button type="submit" class="btn btn-default">{{_('Logout')}}</button>
+	      </form>
+	      {% endif %}
+		</div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>

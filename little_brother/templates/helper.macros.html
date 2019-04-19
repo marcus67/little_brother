@@ -1,0 +1,52 @@
+<!--
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+{% macro render_field(field) %}
+  {% if field.errors %}
+  <div class="form-group has-error">
+  {{ field(class_="form-control") }}
+    <label class="control-label" for="{{ field.id }}">
+    {% if field.errors|length == 1 %}
+        {{ field.errors[0] }}
+    {% else %}
+    <ul>
+        {% for error in field.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    </label>
+  </div>
+  {% else %}
+  {{ field(class_="form-control") }}
+  {% endif %}
+{% endmacro %}
+
+{% macro render_flashed_messages() %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning fade in">
+            {{ _(message) }}
+        </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+{% endmacro %}

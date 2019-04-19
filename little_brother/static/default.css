@@ -1,0 +1,95 @@
+/*
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+a,
+a:visited {
+    text-decoration: underline;
+  }
+
+A:link {
+    color: black;
+}
+
+A.CVE_HYPERLINK:link { color: inherit; }
+
+/* visited link */
+
+A:visited {
+    color: black;
+}
+
+INPUT { width70px; }
+
+.navbar-brand { width: 200px; }
+.form-signin {  text-align: center; }
+
+A.CVE_HYPERLINK:visited { color: inherit; }
+
+.col-xs-1 { padding-left: 1px; padding-right: 1px; }
+.col-xs-2 { padding-left: 2px; padding-right: 2px; }
+.col-xs-3 { padding-left: 3px; padding-right: 3px; }
+.col-xs-4 { padding-left: 4px; padding-right: 4px; }
+
+.col-md-1 { padding-left: 1px; padding-right: 1px; }
+.col-md-2 { padding-left: 2px; padding-right: 2px; }
+.col-md-3 { padding-left: 3px; padding-right: 3px; }
+.col-md-4 { padding-left: 4px; padding-right: 4px; }
+
+.col-xs-1 input { padding-left: 1px; padding-right: 1px; }
+.col-xs-2 input { padding-left: 2px; padding-right: 2px; }
+.col-xs-3 input { padding-left: 3px; padding-right: 3px; }
+.col-xs-4 input { padding-left: 4px; padding-right: 4px; }
+
+
+DIV.WIDTH100 { width: 100%; }
+DIV.FIXED400 { width: 400px; table-layout: fixed;}
+DIV.FIXED1200 { width: 1200px; table-layout: fixed;}
+
+DIV.STANDARD_TABLE { border-style: solid; border-color: black; border-width: 1px; border-collapse: separate;  }
+DIV.STANDARD_TABLE DIV.ROW { vertical-align: top; padding: 5px; text-align: left; border: 2px solid white; }
+DIV.STANDARD_TABLE DIV.COL { vertical-align: top; padding: 5px; text-align: left; margin-top: 0px; margin-bottom:0px; border: 2px solid white; }
+DIV.STANDARD_TABLE DIV.ALIGN_RIGHT { text-align: right; }
+
+DIV.STANDARD_TABLE DIV.TITLE_ROW DIV.COL { font-size:24px; text-align: center; }
+DIV.STANDARD_TABLE DIV.TITLE_ROW { background-color: #E2E2E2; font-weight:bold;  }
+
+DIV.STANDARD_TABLE DIV.ROWLEVEL_1 { background-color: #829eb8; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #92b1cd; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a3c4e3; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #afd1f1; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_5  { background-color: #bbdeff; }
+
+DIV.STANDARD_TABLE DIV.HEADER_ROW { background-color: #F2F2F2; }
+DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { border-bottom-style: solid; }
+DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { vertical-align: middle; text-align: center; font-weight:bold; }
+
+DIV.STANDARD_TABLE DIV.FILTER_ROW { background-color: #A2A2A2; }
+DIV.STANDARD_TABLE DIV.FILTER_ROW DIV.COL { border-bottom-style: solid; }
+DIV.STANDARD_TABLE DIV.FILTER_ROW DIV.COL { vertical-align: middle;  font-weight:bold; }
+
+DIV.STANDARD_TABLE DIV.STATUS_ROW { background-color: #F2F2F2; }
+DIV.STANDARD_TABLE DIV.STATUS_ROW DIV.COL { border-top-style: solid; }
+
+
+UL {
+  padding-left: 20px;
+}
+
+.CODE { font-family:monospace; }

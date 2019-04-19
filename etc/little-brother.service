@@ -1,0 +1,38 @@
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+[Unit]
+Description=Tool for monitoring processes
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/run_little_brother.py --daemonize --pidfile=/var/run/little-brother/little-brother.pid --config=/etc/little-brother/little-brother.config --logdir=/var/log/little-brother
+ExecStop=/usr/local/bin/run_little_brother.py  --pidfile=/var/run/little-brother/little-brother.pid --kill
+IgnoreSIGPIPE=false
+PIDFile=/var/run/little-brother/little-brother.pid
+KillMode=process
+PermissionsStartOnly=true
+ExecStartPre=-/bin/mkdir -p /var/run/little-brother
+ExecStartPre=/bin/chown -R little-brother:little-brother /var/run/little-brother
+User=little-brother
+Group=little-brother
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

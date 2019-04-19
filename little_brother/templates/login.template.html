@@ -1,0 +1,49 @@
+<!-- https://codepen.io/ace-subido/pen/Cuiep -->
+{% import 'helper.macros.html' as helpers %}
+
+<HTML>
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='login.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
+
+    <LINK REL="shortcut icon" TYPE="image/x-icon" HREF="{{ url_for('little_brother.static', filename='icons/baby-panda_32x32.ico') }}">
+
+    <META name="viewport" content="width=device-width, initial-scale=1">
+
+    <TITLE>LittleBrother-{{_('Login')}}</TITLE>
+
+  </HEAD>
+
+  <BODY>
+    {% include 'navbar.include.html' %}
+
+    <div class="wrapper">
+    	<form class="form-signin" ACTION="" METHOD="post">       
+            <h2 class="form-signin-heading"><IMG SRC="{{url_for('little_brother.static', filename='icons/icon_baby-panda_128x128.png')}}"> <div>Little Brother</div></h2>
+
+            {{ helpers.render_flashed_messages() }}
+
+  			<input type="text" class="form-control" name="username" placeholder="{{_('Username')}}" required="" autofocus="" />
+  			<input type="password" class="form-control" name="password" placeholder="{{_('Password')}}" required=""/>
+  			<!--      
+  			<label class="checkbox">
+    			<input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+  			</label>
+  			-->
+      		<button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Login')}}</button>
+	    </form>
+  	</div>
+
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+
+  </BODY>
+  
+</HTML>

@@ -1,0 +1,146 @@
+<!--
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+
+<HTML>
+{% import 'bootstrap_accordion.macros.html' as accordion %}
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
+
+    <LINK REL="shortcut icon" TYPE="image/x-icon" HREF="{{ url_for('little_brother.static', filename='icons/baby-panda_32x32.ico') }}">
+
+    <META name="viewport" content="width=device-width, initial-scale=1">
+
+    <TITLE>LittleBrother-{{ _('Status')}}</TITLE>
+    
+  </HEAD>
+
+  <BODY>
+	{% include 'navbar.include.html' %}
+    <DIV CLASS="container STANDARD_TABLE condensed-container">
+    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+    		<DIV CLASS="col-md-1 col-xs-3">{{_('User')}}</DIV>
+    		<DIV CLASS="col-md-1 col-xs-3">{{_('Context')}}</DIV>
+    		<DIV CLASS="col-md-1 hidden-xs">{{_("Today's Activity")}}</DIV>
+    		<DIV CLASS="col-xs-2 hidden-sm hidden-md hidden-lg">{{_('Today')}}</DIV>
+    		<DIV CLASS="col-md-1 hidden-xs">{{_('Previous Activity Start Time')}}</DIV>
+    		<DIV CLASS="col-md-1 hidden-xs">{{_('Previous Activity End Time')}}</DIV>
+    		<DIV CLASS="col-md-1 hidden-xs">{{_('Current Activity Start Time')}}</DIV>
+    		<DIV CLASS="col-md-1 hidden-xs">{{_('Current Activity Duration')}}</DIV>
+    		<DIV CLASS="col-xs-2 hidden-sm hidden-md hidden-lg">{{_('Current')}}</DIV>
+    		<DIV CLASS="col-md-1 hidden-xs">{{_('Activity permitted')}}</DIV>
+    		<DIV CLASS="col-xs-2 hidden-sm hidden-md hidden-lg">{{_('OK?')}}</DIV>
+    		<!--<DIV CLASS="col-xs-1 hidden-sm hidden-md hidden-lg"></DIV> -->
+    		<DIV CLASS="col-md-4 hidden-xs">{{_('Reasons')}}</DIV>
+    	</DIV>
+		{% for username, user_info in user_infos.items() %}
+	    	{% call accordion.begin() %}status_{{username}}_summary{% endcall %}	    			        
+		    	<DIV CLASS="row ROWLEVEL_2">
+		    		<DIV CLASS="col-md-1 col-xs-3">
+						<!-- {{ _('Show durations of most recent days') }} -->
+			    		{% call accordion.toggle_begin(tooltip="Show durations of most recent days") %}status_{{username}}_summary{% endcall %}
+		        			{{ username }}
+		        		{{ accordion.toggle_end() }}
+	        		</DIV>		        		
+		    		<DIV CLASS="col-md-1 col-xs-3">{{ user_info.active_rule_set.label }}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-2">{{ user_info.active_stat_info.todays_activity_duration|seconds_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.previous_activity_start_time|datetime_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.previous_activity_end_time|datetime_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.current_activity_start_time|datetime_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-2">{{ user_info.active_stat_info.current_activity_duration|seconds_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-2">
+		    		    {% if user_info.activity_permitted %}
+		    				<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_check.png') }}" WIDTH="16">
+		    			{% else %}
+		    				<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_denied.png') }}" WIDTH="16">
+		    			{% endif %}
+		    		</DIV>
+		    		<DIV CLASS="col-md-4 col-xs-12">
+						<UL>
+			    		{% for rule_template in user_info.active_rule_result_info.applying_rule_text_templates %}
+			    			<LI>{{ _(rule_template[0])|format(rule_template[1]) }}</LI>
+			    		{% endfor %}
+						</UL>
+		    		</DIV>
+		    	</DIV>			    			        
+			
+			{% call accordion.details() %}status_{{username}}_summary{% endcall %}
+		    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
+		    		<DIV CLASS="col-md-1 hidden-xs"></DIV>
+		    		<DIV CLASS="col-md-1 col-xs-3">{{_('Day')}}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-2">{{_('Active Time')}}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-2">{{_('Activity Start')}}</DIV>
+		    		<DIV CLASS="col-md-1 hidden-xs">{{_('Activity End')}}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-5">{{_('Host(#procs)')}}</DIV>
+		    		<DIV CLASS="col-md-6 hidden-xs"></DIV>
+		    	</DIV>
+		    	{% for i in range (0, user_info.max_lookback_in_days) %}
+	    			{% call accordion.begin() %}status_{{username}}_{{i}}{% endcall %}			    			        
+			    		<DIV CLASS="row ROWLEVEL_3">
+			    			<DIV CLASS="col-md-1 hidden-xs"></DIV>
+			    			<DIV CLASS="col-md-1 col-xs-3">
+								<!-- {{ _('Show activity times') }} -->
+					    		{% call accordion.toggle_begin(tooltip='Show activity times') %}status_{{username}}_{{i}}{% endcall %}
+									{{ _(user_info.history_labels[i][0])|format(user_info.history_labels[i][1]) }}
+				        		{{ accordion.toggle_end() }}
+				    		</DIV>
+				    		<DIV CLASS="col-md-1 col-xs-2">{{ user_info.active_stat_info.day_statistics[i].duration|seconds_to_string }}</DIV>
+				    		<DIV CLASS="col-md-1 col-xs-2">{{ user_info.active_stat_info.day_statistics[i].min_time|time_to_string }}</DIV>
+				    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.day_statistics[i].max_time|time_to_string }}</DIV>
+				    		<DIV CLASS="col-md-1 col-xs-5">{{ user_info.active_stat_info.day_statistics[i].host_infos }}</DIV>
+				    		<DIV CLASS="col-md-7 hidden-xs"></DIV>
+				    	</DIV>
+	    			{% call accordion.details() %}status_{{username}}_{{i}}{% endcall %}
+			        	{% for activity in user_info.active_stat_info.day_statistics[i].activities %}							         
+				    		<DIV CLASS="row ROWLEVEL_4">
+				    			<DIV CLASS="col-md-1 hidden-xs"></DIV>
+				    			<DIV CLASS="col-md-1 col-xs-3"></DIV>
+					    		<DIV CLASS="col-md-1 col-xs-2">{{ activity.duration|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 col-xs-2">{{ activity.start_time|time_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs">{{ activity.end_time|time_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 col-xs-5">{{ activity.host_infos }}</DIV>
+					    		<DIV CLASS="col-md-7 hidden-xs"></DIV>
+					    	</DIV>    		
+				     	{% endfor %} <!-- activity -->
+				    {{ accordion.end() }}			    
+		    	{% endfor %} <!-- i -->
+			{{ accordion.end() }}    	
+    	{% endfor %} <!-- username -->
+    </DIV> <!-- CLASS="container" -->
+
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
+
+	{% for username, user_info in user_infos.items() %}
+    	{% call accordion.script() %}status_{{username}}_summary{% endcall %}	    			        
+    	{% for i in range (0, user_info.max_lookback_in_days) %}
+			{% call accordion.script() %}status_{{username}}_{{i}}{% endcall %}
+    	{% endfor %}
+	{% endfor %}
+
+  </BODY>
+</HTML>

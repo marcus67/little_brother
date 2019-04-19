@@ -1,0 +1,427 @@
+# Copyright (C) 2019  Marcus Rickert
+#
+# See https://github.com/marcus67/little_brother
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+msgid ""
+msgstr ""
+"Project-Id-Version:  little-brother\n"
+"Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
+"POT-Creation-Date: 2019-04-09 23:10+0200\n"
+"PO-Revision-Date: 2019-03-01 22:28+0100\n"
+"Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: little_brother/app_control.py:112
+msgid "{days} days ago"
+msgstr ""
+
+#: little_brother/app_control.py:114 little_brother/app_control.py:878
+#: little_brother/templates/index.template.html:47
+msgid "Today"
+msgstr ""
+
+#: little_brother/app_control.py:115
+msgid "Yesterday"
+msgstr ""
+
+#: little_brother/app_control.py:130
+msgid "{user}, you do not have computer time left today. You will be logged out."
+msgstr ""
+
+#: little_brother/app_control.py:131
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left today. "
+"Please, log out."
+msgstr ""
+
+#: little_brother/app_control.py:132
+msgid "{user}, you do not have any computer time today. You will be logged out."
+msgstr ""
+
+#: little_brother/app_control.py:133
+msgid "{user}, it is too early to use the computer. You will be logged out."
+msgstr ""
+
+#: little_brother/app_control.py:134
+msgid "{user}, it is too late to use the computer. You will be logged out."
+msgstr ""
+
+#: little_brother/app_control.py:135
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"use the computer. Please, log out."
+msgstr ""
+
+#: little_brother/app_control.py:136
+msgid "{user}, you have to take a break. You will be logged out."
+msgstr ""
+
+#: little_brother/app_control.py:137
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"break. Please, log out."
+msgstr ""
+
+#: little_brother/app_control.py:138
+msgid ""
+"{user}, your break will only be over in {break_minutes_left} minutes. You"
+" will be logged out."
+msgstr ""
+
+#: little_brother/app_control.py:877
+#, python-format
+msgid "Today ({day:%%a})"
+msgstr ""
+
+#: little_brother/app_control.py:881
+#, python-format
+msgid "Tomorrow ({day:%%a})"
+msgstr ""
+
+#: little_brother/app_control.py:882
+msgid "Tomorrow"
+msgstr ""
+
+#: little_brother/app_control.py:885
+#, python-format
+msgid "{day:%%Y-%%m-%%d (%%a)}"
+msgstr ""
+
+#: little_brother/app_control.py:886
+#, python-format
+msgid "{day:%%A}"
+msgstr ""
+
+#: little_brother/german_vacation_context_rule_handler.py:31
+msgid "vacation"
+msgstr ""
+
+#: little_brother/rule_handler.py:259
+msgid "No activity before {hh_mm} hours"
+msgstr ""
+
+#: little_brother/rule_handler.py:266
+msgid "No activity after {hh_mm} hours"
+msgstr ""
+
+#: little_brother/rule_handler.py:282
+msgid "Day blocked: no activity permitted"
+msgstr ""
+
+#: little_brother/rule_handler.py:288
+msgid "Activity limited to {hh_mm} per day"
+msgstr ""
+
+#: little_brother/rule_handler.py:309
+msgid "No activity exceeding {hh_mm}"
+msgstr ""
+
+#: little_brother/rule_handler.py:335
+msgid "Minimum break time {hh_mm} not reached"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:25
+msgid "default"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:26
+msgid "weekday"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:31
+msgid "weekend"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:32
+msgid "weekdays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:33
+msgid "mondays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:34
+msgid "tuesdays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:35
+msgid "wednesdays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:36
+msgid "thursdays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:37
+msgid "fridays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:38
+msgid "saturdays"
+msgstr ""
+
+#: little_brother/simple_context_rule_handlers.py:39
+msgid "sundays"
+msgstr ""
+
+#: little_brother/templates/about.template.html:35
+#: little_brother/templates/navbar.include.html:41
+msgid "About"
+msgstr ""
+
+#: little_brother/templates/about.template.html:51
+msgid "Setting"
+msgstr ""
+
+#: little_brother/templates/about.template.html:52
+msgid "Value"
+msgstr ""
+
+#: little_brother/templates/about.template.html:55
+msgid "Repository"
+msgstr ""
+
+#: little_brother/templates/about.template.html:59
+msgid "Version"
+msgstr ""
+
+#: little_brother/templates/about.template.html:63
+msgid "Package Revision"
+msgstr ""
+
+#: little_brother/templates/about.template.html:67
+msgid "Git Commit ID"
+msgstr ""
+
+#: little_brother/templates/about.template.html:71
+msgid "Git Branch Name"
+msgstr ""
+
+#: little_brother/templates/about.template.html:75
+msgid "Git Author's Name"
+msgstr ""
+
+#: little_brother/templates/about.template.html:79
+msgid "Git Author's Email Address"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:36
+msgid "Administration"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:47
+#: little_brother/templates/index.template.html:44
+msgid "User"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:55
+msgid "Show configurations of upcoming days"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:67
+#: little_brother/templates/index.template.html:46
+msgid "Today's Activity"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:76
+msgid "Save"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:82
+#: little_brother/templates/index.template.html:92
+msgid "Day"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:83
+#: little_brother/templates/index.template.html:45
+msgid "Context"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:84
+msgid "Min Time of Day"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:85
+msgid "Max Time of Day"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:86
+msgid "Time per Day"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:94
+msgid "Show overrides for day"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:104
+msgid "effective"
+msgstr ""
+
+#: little_brother/templates/admin.template.html:124
+msgid "override"
+msgstr ""
+
+#: little_brother/templates/index.template.html:36
+#: little_brother/templates/navbar.include.html:39
+msgid "Status"
+msgstr ""
+
+#: little_brother/templates/index.template.html:48
+msgid "Previous Activity Start Time"
+msgstr ""
+
+#: little_brother/templates/index.template.html:49
+msgid "Previous Activity End Time"
+msgstr ""
+
+#: little_brother/templates/index.template.html:50
+msgid "Current Activity Start Time"
+msgstr ""
+
+#: little_brother/templates/index.template.html:51
+msgid "Current Activity Duration"
+msgstr ""
+
+#: little_brother/templates/index.template.html:52
+msgid "Current"
+msgstr ""
+
+#: little_brother/templates/index.template.html:53
+msgid "Activity permitted"
+msgstr ""
+
+#: little_brother/templates/index.template.html:54
+msgid "OK?"
+msgstr ""
+
+#: little_brother/templates/index.template.html:56
+msgid "Reasons"
+msgstr ""
+
+#: little_brother/templates/index.template.html:62
+msgid "Show durations of most recent days"
+msgstr ""
+
+#: little_brother/templates/index.template.html:93
+msgid "Active Time"
+msgstr ""
+
+#: little_brother/templates/index.template.html:94
+msgid "Activity Start"
+msgstr ""
+
+#: little_brother/templates/index.template.html:95
+msgid "Activity End"
+msgstr ""
+
+#: little_brother/templates/index.template.html:96
+msgid "Host(#procs)"
+msgstr ""
+
+#: little_brother/templates/index.template.html:104
+msgid "Show activity times"
+msgstr ""
+
+#: little_brother/templates/login.template.html:19
+#: little_brother/templates/login.template.html:39
+msgid "Login"
+msgstr ""
+
+#: little_brother/templates/login.template.html:32
+msgid "Username"
+msgstr ""
+
+#: little_brother/templates/login.template.html:33
+msgid "Password"
+msgstr ""
+
+#: little_brother/templates/navbar.include.html:40
+msgid "Admin"
+msgstr ""
+
+#: little_brother/templates/navbar.include.html:44
+msgid "Signed in as"
+msgstr ""
+
+#: little_brother/templates/navbar.include.html:46
+msgid "Logout"
+msgstr ""
+
+#: contrib/python_base_app/python_base_app/auth_view_handler.py:34
+msgid "Please log in to access this page."
+msgstr ""
+
+#: contrib/python_base_app/python_base_app/auth_view_handler.py:134
+msgid "Wrong login or password"
+msgstr ""
+
+#~ msgid "Wrong email or password"
+#~ msgstr ""
+
+#~ msgid "{day:%%y-%%m-%%d (%%a)}"
+#~ msgstr ""
+
+#~ msgid "{day:%%a}"
+#~ msgstr ""
+
+#~ msgid "{days} days ago"
+#~ msgstr ""
+
+#~ msgid "Yesterday"
+#~ msgstr ""
+
+#~ msgid "Today ({day:%%a})"
+#~ msgstr ""
+
+#~ msgid "Tomorrow ({day:%%a})"
+#~ msgstr ""
+
+#~ msgid "Tomorrow"
+#~ msgstr ""
+
+#~ msgid "Configuration"
+#~ msgstr ""
+
+#~ msgid "WEEKEND"
+#~ msgstr ""
+
+#~ msgid "WEEKDAYS"
+#~ msgstr ""
+
+#~ msgid "MONDAYS"
+#~ msgstr ""
+
+#~ msgid "TUESDAYS"
+#~ msgstr ""
+
+#~ msgid "WEDNESDAYS"
+#~ msgstr ""
+
+#~ msgid "THURSDAYS"
+#~ msgstr ""
+
+#~ msgid "FRIDAYS"
+#~ msgstr ""
+
+#~ msgid "SATURDAYS"
+#~ msgstr ""
+
+#~ msgid "SUNDAYS"
+#~ msgstr ""
+

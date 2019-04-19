@@ -1,0 +1,104 @@
+# -*- coding: utf-8 -*-
+
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import datetime
+
+from python_base_app import configuration
+from python_base_app.test import base_test
+
+from little_brother import simple_context_rule_handlers
+
+ONE_DAY = datetime.timedelta(hours=24)
+
+
+MONDAY = datetime.datetime.strptime('28.01.2019', '%d.%m.%Y')
+TUESDAY = MONDAY + ONE_DAY
+WEDNESDAY = TUESDAY + ONE_DAY
+THURSDAY = WEDNESDAY + ONE_DAY
+FRIDAY = THURSDAY + ONE_DAY
+SATURDAY = FRIDAY + ONE_DAY
+SUNDAY = SATURDAY + ONE_DAY
+
+DAYS = [ MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY ]
+
+PREDEFINED_SELECTORS = [ "MONDAYS", "TUESDAYS", "WEDNESDAYS", "THURSDAYS", "FRIDAYS", "SATURDAYS", "SUNDAYS" ]
+
+class TestWeekDayContextRuleHandler(base_test.BaseTestCase):
+
+    def test_single_days(self):
+
+        rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+
+        for day in range (0,7):
+            for selector in range(0,7):
+
+                self.assertEqual(rule_handler.is_active(p_reference_date=DAYS[day],
+                                                        p_context_details=PREDEFINED_SELECTORS[selector]),
+                                 day==selector)
+
+    def test_invalid_selector_length(self):
+
+        rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+
+        with self.assertRaises(configuration.ConfigurationException):
+            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="X-----"))
+
+        with self.assertRaises(configuration.ConfigurationException):
+            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="X-------"))
+
+    def test_invalid_selector_character(self):
+
+        rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+
+        with self.assertRaises(configuration.ConfigurationException):
+            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="X-------"))
+
+        with self.assertRaises(configuration.ConfigurationException):
+            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="1-------"))
+
+        with self.assertRaises(configuration.ConfigurationException):
+            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="Y-------"))
+
+        with self.assertRaises(configuration.ConfigurationException):
+            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="#-------"))
+
+    def test_weekend(self):
+
+        rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+
+        self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=TUESDAY, p_context_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=WEDNESDAY, p_context_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=THURSDAY, p_context_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=FRIDAY, p_context_details="WEEKEND"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=SUNDAY, p_context_details="WEEKEND"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=SATURDAY, p_context_details="WEEKEND"))
+
+    def test_weekdays(self):
+
+        rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+
+        self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=TUESDAY, p_context_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=WEDNESDAY, p_context_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=THURSDAY, p_context_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=FRIDAY, p_context_details="WEEKDAYS"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=SUNDAY, p_context_details="WEEKDAYS"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=SATURDAY, p_context_details="WEEKDAYS"))

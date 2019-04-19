@@ -1,0 +1,66 @@
+# -*- coding: utf-8 -*-
+
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import datetime
+import re
+
+from little_brother import process_info
+
+USER_1 = "user1"
+UID_1 = 123
+PROCESS_NAME_1 = "process1"
+PID_1 = 12345
+
+HOSTNAME_1 = "host1"
+
+START_TIME_1 = datetime.datetime(2018,1,1,10,10,10)
+END_TIME_1 = datetime.datetime(2018,1,1,10,10,20)
+
+MAX_TIME_PER_DAY_1 = 3600
+MAX_TIME_PER_DAY_2 = 7200
+MIN_TIME_OF_DAY_1 = datetime.time(hour=10)
+MAX_TIME_OF_DAY_1 = datetime.time(hour=22)
+
+MIN_BREAK_1 = 1800
+FREEPLAY_1 = True
+
+UID_MAP = { UID_1 : USER_1 }
+
+PROCESS_REGEX_MAP_1 = { USER_1 : re.compile(PROCESS_NAME_1) }
+
+PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
+                                   p_pid=PID_1, p_start_time=START_TIME_1)
+PINFO_2 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
+                                   p_pid=PID_1, p_start_time=START_TIME_1, p_end_time=END_TIME_1)
+
+START_TIME_NOW = datetime.datetime.utcnow()
+END_TIME_NOW = START_TIME_NOW + datetime.timedelta(minutes=5)
+
+PINFO_3 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
+                                   p_pid=PID_1, p_start_time=START_TIME_NOW, p_end_time=END_TIME_NOW)
+
+
+PROCESSES_1 = [
+        PINFO_1
+    ]
+
+PROCESSES_2 = [
+        PINFO_2
+    ]

@@ -1,0 +1,84 @@
+<!--
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+{% macro begin() -%}
+
+<DIV ID="accordion{{caller()}}" ROLE="tablist">
+  	<DIV CLASS="card">
+    	<DIV CLASS="card-header" ROLE="tab" ID="summary{{caller()}}">
+{%- endmacro %}
+
+{% macro details() -%}
+		</DIV>
+	</DIV>
+	<DIV ID="details{{caller()}}" CLASS="collapse" ROLE="tabpanel" aria-labelledby="summary{{caller()}}" data-parent="#accordion{{caller()}}">
+		<DIV CLASS="card-body">
+{%- endmacro %}
+
+{% macro end() -%}
+		</DIV>
+	</DIV>
+</DIV>
+{%- endmacro %}
+
+{% macro toggle_begin(tooltip='') -%}
+<A data-toggle="collapse" href="#details{{caller()}}" aria-expanded="false" aria-controls="details{{caller()}}" TITLE="{{ _(tooltip) }}">
+{%- endmacro %}
+
+{% macro toggle_end() -%}
+</A>
+{%- endmacro %}
+
+
+{% macro script() -%}
+<SCRIPT type="text/javascript">
+
+// The following code snippet is based on https://www.geekpub.de/2015/01/bootstrap-3-accordion-status-merken-mit-cookies/
+
+	// The following handler creates a cookie if the accordion is not collapsed.
+
+	$("#accordion{{caller()}}").on('shown.bs.collapse', function () {
+        var active = $("#accordion{{caller()}} .in").attr('id');
+        Cookies.set('activeAccordionGroup_{{caller()}}', active);
+    });
+    
+    // The following handler removes the cookie when the accordion is collapsed.
+    
+    // In the following handler we have to make sure we only call the Cookies.remove method for the
+    // element by which the trigger was raised. In Bootstrap (or JavaScript?) there seems to be a mechanism which makes the event
+    // travel up the DOM tree so that the trigger handler is also called for enclosing accordions. This would lead to the cookies 
+    // of whole path of accordions up the root be removed and hence to be collapsed.
+    
+    // The correction is based on https://stackoverflow.com/questions/32070392/jquery-show-bs-collapse-event-for-nested-bootstrap-collapsible-buttons-fires-on
+    $("#accordion{{caller()}}").on('hidden.bs.collapse', function (e) {
+    	if ($(this)[0] == e.target.parentNode) {
+        	Cookies.remove('activeAccordionGroup_{{caller()}}');
+        }
+    });
+    
+    // The following is executed when the page is loaded. It opens the accordion when a matching cookie is found. 
+    var last=Cookies.get('activeAccordionGroup_{{caller()}}');
+    if (last!=null) {
+        $("#" + last).addClass("in");
+    }
+</SCRIPT>
+{%- endmacro %}
+
+
