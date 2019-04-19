@@ -5,7 +5,6 @@ __pycache__
 .coveragerc
 htmlcov
 .coverage
-*.mo
 *.iml
 workspace.xml
 .DS_Store
