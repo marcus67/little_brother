@@ -21,7 +21,10 @@
 # but only to python_base_app/templates/gitlab-ci.template.yml!                  #
 ##################################################################################
 
-version: 2
+version: 2.1
+orbs:
+  # See https://circleci.com/blog/making-code-coverage-easy-to-see-with-the-codecov-orb/
+  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     #working_directory: ~
@@ -41,3 +44,5 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE --run-dir=/tmp
       - store_artifacts:
           path: /tmp/htmlcov
+      - codecov/upload:
+          file: /tmp/htmlcov/index.html
