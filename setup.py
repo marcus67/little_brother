@@ -57,7 +57,8 @@ setup_params = {
     "user_group_mappings" : [ ( "little-brother", "audio" ) ],
     "deploy_systemd_service" : True,
     "deploy_sudoers_file" : True,
-    "contributing_setups" : [ "python_base_app", "flask_helpers" ]
+    "contributing_setups" : [ "python_base_app", "flask_helpers" ],
+    "publish_debian_package" : True
     
     }
 setup_params.update(little_brother.settings.settings)
