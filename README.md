@@ -1,3 +1,5 @@
+![Under Construction Logo](logo_under_construction_sign_wide.png)
+
 ![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
 
 # Overview
