@@ -1,5 +1,7 @@
 ![Under Construction Logo](logo_under_construction_sign_wide.png)
 
+This project is still under construction. Please, bear with me. Thanks!
+
 ![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
 
 # Overview
@@ -11,6 +13,14 @@ on several hosts and combining playtimes spent across these hosts but it also wo
 When the application determines that a user has exceeded her play time it will terminate the configured 
 process. Usually, the user will get several spoken warnings before she is actually kicked out so that she 
 can log out gracefully in time.
+
+## CircleCI Continuous Integration Status
+
+<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother.svg?label=master"></A> 
+
+## GitHub Status
+
+<A HREF="https://github.com/marcus67/little_brother"><IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> <A HREF="https://github.com/marcus67/little_brother/stargazers"><IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> <A HREF="https://github.com/marcus67/little_brother/watchers"><IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> <A HREF="https://github.com/marcus67/little_brother/issues"><IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> <A HREF="https://github.com/marcus67/little_brother/pulls"><IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
 
 # Features
 
@@ -62,7 +72,9 @@ on your system.
 
 ## Download the Software
 
-The application is available as a Debian package from this site: TODO. Install it as you would install any other
+The application is available as a Debian package 
+from [SourceForge](https://sourceforge.net/projects/little-brother/files/releases/). 
+Install it as you would install any other
 Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
 
@@ -76,7 +88,7 @@ rule set to start with.
 * `minimal-slave.config`: A minimal configuration file to run the application on a client. This file is relatively simple
 since it only contains the details to connect to the master host.
 
-Choose the configuration file that best fits your needs and rename it to `little_brother.conf` (TODO: correct?). Look
+Choose the configuration file that best fits your needs and rename it to `little-brother.conf`. Look
 at the commented entries and adapt them if required.
 
 You will have to make at least the following adaptation:
@@ -136,7 +148,7 @@ and/or path information is not taken into consideration.
 
 For most purposes in which general login should be prevented or the current login should be terminated 
 a simple `sh|systemd` should suffice with `sh` taking of all console logins and `systemd` 
-taking care of all graphical logins TODO:Check!
+taking care of all graphical logins (ToDo: Check!)
  
 Timestamps must be given in the format `HH:MM` in military time. Time durations must given in the format `HHh:MMm`. 
 Either part may be omitted and the minutes may exceed 60.
