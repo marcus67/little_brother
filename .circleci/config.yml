@@ -35,10 +35,9 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init
 
-      - run: pwd
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --run-dir=/tmp
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE --run-dir=/tmp
       - store_artifacts:
-          path: htmlcov
+          path: /tmp/htmlcov
