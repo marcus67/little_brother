@@ -37,9 +37,9 @@ jobs:
 
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
-      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
       - run: pip3 install codecov
       - run: pwd && ls -la && codecov
       - store_artifacts:
-          path: /tmp/htmlcov
+          path: htmlcov
