@@ -80,9 +80,10 @@ This will fail, however, since no valid configuration is available.
 
 ## Configure the Software
 
-There are several template files which can be used as a basis for your concrete configuration:
+There are several template files (see directory `/etc/little-brother`) which can be used as a basis for 
+your concrete configuration:
 
-* `minimal-rule-master.config`: A minimal configuration file to run the application on a single host with a simple
+* `minimal-master.config`: A minimal configuration file to run the application on a single host with a simple
 rule set to start with.
 * `multi-rule-master.config`: A more elaborate configuration file featuring a realistic rule set.
 * `minimal-slave.config`: A minimal configuration file to run the application on a client. This file is relatively simple
@@ -167,7 +168,7 @@ a rule which is active on Mondays, Wednesdays, and Fridays.
 If the value of `context` is `german-vacation-calendar` the rule is active for all vacation days of a specific 
 federal state in Germany. In this case the value of `context_details` denotes the name of the federal state:
 
-* `Baden-Württemberg`',
+* `Baden-Württemberg`,
 * `Bayern`,
 * `Berlin`,
 * `Brandenburg`,
