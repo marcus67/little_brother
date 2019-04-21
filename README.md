@@ -1,4 +1,4 @@
-![Under Construction Logo](logo_under_construction_sign_wide.png)
+![Under Construction Logo](doc/logo_under_construction_sign_wide.png)
 
 This project is still under construction. Please, bear with me. Thanks!
 
@@ -13,6 +13,12 @@ on several hosts and combining playtimes spent across these hosts but it also wo
 When the application determines that a user has exceeded her play time it will terminate the configured 
 process. Usually, the user will get several spoken warnings before she is actually kicked out so that she 
 can log out gracefully in time.
+
+## Screenshots
+
+The following screenshots show the web frontend of `LittleBrother`. Click on the thumbnails to enlarge. 
+
+<A HREF="doc/screenshot_status.png">![Screenshot Status](doc/screenshot_status.thumb.png)</A> <A HREF="doc/screenshot_login.png">![Screenshot Status](doc/screenshot_login.thumb.png)</A> <A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> <A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
 
 ## Change History 
 
@@ -98,10 +104,10 @@ This will fail, however, since no valid configuration is available.
 There are several template files (see directory `/etc/little-brother`) which can be used as a basis for 
 your concrete configuration:
 
-* `minimal-master.config`: A minimal configuration file to run the application on a single host with a simple
+* <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the application on a single host with a simple
 rule set to start with.
-* `multi-rule-master.config`: A more elaborate configuration file featuring a realistic rule set.
-* `minimal-slave.config`: A minimal configuration file to run the application on a client. This file is relatively simple
+* <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file featuring a realistic rule set.
+* <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the application on a client. This file is relatively simple
 since it only contains the details to connect to the master host.
 
 Choose the configuration file that best fits your needs and rename it to `little-brother.conf`. Look
