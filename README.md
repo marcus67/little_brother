@@ -32,6 +32,10 @@ See [here](CHANGES.md)
 
 <A HREF="https://github.com/marcus67/little_brother"><IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> <A HREF="https://github.com/marcus67/little_brother/stargazers"><IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> <A HREF="https://github.com/marcus67/little_brother/watchers"><IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> <A HREF="https://github.com/marcus67/little_brother/issues"><IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> <A HREF="https://github.com/marcus67/little_brother/pulls"><IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
 
+## SourceForge Download Status
+
+<a href="https://sourceforge.net/projects/little-brother/files/latest/download"><img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg" ></a>
+
 # Features
 
 `LittleBrother` has the following features:
@@ -83,7 +87,8 @@ on your system.
 ## Download the Software
 
 The application is available as a Debian package 
-from [SourceForge](https://sourceforge.net/projects/little-brother/files/release/). 
+from the [`release`](https://sourceforge.net/projects/little-brother/files/release/) directory at SourceForge. 
+The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/release/) directory. 
 Install it as you would install any other
 Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.

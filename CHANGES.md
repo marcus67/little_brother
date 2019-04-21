@@ -2,6 +2,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 22 (April 21st, 2019)
+
+* Add download logo to README.md.
+* Link both directories `release` and `master` at SourceForge.
+
 ## Version 0.1 Revision 21 (April 21st, 2019)
 
 * Add coverage logo to README.md.
