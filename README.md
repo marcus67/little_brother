@@ -14,9 +14,19 @@ When the application determines that a user has exceeded her play time it will t
 process. Usually, the user will get several spoken warnings before she is actually kicked out so that she 
 can log out gracefully in time.
 
+## Change History 
+
+See [here](CHANGES.md)
+
 ## CircleCI Continuous Integration Status
 
-<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother.svg?label=master"></A> 
+<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A> 
+<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> 
+
+## Test Coverage
+
+<A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A> 
+<A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>
 
 ## GitHub Status
 
@@ -73,7 +83,7 @@ on your system.
 ## Download the Software
 
 The application is available as a Debian package 
-from [SourceForge](https://sourceforge.net/projects/little-brother/files/releases/). 
+from [SourceForge](https://sourceforge.net/projects/little-brother/files/release/). 
 Install it as you would install any other
 Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
