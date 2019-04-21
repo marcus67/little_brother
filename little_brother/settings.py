@@ -23,5 +23,5 @@ settings = {
     "description": "",
     "author": "Marcus Rickert",
     "author_email": "little-brother@web.de",
-    "debian_package_revision": "21",
+    "debian_package_revision": "22",
 }

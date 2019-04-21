@@ -88,7 +88,7 @@ on your system.
 
 The application is available as a Debian package 
 from the [`release`](https://sourceforge.net/projects/little-brother/files/release/) directory at SourceForge. 
-The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/release/) directory. 
+The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/master/) directory. 
 Install it as you would install any other
 Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
