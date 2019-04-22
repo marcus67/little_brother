@@ -6,7 +6,7 @@ This project is still under construction. Please, bear with me. Thanks!
 
 # Overview
 
-`LittleBrother` is a simple application monitoring specific processes (read "games") on Linux hosts
+`LittleBrother` is a simple parental control application monitoring specific processes (read "games") on Linux hosts
 to control and limit the play time of (young) children. It is designed as a client server application running
 on several hosts and combining playtimes spent across these hosts but it also works on a standalone host.
 
@@ -72,7 +72,11 @@ such as smart phones or tables. It takes advantage of the fact that most modern 
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
 be used to determine the activity on those devices. In contrast to the Linux hosts, the application
 will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
-hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.   
+hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
+
+## Architecture
+
+The [page](ARCHITECTURE.md) gives a detailed description of the architecture of the application.    
 
 # Prerequisites
 

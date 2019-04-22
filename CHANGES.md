@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 24 (April 22nd, 2019)
+
+* Added first version of ARCHITECTURE.md.
+
 ## Version 0.1 Revision 23 (April 22nd, 2019)
 
 * Add screenshots to README.md.

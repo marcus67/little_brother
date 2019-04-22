@@ -10,3 +10,4 @@ workspace.xml
 .DS_Store
 .idea
 *.log
+coverage.xml
