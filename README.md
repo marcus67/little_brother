@@ -1,4 +1,4 @@
-![Under Construction Logo](logo_under_construction_sign_wide.png)
+![Under Construction Logo](doc/logo_under_construction_sign_wide.png)
 
 This project is still under construction. Please, bear with me. Thanks!
 
@@ -6,7 +6,7 @@ This project is still under construction. Please, bear with me. Thanks!
 
 # Overview
 
-`LittleBrother` is a simple application monitoring specific processes (read "games") on Linux hosts
+`LittleBrother` is a simple parental control application monitoring specific processes (read "games") on Linux hosts
 to control and limit the play time of (young) children. It is designed as a client server application running
 on several hosts and combining playtimes spent across these hosts but it also works on a standalone host.
 
@@ -14,13 +14,33 @@ When the application determines that a user has exceeded her play time it will t
 process. Usually, the user will get several spoken warnings before she is actually kicked out so that she 
 can log out gracefully in time.
 
+## Screenshots
+
+The following screenshots show the web frontend of `LittleBrother`. Click on the thumbnails to enlarge. 
+
+<A HREF="doc/screenshot_status.png">![Screenshot Status](doc/screenshot_status.thumb.png)</A> <A HREF="doc/screenshot_login.png">![Screenshot Status](doc/screenshot_login.thumb.png)</A> <A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> <A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
+
+## Change History 
+
+See [here](CHANGES.md)
+
 ## CircleCI Continuous Integration Status
 
-<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother.svg?label=master"></A> 
+<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A> 
+<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> 
+
+## Test Coverage
+
+<A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A> 
+<A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>
 
 ## GitHub Status
 
 <A HREF="https://github.com/marcus67/little_brother"><IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> <A HREF="https://github.com/marcus67/little_brother/stargazers"><IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> <A HREF="https://github.com/marcus67/little_brother/watchers"><IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> <A HREF="https://github.com/marcus67/little_brother/issues"><IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> <A HREF="https://github.com/marcus67/little_brother/pulls"><IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
+
+## SourceForge Download Status
+
+<a href="https://sourceforge.net/projects/little-brother/files/latest/download"><img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg" ></a>
 
 # Features
 
@@ -52,7 +72,11 @@ such as smart phones or tables. It takes advantage of the fact that most modern 
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
 be used to determine the activity on those devices. In contrast to the Linux hosts, the application
 will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
-hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.   
+hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
+
+## Architecture
+
+The [page](ARCHITECTURE.md) gives a detailed description of the architecture of the application.    
 
 # Prerequisites
 
@@ -73,19 +97,21 @@ on your system.
 ## Download the Software
 
 The application is available as a Debian package 
-from [SourceForge](https://sourceforge.net/projects/little-brother/files/releases/). 
+from the [`release`](https://sourceforge.net/projects/little-brother/files/release/) directory at SourceForge. 
+The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/master/) directory. 
 Install it as you would install any other
 Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
 
 ## Configure the Software
 
-There are several template files which can be used as a basis for your concrete configuration:
+There are several template files (see directory `/etc/little-brother`) which can be used as a basis for 
+your concrete configuration:
 
-* `minimal-rule-master.config`: A minimal configuration file to run the application on a single host with a simple
+* <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the application on a single host with a simple
 rule set to start with.
-* `multi-rule-master.config`: A more elaborate configuration file featuring a realistic rule set.
-* `minimal-slave.config`: A minimal configuration file to run the application on a client. This file is relatively simple
+* <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file featuring a realistic rule set.
+* <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the application on a client. This file is relatively simple
 since it only contains the details to connect to the master host.
 
 Choose the configuration file that best fits your needs and rename it to `little-brother.conf`. Look
@@ -167,7 +193,7 @@ a rule which is active on Mondays, Wednesdays, and Fridays.
 If the value of `context` is `german-vacation-calendar` the rule is active for all vacation days of a specific 
 federal state in Germany. In this case the value of `context_details` denotes the name of the federal state:
 
-* `Baden-Württemberg`',
+* `Baden-Württemberg`,
 * `Bayern`,
 * `Berlin`,
 * `Brandenburg`,
