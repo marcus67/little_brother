@@ -75,7 +75,7 @@ class AppControl(object):
                  p_process_handlers,
                  p_persistence,
                  p_rule_handler,
-                 p_audio_handler,
+                 p_notification_handlers,
                  p_master_connector,
                  p_rule_set_configs):
 
@@ -84,7 +84,7 @@ class AppControl(object):
         self._process_handlers = p_process_handlers
         self._persistence = p_persistence
         self._rule_handler = p_rule_handler
-        self._audio_handler = p_audio_handler
+        self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
@@ -338,7 +338,9 @@ class AppControl(object):
     def handle_event_speak(self, p_event):
 
         user_locale = self.get_user_locale(p_username=p_event.username)
-        self._audio_handler.speak(p_text=p_event.text, p_locale=user_locale)
+
+        for notification_handler in self._notification_handlers:
+            notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
 
     def get_user_locale(self, p_username):
 

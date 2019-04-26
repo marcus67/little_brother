@@ -54,7 +54,7 @@ class TestStatusServer(base_test.BaseTestCase):
             p_process_handlers={},
             p_persistence=_persistence,
             p_rule_handler=_rule_handler,
-            p_audio_handler=None,
+            p_notification_handlers=[],
             p_rule_set_configs={},
             p_master_connector=_master_connector)
 
@@ -98,6 +98,8 @@ class TestStatusServer(base_test.BaseTestCase):
 
     def test_page_about(self):
 
+        _status_server = None
+
         try:
             _status_server = self.create_dummy_status_server()
             _status_server.start_server()
@@ -118,8 +120,9 @@ class TestStatusServer(base_test.BaseTestCase):
             raise e
 
         finally:
-            _status_server.stop_server()
-            _status_server.destroy()
+            if _status_server is not None:
+                _status_server.stop_server()
+                _status_server.destroy()
 
     def test_page_index(self):
 

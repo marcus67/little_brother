@@ -19,6 +19,7 @@ import psutil
 
 from little_brother import app_control
 from little_brother import audio_handler
+from little_brother import popup_handler
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import master_connector
@@ -62,7 +63,7 @@ class App(base_app.BaseApp):
 
         super(App, self).__init__(p_pid_file=p_pid_file, p_arguments=p_arguments, p_app_name=p_app_name, p_dir_name=DIR_NAME)
 
-        self._audio_handler = None
+        self._notification_handlers = []
         self._status_server = None
         self._persistence = None
         self._process_handlers = None
@@ -78,8 +79,11 @@ class App(base_app.BaseApp):
         app_control_section = app_control.AppControlConfigModel()
         p_configuration.add_section(app_control_section)
 
-        audio_handler_section = audio_handler.AudioHandlerConfigModel()
+        audio_handler_section = audio_handler.AudioHandlerConfigModel()        
         p_configuration.add_section(audio_handler_section)
+
+        popup_handler_section = popup_handler.PopupHandlerConfigModel()        
+        p_configuration.add_section(popup_handler_section)
 
         persistence_section = persistence.PersistenceConfigModel()
         p_configuration.add_section(persistence_section)
@@ -133,13 +137,19 @@ class App(base_app.BaseApp):
         self._master_connector = master_connector.MasterConnector(
             p_config=self._config[master_connector.SECTION_NAME])
 
-        self._audio_handler = audio_handler.AudioHandler(
-            p_config=self._config[audio_handler.SECTION_NAME])
+        config = self._config[audio_handler.SECTION_NAME]
+
+        if config.is_active():
+            self._notification_handlers.append(audio_handler.AudioHandler(p_config=config))
+
+        config = self._config[popup_handler.SECTION_NAME]
+
+        if config.is_active():
+            self._notification_handlers.append(popup_handler.PopupHandler(p_config=config))
 
         process_handler = client_process_handler.ClientProcessHandler(
             p_config=self._config[client_process_handler.SECTION_NAME],
             p_process_iterator_factory=ProcessIteratorFactory())
-
 
         self._process_handlers = {
             process_handler.id : process_handler
@@ -164,7 +174,7 @@ class App(base_app.BaseApp):
             p_process_handlers=self._process_handlers,
             p_persistence=self._persistence,
             p_rule_handler=self._rule_handler,
-            p_audio_handler=self._audio_handler,
+            p_notification_handlers=self._notification_handlers,
             p_rule_set_configs=self._rule_set_section_handler.rule_set_configs,
             p_master_connector=self._master_connector)
 

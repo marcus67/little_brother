@@ -45,14 +45,6 @@ class TestAudioHandler(base_test.BaseTestCase):
             pass
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
-    def test_instance_creation(self):
-
-        a_config = audio_handler.AudioHandlerConfigModel()
-        a_handler = audio_handler.AudioHandler(p_config=a_config)
-
-        self.assertIsNotNone(a_handler)
-
-    @base_test.skip_if_env("NO_AUDIO_OUTPUT")
     def test_engine_google_init(self):
 
         a_config = audio_handler.AudioHandlerConfigModel()
@@ -74,9 +66,9 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_handler.speak(p_text="hallo", p_locale=LOCALE)
+        a_handler.notify(p_text="hallo", p_locale=LOCALE)
 
-        a_handler.speak(p_text="hallo", p_locale=LOCALE)
+        a_handler.notify(p_text="hallo", p_locale=LOCALE)
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
     def test_spool_dir_and_file(self):
@@ -93,7 +85,7 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertTrue(audio_file.startswith(SPOOL_DIR))
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_thread = a_handler.speak(p_text=TEXT)
+        a_thread = a_handler.notify(p_text=TEXT)
         a_thread.join()
 #        time.sleep(1)
 
@@ -119,7 +111,7 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_thread = a_handler.speak(p_text=TEXT)
+        a_thread = a_handler.notify(p_text=TEXT)
         a_thread.join()
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
@@ -134,7 +126,7 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_thread = a_handler.speak(p_text=TEXT)
+        a_thread = a_handler.notify(p_text=TEXT)
         a_thread.join()
 
     def test_engine_external_init(self):
@@ -156,7 +148,7 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_handler.speak(p_text=TEXT)
+        a_handler.notify(p_text=TEXT)
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
     def test_engine_external_speak_mixer(self):
@@ -170,7 +162,7 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_handler.speak(p_text=TEXT)
+        a_handler.notify(p_text=TEXT)
 
     def test_engine_invalid(self):
 

@@ -65,8 +65,8 @@ days into the future.
 administration after receiving calls from young users begging for more play time.
 * The application has international language support. Currently English and German translations are provided.
 Users are invited to provide translations for other languages.
-* The application uses voice generation to inform the user over impending forced logouts. Also these spoken
-messages are internationalized.
+* The application uses voice generation to inform the user over pending forced logouts. Also these spoken
+messages are internationalized. Optionally, users can be notified using four different popup tools.
 * In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can

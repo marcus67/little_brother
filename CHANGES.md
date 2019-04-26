@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 25 (April 27th, 2019)
+
+* Closes #6 (popup notifications)
+
 ## Version 0.1 Revision 24 (April 22nd, 2019)
 
 * Added first version of ARCHITECTURE.md.
