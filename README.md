@@ -280,8 +280,39 @@ In these cases the user will still be regarded as logged in although he/she is n
 solved by trying to kill the processes again using the master user. Database eloquent users may try to 
 delete/correct the incorrect process time entries.
 * The web server only responds to HTTP requests. This is probably always OK for communication between the
-slaves and the master in local area network. If the master host is to be accesible from the internet it should
+slaves and the master in local area network. If the master host is to be accessible from the internet it should
 be put behind a reverse proxy handling the HTTPS termination (see below). 
+
+# Using Popups
+
+It is possible to activate popups to nofify the user about impending logouts. See the section `[PopupHandler]` 
+in the configuration file (e.g. <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>).
+ 
+The application knows how to handle four different X11 popup tools:
+
+* `yad`
+* `gxmessage`
+* `zenity`
+* `yad`
+
+The chosen tool must be available on the respective client. If applicable, install the
+Debian package having the same name, e.g. to install `yad` enter
+
+    sudo apt-get install yad
+
+Moreover, the user who is supposed to receive the popup messages has to give permission to create X11 clients
+using a call to `xhost`:
+
+    xhost +SI:localuser:little-brother
+
+This statement must be added to the appropriate session startup script used on the host. This is a little tricky
+since the specific file depends on the windows manager and/or login manager.
+
+These are some good locations:
+
+| Windows Manager | Filename  |
+| --------------- | ---------
+| Mate            | ~/.materc | 
 
 # Running Behind a Reverse Proxy
 

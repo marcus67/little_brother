@@ -26,6 +26,7 @@ from python_base_app import log_handling
 from python_base_app.test import base_test
 
 from little_brother.test import test_process_info
+from little_brother.test import test_process_statistics
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_audio_handler
 from little_brother.test import test_popup_handler
@@ -40,6 +41,10 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite, 
         p_test_unit_class=test_process_info.TestProcessInfo, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_process_statistics.TestProcessStatistics, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite, 

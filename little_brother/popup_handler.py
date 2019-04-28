@@ -16,10 +16,13 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
+import os
 import subprocess
 
-from little_brother import notification_handler
 from python_base_app import configuration
+from python_base_app import exceptions
+
+from little_brother import notification_handler
 
 SECTION_NAME = "PopupHandler"
 
@@ -50,6 +53,7 @@ class PopupHandlerConfigModel(notification_handler.NotificationHandlerConfigMode
         self.popup_engine = configuration.NONE_STRING
         self.engine_cmd_line = configuration.NONE_STRING
         self.encoding = "UTF-8"
+        self.x11_display = ":0.0"
 
     def is_active(self):
         return self.popup_engine is not None
@@ -97,7 +101,22 @@ class PopupHandler(notification_handler.NotificationHandler):
 
             fmt = "popup_command(): execute '%s'" % cmd_line
             self._logger.debug(fmt)
-            subprocess.run(cmd_line, shell=True)
+
+            extended_env = os.environ.copy()
+            extended_env['DISPLAY'] = self._config.x11_display
+
+            popen = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=extended_env)
+            stdout, stderr = popen.communicate()
+            exit_code = popen.returncode
+
+            msg = "[STDERR] {line}"
+
+            for line in stderr.decode("utf-8").split("\n"):
+                if line != '':
+                    self._logger.error(msg.format(line=line))
+
+            if exit_code != 0:
+                raise exceptions.ScriptExecutionError(p_script_name=cmd_line, p_exit_code=exit_code)
 
         except Exception as e:
 

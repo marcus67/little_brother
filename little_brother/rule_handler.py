@@ -28,7 +28,6 @@ SECTION_NAME = "RuleHandler"
 
 RULE_SET_SECTION_PREFIX = "RuleSet"
 
-
 REGEX_TIME_OF_DAY = re.compile("([0-9]+)(:([0-9]+))?")
 
 DEFAULT_PRIORITY = 1
@@ -41,7 +40,9 @@ RULE_DAY_BLOCKED = 8
 RULE_ACTIVITY_DURATION = 16
 RULE_MIN_BREAK = 32
 
-DEFAUL_RULESET_LABEL = "default"
+DEFAULT_RULESET_LABEL = "default"
+
+CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x:x
@@ -73,6 +74,10 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.min_break = None
         self.scan_devices = True
         self.locale = None
+
+        self.min_time_of_day_class = ""
+        self.max_time_of_day_class = ""
+        self.max_time_per_day_class = ""
         
         self._regex_process_name_pattern = None
 
@@ -87,7 +92,7 @@ class RuleSetConfigModel(configuration.ConfigModel):
         if  self.context is not None:
             return self.context
 
-        return DEFAUL_RULESET_LABEL
+        return DEFAULT_RULESET_LABEL
         
     @property
     def regex_process_name_pattern(self):
@@ -205,13 +210,16 @@ def apply_override(p_rule_set, p_rule_override):
         
         if p_rule_override.max_time_per_day is not None:
             rule_set.max_time_per_day = p_rule_override.max_time_per_day
+            rule_set.max_time_per_day_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
                 
         if p_rule_override.min_time_of_day is not None:
             rule_set.min_time_of_day = p_rule_override.min_time_of_day
-        
+            rule_set.min_time_of_day_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
+
         if p_rule_override.max_time_of_day is not None:
             rule_set.max_time_of_day = p_rule_override.max_time_of_day
-                    
+            rule_set.max_time_of_day_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
+
     return rule_set
         
     

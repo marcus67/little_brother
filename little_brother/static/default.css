@@ -57,6 +57,7 @@ A.CVE_HYPERLINK:visited { color: inherit; }
 .col-xs-3 input { padding-left: 3px; padding-right: 3px; }
 .col-xs-4 input { padding-left: 4px; padding-right: 4px; }
 
+.rule-override { font-weight: bold; color: blue; }
 
 DIV.WIDTH100 { width: 100%; }
 DIV.FIXED400 { width: 400px; table-layout: fixed;}
