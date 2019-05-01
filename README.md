@@ -42,6 +42,13 @@ See [here](CHANGES.md)
 
 <a href="https://sourceforge.net/projects/little-brother/files/latest/download"><img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg" ></a>
 
+## Snyk Vulneralibity Status
+
+The vulnerability status is derived from the Python PIP packages found in `requirement.txt` which is in itself
+is generated from `pip freeze`.
+
+<a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>
+
 # Features
 
 `LittleBrother` has the following features:

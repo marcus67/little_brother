@@ -11,6 +11,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Closes #35 (https://github.com/marcus67/little_brother/issues/35)
 * Closes #36 (https://github.com/marcus67/little_brother/issues/36)
 * Improve test coverage of process_statistics.py.
+* Include requirement.txt to be scanned by snyk.io.
 
 ## Version 0.1 Revision 26 (April 29th, 2019)
 
