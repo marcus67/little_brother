@@ -159,7 +159,7 @@ See example below.
 
     [RuleSetUser1]
     username=user1
-    process_name_pattern=sh|systemd
+    process_name_pattern=.*sh|systemd
     min_time_of_day=16:00
     max_time_of_day=23:00
     max_time_per_day=1h30m
@@ -173,8 +173,8 @@ suffixed by `$` to exactly match the raw process name in the process table. Comm
 and/or path information is not taken into consideration.
 
 For most purposes in which general login should be prevented or the current login should be terminated 
-a simple `sh|systemd` should suffice with `sh` taking of all console logins and `systemd` 
-taking care of all graphical logins (ToDo: Check!)
+a simple `.*sh|systemd` should suffice with `.*sh` taking of all console logins and `systemd` 
+taking care of all graphical logins.
  
 Timestamps must be given in the format `HH:MM` in military time. Time durations must given in the format `HHh:MMm`. 
 Either part may be omitted and the minutes may exceed 60.

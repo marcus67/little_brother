@@ -6,9 +6,11 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 ## Version 0.1 Revision 27 (May 1st, 2019)
 
+* Closes #17 (https://github.com/marcus67/little_brother/issues/17)
 * Closes #18 (https://github.com/marcus67/little_brother/issues/18)
 * Closes #35 (https://github.com/marcus67/little_brother/issues/35)
 * Closes #36 (https://github.com/marcus67/little_brother/issues/36)
+* Improve test coverage of process_statistics.py.
 
 ## Version 0.1 Revision 26 (April 29th, 2019)
 

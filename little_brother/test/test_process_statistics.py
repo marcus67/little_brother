@@ -25,14 +25,91 @@ from python_base_app.test import base_test
 from little_brother import process_statistics
 
 HOSTNAME="hostname"
+HOSTNAME2="hostname2"
 USERNAME="username"
 PROCESS_NAME="processname"
 PID=123
 MIN_ACTIVITY_DURATION = 60
 MAX_LOOKBACK_IN_DAYS = 10
+DURATION = 55 # seconds
 
 
 class TestProcessStatistics(base_test.BaseTestCase):
+
+    def test_activity_init(self):
+
+        reference_time = datetime.datetime.utcnow()
+        a = process_statistics.Activity(p_start_time=reference_time)
+
+        self.assertIsNotNone(a.host_process_counts)
+        self.assertEqual(len(a.host_process_counts), 0)
+        self.assertEqual(a.start_time, reference_time)
+        self.assertIsNone(a.end_time)
+
+    def test_activity_add_host_process(self):
+
+        reference_time = datetime.datetime.utcnow()
+        a = process_statistics.Activity(p_start_time=reference_time)
+
+        self.assertIsNotNone(a.host_process_counts)
+        self.assertEqual(len(a.host_process_counts), 0)
+
+        a.add_host_process(p_hostname=HOSTNAME)
+
+        self.assertIsNotNone(a.host_process_counts)
+        self.assertEqual(len(a.host_process_counts), 1)
+        self.assertIn(HOSTNAME, a.host_process_counts)
+        self.assertEqual(a.host_process_counts[HOSTNAME], 1)
+
+        a.add_host_process(p_hostname=HOSTNAME)
+
+        self.assertIsNotNone(a.host_process_counts)
+        self.assertEqual(len(a.host_process_counts), 1)
+        self.assertIn(HOSTNAME, a.host_process_counts)
+        self.assertEqual(a.host_process_counts[HOSTNAME], 2)
+
+        a.add_host_process(p_hostname=HOSTNAME2)
+
+        self.assertIsNotNone(a.host_process_counts)
+        self.assertEqual(len(a.host_process_counts), 2)
+        self.assertIn(HOSTNAME2, a.host_process_counts)
+        self.assertEqual(a.host_process_counts[HOSTNAME2], 1)
+
+    def test_activity_duration(self):
+
+        reference_time = datetime.datetime.utcnow()
+        a = process_statistics.Activity(p_start_time=reference_time)
+
+        self.assertIsNone(a.duration)
+
+        a.end_time = reference_time + datetime.timedelta(seconds=DURATION)
+
+        self.assertIsNotNone(a.duration)
+        self.assertEqual(a.duration, DURATION)
+
+    def test_activity_str(self):
+
+        reference_time = datetime.datetime.utcnow()
+        a = process_statistics.Activity(p_start_time=reference_time)
+        a.end_time = reference_time + datetime.timedelta(seconds=DURATION)
+
+        a_str = str(a)
+
+        self.assertIsNotNone(a_str)
+        self.assertIn(str(DURATION), a_str)
+        self.assertIn('Activity', a_str)
+
+    def test_activity_host_infos(self):
+
+        reference_time = datetime.datetime.utcnow()
+        a = process_statistics.Activity(p_start_time=reference_time)
+
+        a.add_host_process(p_hostname=HOSTNAME)
+
+        host_infos = a.host_infos
+
+        self.assertIsNotNone(host_infos)
+        self.assertIn(HOSTNAME, host_infos)
 
 
     def test_constructor_statistics_info(self):
@@ -61,6 +138,41 @@ class TestProcessStatistics(base_test.BaseTestCase):
 
         self.assertIsNotNone(psi.currently_active_host_processes)
         self.assertEqual(len(psi.currently_active_host_processes), 0)
+
+
+    def test_day_statistics_init(self):
+
+        ds = process_statistics.DayStatistics()
+
+        self.assertIsNotNone(ds.activities)
+        self.assertEqual(len(ds.activities), 0)
+        self.assertIsNone(ds.min_time)
+        self.assertIsNone(ds.max_time)
+        self.assertIsNotNone(ds.host_process_counts)
+        self.assertEqual(len(ds.host_process_counts), 0)
+
+    def test_day_statistics_add_activity(self):
+
+        ds = process_statistics.DayStatistics()
+
+        self.assertIsNotNone(ds.activities)
+        self.assertEqual(len(ds.activities), 0)
+
+        reference_time = datetime.datetime.utcnow()
+        a = process_statistics.Activity(p_start_time=reference_time)
+        a.add_host_process(p_hostname=HOSTNAME)
+
+        ds.add_activity(p_activity=a)
+
+        self.assertIsNotNone(ds.activities)
+        self.assertEqual(len(ds.activities), 1)
+
+        self.assertIsNotNone(ds.host_process_counts)
+        self.assertEqual(len(ds.host_process_counts), 1)
+        self.assertIn(HOSTNAME, ds.host_process_counts)
+        self.assertEqual(ds.host_process_counts[HOSTNAME], 1)
+
+
 
 
 if __name__ == "__main__":

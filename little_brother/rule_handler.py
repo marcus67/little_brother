@@ -41,6 +41,7 @@ RULE_ACTIVITY_DURATION = 16
 RULE_MIN_BREAK = 32
 
 DEFAULT_RULESET_LABEL = "default"
+DEFAULT_PROCESS_PATTERN = "systemd|.*sh"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
@@ -66,7 +67,7 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.context_label = configuration.NONE_STRING
         self.priority = DEFAULT_PRIORITY
         self.username = None 
-        self.process_name_pattern = ".*"
+        self.process_name_pattern = DEFAULT_PROCESS_PATTERN
         self.min_time_of_day = None
         self.max_time_of_day = None
         self.max_time_per_day = None
