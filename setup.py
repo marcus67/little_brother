@@ -33,7 +33,7 @@ setup_params = {
         'python-dateutil',
         'sqlalchemy',
         'pymysql',
-        'flask==0.12.1',
+        'flask',
         'flask-login',
         'Flask-Babel',
         'python-base-app',
