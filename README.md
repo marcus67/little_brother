@@ -53,7 +53,7 @@ the German schedules are supported).
 * Play time can be restricted to a time window (from, to).
 * A maximum play time per day can be defined.
 * Users can be forced to take a break after a certain maximum session time.
-* Users can be forced to wait for a miniumum break time after their activity.
+* Users can be forced to wait for a minimum break time after their activity.
 * Any number of Linux client hosts can be monitored (currently this requires users to have the same login on all 
 machines).
 * There is a master host with a history of the activities of all users. This master host checks the rule sets and
@@ -65,7 +65,7 @@ days into the future.
 administration after receiving calls from young users begging for more play time.
 * The application has international language support. Currently English and German translations are provided.
 Users are invited to provide translations for other languages.
-* The application uses voice generation to inform the user over pending forced logouts. Also these spoken
+* The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools.
 * In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices

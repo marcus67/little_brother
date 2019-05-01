@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 27 (May 1st, 2019)
+
+* Closes #35 (https://github.com/marcus67/little_brother/issues/35)
+* Closes #36 (https://github.com/marcus67/little_brother/issues/36)
+
 ## Version 0.1 Revision 26 (April 29th, 2019)
 
 * Closes #6 (again) (https://github.com/marcus67/little_brother/issues/6)

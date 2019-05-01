@@ -10,8 +10,8 @@ This project is still under construction. Please, bear with me. Thanks!
 
 * `LittleBrother`is  all-Python3 application running as a dedicated user `little-brother` (which is installed 
 by the Debian package).
-* The application regularly scans the process list of the host for configured patterns and if found applies configured
-rules to them. When not active it sleeps in a system interrupt.
+* The application regularly scans the process list of the host for configured patterns and, if found, executes configured
+rules. When not active it sleeps in a system interrupt.
 * If the maximum login time of users is exceeded the application will terminate the appropriate processes.
 * Process termination is done by a sudo-rule permitting the use of  `kill` for the user `little-brother`.
 * The web-interface which is based upon `flask` provides simple status information on the login times of the

@@ -34,7 +34,25 @@ CALENDAR_CONTEXT_RULE_HANDLER_NAME = "german-vacation-calendar"
 
 SECTION_NAME = "GermanVacationCalendar"
 
+ENTRY_FILTER = [
+    'Herbst',
+    'Weihnachten',
+    'Sommer',
+    'Himmelfahrt',
+    'Ostern',
+    'Allerheiligen',
+    'Christi Himmelfahrt',
+    'Pfingstmontag',
+    'Reformationstag',
+    'Buß- und Bettag',
+    'Heilige Drei Könige',
+    'Mariä Himmelfahrt',
+    'Pfingsten'
+]
+
 VacationEntry = collections.namedtuple("VacationEntry", ["name", "start_date", "end_date"])
+
+
 
 class GermanVacationContextRuleHandlerConfig(configuration.ConfigModel):
 
@@ -110,7 +128,7 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
                     entries = [ VacationEntry(name=entry['name'],
                                               start_date=datetime.datetime.strptime(entry['starts_on'], self._config.date_format).date(),
                                               end_date=datetime.datetime.strptime(entry['ends_on'], self._config.date_format).date() )
-                                                for entry in vacation_entries if entry['federal_state_id'] == state_id ]
+                                                for entry in vacation_entries if entry['federal_state_id'] == state_id and entry['name'] in ENTRY_FILTER]
                     self._vacation_data[state_name] = entries
                     count = count + len(entries)
 
