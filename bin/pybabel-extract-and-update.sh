@@ -18,9 +18,12 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-SCRIPT_DIR=`dirname $0`
-BASE_DIR=`realpath ${SCRIPT_DIR}/..`
+SCRIPT_DIR=$(dirname $0)
+BASE_DIR=$(realpath ${SCRIPT_DIR}/..)
 
 PATH=${PATH}:${HOME}/.virtualenvs/little-brother/bin
-pybabel extract -F etc/babel.cfg -o etc/messages.pot little_brother contrib/python_base_app/python_base_app contrib/flask_helpers/flask_helpers
-pybabel update -i etc/messages.pot -d little_brother/translations
+pybabel extract -F ${BASE_DIR}/etc/babel.cfg -o ${BASE_DIR}/etc/messages.pot \
+        ${BASE_DIR}/little_brother \
+        ${BASE_DIR}/contrib/python_base_app/python_base_app \
+        ${BASE_DIR}/contrib/flask_helpers/flask_helpers
+pybabel update -i ${BASE_DIR}/etc/messages.pot -d ${BASE_DIR}/little_brother/translations

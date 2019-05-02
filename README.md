@@ -4,10 +4,12 @@ This project is still under construction. Please, bear with me. Thanks!
 
 ![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
 
-# Overview
+# Parental Control Application `LittleBrother`
+
+## Overview
 
 `LittleBrother` is a simple parental control application monitoring specific processes (read "games") on Linux hosts
-to control and limit the play time of (young) children. It is designed as a client server application running
+to monitor and limit the play time of (young) children. It is designed as a client server application running
 on several hosts and combining playtimes spent across these hosts but it also works on a standalone host.
 
 When the application determines that a user has exceeded her play time it will terminate the configured 
@@ -29,7 +31,7 @@ See [here](CHANGES.md)
 <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A> 
 <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> 
 
-## Test Coverage
+## Test Coverage Status
 
 <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A> 
 <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>
@@ -42,39 +44,43 @@ See [here](CHANGES.md)
 
 <a href="https://sourceforge.net/projects/little-brother/files/latest/download"><img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg" ></a>
 
-## Snyk Vulneralibity Status
+## Snyk Vulnerability Status
 
 The vulnerability status is derived from the Python PIP packages found in `requirement.txt` which is in itself
 is generated from `pip freeze`.
 
 <a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>
 
-# Features
+## Code Quality Status
+
+<a href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a>
+
+## Features
 
 `LittleBrother` has the following features:
 
-* Any number of users can be monitored.
-* Each user can have a specific set of rules defining the permitted playtime.
-* Rules can be adapted to "contexts", such as the day of the week and/or a vacation schedule (currently only 
+  * Any number of users can be monitored.
+  * Each user can have a specific set of rules defining the permitted playtime.
+  * Rules can be adapted to "contexts", such as the day of the week and/or a vacation schedule (currently only 
 the German schedules are supported).
-* Play time can be restricted to a time window (from, to).
-* A maximum play time per day can be defined.
-* Users can be forced to take a break after a certain maximum session time.
-* Users can be forced to wait for a minimum break time after their activity.
-* Any number of Linux client hosts can be monitored (currently this requires users to have the same login on all 
+  * Play time can be restricted to a time window (from, to).
+  * A maximum play time per day can be defined.
+  * Users can be forced to take a break after a certain maximum session time.
+  * Users can be forced to wait for a minimum break time after their activity.
+  * Any number of Linux client hosts can be monitored (currently this requires users to have the same login on all 
 machines).
-* There is a master host with a history of the activities of all users. This master host checks the rule sets and
+  * There is a master host with a history of the activities of all users. This master host checks the rule sets and
 prompts the client hosts to terminate processes if required.
-* The master host offers a simple web interface for viewing the user activity over a configured history length
+  * The master host offers a simple web interface for viewing the user activity over a configured history length
 (e.g. 7 days) and an administration page to dynamically define rule exceptions for a configured number of
 days into the future.
-* The web application can be run behind a proxy so that it will be accessible from away allowing remote 
+  * The web application can be run behind a proxy so that it will be accessible from away allowing remote 
 administration after receiving calls from young users begging for more play time.
-* The application has international language support. Currently English and German translations are provided.
+  * The application has international language support. Currently English and German translations are provided.
 Users are invited to provide translations for other languages.
-* The application uses voice generation to inform the user over impending logouts. Also these spoken
+  * The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools.
-* In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
+  * In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
 be used to determine the activity on those devices. In contrast to the Linux hosts, the application
@@ -85,7 +91,7 @@ hence will have an impact on the time allowed and also on the break time rules o
 
 The [page](ARCHITECTURE.md) gives a detailed description of the architecture of the application.    
 
-# Prerequisites
+## Prerequisites
 
 `LittleBrother` requires an installation of a database server such as MariaDB, MySQL or Postgresql. It should work 
 with any of those flavors since it uses [SqlAlchemy](https://www.sqlalchemy.org/) as a database abstraction layer. 
@@ -96,12 +102,12 @@ about which processes ("games") are being monitored for which user are held in W
 sections. These rules are regarded as "slow changing" so these settings files (hopefully) need not be changed 
 very often and justify this solution at least in one of the early release versions of the application.   
 
-# Quick Install
+## Quick Install
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
 on your system.
 
-## Download the Software
+### Download the Software
 
 The application is available as a Debian package 
 from the [`release`](https://sourceforge.net/projects/little-brother/files/release/) directory at SourceForge. 
@@ -110,15 +116,15 @@ Install it as you would install any other
 Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
 
-## Configure the Software
+### Configure the Software
 
 There are several template files (see directory `/etc/little-brother`) which can be used as a basis for 
 your concrete configuration:
 
-* <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the application on a single host with a simple
+  * <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the application on a single host with a simple
 rule set to start with.
-* <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file featuring a realistic rule set.
-* <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the application on a client. This file is relatively simple
+  * <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file featuring a realistic rule set.
+  * <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the application on a client. This file is relatively simple
 since it only contains the details to connect to the master host.
 
 Choose the configuration file that best fits your needs and rename it to `little-brother.conf`. Look
@@ -126,10 +132,10 @@ at the commented entries and adapt them if required.
 
 You will have to make at least the following adaptation:
 
-* Change the username in the examples to match the user(s) that you want to monitor.
-* Set a database connection parameters such as the host and optinally the port number. 
+  * Change the username in the examples to match the user(s) that you want to monitor.
+  * Set a database connection parameters such as the host and optinally the port number. 
 
-## Create the Database
+### Create the Database
 
 Once your configuration is complete you will have to create the database scheme. This is done by calling the application
 with a specific option and passing the credentials of the database admin user:
@@ -139,7 +145,7 @@ with a specific option and passing the credentials of the database admin user:
 Note that you can also configure the credentials in the configuration file although this is not recommended since the
 admin credentials are ONLY required during the creation of the database should be exposed a little as possible.
 
-## Start the Applicaton
+### Start the Applicaton
 
 Use `systemctl` to start the application:
 
@@ -147,19 +153,19 @@ Use `systemctl` to start the application:
     
 If `systemctl` complains about run-errors, please check the error log in `/var/log/little-brother`.
 
-# Extended Rule Configuration
+## Extended Rule Configuration
 
 For the time being all configuration regarding rules on who and what to monitor must be done in the configuration file. A graphical user interface for administrative may be a central extension of one the future releases. 
 
 A minimum rule set for a single user consists of a single rule defining:
 
-* the login name of the user,
-* the process pattern that is to be monitored,
-* the minimum time of day (optional),
-* the maximum time of day (optional),
-* the maximum time per day (optional),
-* the maximum duration of one session (optional), and
-* the minimum break time between two sessions.
+  * the login name of the user,
+  * the process pattern that is to be monitored,
+  * the minimum time of day (optional),
+  * the maximum time of day (optional),
+  * the maximum time per day (optional),
+  * the maximum duration of one session (optional), and
+  * the minimum break time between two sessions.
 
 See example below.
 
@@ -192,32 +198,32 @@ If different days are to be treated differently more rules are required besides 
 To this purpose the setting `context` can be used. If its value is `weekday` the setting
 `context_details` will contain either:
 
-* the concrete name of the day of the week,
-* the string `weekend` comprising Saturday and Sunday, or day-coded seven-character string in which `1`, `X`, or `Y` 
+  * the concrete name of the day of the week,
+  * the string `weekend` comprising Saturday and Sunday, or day-coded seven-character string in which `1`, `X`, or `Y` 
 denotes an active day and any other character denotes an inactive day. For example: the string "X-X-X--" would denote 
 a rule which is active on Mondays, Wednesdays, and Fridays. 
 
 If the value of `context` is `german-vacation-calendar` the rule is active for all vacation days of a specific 
 federal state in Germany. In this case the value of `context_details` denotes the name of the federal state:
 
-* `Baden-Württemberg`,
-* `Bayern`,
-* `Berlin`,
-* `Brandenburg`,
-* `Bremen`,
-* `Hamburg`,
-* `Hessen`,
-* `Mecklenburg-Vorpommern`,
-* `Niedersachsen`,
-* `Nordrhein-Westfalen`,
-* `Rheinland-Pfalz`,
-* `Saarland`,
-* `Sachsen`,
-* `Sachsen-Anhalt`,
-* `Schleswig-Holstein`, or
-* `Thüringen`.
+  * `Baden-Württemberg`,
+  * `Bayern`,
+  * `Berlin`,
+  * `Brandenburg`,
+  * `Bremen`,
+  * `Hamburg`,
+  * `Hessen`,
+  * `Mecklenburg-Vorpommern`,
+  * `Niedersachsen`,
+  * `Nordrhein-Westfalen`,
+  * `Rheinland-Pfalz`,
+  * `Saarland`,
+  * `Sachsen`,
+  * `Sachsen-Anhalt`,
+  * `Schleswig-Holstein`, or
+  * `Thüringen`.
 
-# Monitoring Other Devices
+## Monitoring Other Devices
 
 In addition to the processes of the Linux host the application `LittleBrother` can be configured to monitor 
 activity on other devices by using the ICMP protocol (`ping`). The assumption is that when a device returns a 
@@ -245,7 +251,7 @@ may easily exceed their permitted access times there. However, any login time on
 the access times on the Linux hosts so that the remainig access time is still influenced. Also, the minimum
 break time will apply the point of time when the last other device became inactive.      
   
-# Client Server Mode
+## Client Server Mode
 
 In addtion to the master host any number of slave hosts may be configured. The assumption is that the users
 to be monitored have login permission to all those hosts and that the usernames on all hosts match. In this
@@ -265,7 +271,7 @@ communication between slaves and master is always simple HTTP.
 It is not required that rulesets be configured on the slaves. They will automatically distributed to all
 slaves. 
 
-# Monitoring the Application
+## Monitoring the Application
 
 The application `LittleBrother` has a simple HTTP health check endpoint with relative url `/health` which 
 can be monitored by systems such as `icinga`. 
@@ -276,17 +282,17 @@ activated by setting at least the port the section `[StatusServer]` as in the ex
     [StatusServer]
     port=5561
   
-# Caveats
+## Caveats
 
 The application `LittleBrother` is far from perfect. Some major caveats are listed here and/or in the 
 issue list on GitHub (see [here](../issues)).
 
-* The application lacks a graphical user interface for defining rule sets.
-* Every once in a while processes fail to terminate even though they have been killed by `LittleBrother`. 
+  * The application lacks a graphical user interface for defining rule sets.
+  * Every once in a while processes fail to terminate even though they have been killed by `LittleBrother`. 
 In these cases the user will still be regarded as logged in although he/she is not. Usually this can only be
 solved by trying to kill the processes again using the master user. Database eloquent users may try to 
 delete/correct the incorrect process time entries.
-* The web server only responds to HTTP requests. This is probably always OK for communication between the
+  * The web server only responds to HTTP requests. This is probably always OK for communication between the
 slaves and the master in local area network. If the master host is to be accessible from the internet it should
 be put behind a reverse proxy handling the HTTPS termination (see below). 
 
@@ -297,10 +303,10 @@ in the configuration file (e.g. <A HREF="etc/minimal-slave.config">`minimal-slav
  
 The application knows how to handle four different X11 popup tools:
 
-* `yad`
-* `gxmessage`
-* `zenity`
-* `yad`
+  * `yad`
+  * `gxmessage`
+  * `zenity`
+  * `yad`
 
 The chosen tool must be available on the respective client. If applicable, install the
 Debian package having the same name, e.g. to install `yad` enter
@@ -321,7 +327,7 @@ These are some good locations:
 | --------------- | ---------
 | Mate            | ~/.materc | 
 
-# Running Behind a Reverse Proxy
+## Running Behind a Reverse Proxy
 
 If `LittleBrother` is to be run behind a reverse proxy additional care needs to be taken if the proxy is configured
 to accept the application pages at any other URL than the root url ("\"). In this case the recommended
