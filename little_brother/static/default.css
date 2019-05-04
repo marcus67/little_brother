@@ -94,3 +94,14 @@ UL {
 }
 
 .CODE { font-family:monospace; }
+
+
+/* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  80% { opacity: 0; }
+}

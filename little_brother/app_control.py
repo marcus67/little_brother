@@ -136,6 +136,8 @@ class AppControl(object):
         self.text_need_break = _("{user}, you have to take a break. You will be logged out.")
         self.text_need_break_approaching = _("{user}, in {minutes_left_before_logout} minutes you will have to take a break. Please, log out.")
         self.text_min_break = _("{user}, your break will only be over in {break_minutes_left} minutes. You will be logged out.")
+        self.text_limited_session_start = _("Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes in this session.")
+        self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
 
 
     def register_rule_context_handlers(self):
@@ -321,6 +323,21 @@ class AppControl(object):
             if self._persistence is not None:
                 self._persistence.write_process_info(p_process_info=pinfo)
 
+        rule_result_info = self.get_current_rule_result_info(p_reference_time=datetime.datetime.now(), p_username=p_event.username)
+
+        if rule_result_info.activity_allowed():
+            if rule_result_info.limited_session_time():
+                self.queue_event_speak(
+                    p_hostname=p_event.hostname,
+                    p_username=p_event.username,
+                    p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info, p_text=self.text_limited_session_start))
+
+            else:
+                self.queue_event_speak(
+                    p_hostname=p_event.hostname,
+                    p_username=p_event.username,
+                    p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info, p_text=self.text_unlimited_session_start))
+
     def handle_event_process_end(self, p_event):
 
         pinfo = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_end(p_event)
@@ -457,18 +474,6 @@ class AppControl(object):
             if new_events is not None:
                 self.queue_events(p_events=new_events, p_to_master=True, p_is_action=False)
 
-    # def scan_processes(self, p_reference_time):  # @DontTrace
-    #
-    #     for handler in self._process_handlers.values():
-    #         events = handler.scan_processes(
-    #             p_uid_map=self._uid_map, p_host_name=self._host_name,
-    #             p_process_regex_map=self.process_regex_map,
-    #             p_reference_time=p_reference_time)
-    #
-    #         self.queue_events(p_events=events, p_to_master=True)
-    #
-    #         if not self.is_master():
-    #             self.queue_events_locally(p_events=events)
 
     def scan_processes(self, p_process_handler, p_reference_time = None):  # @DontTrace
 
@@ -575,11 +580,14 @@ class AppControl(object):
             len(overrides), self._config.process_lookback_in_days)
         self._logger.info(fmt)
 
-    def pick_text_for_ruleset(self, p_rule_result_info):
+    def pick_text_for_ruleset(self, p_rule_result_info, p_text=None):
 
         t = gettext.translation('messages', localedir='little_brother/translations', languages= [p_rule_result_info.locale], fallback=True)
 
-        if p_rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY:
+        if p_text is not None:
+            return t.gettext(p_text).format(**p_rule_result_info.args)
+
+        elif p_rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY:
             return t.gettext(self.text_no_time_left).format(**p_rule_result_info.args)
 
         elif p_rule_result_info.applying_rules & rule_handler.RULE_DAY_BLOCKED:
@@ -620,6 +628,40 @@ class AppControl(object):
             self._logger.warning(fmt)
             return ""
 
+    def get_current_rule_result_info(self, p_reference_time, p_username):
+
+        users_stat_infos = process_statistics.get_process_statistics(
+            p_process_infos=self.get_process_infos(),
+            p_reference_time=p_reference_time,
+            p_max_lookback_in_days=1,
+            p_rule_set_configs=self._rule_set_configs,
+            p_min_activity_duration=self._config.min_activity_duration)
+
+        rule_result_info = None
+        user_locale = self.get_user_locale(p_username=p_username)
+        rule_set = self._rule_handler.get_active_ruleset_config(p_username=p_username,
+                                                                p_reference_date=p_reference_time.date())
+
+        stat_infos = users_stat_infos.get(p_username)
+
+        if stat_infos is not None:
+            stat_info = stat_infos.get(rule_set.context)
+
+            if stat_info is not None:
+                self._logger.debug(str(stat_info))
+
+                key_rule_override = rule_override.get_key(p_username=p_username,
+                                                          p_reference_date=p_reference_time.date())
+                override = self._rule_overrides.get(key_rule_override)
+
+                rule_result_info = self._rule_handler.process_ruleset(
+                    p_stat_info=stat_info,
+                    p_reference_time=p_reference_time,
+                    p_rule_override=override,
+                    p_locale=user_locale)
+
+
+        return rule_result_info
 
     def process_rules(self, p_reference_time):
 

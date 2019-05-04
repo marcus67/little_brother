@@ -160,17 +160,16 @@ class ProcessStatisticsInfo(object):
 
         self.active_processes = self.active_processes - 1
 
+        login_date = self.current_activity.start_time.date()
+        lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
+
         if self.active_processes == 0:
             if p_process_info.end_time is not None:
-                
-                login_date = self.current_activity.start_time.date()
-                lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
-                
                 self.current_activity.end_time = p_end_time
-                
-                if lookback <= self.max_lookback_in_days: 
-                    self.day_statistics[lookback].add_activity(self.current_activity)                
-            
+
+                if lookback <= self.max_lookback_in_days:
+                    self.day_statistics[lookback].add_activity(self.current_activity)
+
                 if self.current_activity.duration > self.min_activity_duration:
                     self.last_inactivity_start_time = p_end_time
                     self.previous_activity = self.current_activity
@@ -332,7 +331,15 @@ def get_process_statistics(
                             
                         else:
                             stat_info.add_process_end(p_process_info=pinfo, p_end_time=boundary_time)
-            
+
+    # Add statistics entries for current entries
+    for user_stat_infos in users_stat_infos.values():
+        for user_stat_info in user_stat_infos.values():
+            if user_stat_info.current_activity is not None:
+                login_date = user_stat_info.current_activity.start_time.date()
+                lookback = int((user_stat_info.reference_date - login_date).total_seconds() / (24 * 3600))
+                user_stat_info.day_statistics[lookback].add_activity(user_stat_info.current_activity)
+
     return users_stat_infos
             
         

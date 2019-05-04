@@ -272,7 +272,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
         forms = {}
 
-        forms[FORM_ID_CSRF] = flask_wtf.Form(csrf_enabled=True)
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
 
         for admin_info in p_admin_infos:
             for day_info in admin_info.day_infos:

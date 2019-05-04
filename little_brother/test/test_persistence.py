@@ -52,7 +52,8 @@ class TestPersistence(base_test.BaseTestCase):
 
         self.assertIsNotNone(a_persistence)
 
-    def create_pinfo(self, p_age_in_days, p_include_end_time=False):
+    @staticmethod
+    def create_pinfo(p_age_in_days, p_include_end_time=False):
 
         start_time = datetime.datetime.utcnow() + datetime.timedelta(days=-p_age_in_days)
 
@@ -107,7 +108,7 @@ class TestPersistence(base_test.BaseTestCase):
 
         loaded_p_info = p_infos[0]
 
-        id = loaded_p_info.id
+        an_id = loaded_p_info.id
 
         self.assertEqual(p_info.start_time, loaded_p_info.start_time)
         self.assertEqual(p_info.end_time, loaded_p_info.end_time)
@@ -115,7 +116,7 @@ class TestPersistence(base_test.BaseTestCase):
         self.assertEqual(p_info.username, loaded_p_info.username)
         self.assertEqual(p_info.processhandler, loaded_p_info.processhandler)
         self.assertEqual(p_info.processname, loaded_p_info.processname)
-        self.assertEqual(id, loaded_p_info.id)
+        self.assertEqual(an_id, loaded_p_info.id)
 
         a_persistence = None
 

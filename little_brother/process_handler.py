@@ -141,6 +141,6 @@ class ProcessHandler(object):
                     p_pid=p_pinfo.pid)    
     
     
-    def scan_processes(self, p_uid_map, p_host_name, p_process_regex_map):
+    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map):
         pass
     

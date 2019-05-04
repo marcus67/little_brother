@@ -68,8 +68,8 @@
 		    		<DIV CLASS="col-md-1 col-xs-2">{{ user_info.active_stat_info.todays_activity_duration|seconds_to_string }}</DIV>
 		    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.previous_activity_start_time|datetime_to_string }}</DIV>
 		    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.previous_activity_end_time|datetime_to_string }}</DIV>
-		    		<DIV CLASS="col-md-1 hidden-xs">{{ user_info.active_stat_info.current_activity_start_time|datetime_to_string }}</DIV>
-		    		<DIV CLASS="col-md-1 col-xs-2">{{ user_info.active_stat_info.current_activity_duration|seconds_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 hidden-xs {% if user_info.active_stat_info.current_activity_start_time %}blink{% endif %}">{{ user_info.active_stat_info.current_activity_start_time|datetime_to_string }}</DIV>
+		    		<DIV CLASS="col-md-1 col-xs-2 {% if user_info.active_stat_info.current_activity_duration %}blink{% endif %}">{{ user_info.active_stat_info.current_activity_duration|seconds_to_string }}</DIV>
 		    		<DIV CLASS="col-md-1 col-xs-2">
 		    		    {% if user_info.activity_permitted %}
 		    				<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_check.png') }}" WIDTH="16">
@@ -114,7 +114,7 @@
 				    	</DIV>
 	    			{% call accordion.details() %}status_{{username}}_{{i}}{% endcall %}
 			        	{% for activity in user_info.active_stat_info.day_statistics[i].activities %}							         
-				    		<DIV CLASS="row ROWLEVEL_4">
+				    		<DIV CLASS="row ROWLEVEL_4 {% if not activity.end_time %}blink{% endif %}">
 				    			<DIV CLASS="col-md-1 hidden-xs"></DIV>
 				    			<DIV CLASS="col-md-1 col-xs-3"></DIV>
 					    		<DIV CLASS="col-md-1 col-xs-2">{{ activity.duration|seconds_to_string }}</DIV>

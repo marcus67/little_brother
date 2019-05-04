@@ -187,6 +187,7 @@ class RuleResultInfo(object):
         self.applying_rules = 0
         self.break_minutes_left = 0
         self.approaching_logout_rules = 0
+        self.minutes_left_in_session = None
         self.minutes_left_before_logout = None
         self.default_rule_set = None
         self.effective_rule_set = None
@@ -200,7 +201,21 @@ class RuleResultInfo(object):
         if self.minutes_left_before_logout is None or p_minutes_left < self.minutes_left_before_logout:
             self.minutes_left_before_logout = p_minutes_left
             self.args['minutes_left_before_logout'] = p_minutes_left
-        
+
+    def set_minutes_left_in_session(self, p_minutes_left):
+
+        if self.minutes_left_in_session is None or p_minutes_left < self.minutes_left_in_session:
+            self.minutes_left_in_session = p_minutes_left
+            self.args['minutes_left_in_session'] = p_minutes_left
+
+    def activity_allowed(self):
+
+        return self.applying_rules == 0
+
+    def limited_session_time(self):
+
+        return self.minutes_left_in_session is not None
+
 
 def apply_override(p_rule_set, p_rule_override):
 
@@ -223,8 +238,6 @@ def apply_override(p_rule_set, p_rule_override):
 
     return rule_set
         
-    
-            
 
 class RuleHandler(object):
 
@@ -287,8 +300,9 @@ class RuleHandler(object):
                 )
             
             max_time_of_day_as_date = datetime.datetime.combine(datetime.date.today(), p_rule_set.max_time_of_day)
-            time_left_in_minutes =  int ((max_time_of_day_as_date - p_stat_info.reference_time).total_seconds() / 60)
-            
+            time_left_in_minutes =  int ((max_time_of_day_as_date - p_stat_info.reference_time).total_seconds() + 30 / 60)
+            p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
+
             if time_left_in_minutes <= self._config.warning_before_logout:            
                 p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TOO_LATE, p_minutes_left = time_left_in_minutes)
         
@@ -311,8 +325,9 @@ class RuleHandler(object):
                     )
 
             if p_rule_set.max_time_per_day > 0: 
-                time_left_in_minutes =  int ((p_rule_set.max_time_per_day - p_stat_info.todays_activity_duration) / 60)
-            
+                time_left_in_minutes =  int ((p_rule_set.max_time_per_day - p_stat_info.todays_activity_duration + 30) / 60)
+                p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
+
                 if time_left_in_minutes <= self._config.warning_before_logout:
                     p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_PER_DAY,
                                                                    p_minutes_left=time_left_in_minutes)
@@ -331,11 +346,13 @@ class RuleHandler(object):
                                                                  p_include_seconds=False)})
                     )
 
-                time_left_in_minutes =  int ((p_rule_set.max_activity_duration - current_activity_duration) / 60)
-                p_rule_result_info.args['minutes_left_before_logout'] = time_left_in_minutes
+                else:
+                    time_left_in_minutes =  int ((p_rule_set.max_activity_duration - current_activity_duration + 30) / 60)
+                    p_rule_result_info.args['minutes_left_before_logout'] = time_left_in_minutes
+                    p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
-                if time_left_in_minutes <= self._config.warning_before_logout:
-                    p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION, p_minutes_left=time_left_in_minutes)
+                    if time_left_in_minutes <= self._config.warning_before_logout:
+                        p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION, p_minutes_left=time_left_in_minutes)
         
     def check_min_break(self, p_rule_set, p_stat_info, p_rule_result_info):
 
@@ -354,7 +371,7 @@ class RuleHandler(object):
                 p_rule_result_info.applying_rule_text_templates.append(
                     (_("Minimum break time {hh_mm} not reached"), {"hh_mm" : tools.get_duration_as_string(p_seconds=p_rule_set.min_break)})
                 )
-                p_rule_result_info.break_minutes_left = int((min_relative_break - seconds_since_last_activity) / 60) + 1
+                p_rule_result_info.break_minutes_left = int((min_relative_break - seconds_since_last_activity + 30) / 60)
                 p_rule_result_info.args['break_minutes_left'] = p_rule_result_info.break_minutes_left
                 
         return 0
@@ -377,10 +394,11 @@ class RuleHandler(object):
             self.check_activity_duration(p_rule_set=rule_result_info.effective_rule_set, p_stat_info=p_stat_info, p_rule_result_info=rule_result_info)
             self.check_min_break(p_rule_set=rule_result_info.effective_rule_set, p_stat_info=p_stat_info, p_rule_result_info=rule_result_info)            
     
-        if rule_result_info.applying_rules > 0:                
+        if not rule_result_info.activity_allowed():
             fmt = "Activity prohibited for user %s: applying rules(s) %d" % (p_stat_info.username, rule_result_info.applying_rules)
             self._logger.debug(fmt)
-            
+
+
         return rule_result_info
     
                     

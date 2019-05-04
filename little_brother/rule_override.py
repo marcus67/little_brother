@@ -64,5 +64,3 @@ class RuleOverrideForm(custom_form.ModelForm):
     min_time_of_day = custom_fields.TimeField("MinTimeOfDay")    
     max_time_of_day = custom_fields.TimeField("MaxTimeOfDay")
     max_time_per_day = custom_fields.DurationField("MaxTimePerDay")
-        
-    

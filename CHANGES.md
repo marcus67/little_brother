@@ -4,6 +4,15 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 29 (May 4th, 2019)
+
+* Closes #5, see https://github.com/marcus67/little_brother/issues/5
+* Closes #10, see https://github.com/marcus67/little_brother/issues/10
+* Closes #14, see https://github.com/marcus67/little_brother/issues/10
+* Round remaining play times to nearest minute in notifications.
+* Instantiate flask_wtf.FlaskForm instead of flask_wtf.Form (obsolete).
+* Several changes proposed by codacy.
+  
 ## Version 0.1 Revision 28 (May 2nd, 2019)
 
   * Add code quality badge by codacy to README.md.

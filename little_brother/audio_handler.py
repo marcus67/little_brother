@@ -184,12 +184,14 @@ class AudioHandler(notification_handler.NotificationHandler):
 
             except Exception as e:
 
-                fmt = "cannot set audio volume using '%s': exception %s" % (cmd_line)
+                fmt = "cannot set audio volume using '%s': exception %s" % (cmd_line, str(e))
                 self._logger.warning(fmt)
 
     def speak_external_command(self, p_text, p_locale=None):
 
         self.set_volume()
+
+        audio_text_filename = "<UNDEFINED>"
 
         if notification_handler.REPLACE_PATTERN_AUDIO_TEXT_FILENAME in self._config.speech_generator_cmd_line:
             audio_text_filename = os.path.join(self._config.spool_dir, AUDIO_TEXT_FILE)
