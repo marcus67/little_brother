@@ -133,6 +133,7 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['date_to_string'] = self.format_date
         self._app.jinja_env.filters['simple_date_to_string'] = self.format_simple_date
         self._app.jinja_env.filters['seconds_to_string'] = self.format_seconds
+        self._app.jinja_env.filters['boolean_to_string'] = self.format_boolean
         self._app.jinja_env.filters['format'] = self.format
 
         self._babel = flask_babel.Babel(self._app)
@@ -190,6 +191,10 @@ class StatusServer(base_web_server.BaseWebServer):
     def format_seconds(self, value):
 
         return tools.get_duration_as_string(p_seconds=value, p_include_seconds=False)
+
+    def format_boolean(self, value):
+
+        return _("On") if value else _("Off")
 
     def format(self, value, param_dict):
 

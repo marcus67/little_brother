@@ -50,8 +50,9 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         self._logger = log_handling.get_logger(self.__class__.__name__)
         
         self._process_infos = {}
-                
-    def can_kill_processes(self):
+
+    @staticmethod
+    def can_kill_processes():
         return True
         
     def handle_event_kill_process(self, p_event):

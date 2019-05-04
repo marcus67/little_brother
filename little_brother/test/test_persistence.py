@@ -67,6 +67,28 @@ class TestPersistence(base_test.BaseTestCase):
                                         p_pid=test_data.PID_1, p_start_time=start_time,
                                         p_end_time=end_time)
 
+    def compare_pinfos(self, p_p_info, p_loaded_p_info):
+
+        self.assertEqual(p_p_info.start_time, p_loaded_p_info.start_time)
+        self.assertEqual(p_p_info.end_time, p_loaded_p_info.end_time)
+        self.assertEqual(p_p_info.hostname, p_loaded_p_info.hostname)
+        self.assertEqual(p_p_info.username, p_loaded_p_info.username)
+        self.assertEqual(p_p_info.processhandler, p_loaded_p_info.processhandler)
+        self.assertEqual(p_p_info.processname, p_loaded_p_info.processname)
+
+    def compare_rule_overrides(self, p_rule_override, p_loaded_rule_override):
+
+        self.assertEqual(p_rule_override.username, p_loaded_rule_override.username)
+        self.assertEqual(p_rule_override.reference_date, p_loaded_rule_override.reference_date)
+        self.assertEqual(p_rule_override.max_time_per_day, p_loaded_rule_override.max_time_per_day)
+        self.assertEqual(p_rule_override.min_time_of_day, p_loaded_rule_override.min_time_of_day)
+        self.assertEqual(p_rule_override.max_time_of_day, p_loaded_rule_override.max_time_of_day)
+
+    def check_list_length(self, p_list, p_length):
+
+        self.assertIsNotNone(p_list)
+        self.assertEqual(len(p_list), p_length)
+
     def test_write_and_update_process_info(self):
 
         a_persistence = self.create_dummy_persistence()
@@ -78,24 +100,17 @@ class TestPersistence(base_test.BaseTestCase):
 
         p_infos = a_persistence.load_process_infos(p_lookback_in_days=4)
 
-        self.assertIsNotNone(p_infos)
-        self.assertEqual(len(p_infos), 1)
+        self.check_list_length(p_list=p_infos, p_length=1)
 
         loaded_p_info = p_infos[0]
 
-        self.assertEqual(p_info.start_time, loaded_p_info.start_time)
-        self.assertEqual(p_info.end_time, loaded_p_info.end_time)
-        self.assertEqual(p_info.hostname, loaded_p_info.hostname)
-        self.assertEqual(p_info.username, loaded_p_info.username)
-        self.assertEqual(p_info.processhandler, loaded_p_info.processhandler)
-        self.assertEqual(p_info.processname, loaded_p_info.processname)
+        self.compare_pinfos(p_p_info=p_info, p_loaded_p_info=loaded_p_info)
 
         self.assertIsNotNone(loaded_p_info.id)
 
         p_infos = a_persistence.load_process_infos(p_lookback_in_days=2)
 
-        self.assertIsNotNone(p_infos)
-        self.assertEqual(len(p_infos), 0)
+        self.check_list_length(p_list=p_infos, p_length=0)
 
         p_info.end_time = p_info.start_time + datetime.timedelta(minutes=5)
 
@@ -103,19 +118,14 @@ class TestPersistence(base_test.BaseTestCase):
 
         p_infos = a_persistence.load_process_infos(p_lookback_in_days=4)
 
-        self.assertIsNotNone(p_infos)
-        self.assertEqual(len(p_infos), 1)
+        self.check_list_length(p_list=p_infos, p_length=1)
 
         loaded_p_info = p_infos[0]
 
         an_id = loaded_p_info.id
 
-        self.assertEqual(p_info.start_time, loaded_p_info.start_time)
-        self.assertEqual(p_info.end_time, loaded_p_info.end_time)
-        self.assertEqual(p_info.hostname, loaded_p_info.hostname)
-        self.assertEqual(p_info.username, loaded_p_info.username)
-        self.assertEqual(p_info.processhandler, loaded_p_info.processhandler)
-        self.assertEqual(p_info.processname, loaded_p_info.processname)
+        self.compare_pinfos(p_p_info=p_info, p_loaded_p_info=loaded_p_info)
+
         self.assertEqual(an_id, loaded_p_info.id)
 
         a_persistence = None
@@ -141,21 +151,15 @@ class TestPersistence(base_test.BaseTestCase):
 
         rule_overrides = a_persistence.load_rule_overrides(p_lookback_in_days=1)
 
-        self.assertIsNotNone(rule_overrides)
-        self.assertEqual(len(rule_overrides), 0)
+        self.check_list_length(p_list=rule_overrides, p_length=0)
 
         rule_overrides = a_persistence.load_rule_overrides(p_lookback_in_days=4)
 
-        self.assertIsNotNone(rule_overrides)
-        self.assertEqual(len(rule_overrides), 1)
+        self.check_list_length(p_list=rule_overrides, p_length=1)
 
         loaded_rule_override = rule_overrides[0]
 
-        self.assertEqual(a_rule_override.username, loaded_rule_override.username)
-        self.assertEqual(a_rule_override.reference_date, loaded_rule_override.reference_date)
-        self.assertEqual(a_rule_override.max_time_per_day, loaded_rule_override.max_time_per_day)
-        self.assertEqual(a_rule_override.min_time_of_day, loaded_rule_override.min_time_of_day)
-        self.assertEqual(a_rule_override.max_time_of_day, loaded_rule_override.max_time_of_day)
+        self.compare_rule_overrides(p_rule_override=a_rule_override, p_loaded_rule_override=loaded_rule_override)
 
         a_rule_override.max_time_per_day = test_data.MAX_TIME_PER_DAY_2
 
@@ -163,16 +167,11 @@ class TestPersistence(base_test.BaseTestCase):
 
         rule_overrides = a_persistence.load_rule_overrides(p_lookback_in_days=4)
 
-        self.assertIsNotNone(rule_overrides)
-        self.assertEqual(len(rule_overrides), 1)
+        self.check_list_length(p_list=rule_overrides, p_length=1)
 
         loaded_rule_override = rule_overrides[0]
 
-        self.assertEqual(a_rule_override.username, loaded_rule_override.username)
-        self.assertEqual(a_rule_override.reference_date, loaded_rule_override.reference_date)
-        self.assertEqual(a_rule_override.max_time_per_day, loaded_rule_override.max_time_per_day)
-        self.assertEqual(a_rule_override.min_time_of_day, loaded_rule_override.min_time_of_day)
-        self.assertEqual(a_rule_override.max_time_of_day, loaded_rule_override.max_time_of_day)
+        self.compare_rule_overrides(p_rule_override=a_rule_override, p_loaded_rule_override=loaded_rule_override)
 
         a_persistence = None
 
@@ -209,15 +208,13 @@ class TestPersistence(base_test.BaseTestCase):
 
         p_infos = a_persistence.load_process_infos(p_lookback_in_days=4)
 
-        self.assertIsNotNone(p_infos)
-        self.assertEqual(len(p_infos), 1)
+        self.check_list_length(p_list=p_infos, p_length=1)
 
         a_persistence.truncate_table(p_entity=persistence.ProcessInfo)
 
         p_infos = a_persistence.load_process_infos(p_lookback_in_days=4)
 
-        self.assertIsNotNone(p_infos)
-        self.assertEqual(len(p_infos), 0)
+        self.check_list_length(p_list=p_infos, p_length=0)
 
         a_persistence = None
 

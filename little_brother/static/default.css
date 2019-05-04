@@ -105,3 +105,9 @@ UL {
 @keyframes blinker {
   80% { opacity: 0; }
 }
+
+/* https://stackoverflow.com/questions/41081275/bootstrap-left-align-checkbox-in-horizontal-form */
+.move-left {
+    width: auto;
+    box-shadow: none;
+}

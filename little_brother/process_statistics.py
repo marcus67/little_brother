@@ -15,41 +15,41 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from python_base_app import tools
-from python_base_app import log_handling
-
 from builtins import property
 
+from python_base_app import log_handling
+from python_base_app import tools
+
+
 class Activity(object):
-    
+
     def __init__(self, p_start_time=None):
-        
+
         self.host_process_counts = {}
         self.start_time = p_start_time
         self.end_time = None
-        
-        
+
     def add_host_process(self, p_hostname):
-        
+
         process_count = self.host_process_counts.get(p_hostname)
-        
+
         if process_count is None:
             process_count = 0
-            
+
         process_count = process_count + 1
-        self.host_process_counts[p_hostname] = process_count                    
-    
-    @property     
+        self.host_process_counts[p_hostname] = process_count
+
+    @property
     def duration(self):
-        
+
         if self.end_time is not None and self.start_time is not None:
             return (self.end_time - self.start_time).total_seconds()
-        
+
         else:
-            return None 
-        
+            return None
+
     def __str__(self):
-        
+
         return "Activity([%s, %s], %s)" % (
             tools.get_timestamp_as_string(self.start_time),
             tools.get_timestamp_as_string(self.end_time),
@@ -57,63 +57,64 @@ class Activity(object):
 
     @property
     def host_infos(self):
-        
-        return ", ".join("%s(%d)" % (hostname, process_count) for hostname, process_count in self.host_process_counts.items() )
-            
+
+        return ", ".join(
+            "%s(%d)" % (hostname, process_count) for hostname, process_count in self.host_process_counts.items())
+
 
 class DayStatistics(object):
-    
+
     def __init__(self):
-        
+
         self.activities = []
         self.min_time = None
         self.max_time = None
         self.host_process_counts = {}
-        
+
     def add_activity(self, p_activity):
-        
+
         self.activities.append(p_activity)
-        
+
         for hostname, new_count in p_activity.host_process_counts.items():
             count = self.host_process_counts.get(hostname)
-            
+
             if count is None:
                 count = 0
-                
+
             count = count + new_count
-            self.host_process_counts[hostname] = count 
-            
-        
+            self.host_process_counts[hostname] = count
+
         if self.min_time is None or p_activity.start_time < self.min_time:
             self.min_time = p_activity.start_time
 
         if p_activity.end_time is not None:
             if self.max_time is None or p_activity.end_time > self.max_time:
                 self.max_time = p_activity.end_time
-        
+
     @property
     def duration(self):
 
         seconds = 0
-        
+
         for activity in self.activities:
             secs = activity.duration
-            
+
             if secs is not None:
                 seconds = seconds + secs
-                
-        return seconds  
-    
+
+        return seconds
+
     @property
     def host_infos(self):
-        
-        return ", ".join("%s(%d)" % (hostname, process_count) for hostname, process_count in self.host_process_counts.items() )
-        
+
+        return ", ".join(
+            "%s(%d)" % (hostname, process_count) for hostname, process_count in self.host_process_counts.items())
+
 
 class ProcessStatisticsInfo(object):
-    
+
     def __init__(self, p_username, p_reference_time, p_max_lookback_in_days, p_min_activity_duration):
-        
+
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self.username = p_username
@@ -124,36 +125,36 @@ class ProcessStatisticsInfo(object):
 
         self.active_processes = 0
 
-        self.last_inactivity_start_time = None        
+        self.last_inactivity_start_time = None
         self.current_activity = None
-        self.previous_activity = None 
-        
+        self.previous_activity = None
+
         self.accumulated_break_time = 0
 
-        self.day_statistics = [ DayStatistics() for _i in range(0, p_max_lookback_in_days + 1) ]
+        self.day_statistics = [DayStatistics() for _i in range(0, p_max_lookback_in_days + 1)]
         self.currently_active_host_processes = {}
-                
+
     def add_process_start(self, p_process_info, p_start_time):
-        
+
         if self.active_processes == 0:
             self.current_activity = Activity(p_start_time=p_start_time)
-        
+
         self.current_activity.add_host_process(p_process_info.hostname)
         self.active_processes = self.active_processes + 1
-        
+
     def add_process_end(self, p_process_info, p_end_time):
 
         # if the process is still running we store it as a candidate to be killed if required
-        if p_process_info.end_time is None:            
+        if p_process_info.end_time is None:
             process_list = self.currently_active_host_processes.get(p_process_info.hostname)
-            
-            if process_list is None:                
+
+            if process_list is None:
                 process_list = []
                 self.currently_active_host_processes[p_process_info.hostname] = process_list
-                
+
             process_list.append((p_process_info.processhandler, p_process_info.pid, p_process_info.start_time))
-            
-        if self.active_processes == 0:            
+
+        if self.active_processes == 0:
             fmt = "Active processes smaller than zero"
             self._logger.warning(fmt)
             return
@@ -173,101 +174,100 @@ class ProcessStatisticsInfo(object):
                 if self.current_activity.duration > self.min_activity_duration:
                     self.last_inactivity_start_time = p_end_time
                     self.previous_activity = self.current_activity
-                    
+
                 self.current_activity = None
-            
+
     @property
     def current_activity_start_time(self):
-        
+
         if self.current_activity is None:
             return None
-        
+
         else:
             return self.current_activity.start_time
-                        
+
     @property
     def previous_activity_start_time(self):
-        
+
         if self.previous_activity is None:
             return None
-        
+
         else:
             return self.previous_activity.start_time
-                        
+
     @property
     def previous_activity_end_time(self):
-        
+
         if self.previous_activity is None:
             return None
-        
+
         else:
             return self.previous_activity.end_time
-                        
+
     @property
     def previous_activity_duration(self):
-        
+
         if self.previous_activity is None:
             return None
-        
+
         else:
             return self.previous_activity.duration
-                                
-                                
-    @property 
+
+    @property
     def todays_activity_duration(self):
-        
+
         duration = self.day_statistics[0].duration
-        
+
         active_duration = self.current_activity_duration
-        
+
         if active_duration is not None:
             duration = duration + active_duration
-            
+
         return duration
-        
+
     @property
     def seconds_since_last_activity(self):
-        
+
         if self.last_inactivity_start_time is not None:
             return (self.reference_time - self.last_inactivity_start_time).total_seconds()
 
-        if  self.active_processes > 0:
+        if self.active_processes > 0:
             return 0
-        
+
         return None
-            
+
     @property
     def current_activity_duration(self):
-        
+
         if self.current_activity is None:
             return None
-        
+
         else:
             return (self.reference_time - self.current_activity.start_time).total_seconds()
-    
-    @property
-    def seconds_in_last_activity(self):
-        
-        return self.last_activity.duration
-    
+
+    # @property
+    # def seconds_in_last_activity(self):
+    #
+    #     return self.last_activity.duration
+
     def __str__(self):
-        
+
         return "StatInfo (user=%s, today:%d[s], yesterday:%d[s], ref-time:%s, previous %s, current %s, secs-since-last-activity:%s)" % (
-            self.username, 
-            self.day_statistics[0].duration, 
+            self.username,
+            self.day_statistics[0].duration,
             self.day_statistics[1].duration,
             tools.get_timestamp_as_string(p_timestamp=self.reference_time),
             str(self.previous_activity) if self.previous_activity is not None else "---",
             str(self.current_activity) if self.current_activity is not None else "---",
             tools.get_duration_as_string(p_seconds=self.seconds_since_last_activity)
-            )
+        )
+
 
 def get_empty_stat_infos(
         p_rule_set_configs,
         p_reference_time,
         p_max_lookback_in_days,
         p_min_activity_duration):
-
     stat_infos = {}
 
     for username, rulesets in p_rule_set_configs.items():
@@ -275,10 +275,10 @@ def get_empty_stat_infos(
 
         for ruleset in rulesets:
             stat_info = ProcessStatisticsInfo(
-                    p_username=username,
-                    p_reference_time=p_reference_time,
-                    p_max_lookback_in_days=p_max_lookback_in_days,
-                    p_min_activity_duration=p_min_activity_duration)
+                p_username=username,
+                p_reference_time=p_reference_time,
+                p_max_lookback_in_days=p_max_lookback_in_days,
+                p_min_activity_duration=p_min_activity_duration)
             user_stat_infos[ruleset.context] = stat_info
 
         stat_infos[username] = user_stat_infos
@@ -292,43 +292,46 @@ def get_process_statistics(
         p_reference_time,
         p_max_lookback_in_days,
         p_min_activity_duration):
-    
     users_stat_infos = get_empty_stat_infos(
         p_rule_set_configs=p_rule_set_configs,
         p_reference_time=p_reference_time,
         p_max_lookback_in_days=p_max_lookback_in_days,
         p_min_activity_duration=p_min_activity_duration)
-    
-    process_info_boundaries = [ (pinfo.start_time, pinfo.get_key(), pinfo, "START") for pinfo in p_process_infos.values() ]
-    process_info_boundaries.extend ( [ (pinfo.end_time, pinfo.get_key(), pinfo, "END") for pinfo in p_process_infos.values() if pinfo.end_time is not None])
+
+    process_info_boundaries = [(pinfo.start_time, pinfo.get_key(), pinfo, "START") for pinfo in
+                               p_process_infos.values()]
+    process_info_boundaries.extend(
+        [(pinfo.end_time, pinfo.get_key(), pinfo, "END") for pinfo in p_process_infos.values() if
+         pinfo.end_time is not None])
     sorted_process_info_boundaries = sorted(process_info_boundaries)
-    
+
     if len(sorted_process_info_boundaries) > 0:
         maximum_boundary_time = sorted_process_info_boundaries[-1][0]
-        
+
         if p_reference_time > maximum_boundary_time:
             maximum_boundary_time = p_reference_time
-         
-        sorted_process_info_boundaries.extend ( [ (maximum_boundary_time, pinfo.get_key(), pinfo, "END") 
-                                          for pinfo in p_process_infos.values() if pinfo.end_time is None])
-        
+
+        sorted_process_info_boundaries.extend([(maximum_boundary_time, pinfo.get_key(), pinfo, "END")
+                                               for pinfo in p_process_infos.values() if pinfo.end_time is None])
+
         for (boundary_time, _key, pinfo, boundary_type) in sorted_process_info_boundaries:
             user_stat_infos = users_stat_infos.get(pinfo.username)
-            
+
             if user_stat_infos is None:
                 user_stat_infos = {}
                 users_stat_infos[pinfo.username] = user_stat_infos
-            
-            if pinfo.username in p_rule_set_configs:    
+
+            if pinfo.username in p_rule_set_configs:
                 for ruleset in p_rule_set_configs[pinfo.username]:
-                     
-                    if ((pinfo.processname is None and ruleset.scan_devices) or   
-                        (pinfo.processname is not None and ruleset.regex_process_name_pattern.match(pinfo.processname))):                        
+
+                    if ((pinfo.processname is None and ruleset.scan_devices) or
+                            (pinfo.processname is not None and ruleset.regex_process_name_pattern.match(
+                                pinfo.processname))):
                         stat_info = user_stat_infos.get(ruleset.context)
 
-                        if boundary_type == "START":                                             
+                        if boundary_type == "START":
                             stat_info.add_process_start(p_process_info=pinfo, p_start_time=boundary_time)
-                            
+
                         else:
                             stat_info.add_process_end(p_process_info=pinfo, p_end_time=boundary_time)
 
@@ -341,5 +344,3 @@ def get_process_statistics(
                 user_stat_info.day_statistics[lookback].add_activity(user_stat_info.current_activity)
 
     return users_stat_infos
-            
-        

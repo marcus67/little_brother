@@ -109,10 +109,6 @@ class AppControl(object):
         self._outgoing_events = []
         self._could_not_send = False
 
-        self.history_labels = [ (_('{days} days ago'), {"days" : day }) for day in range(0, self._config.process_lookback_in_days + 1)]
-
-        self.history_labels[0] = (_('Today'), { "days": 0})
-        self.history_labels[1] = (_('Yesterday'), { "days" : 1})
 
         self._client_infos = {}
         self._rule_overrides = {}
@@ -127,6 +123,15 @@ class AppControl(object):
             fmt = "Scanning for this host has been deactivated in configuration"
             self._logger.warning(fmt)
 
+        self.init_labels_and_notifications()
+
+    def init_labels_and_notifications(self):
+
+        self.history_labels = [ (_('{days} days ago'), {"days" : day }) for day in range(0, self._config.process_lookback_in_days + 1)]
+
+        self.history_labels[0] = (_('Today'), { "days": 0})
+        self.history_labels[1] = (_('Yesterday'), { "days" : 1})
+
         self.text_no_time_left = _("{user}, you do not have computer time left today. You will be logged out.")
         self.text_no_time_left_approaching = _("{user}, you only have {minutes_left_before_logout} minutes left today. Please, log out.")
         self.text_no_time_today = _("{user}, you do not have any computer time today. You will be logged out.")
@@ -138,7 +143,6 @@ class AppControl(object):
         self.text_min_break = _("{user}, your break will only be over in {break_minutes_left} minutes. You will be logged out.")
         self.text_limited_session_start = _("Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes in this session.")
         self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
-
 
     def register_rule_context_handlers(self):
 
@@ -572,7 +576,9 @@ class AppControl(object):
                 p_reference_date=override.reference_date,
                 p_max_time_per_day=override.max_time_per_day,
                 p_min_time_of_day=override.min_time_of_day,
-                p_max_time_of_day=override.max_time_of_day)
+                p_max_time_of_day=override.max_time_of_day,
+                p_min_break=override.min_break,
+                p_free_play=override.free_play)
 
             self._rule_overrides[new_override.get_key()] = new_override
 
