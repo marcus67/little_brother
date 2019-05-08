@@ -52,10 +52,6 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
       - store_artifacts:
           path: debian/little-brother_0.1_31.deb
-    branches:
-      - only:
-        - master
-        - release
 
 workflows:
     version: 2
@@ -65,3 +61,9 @@ workflows:
         - deploy:
             requires:
               - build
+            filters:
+              branches:
+                only:
+                  - master
+                  - release
+  
