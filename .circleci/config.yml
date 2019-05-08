@@ -38,7 +38,21 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
-      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
       - run: codecov
       - store_artifacts:
           path: htmlcov
+
+  deploy:
+    docker:
+      - image: accso/docker-python-app:latest
+    steps:
+      - checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
+      - store_artifacts:
+          path: debian/little-brother_0.1_30.deb
+    branches:
+      - only:
+        - master
+        - release
