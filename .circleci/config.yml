@@ -41,6 +41,7 @@ jobs:
       - run: codecov
       - store_artifacts:
           path: htmlcov
+      - store_artifacts:
           path: debian/little-brother_0.1_31.deb
 
   deploy:
