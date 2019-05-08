@@ -57,10 +57,11 @@ jobs:
         - master
         - release
 
-  workflows:
-      version: 2.0
-      build_and_deploy:
-        jobs:
-          - build
-          - deploy
-          - 
+workflows:
+    version: 2
+    build_and_deploy:
+      jobs:
+        - build
+        - deploy:
+            requires:
+              - build
