@@ -18,7 +18,7 @@ can log out gracefully in time.
 
 ## Contact
 
-Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments to little-brother[at]web.de.
+Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments to little-brother(at)web.de.
 
 ## Screenshots
 
@@ -64,26 +64,39 @@ is generated from `pip freeze`.
 `LittleBrother` has the following features:
 
 *   Any number of users can be monitored.
+
 *   Each user can have a specific set of rules defining the permitted playtime.
+
 *   Rules can be adapted to "contexts", such as the day of the week and/or a vacation schedule (currently only 
 the German schedules are supported).
+
 *   Play time can be restricted to a time window (from, to).
+
 *   A maximum play time per day can be defined.
+
 *   Users can be forced to take a break after a certain maximum session time.
+
 *   Users can be forced to wait for a minimum break time after their activity.
+
 *   Any number of Linux client hosts can be monitored (currently this requires users to have the same login on all 
 machines).
+
 *   There is a master host with a history of the activities of all users. This master host checks the rule sets and
 prompts the client hosts to terminate processes if required.
+
 *   The master host offers a simple web interface for viewing the user activity over a configured history length
 (e.g. 7 days) and an administration page to dynamically define rule exceptions for a configured number of
 days into the future.
+
 *   The web application can be run behind a proxy so that it will be accessible from away allowing remote 
 administration after receiving calls from young users begging for more play time.
+
 *   The application has international language support. Currently English and German translations are provided.
 Users are invited to provide translations for other languages.
+
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools.
+
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
@@ -127,7 +140,9 @@ your concrete configuration:
 
 *   <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the application on a single host with a simple
 rule set to start with.
+
 *   <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file featuring a realistic rule set.
+
 *   <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the application on a client. This file is relatively simple
 since it only contains the details to connect to the master host.
 
@@ -178,7 +193,6 @@ A minimum rule set for a single user consists of a single rule defining:
 
 See example below.
 
-
     [RuleSetUser1]
     username=user1
     process_name_pattern=.*sh|systemd
@@ -187,7 +201,6 @@ See example below.
     max_time_per_day=1h30m
     max_activity_duration=20m
     min_break=10m
-
 
 The `username` corresponds to the Linux username. It is expected in all small letters. The process name pattern 
 is a regular expression to match the processes of the user. The pattern is implicitly prefixed by `^` and 
@@ -208,6 +221,7 @@ To this purpose the setting `context` can be used. If its value is `weekday` the
 `context_details` will contain either:
 
 *   the concrete name of the day of the week,
+
 *   the string `weekend` comprising Saturday and Sunday, or day-coded seven-character string in which `1`, `X`, or `Y` 
 denotes an active day and any other character denotes an inactive day. For example: the string "X-X-X--" would denote 
 a rule which is active on Mondays, Wednesdays, and Fridays. 
@@ -297,15 +311,17 @@ The application `LittleBrother` is far from perfect. Some major caveats are list
 issue list on GitHub (see [here](../issues)).
 
 *   The application lacks a graphical user interface for defining rule sets.
+
 *   Every once in a while processes fail to terminate even though they have been killed by `LittleBrother`. 
 In these cases the user will still be regarded as logged in although he/she is not. Usually this can only be
 solved by trying to kill the processes again using the master user. Database eloquent users may try to 
 delete/correct the incorrect process time entries.
+
 *   The web server only responds to HTTP requests. This is probably always OK for communication between the
 slaves and the master in local area network. If the master host is to be accessible from the internet it should
 be put behind a reverse proxy handling the HTTPS termination (see below). 
 
-# Using Popups
+## Using Popups
 
 It is possible to activate popups to nofify the user about impending logouts. See the section `[PopupHandler]` 
 in the configuration file (e.g. <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>).
@@ -356,4 +372,3 @@ The `[StatusServer]` configuration section of the master host should contain the
     ...
     proxy_prefix=/LittleBrother
     ...
-
