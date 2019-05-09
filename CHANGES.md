@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 31 (May 8th, 2019)
+
+*   Closes #44, see [here](https://github.com/marcus67/little_brother/issues/44)
+*   Add hyperlink to [Facebook page](https://www.facebook.com/littlebrotherdebian/)
+
 ## Version 0.1 Revision 30 (May 4th, 2019)
 
 *   Closes #15, see [here](https://github.com/marcus67/little_brother/issues/15)

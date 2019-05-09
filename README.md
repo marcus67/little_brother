@@ -16,6 +16,10 @@ When the application determines that a user has exceeded her play time it will t
 process. Usually, the user will get several spoken warnings before she is actually kicked out so that she 
 can log out gracefully in time.
 
+## Contact
+
+Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments to little-brother[at]web.de.
+
 ## Screenshots
 
 The following screenshots show the web frontend of `LittleBrother`. Click on the thumbnails to enlarge. 

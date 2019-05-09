@@ -58,7 +58,7 @@ setup_params = {
     "deploy_systemd_service" : True,
     "deploy_sudoers_file" : True,
     "contributing_setups" : [ "python_base_app", "flask_helpers" ],
-    "publish_debian_package" : True,
+    "publish_debian_package" : [ "master", "release" ],
     "debian_extra_files": [
         ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
         ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
