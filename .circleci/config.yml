@@ -42,11 +42,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/*.deb
+          path: debian
       - persist_to_workspace:
-          root: debian
+          root: .
           paths:
-            - *.deb
+            - debian
 
   deploy:
     docker:
