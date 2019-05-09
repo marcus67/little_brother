@@ -106,7 +106,7 @@ class PopupHandler(notification_handler.NotificationHandler):
             extended_env['DISPLAY'] = self._config.x11_display
 
             popen = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=extended_env)
-            stdout, stderr = popen.communicate()
+            _stdout, stderr = popen.communicate()
             exit_code = popen.returncode
 
             msg = "[STDERR] {line}"

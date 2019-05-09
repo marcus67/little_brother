@@ -47,12 +47,15 @@ class DummyProcessFactory(object):
         self._processes = p_processes
         self._uid_map = p_uid_map
         self._user_map = {item[1]: item[0] for item in p_uid_map.items()}
+        self._reference_time = None
 
     def set_reference_time(self, p_reference_time):
         self._reference_time = p_reference_time
 
     def process_iter(self):
-        assert self._reference_time is not None
+        if self._reference_time is None:
+            raise Exception("_reference_time is None")
+
         return [DummyProcess(p, p_user_map=self._user_map) for p in self._processes
                 if self._reference_time >= p.start_time and (
-                            p.end_time is None or self._reference_time < p.end_time)].__iter__()
+                        p.end_time is None or self._reference_time < p.end_time)].__iter__()

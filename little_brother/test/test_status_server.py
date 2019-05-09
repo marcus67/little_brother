@@ -36,6 +36,7 @@ from python_base_app.test import base_test
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "hello!"
 
+
 class TestStatusServer(base_test.BaseTestCase):
 
     @staticmethod
@@ -66,21 +67,22 @@ class TestStatusServer(base_test.BaseTestCase):
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
         _status_server = status_server.StatusServer(
-                p_config = status_server_config,
-                p_package_name=app.PACKAGE_NAME,
-                p_app_control=_app_control,
-                p_master_connector=_master_connector,
-                p_is_master=True)
+            p_config=status_server_config,
+            p_package_name=app.PACKAGE_NAME,
+            p_app_control=_app_control,
+            p_master_connector=_master_connector,
+            p_is_master=True)
 
         return _status_server
 
-
-    def get_selenium_driver(self):
+    @staticmethod
+    def get_selenium_driver():
 
         if os.getenv("SELENIUM_CHROME_DRIVER") is not None:
             options = selenium.webdriver.ChromeOptions()
             options.add_argument('headless')
-            # See https://stackoverflow.com/questions/50642308/org-openqa-selenium-webdriverexception-unknown-error-devtoolsactiveport-file-d
+
+            # See https://stackoverflow.com/questions/50642308
             options.add_argument('no-sandbox')
             options.add_argument('disable-dev-shm-usage')
 
@@ -109,10 +111,11 @@ class TestStatusServer(base_test.BaseTestCase):
             assert "LittleBrother" in driver.title
 
             xpath = "//DIV[DIV[1] = 'Version' and DIV[2] = '{version}']"
-            elem = driver.find_element_by_xpath(xpath.format(version=settings.settings['version']))
+            driver.find_element_by_xpath(xpath.format(version=settings.settings['version']))
 
             xpath = "//DIV[DIV[1] = 'Debian Package Revision' and DIV[2] = '{debian_package_revision}']"
-            elem = driver.find_element_by_xpath(xpath.format(debian_package_revision=settings.settings['debian_package_revision']))
+            driver.find_element_by_xpath(
+                xpath.format(debian_package_revision=settings.settings['debian_package_revision']))
 
             driver.close()
 
@@ -126,6 +129,8 @@ class TestStatusServer(base_test.BaseTestCase):
 
     def test_page_index(self):
 
+        _status_server = None
+
         try:
             _status_server = self.create_dummy_status_server()
             _status_server.start_server()
@@ -136,7 +141,7 @@ class TestStatusServer(base_test.BaseTestCase):
             assert "LittleBrother" in driver.title
 
             xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
-            elem = driver.find_element_by_xpath(xpath)
+            driver.find_element_by_xpath(xpath)
 
             driver.close()
 
@@ -144,12 +149,12 @@ class TestStatusServer(base_test.BaseTestCase):
             raise e
 
         finally:
-
             _status_server.stop_server()
             _status_server.destroy()
 
-
     def test_page_admin(self):
+
+        _status_server = None
 
         try:
             _status_server = self.create_dummy_status_server()
@@ -173,7 +178,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
             # After logging in we are on the admin page
             xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
-            elem = driver.find_element_by_xpath(xpath)
+            driver.find_element_by_xpath(xpath)
 
             # The second we call the admin page.
             driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
@@ -181,7 +186,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
             # we are on the admin page right away...
             xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
-            elem = driver.find_element_by_xpath(xpath)
+            driver.find_element_by_xpath(xpath)
 
             driver.close()
 

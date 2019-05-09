@@ -18,31 +18,29 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
 import datetime
+import unittest
 
-from python_base_app.test import base_test 
 import little_brother.process_info as process_info
+from python_base_app.test import base_test
 
-HOSTNAME="hostname"
-USERNAME="username"
-PROCESS_NAME="processname"
-PID=123
-
+HOSTNAME = "hostname"
+USERNAME = "username"
+PROCESS_NAME = "processname"
+PID = 123
 
 
 class TestProcessInfo(base_test.BaseTestCase):
 
-
     def test_constructor(self):
-        
         some_process_handler = object()
         some_start_time = datetime.datetime.now()
         some_end_time = some_start_time + datetime.timedelta(seconds=5)
-        
-        pi = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_processhandler=some_process_handler, 
-                                      p_processname=PROCESS_NAME, p_pid=PID, p_start_time=some_start_time, p_end_time=some_end_time)
-        
+
+        pi = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_processhandler=some_process_handler,
+                                      p_processname=PROCESS_NAME, p_pid=PID, p_start_time=some_start_time,
+                                      p_end_time=some_end_time)
+
         self.assertEqual(pi.hostname, HOSTNAME)
 
 

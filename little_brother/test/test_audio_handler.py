@@ -17,24 +17,20 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import logging
-import unittest
-
-from python_base_app import configuration
-from python_base_app import log_handling
-
-from python_base_app.test import base_test
 
 from little_brother import audio_handler
+from python_base_app import configuration
+from python_base_app.test import base_test
 
 SPOOL_DIR = "/tmp"
 TEXT = "hallo"
-LOCALE= "de_DE"
+LOCALE = "de_DE"
+
 
 class TestAudioHandler(base_test.BaseTestCase):
 
-
-    def delete_audio_file(self, p_audio_handler):
+    @staticmethod
+    def delete_audio_file(p_audio_handler):
 
         audio_file = p_audio_handler.get_audio_filename(p_text=TEXT, p_locale=None)
 
@@ -52,7 +48,6 @@ class TestAudioHandler(base_test.BaseTestCase):
         a_handler = audio_handler.AudioHandler(p_config=a_config)
 
         self.assertIsNotNone(a_handler)
-
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
     def test_engine_google_speak(self):
@@ -87,7 +82,7 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.delete_audio_file(p_audio_handler=a_handler)
         a_thread = a_handler.notify(p_text=TEXT)
         a_thread.join()
-#        time.sleep(1)
+        #        time.sleep(1)
 
         self.assertTrue(os.path.exists(audio_file))
 
@@ -172,4 +167,3 @@ class TestAudioHandler(base_test.BaseTestCase):
         with self.assertRaises(configuration.ConfigurationException):
             a_handler = audio_handler.AudioHandler(p_config=a_config)
             self.assertIsNotNone(a_handler)
-

@@ -17,23 +17,19 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import logging
-import unittest
-
-from python_base_app import configuration
-from python_base_app import log_handling
-
-from python_base_app.test import base_test
 
 from little_brother import popup_handler
+from python_base_app import configuration
+from python_base_app.test import base_test
 
 TEXT = "hallo"
-LOCALE= "de_DE"
+LOCALE = "de_DE"
+
 
 class TestPopupHandler(base_test.BaseTestCase):
 
-
-    def delete_popup_file(self, p_popup_handler):
+    @staticmethod
+    def delete_popup_file(p_popup_handler):
 
         popup_file = p_popup_handler.get_popup_filename(p_text=TEXT, p_locale=None)
 
@@ -54,7 +50,6 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         a_handler.notify(p_text=TEXT)
 
-
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_xmessage_init(self):
 
@@ -65,7 +60,6 @@ class TestPopupHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         a_handler.notify(p_text=TEXT)
-
 
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_yad_init(self):
@@ -78,7 +72,6 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         a_handler.notify(p_text=TEXT)
 
-
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_zenity_init(self):
 
@@ -90,7 +83,6 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         a_handler.notify(p_text=TEXT)
 
-
     def test_engine_invalid(self):
 
         a_config = popup_handler.PopupHandlerConfigModel()
@@ -100,4 +92,3 @@ class TestPopupHandler(base_test.BaseTestCase):
             a_handler = popup_handler.PopupHandler(p_config=a_config)
             self.assertIsNotNone(a_handler)
             a_handler.notify(p_text=TEXT)
-

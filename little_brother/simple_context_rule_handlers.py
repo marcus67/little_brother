@@ -15,12 +15,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from little_brother import context_rule_handler
 from python_base_app import configuration
 
-from little_brother import context_rule_handler
-
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x:x
+_ = lambda x: x
 
 DEFAULT_CONTEXT_RULE_HANDLER_NAME = _("default")
 WEEKDAY_CONTEXT_RULE_HANDLER_NAME = _("weekday")
@@ -28,28 +27,25 @@ WEEKDAY_CONTEXT_RULE_HANDLER_NAME = _("weekday")
 VALID_ACTIVE_DAY_CHARACTERS = "1YX"
 
 WEEKDAY_PREDEFINED_DETAILS = {
-    _("weekend")    : "-----11",
-    _("weekdays")   : "11111--",
-    _("mondays")    : "1------",
-    _("tuesdays")   : "-1-----",
-    _("wednesdays") : "--1----",
-    _("thursdays")  : "---1---",
-    _("fridays")    : "----1--",
-    _("saturdays")  : "-----1-",
-    _("sundays")    : "------1",
+    _("weekend"): "-----11",
+    _("weekdays"): "11111--",
+    _("mondays"): "1------",
+    _("tuesdays"): "-1-----",
+    _("wednesdays"): "--1----",
+    _("thursdays"): "---1---",
+    _("fridays"): "----1--",
+    _("saturdays"): "-----1-",
+    _("sundays"): "------1",
 }
+
 
 class DefaultContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
 
     def __init__(self):
-
         super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME)
 
-
-    def is_active(self, p_reference_date, p_context_details):
-
+    def is_active(self, p_reference_date, p_details):
         return True
-
 
 
 class WeekdayContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
@@ -58,26 +54,23 @@ class WeekdayContextRuleHandler(context_rule_handler.AbstractContextRuleHandler)
 
         super().__init__(p_context_name=WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
 
+    def is_active(self, p_reference_date, p_details):
 
-    def is_active(self, p_reference_date, p_context_details):
-
-        if p_context_details is None:
+        if p_details is None:
             raise configuration.ConfigurationException("Weekday context without context details")
 
-        p_context_details = p_context_details.lower()
+        p_details = p_details.lower()
 
-        if p_context_details in WEEKDAY_PREDEFINED_DETAILS:
-            weekday_string = WEEKDAY_PREDEFINED_DETAILS[p_context_details]
+        if p_details in WEEKDAY_PREDEFINED_DETAILS:
+            weekday_string = WEEKDAY_PREDEFINED_DETAILS[p_details]
 
-        elif len(p_context_details) == 7:
-            weekday_string = p_context_details
+        elif len(p_details) == 7:
+            weekday_string = p_details
 
         else:
             fmt = "invalid context details '{details}' for context {name}"
-            raise configuration.ConfigurationException(fmt.format(details=p_context_details, name=self.context_name))
+            raise configuration.ConfigurationException(fmt.format(details=p_details, name=self.context_name))
 
         time_tuple = p_reference_date.timetuple()
 
         return weekday_string[time_tuple.tm_wday] in VALID_ACTIVE_DAY_CHARACTERS
-
-

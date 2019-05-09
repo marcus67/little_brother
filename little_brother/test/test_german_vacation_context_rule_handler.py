@@ -45,31 +45,31 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
         with self.assertRaises(configuration.ConfigurationException):
-            rule_handler.is_active(p_reference_date=datetime.datetime.now().date(), p_context_details=INVALID_STATE_NAME)
+            rule_handler.is_active(p_reference_date=datetime.datetime.now().date(), p_details=INVALID_STATE_NAME)
 
     def test_is_not_active_last_day_before_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("30.09.2016", "%d.%m.%Y").date(), p_context_details=VALID_STATE_NAME))
+        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("30.09.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
     def test_is_active_first_day_of_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("01.10.2016", "%d.%m.%Y").date(), p_context_details=VALID_STATE_NAME))
+        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("01.10.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
     def test_is_active_last_day_of_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("21.10.2016", "%d.%m.%Y").date(), p_context_details=VALID_STATE_NAME))
+        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("21.10.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
     def test_is_not_active_first_day_after_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("22.10.2016", "%d.%m.%Y").date(), p_context_details=VALID_STATE_NAME))
+        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("22.10.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
 
     def test_exception_when_invalid_federal_state_url(self):

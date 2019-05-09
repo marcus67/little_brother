@@ -283,7 +283,7 @@ class RuleHandler(object):
                     raise configuration.ConfigurationException("invalid rule set context '%s'" % c_config.context)
 
                 active = context_rule_handler.is_active(p_reference_date=p_reference_date,
-                                                        p_context_details=c_config.context_details)
+                                                        p_details=c_config.context_details)
 
                 if active:
                     if max_priority is None or c_config.priority > max_priority:

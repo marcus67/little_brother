@@ -18,26 +18,25 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
 import datetime
+import unittest
 
-from python_base_app.test import base_test 
 from little_brother import process_statistics
+from python_base_app.test import base_test
 
-HOSTNAME="hostname"
-HOSTNAME2="hostname2"
-USERNAME="username"
-PROCESS_NAME="processname"
-PID=123
+HOSTNAME = "hostname"
+HOSTNAME2 = "hostname2"
+USERNAME = "username"
+PROCESS_NAME = "processname"
+PID = 123
 MIN_ACTIVITY_DURATION = 60
 MAX_LOOKBACK_IN_DAYS = 10
-DURATION = 55 # seconds
+DURATION = 55  # seconds
 
 
 class TestProcessStatistics(base_test.BaseTestCase):
 
     def test_activity_init(self):
-
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
 
@@ -47,7 +46,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertIsNone(a.end_time)
 
     def test_activity_add_host_process(self):
-
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
 
@@ -76,7 +74,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(a.host_process_counts[HOSTNAME2], 1)
 
     def test_activity_duration(self):
-
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
 
@@ -88,7 +85,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(a.duration, DURATION)
 
     def test_activity_str(self):
-
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
         a.end_time = reference_time + datetime.timedelta(seconds=DURATION)
@@ -100,7 +96,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertIn('Activity', a_str)
 
     def test_activity_host_infos(self):
-
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
 
@@ -111,9 +106,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertIsNotNone(host_infos)
         self.assertIn(HOSTNAME, host_infos)
 
-
     def test_constructor_statistics_info(self):
-
         reference_time = datetime.datetime.utcnow()
         psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
                                                        p_min_activity_duration=MIN_ACTIVITY_DURATION,
@@ -139,9 +132,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertIsNotNone(psi.currently_active_host_processes)
         self.assertEqual(len(psi.currently_active_host_processes), 0)
 
-
     def test_day_statistics_init(self):
-
         ds = process_statistics.DayStatistics()
 
         self.assertIsNotNone(ds.activities)
@@ -152,7 +143,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(ds.host_process_counts), 0)
 
     def test_day_statistics_add_activity(self):
-
         ds = process_statistics.DayStatistics()
 
         self.assertIsNotNone(ds.activities)
@@ -171,8 +161,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(ds.host_process_counts), 1)
         self.assertIn(HOSTNAME, ds.host_process_counts)
         self.assertEqual(ds.host_process_counts[HOSTNAME], 1)
-
-
 
 
 if __name__ == "__main__":

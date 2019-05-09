@@ -35,7 +35,7 @@ A:visited {
     color: black;
 }
 
-INPUT { width70px; }
+INPUT { width: 70px; }
 
 .navbar-brand { width: 200px; }
 .form-signin {  text-align: center; }

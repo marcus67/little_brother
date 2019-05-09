@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 32 (May 9th, 2019)
+
+*   Several changes proposed by codacy.
+
 ## Version 0.1 Revision 31 (May 8th, 2019)
 
 *   Closes #44, see [here](https://github.com/marcus67/little_brother/issues/44)
