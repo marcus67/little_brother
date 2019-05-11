@@ -18,6 +18,7 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
 import os
 import unittest
 
@@ -26,9 +27,12 @@ from selenium.webdriver.common.keys import Keys
 
 from little_brother import app
 from little_brother import app_control
+from little_brother import client_process_handler
 from little_brother import master_connector
 from little_brother import settings
 from little_brother import status_server
+from little_brother.test import test_client_process_handler
+from little_brother.test import test_data
 from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
 from python_base_app.test import base_test
@@ -40,10 +44,38 @@ ADMIN_PASSWORD = "hello!"
 class TestStatusServer(base_test.BaseTestCase):
 
     @staticmethod
-    def create_dummy_status_server():
+    def get_dummy_process_handlers():
+
+        now = datetime.datetime.now()
+        process_start_time = now + datetime.timedelta(seconds=-1)
+
+        process_handler = test_client_process_handler.TestClientProcessHandler.get_dummy_process_handler(
+            p_reference_time=now, p_processes=test_data.get_active_processes(p_start_time=process_start_time))
+
+        process_handlers = {
+            process_handler.id: process_handler
+        }
+
+        return process_handlers
+
+    @staticmethod
+    def get_dummy_ruleset_configs(p_ruleset_config):
+
+        return {
+            test_data.USER_1: p_ruleset_config
+        }
+
+    @staticmethod
+    def create_dummy_status_server(p_process_handlers=None, p_ruleset_configs=None):
+
+        if p_process_handlers is None:
+            p_process_handlers = {}
+
+        if p_ruleset_configs is None:
+            p_ruleset_configs = {}
 
         _persistence = test_persistence.TestPersistence.create_dummy_persistence()
-        _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler()
+        _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_ruleset_configs=p_ruleset_configs)
 
         master_connector_config = master_connector.MasterConnectorConfigModel()
         _master_connector = master_connector.MasterConnector(p_config=master_connector_config)
@@ -52,12 +84,13 @@ class TestStatusServer(base_test.BaseTestCase):
         _app_control = app_control.AppControl(
             p_config=app_control_config,
             p_debug_mode=False,
-            p_process_handlers={},
+            p_process_handlers=p_process_handlers,
             p_persistence=_persistence,
             p_rule_handler=_rule_handler,
             p_notification_handlers=[],
-            p_rule_set_configs={},
-            p_master_connector=_master_connector)
+            p_rule_set_configs=p_ruleset_configs,
+            p_master_connector=_master_connector,
+            p_username_map=test_data.USERNAME_MAP)
 
         status_server_config = status_server.StatusServerConfigModel()
         status_server_config.admin_username = ADMIN_USERNAME
@@ -127,7 +160,7 @@ class TestStatusServer(base_test.BaseTestCase):
                 _status_server.stop_server()
                 _status_server.destroy()
 
-    def test_page_index(self):
+    def test_page_index_without_process(self):
 
         _status_server = None
 
@@ -152,13 +185,132 @@ class TestStatusServer(base_test.BaseTestCase):
             _status_server.stop_server()
             _status_server.destroy()
 
-    def test_page_admin(self):
+    def get_status_server_using_ruleset_configs(self, p_ruleset_configs):
+
+        process_handlers = self.get_dummy_process_handlers()
+
+        _status_server = self.create_dummy_status_server(
+            p_process_handlers=process_handlers, p_ruleset_configs=p_ruleset_configs)
+        _status_server.start_server()
+
+        _appcontrol = _status_server._appcontrol
+
+        _appcontrol.retrieve_user_mappings()
+        _appcontrol.start()
+        _appcontrol.scan_processes(
+            p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
+        _appcontrol.check()
+        _appcontrol.stop()
+
+        return _status_server
+
+    def test_page_index_with_process_no_restrictions(self):
+
+        _status_server = None
+
+        try:
+
+            ruleset_configs = self.get_dummy_ruleset_configs(
+                p_ruleset_config=test_data.RULESET_CONFIGS_USER1_NO_RESTRICTIONS)
+            _status_server = self.get_status_server_using_ruleset_configs(ruleset_configs)
+
+            driver = self.get_selenium_driver()
+
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
+            driver.find_element_by_xpath(xpath)
+
+            driver.close()
+
+        except Exception as e:
+            raise e
+
+        finally:
+            _status_server.stop_server()
+            _status_server.destroy()
+
+    def test_page_index_with_process_all_restrictions(self):
+
+        _status_server = None
+
+        try:
+
+            ruleset_configs = self.get_dummy_ruleset_configs(
+                p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+            _status_server = self.get_status_server_using_ruleset_configs(ruleset_configs)
+
+            driver = self.get_selenium_driver()
+
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
+            driver.find_element_by_xpath(xpath)
+
+            driver.close()
+
+        except Exception as e:
+            raise e
+
+        finally:
+            _status_server.stop_server()
+            _status_server.destroy()
+
+    def test_page_admin_without_process(self):
 
         _status_server = None
 
         try:
             _status_server = self.create_dummy_status_server()
             _status_server.start_server()
+
+            driver = self.get_selenium_driver()
+
+            # When we load the admin page the first time...
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            # ...we end up on the login page.
+            elem = driver.find_element_by_name("username")
+            elem.clear()
+            elem.send_keys(ADMIN_USERNAME)
+
+            elem = driver.find_element_by_name("password")
+            elem.clear()
+            elem.send_keys(ADMIN_PASSWORD)
+            elem.send_keys(Keys.RETURN)
+
+            # After logging in we are on the admin page
+            xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
+            driver.find_element_by_xpath(xpath)
+
+            # The second we call the admin page.
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            # we are on the admin page right away...
+            xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
+            driver.find_element_by_xpath(xpath)
+
+            driver.close()
+
+        except Exception as e:
+            raise e
+
+        finally:
+            _status_server.stop_server()
+            _status_server.destroy()
+
+    def test_page_admin_with_process(self):
+
+        _status_server = None
+
+        try:
+            ruleset_configs = self.get_dummy_ruleset_configs(
+                p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+            _status_server = self.get_status_server_using_ruleset_configs(ruleset_configs)
 
             driver = self.get_selenium_driver()
 

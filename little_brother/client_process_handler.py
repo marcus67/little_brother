@@ -80,7 +80,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
         return []
 
-    def scan_processes(self, p_uid_map, p_host_name, p_process_regex_map, p_reference_time):
+    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map):
 
         current_processes = {}
         events = []

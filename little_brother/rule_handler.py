@@ -67,11 +67,11 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.priority = DEFAULT_PRIORITY
         self.username = None
         self.process_name_pattern = DEFAULT_PROCESS_PATTERN
-        self.min_time_of_day = None
-        self.max_time_of_day = None
-        self.max_time_per_day = None
-        self.max_activity_duration = None
-        self.min_break = None
+        self.min_time_of_day = configuration.NONE_STRING
+        self.max_time_of_day = configuration.NONE_STRING
+        self.max_time_per_day = configuration.NONE_STRING
+        self.max_activity_duration = configuration.NONE_STRING
+        self.min_break = configuration.NONE_STRING
         self.scan_devices = True
         self.locale = None
         self.free_play = False
@@ -116,6 +116,28 @@ class RuleSetConfigModel(configuration.ConfigModel):
         min_break = str(self.min_break) if self.min_break is not None else "-"
         return "Rule set (user=%s, context=%s, time-of-day=[%s to %s], max-time-per-day:%s, max-duration=%s, min-break=%s, free-play=%i)" % (
             self.username, self.context, min_time, max_time, max_time_per_day, max_duration, min_break, self.free_play)
+    
+    def post_process(self):
+
+        self.min_time_of_day = RuleSetSectionHandler.read_time_of_day(p_time_of_day=self.min_time_of_day)
+        self.max_time_of_day = RuleSetSectionHandler.read_time_of_day(p_time_of_day=self.max_time_of_day)
+
+        if (self.min_time_of_day is not None and self.max_time_of_day is not None
+                and self.min_time_of_day >= self.max_time_of_day):
+            msg = "Maximum time of day '{max_time_of_day}' must be later than minimum time of day '{min_time_of_day}'" \
+                  " for user '{user}' and context '{context}'"
+            raise configuration.ConfigurationException(
+                msg.format(
+                    min_time_of_day=tools.get_time_as_string(self.min_time_of_day),
+                    max_time_of_day=tools.get_time_as_string(self.max_time_of_day),
+                    user=self.username,
+                    context=self.label))
+
+        self.max_time_per_day = tools.get_string_as_duration(p_string=self.max_time_per_day)
+        self.max_activity_duration = tools.get_string_as_duration(
+            p_string=self.max_activity_duration)
+        self.min_break = tools.get_string_as_duration(p_string=self.min_break)
+
 
 
 class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
@@ -132,6 +154,8 @@ class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
         self.scan(p_section=rule_set_section)
         tools.check_config_value(p_config=rule_set_section, p_config_attribute_name="username")
 
+        rule_set_section.post_process()
+
         configs = self.rule_set_configs.get(rule_set_section.username)
 
         if configs is None:
@@ -140,24 +164,6 @@ class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
 
         configs.append(rule_set_section)
 
-        rule_set_section.min_time_of_day = self.read_time_of_day(p_time_of_day=rule_set_section.min_time_of_day)
-        rule_set_section.max_time_of_day = self.read_time_of_day(p_time_of_day=rule_set_section.max_time_of_day)
-
-        if (rule_set_section.min_time_of_day is not None and rule_set_section.max_time_of_day is not None
-                and rule_set_section.min_time_of_day >= rule_set_section.max_time_of_day):
-            msg = "Maximum time of day '{max_time_of_day}' must be later than minimum time of day '{min_time_of_day}'" \
-                  " for user '{user}' and context '{context}'"
-            raise configuration.ConfigurationException(
-                msg.format(
-                    min_time_of_day=tools.get_time_as_string(rule_set_section.min_time_of_day),
-                    max_time_of_day=tools.get_time_as_string(rule_set_section.max_time_of_day),
-                    user=rule_set_section.username,
-                    context=rule_set_section.label))
-
-        rule_set_section.max_time_per_day = tools.get_string_as_duration(p_string=rule_set_section.max_time_per_day)
-        rule_set_section.max_activity_duration = tools.get_string_as_duration(
-            p_string=rule_set_section.max_activity_duration)
-        rule_set_section.min_break = tools.get_string_as_duration(p_string=rule_set_section.min_break)
 
     @staticmethod
     def read_time_of_day(p_time_of_day):

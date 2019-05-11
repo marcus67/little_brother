@@ -17,55 +17,51 @@
 
 import json
 
-from python_base_app import base_rest_api_access
-from python_base_app import tools
-from python_base_app import exceptions
-
 from little_brother import constants
+from python_base_app import base_rest_api_access
+from python_base_app import exceptions
+from python_base_app import tools
 
 SECTION_NAME = "MasterConnector"
 
+
 class MasterConnectorConfigModel(base_rest_api_access.BaseRestAPIAccessConfigModel):
-    
+
     def __init__(self):
-           
         super().__init__(p_section_name=SECTION_NAME)
 
 
 class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
 
-
     def __init__(self, p_config):
-        
+
         super().__init__(
             p_config=p_config,
             p_base_api_url=constants.API_URL,
             p_section_name=SECTION_NAME)
-        
+
     def receive_events(self, p_json_data):
-        
+
         access_token = p_json_data[constants.JSON_ACCESS_TOKEN]
         hostname = p_json_data[constants.JSON_HOSTNAME]
         json_events = p_json_data[constants.JSON_EVENTS]
-        
+
         if access_token != self._config.access_token:
-            
             fmt = "Received invalid access token from host '{hostname}'"
             self._logger.warning(fmt.format(hostname=hostname))
             return None
-        
+
         return (hostname, json_events)
-        
-        
+
     def send_events(self, p_hostname, p_events):
-        
+
         url = self._get_api_url(constants.API_REL_URL_EVENTS)
-        
+
         data = {
-            constants.JSON_ACCESS_TOKEN : self._config.access_token,
-            constants.JSON_HOSTNAME : p_hostname,
-            constants.JSON_EVENTS : p_events }
-        
+            constants.JSON_ACCESS_TOKEN: self._config.access_token,
+            constants.JSON_HOSTNAME: p_hostname,
+            constants.JSON_EVENTS: p_events}
+
         try:
             result = self.execute_api_call(
                 p_url=url,
@@ -75,10 +71,9 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
                 p_jsonify=True)
 
         except exceptions.UnauthorizedException:
-            
+
             fmt = "cannot send events: invalid access token"
             self._logger.error(fmt)
             result = None
 
         return result
-    

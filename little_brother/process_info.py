@@ -17,18 +17,19 @@
 
 from python_base_app import tools
 
+
 def get_key(p_hostname, p_pid, p_start_time):
     if p_pid is not None:
         return "%s|%d|%s" % (p_hostname, p_pid, p_start_time.strftime("%s"))
-    
+
     else:
         return "%s|NONE|%s" % (p_hostname, p_start_time.strftime("%s"))
-        
+
 
 class ProcessInfo(object):
 
-    def __init__(self, p_hostname=None, p_username=None, p_processhandler=None, p_processname=None, p_pid=None, p_start_time=None, p_end_time=None):
-        
+    def __init__(self, p_hostname=None, p_username=None, p_processhandler=None, p_processname=None, p_pid=None,
+                 p_start_time=None, p_end_time=None):
         self.id = None
         self.hostname = p_hostname
         self.username = p_username
@@ -38,32 +39,25 @@ class ProcessInfo(object):
         self.start_time = p_start_time
         self.end_time = p_end_time
 
-
     def is_active(self):
-        
         return self.end_time is None
-    
+
     def is_valid(self):
         return (
-            self.hostname is not None and
-            self.username is not None and
-            self.processhandler is not None and
-            #self.pid is not None and
-            #self.processname is not None and
-            self.start_time is not None and
-        # entries with start time after end time will confuse the statistics module
-            (self.end_time is None or
-             self.end_time is not None and self.end_time >= self.start_time)
-            )
-
+                self.hostname is not None and
+                self.username is not None and
+                self.processhandler is not None and
+                # self.pid is not None and
+                # self.processname is not None and
+                self.start_time is not None and
+                # entries with start time after end time will confuse the statistics module
+                (self.end_time is None or
+                 self.end_time is not None and self.end_time >= self.start_time)
+        )
 
     def get_key(self):
-
         return get_key(p_hostname=self.hostname, p_pid=self.pid, p_start_time=self.start_time)
 
-        
     def __str__(self):
-
         return "ProcessInfo (host=%s, user=%s, process=%s, PID=%s)" % (
             self.hostname, self.username, self.processname, tools.int_to_string(self.pid))
-        

@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 33 (May 11th, 2019)
+
+*   Boost test coverage.
+*   Several changes proposed by codacy.
+*   Add `post_process` to class `configuration.ConfigModel`
+
 ## Version 0.1 Revision 32 (May 9th, 2019)
 
 *   Several changes proposed by codacy.

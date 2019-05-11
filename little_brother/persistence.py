@@ -16,15 +16,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
-import sqlalchemy.orm
-import sqlalchemy.ext.declarative
 import urllib.parse
 
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean
 from sqlalchemy.exc import ProgrammingError
 
-from python_base_app import log_handling
 from python_base_app import configuration
+from python_base_app import log_handling
 from python_base_app import tools
 
 Base = sqlalchemy.ext.declarative.declarative_base()
@@ -106,8 +106,9 @@ class PersistenceConfigModel(configuration.ConfigModel):
         self.database_admin = 'postgres'
         self.database_admin_password = None
 
-        #: Number of seconds that a database connection will be kept in the pool before it is discarded. It has to be shorter than
-        #: than the maximum time that a database server will keep a connection alive. In case of MySql this will be eight hours.
+        #: Number of seconds that a database connection will be kept in the pool before it is discarded.
+        #: It has to be shorter than the maximum time that a database server will keep a connection alive.
+        #: In case of MySql this will be eight hours.
         #: See https://stackoverflow.com/questions/6471549/avoiding-mysql-server-has-gone-away-on-infrequently-used-python-flask-server
         #: Default value: :data:`` 
         self.pool_recycle = 3600
@@ -260,7 +261,7 @@ class Persistence(object):
 
         try:
             self._create_table_engine.execute("CREATE DATABASE %s WITH OWNER = %s ENCODING = 'UTF8';" % (
-            self._config.database_name, self._config.database_user))
+                self._config.database_name, self._config.database_user))
 
         except ProgrammingError:
             fmt = "Database %s already exists" % self._config.database_name
@@ -276,7 +277,8 @@ class Persistence(object):
     def check_schema(self):
         if self._admin_engine is None and self._config.database_admin is not None:
             raise configuration.ConfigurationException(
-                "check_schema () called without [StatusCollector].database_admin and [StatusCollector].database_admin_password set")
+                "check_schema () called without [StatusCollector].database_admin "
+                "and [StatusCollector].database_admin_password set")
 
         if DATABASE_DRIVER_POSTGRESQL in self._config.database_driver:
             self.create_postgresql()

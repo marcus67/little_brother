@@ -39,7 +39,7 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_priority(self):
 
-        a_rule_handler = self.create_dummy_rule_handler()
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=self.create_dummy_ruleset_configs())
 
         active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=NORMAL_DAY_1)
         self.assertIsNotNone(active_rule_set)
@@ -66,34 +66,40 @@ class TestRuleHandler(base_test.BaseTestCase):
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
 
     @staticmethod
-    def create_dummy_rule_handler():
-
-        default_context_rule_handler = simple_context_rule_handlers.DefaultContextRuleHandler()
-        weekend_context_rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
-        vacation_context_rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
-        rulehandler_config = rule_handler.RuleHandlerConfigModel()
-
+    def create_dummy_ruleset_configs():
         # DEFAULT
         default_config = rule_handler.RuleSetConfigModel()
         default_config.username = TEST_USER
-        default_config.context = default_context_rule_handler.context_name
+        default_config.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
 
         # VACATION
         vacation_config = rule_handler.RuleSetConfigModel()
         vacation_config.username = TEST_USER
         vacation_config.priority = 2
-        vacation_config.context = vacation_context_rule_handler.context_name
+        vacation_config.context = german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME
         vacation_config.context_details = "Nordrhein-Westfalen"
 
         # WEEKEND
         weekend_config = rule_handler.RuleSetConfigModel()
         weekend_config.username = TEST_USER
         weekend_config.priority = 3
-        weekend_config.context = weekend_context_rule_handler.context_name
+        weekend_config.context = simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME
         weekend_config.context_details = simple_context_rule_handlers.WEEKDAY_PREDEFINED_DETAILS["weekend"]
-        ruleset_configs = {TEST_USER: [default_config, weekend_config, vacation_config]}
 
-        a_rule_handler = rule_handler.RuleHandler(p_config=rulehandler_config, p_rule_set_configs=ruleset_configs)
+        return {TEST_USER: [default_config, weekend_config, vacation_config]}
+
+
+
+    @staticmethod
+    def create_dummy_rule_handler(p_ruleset_configs):
+
+        default_context_rule_handler = simple_context_rule_handlers.DefaultContextRuleHandler()
+        weekend_context_rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+        vacation_context_rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
+        rulehandler_config = rule_handler.RuleHandlerConfigModel()
+
+
+        a_rule_handler = rule_handler.RuleHandler(p_config=rulehandler_config, p_rule_set_configs=p_ruleset_configs)
         a_rule_handler.register_context_rule_handler(p_context_rule_handler=default_context_rule_handler,
                                                      p_default=True)
         a_rule_handler.register_context_rule_handler(p_context_rule_handler=weekend_context_rule_handler)

@@ -60,15 +60,28 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         self.check_list_has_n_elements(p_list=events, p_n=0)
 
 
-    def test_single_process_active(self):
+    @staticmethod
+
+    def get_dummy_process_handler(p_reference_time=None, p_processes=test_data.PROCESSES_1):
+
+        if p_reference_time is None:
+            p_reference_time = test_data.START_TIME_1 + datetime.timedelta(seconds=1)
+
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes=test_data.PROCESSES_1, p_uid_map=test_data.UID_MAP)
+            p_processes=p_processes, p_uid_map=test_data.UID_MAP)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
         process_handler = client_process_handler.ClientProcessHandler(p_config=config,
                                                                       p_process_iterator_factory=process_iterator_factory)
-        process_iterator_factory.set_reference_time(
-            p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=1))
+        process_iterator_factory.set_reference_time(p_reference_time=p_reference_time)
+
+        return process_handler
+
+
+    def test_single_process_active(self):
+
+        process_handler = self.get_dummy_process_handler()
+
         events = process_handler.scan_processes(p_uid_map=test_data.UID_MAP, p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())

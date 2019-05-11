@@ -19,11 +19,11 @@ import psutil
 
 from little_brother import app_control
 from little_brother import audio_handler
-from little_brother import popup_handler
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import master_connector
 from little_brother import persistence
+from little_brother import popup_handler
 from little_brother import rule_handler
 from little_brother import status_server
 from python_base_app import base_app
@@ -34,34 +34,35 @@ DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 DEFAULT_APPLICATION_OWNER = 'little-brother'
 
+
 class AppConfigModel(base_app.BaseAppConfigModel):
 
     def __init__(self):
-
         super(AppConfigModel, self).__init__(APP_NAME)
 
         self.check_interval = base_app.DEFAULT_TASK_INTERVAL
 
 
 def get_argument_parser(p_app_name):
-
     parser = base_app.get_argument_parser(p_app_name=p_app_name)
     parser.add_argument('--create-databases', dest='create_databases', action='store_const', const=True, default=False,
-        help='Creates database and database tables')
+                        help='Creates database and database tables')
     return parser
 
 
 class ProcessIteratorFactory(object):
 
-    def process_iter(self):
+    @staticmethod
+    def process_iter():
         return psutil.process_iter()
+
 
 class App(base_app.BaseApp):
 
-
     def __init__(self, p_pid_file, p_arguments, p_app_name):
 
-        super(App, self).__init__(p_pid_file=p_pid_file, p_arguments=p_arguments, p_app_name=p_app_name, p_dir_name=DIR_NAME)
+        super(App, self).__init__(p_pid_file=p_pid_file, p_arguments=p_arguments, p_app_name=p_app_name,
+                                  p_dir_name=DIR_NAME)
 
         self._notification_handlers = []
         self._status_server = None
@@ -79,10 +80,10 @@ class App(base_app.BaseApp):
         app_control_section = app_control.AppControlConfigModel()
         p_configuration.add_section(app_control_section)
 
-        audio_handler_section = audio_handler.AudioHandlerConfigModel()        
+        audio_handler_section = audio_handler.AudioHandlerConfigModel()
         p_configuration.add_section(audio_handler_section)
 
-        popup_handler_section = popup_handler.PopupHandlerConfigModel()        
+        popup_handler_section = popup_handler.PopupHandlerConfigModel()
         p_configuration.add_section(popup_handler_section)
 
         persistence_section = persistence.PersistenceConfigModel()
@@ -118,7 +119,7 @@ class App(base_app.BaseApp):
 
         return self._config[master_connector.SECTION_NAME].host_url is None
 
-    def prepare_services(self, p_full_startup = True):
+    def prepare_services(self, p_full_startup=True):
 
         device_handler = None
 
@@ -132,7 +133,7 @@ class App(base_app.BaseApp):
         if self.is_master():
             self._rule_handler = rule_handler.RuleHandler(
                 p_config=self._config[rule_handler.SECTION_NAME],
-                p_rule_set_configs = self._rule_set_section_handler.rule_set_configs)
+                p_rule_set_configs=self._rule_set_section_handler.rule_set_configs)
 
         self._master_connector = master_connector.MasterConnector(
             p_config=self._config[master_connector.SECTION_NAME])
@@ -152,13 +153,12 @@ class App(base_app.BaseApp):
             p_process_iterator_factory=ProcessIteratorFactory())
 
         self._process_handlers = {
-            process_handler.id : process_handler
-            }
+            process_handler.id: process_handler
+        }
 
         client_device_configs = self._client_device_section_handler.client_device_configs
 
         if len(client_device_configs) > 0:
-
             fmt = "Found {count} client device configuration entry/ies -> activating client device handler"
             self._logger.info(fmt.format(count=len(client_device_configs)))
 
@@ -178,19 +178,22 @@ class App(base_app.BaseApp):
             p_rule_set_configs=self._rule_set_section_handler.rule_set_configs,
             p_master_connector=self._master_connector)
 
-        task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)", p_handler_method=lambda : self._app_control.scan_processes(p_process_handler=process_handler), p_interval=process_handler._config.check_interval)
+        task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
+                                      p_handler_method=lambda: self._app_control.scan_processes(
+                                          p_process_handler=process_handler),
+                                      p_interval=process_handler._config.check_interval)
         self.add_recurring_task(p_recurring_task=task)
 
         if device_handler:
             task = base_app.RecurringTask(
                 p_name="app_control.scan_processes(DeviceHandler)",
-                p_handler_method=lambda : self._app_control.scan_processes(p_process_handler=device_handler),
+                p_handler_method=lambda: self._app_control.scan_processes(p_process_handler=device_handler),
                 p_interval=device_handler._config.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
         if self._config[status_server.SECTION_NAME].is_active():
             self._status_server = status_server.StatusServer(
-                p_config = self._config[status_server.SECTION_NAME],
+                p_config=self._config[status_server.SECTION_NAME],
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
@@ -203,7 +206,6 @@ class App(base_app.BaseApp):
         else:
             msg = "Slave instance will not start webserver due to missing port number"
             self._logger.warn(msg)
-
 
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control._config.check_interval)
@@ -218,7 +220,6 @@ class App(base_app.BaseApp):
 
         return False
 
-
     def start_services(self):
 
         if self._status_server is not None:
@@ -226,7 +227,6 @@ class App(base_app.BaseApp):
 
         if self._app_control is not None:
             self._app_control.start()
-
 
     def stop_services(self):
 
@@ -244,11 +244,12 @@ class App(base_app.BaseApp):
         fmt = "Shutting down services -- END"
         self._logger.info(fmt)
 
-def main():
 
+def main():
     parser = get_argument_parser(p_app_name=APP_NAME)
 
     return base_app.main(p_app_name=APP_NAME, p_app_class=App, p_argument_parser=parser)
+
 
 if __name__ == '__main__':
     exit(main())

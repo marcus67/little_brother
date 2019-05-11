@@ -15,8 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from builtins import property
-
 from python_base_app import log_handling
 from python_base_app import tools
 
@@ -252,15 +250,16 @@ class ProcessStatisticsInfo(object):
 
     def __str__(self):
 
-        return "StatInfo (user=%s, today:%d[s], yesterday:%d[s], ref-time:%s, previous %s, current %s, secs-since-last-activity:%s)" % (
-            self.username,
-            self.day_statistics[0].duration,
-            self.day_statistics[1].duration,
-            tools.get_timestamp_as_string(p_timestamp=self.reference_time),
-            str(self.previous_activity) if self.previous_activity is not None else "---",
-            str(self.current_activity) if self.current_activity is not None else "---",
-            tools.get_duration_as_string(p_seconds=self.seconds_since_last_activity)
-        )
+        return "StatInfo (user=%s, today:%d[s], yesterday:%d[s], ref-time:%s, previous %s, "\
+               "current %s, secs-since-last-activity:%s)" % (
+                    self.username,
+                    self.day_statistics[0].duration,
+                    self.day_statistics[1].duration,
+                    tools.get_timestamp_as_string(p_timestamp=self.reference_time),
+                    str(self.previous_activity) if self.previous_activity is not None else "---",
+                    str(self.current_activity) if self.current_activity is not None else "---",
+                    tools.get_duration_as_string(p_seconds=self.seconds_since_last_activity)
+                )
 
 
 def get_empty_stat_infos(
