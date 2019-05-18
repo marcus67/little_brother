@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  little-brother\n"
 "Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
-"POT-Creation-Date: 2019-05-04 22:29+0200\n"
+"POT-Creation-Date: 2019-05-19 01:49+0200\n"
 "PO-Revision-Date: 2019-02-27 23:25+0100\n"
 "Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
 "Language: de\n"
@@ -27,25 +27,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:130
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 msgid "{days} days ago"
 msgstr "Vor {days} Tagen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:927
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:47
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:136
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:948
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
 msgid "Today"
 msgstr "Heute"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:137
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:135
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:139
 msgid "{user}, you do not have computer time left today. You will be logged out."
 msgstr "{user}, Du hast heute keine Spielzeit mehr. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:136
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:140
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today. "
 "Please, log out."
@@ -53,19 +53,19 @@ msgstr ""
 "{user}, du hast heute nur noch {minutes_left_before_logout} Minuten "
 "Spielzeit übrig. Bitte logge Dich aus."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:137
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:142
 msgid "{user}, you do not have any computer time today. You will be logged out."
 msgstr "{user}, Du hast heute überhaupt keine Spielzeit. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:138
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:143
 msgid "{user}, it is too early to use the computer. You will be logged out."
 msgstr "{user}, es ist zu früh, um den Computer zu benutzen. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:139
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:144
 msgid "{user}, it is too late to use the computer. You will be logged out."
 msgstr "{user}, es ist zu spät, um den Computer zu benutzen. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:140
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:145
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer. Please, log out."
@@ -73,11 +73,11 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} Minuten ist es zu spät, um den "
 "Computer zu benutzen. Bitte logge Dich aus."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:141
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
 msgid "{user}, you have to take a break. You will be logged out."
 msgstr "{user}, Du musst eine Pause machen. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:142
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break. Please, log out."
@@ -85,7 +85,7 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} Minuten musst Du eine Pause "
 "machen. Bitte logge Dich aus."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:143
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes. You"
 " will be logged out."
@@ -93,7 +93,7 @@ msgstr ""
 "{user}, Deine Pause ist erst in {break_minutes_left} Minuten vorbei. Du "
 "wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:144
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes in this session."
@@ -101,30 +101,30 @@ msgstr ""
 "Hallo {user}, Du darfst in dieser Sitzung {minutes_left_in_session} "
 "Minuten lang spielen."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:145
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:154
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Hallo {user}, Du darfst in dieser Sitzung unbegrenzt lange spielen."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:926
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:947
 #, python-format
 msgid "Today ({day:%%a})"
 msgstr "Heute ({day:%%a})"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:930
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:951
 #, python-format
 msgid "Tomorrow ({day:%%a})"
 msgstr "Morgen ({day:%%a})"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:931
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:952
 msgid "Tomorrow"
 msgstr "Morgen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:934
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:955
 #, python-format
 msgid "{day:%%Y-%%m-%%d (%%a)}"
 msgstr "{day:%%d.%%m.%%Y (%%a)}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:935
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:956
 #, python-format
 msgid "{day:%%A}"
 msgstr "{day:%%A}"
@@ -133,71 +133,71 @@ msgstr "{day:%%A}"
 msgid "vacation"
 msgstr "Ferien"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:301
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:310
 msgid "No activity before {hh_mm} hours"
 msgstr "Keine Aktivität vor {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:308
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:317
 msgid "No activity after {hh_mm} hours"
 msgstr "Keine Aktivität nach {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:325
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:338
 msgid "Day blocked: no activity permitted"
 msgstr "Keine Aktivität an diesem Tag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:331
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:344
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Aktivität auf {hh_mm} pro Tag beschränkt"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:353
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:370
 msgid "No activity exceeding {hh_mm}"
 msgstr "Nicht mehr als {hh_mm} Aktivität am Tag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:381
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:404
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "Minimale Pause von {hh_mm} nicht erreicht"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
 msgid "default"
 msgstr "Standard"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:26
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
 msgid "weekday"
 msgstr "Wochentags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
 msgid "weekend"
 msgstr "Wochenende"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
 msgid "weekdays"
 msgstr "wochentags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
 msgid "mondays"
 msgstr "montags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
 msgid "tuesdays"
 msgstr "dienstags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
 msgid "wednesdays"
 msgstr "mittwochs"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
 msgid "thursdays"
 msgstr "donnerstags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
 msgid "fridays"
 msgstr "freitags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
 msgid "saturdays"
 msgstr "samstags"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:39
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
 msgid "sundays"
 msgstr "sonntags"
 
@@ -264,7 +264,7 @@ msgid "Show configurations of upcoming days"
 msgstr "Zeige Konfigurationen für kommende Tage"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:66
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:47
 msgid "Today's Activity"
 msgstr "Heutige Aktivität"
 
@@ -273,7 +273,7 @@ msgid "Save"
 msgstr "Sichern"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:80
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:92
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:100
 msgid "Day"
 msgstr "Tag"
 
@@ -319,59 +319,71 @@ msgstr "ersetzt"
 msgid "Status"
 msgstr "Status"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:50
 msgid "Previous Activity Start Time"
 msgstr "Letzte Startzeit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:51
 msgid "Previous Activity End Time"
 msgstr "Letzte Endzeit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:50
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
 msgid "Current Activity Start Time"
 msgstr "Aktuelle Startzeit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:51
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:54
 msgid "Current Activity Duration"
 msgstr "Aktuelle Dauer"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
 msgid "Current"
 msgstr "Aktuell"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:57
 msgid "Activity permitted"
 msgstr "Aktivität erlaubt"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:54
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
 msgid "OK?"
 msgstr "OK?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:60
 msgid "Reasons"
 msgstr "Gründe"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:62
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:66
 msgid "Show durations of most recent days"
 msgstr "Zeige Dauern für letzte Tage"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:93
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:101
 msgid "Active Time"
 msgstr "Aktiv für"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:94
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:102
+msgid "Active"
+msgstr "Aktiv"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:103
 msgid "Activity Start"
-msgstr "Start Aktivität"
+msgstr "Aktiv von"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:95
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:104
+msgid "Start"
+msgstr "Von"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:105
 msgid "Activity End"
-msgstr "Ende Aktivität"
+msgstr "Aktiv bis"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:96
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:106
+msgid "End"
+msgstr "Bis"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:107
 msgid "Host(#procs)"
 msgstr "Host(#Proz)"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:104
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
 msgid "Show activity times"
 msgstr "Zeige Aktivitätszeiten"
 

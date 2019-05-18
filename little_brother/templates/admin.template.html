@@ -105,8 +105,8 @@
 					    		<DIV CLASS="col-xs-3 col-md-1 {{ day_info.effective_rule_set.min_time_of_day_class }}">{{ day_info.effective_rule_set.min_time_of_day|time_to_string }}</DIV>
 					    		<DIV CLASS="col-xs-3 col-md-1 {{ day_info.effective_rule_set.max_time_of_day_class }}">{{ day_info.effective_rule_set.max_time_of_day|time_to_string }}</DIV>
 					    		<DIV CLASS="col-xs-3 col-md-1 {{ day_info.effective_rule_set.max_time_per_day_class }}">{{ day_info.effective_rule_set.max_time_per_day|seconds_to_string }}</DIV>
-					    		<DIV CLASS="col-xs-3 col-md-1 {{ day_info.effective_rule_set.min_break_class }}">{{ day_info.effective_rule_set.min_break|seconds_to_string }}</DIV>
-					    		<DIV CLASS="col-xs-3 col-md-1 {{ day_info.effective_rule_set.free_play_class }}">{{ day_info.effective_rule_set.free_play|boolean_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs {{ day_info.effective_rule_set.min_break_class }}">{{ day_info.effective_rule_set.min_break|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs {{ day_info.effective_rule_set.free_play_class }}">{{ day_info.effective_rule_set.free_play|boolean_to_string }}</DIV>
 					    		<DIV CLASS="col-md-2 hidden-xs"></DIV>
 					    	</DIV>    		
 					    {% call accordion.details() %}{{day_info.html_key}}{% endcall %}
@@ -118,8 +118,8 @@
 					    		<DIV CLASS="col-xs-3 col-md-1">{{ day_info.rule_set.min_time_of_day|time_to_string }}</DIV>
 					    		<DIV CLASS="col-xs-3 col-md-1">{{ day_info.rule_set.max_time_of_day|time_to_string }}</DIV>
 					    		<DIV CLASS="col-xs-3 col-md-1">{{ day_info.rule_set.max_time_per_day|seconds_to_string }}</DIV>
-					    		<DIV CLASS="col-xs-3 col-md-1">{{ day_info.rule_set.min_break|seconds_to_string }}</DIV>
-					    		<DIV CLASS="col-xs-3 col-md-1">{{ day_info.rule_set.free_play|boolean_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs">{{ day_info.rule_set.min_break|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs">{{ day_info.rule_set.free_play|boolean_to_string }}</DIV>
 					    		<DIV CLASS="col-md-2 hidden-xs"></DIV>
 					    	</DIV>
 				    		<DIV CLASS="row ROWLEVEL_4">
@@ -129,8 +129,8 @@
 					    		<DIV CLASS="col-xs-3 col-md-1">{{ helper.render_field(forms[day_info.html_key].min_time_of_day) }}</DIV>
 					    		<DIV CLASS="col-xs-3 col-md-1">{{ helper.render_field(forms[day_info.html_key].max_time_of_day) }}</DIV>
 					    		<DIV CLASS="col-xs-3 col-md-1">{{ helper.render_field(forms[day_info.html_key].max_time_per_day) }}</DIV>
-					    		<DIV CLASS="col-xs-3 col-md-1">{{ helper.render_field(forms[day_info.html_key].min_break) }}</DIV>
-					    		<DIV CLASS="col-xs-3 col-md-1">{{ helper.render_field(forms[day_info.html_key].free_play) }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs">{{ helper.render_field(forms[day_info.html_key].min_break) }}</DIV>
+					    		<DIV CLASS="col-md-1 hidden-xs">{{ helper.render_field(forms[day_info.html_key].free_play) }}</DIV>
 					    		<DIV CLASS="col-md-2 hidden-xs"></DIV>
 					    	</DIV>
 						{{ accordion.end() }}    	

@@ -95,6 +95,7 @@ UL {
 
 .CODE { font-family:monospace; }
 
+.center { text-align: center; }
 
 /* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
 
