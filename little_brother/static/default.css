@@ -72,10 +72,12 @@ DIV.STANDARD_TABLE DIV.TITLE_ROW DIV.COL { font-size:24px; text-align: center; }
 DIV.STANDARD_TABLE DIV.TITLE_ROW { background-color: #E2E2E2; font-weight:bold;  }
 
 DIV.STANDARD_TABLE DIV.ROWLEVEL_1 { background-color: #829eb8; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #92b1cd; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a3c4e3; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #afd1f1; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_5  { background-color: #bbdeff; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #99bbda; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a7cdef; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #d5ebff; }
+
+DIV.STANDARD_TABLE DIV.SEPERATOR_ROW       { height:2x; }
+DIV.STANDARD_TABLE DIV.SEPERATOR_ROW_LINE  { height:2x; background-color:black; }
 
 DIV.STANDARD_TABLE DIV.HEADER_ROW { background-color: #F2F2F2; }
 DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { border-bottom-style: solid; }
@@ -94,6 +96,8 @@ UL {
 }
 
 .CODE { font-family:monospace; }
+
+.CONTEXT { font-style:italic; }
 
 .center { text-align: center; }
 

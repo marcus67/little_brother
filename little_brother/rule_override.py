@@ -45,7 +45,7 @@ class RuleOverride(object):
         max_time = tools.get_time_as_string(p_timestamp=self.max_time_of_day)
         date = tools.get_date_as_string(p_date=self.reference_date)
         duration = tools.get_duration_as_string(p_seconds=self.max_time_per_day)
-        min_break = tools.get_duration_as_string(p_seconds=self.max_time_per_day)
+        min_break = tools.get_duration_as_string(p_seconds=self.min_break)
 
         return "Rule override (user=%s, date=%s, time-of-day=[%s to %s], "\
                "max-time-per-day:%s, min-break:%s, free-play:%s)" % (
