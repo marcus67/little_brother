@@ -90,3 +90,9 @@ def get_active_processes(p_start_time, p_end_time=None):
         process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                  p_pid=PID_1, p_start_time=p_start_time, p_end_time=p_end_time)
     ]
+
+def get_dummy_ruleset_configs(p_ruleset_config):
+
+    return {
+        USER_1: p_ruleset_config
+    }

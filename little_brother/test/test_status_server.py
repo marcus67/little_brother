@@ -59,13 +59,6 @@ class TestStatusServer(base_test.BaseTestCase):
         return process_handlers
 
     @staticmethod
-    def get_dummy_ruleset_configs(p_ruleset_config):
-
-        return {
-            test_data.USER_1: p_ruleset_config
-        }
-
-    @staticmethod
     def create_dummy_status_server(p_process_handlers=None, p_ruleset_configs=None):
 
         if p_process_handlers is None:
@@ -131,6 +124,7 @@ class TestStatusServer(base_test.BaseTestCase):
         _status_server.stop_server()
         _status_server.destroy()
 
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_about(self):
 
         _status_server = None
@@ -160,6 +154,7 @@ class TestStatusServer(base_test.BaseTestCase):
                 _status_server.stop_server()
                 _status_server.destroy()
 
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_without_process(self):
 
         _status_server = None
@@ -204,13 +199,14 @@ class TestStatusServer(base_test.BaseTestCase):
 
         return _status_server
 
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_with_process_no_restrictions(self):
 
         _status_server = None
 
         try:
 
-            ruleset_configs = self.get_dummy_ruleset_configs(
+            ruleset_configs = test_data.get_dummy_ruleset_configs(
                 p_ruleset_config=test_data.RULESET_CONFIGS_USER1_NO_RESTRICTIONS)
             _status_server = self.get_status_server_using_ruleset_configs(ruleset_configs)
 
@@ -231,13 +227,14 @@ class TestStatusServer(base_test.BaseTestCase):
             _status_server.stop_server()
             _status_server.destroy()
 
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_with_process_all_restrictions(self):
 
         _status_server = None
 
         try:
 
-            ruleset_configs = self.get_dummy_ruleset_configs(
+            ruleset_configs = test_data.get_dummy_ruleset_configs(
                 p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
             _status_server = self.get_status_server_using_ruleset_configs(ruleset_configs)
 
@@ -258,6 +255,7 @@ class TestStatusServer(base_test.BaseTestCase):
             _status_server.stop_server()
             _status_server.destroy()
 
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_admin_without_process(self):
 
         _status_server = None
@@ -303,12 +301,13 @@ class TestStatusServer(base_test.BaseTestCase):
             _status_server.stop_server()
             _status_server.destroy()
 
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_admin_with_process(self):
 
         _status_server = None
 
         try:
-            ruleset_configs = self.get_dummy_ruleset_configs(
+            ruleset_configs = test_data.get_dummy_ruleset_configs(
                 p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
             _status_server = self.get_status_server_using_ruleset_configs(ruleset_configs)
 

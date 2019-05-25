@@ -21,8 +21,11 @@
 import datetime
 import unittest
 
+from little_brother import process_info
 from little_brother import process_statistics
 from python_base_app.test import base_test
+
+from little_brother.test import test_data
 
 HOSTNAME = "hostname"
 HOSTNAME2 = "hostname2"
@@ -162,6 +165,85 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertIn(HOSTNAME, ds.host_process_counts)
         self.assertEqual(ds.host_process_counts[HOSTNAME], 1)
 
+    def test_process_statistics_info_add_process_with_end_time(self):
+
+        start_time = datetime.datetime.utcnow()
+        end_time = start_time + datetime.timedelta(seconds=60)
+        psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
+                                                       p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                       p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        self.assertEqual(psi.active_processes, 0)
+
+        pi = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_processhandler=None,
+                                      p_processname=PROCESS_NAME, p_pid=PID, p_start_time=start_time,
+                                      p_end_time=end_time)
+
+        psi.add_process_start(p_process_info=pi, p_start_time=pi.start_time)
+
+        self.assertEqual(psi.active_processes, 1)
+
+        psi.add_process_end(p_process_info=pi, p_end_time=pi.end_time)
+
+        self.assertEqual(psi.active_processes, 0)
+
+    def test_process_statistics_info_add_process_without_end_time(self):
+
+        start_time = datetime.datetime.utcnow()
+        end_time = start_time + datetime.timedelta(seconds=60)
+        psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
+                                                       p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                       p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        self.assertEqual(psi.active_processes, 0)
+
+        pi = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_processhandler=None,
+                                      p_processname=PROCESS_NAME, p_pid=PID, p_start_time=start_time,
+                                      p_end_time=None)
+
+        psi.add_process_start(p_process_info=pi, p_start_time=pi.start_time)
+
+        self.assertEqual(psi.active_processes, 1)
+
+        psi.add_process_end(p_process_info=pi, p_end_time=pi.end_time)
+
+        self.assertEqual(psi.active_processes, 0)
+
+    def test_process_statistics_info_str(self):
+
+        start_time = datetime.datetime.utcnow()
+        psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
+                                                       p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                       p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        self.assertIsNotNone(str(psi))
+
+    def test_process_statistics_get_empty_stat_infos(self):
+
+        start_time = datetime.datetime.utcnow()
+        rule_set_configs = test_data.get_dummy_ruleset_configs(p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+        sis = process_statistics.get_empty_stat_infos(
+            p_rule_set_configs=rule_set_configs,
+            p_reference_time=start_time,
+            p_max_lookback_in_days=5,
+            p_min_activity_duration=30)
+
+        self.assertIsNotNone(sis)
+
+    def test_get_process_statistics(self):
+
+        start_time = datetime.datetime.utcnow()
+        rule_set_configs = test_data.get_dummy_ruleset_configs(
+            p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+
+        pss = process_statistics.get_process_statistics(
+            p_rule_set_configs=rule_set_configs,
+            p_process_infos=test_data.PROCESSES_1,
+            p_reference_time=start_time,
+            p_max_lookback_in_days=5,
+            p_min_activity_duration=30)
+
+        self.assertIsNotNone(pss)
 
 if __name__ == "__main__":
     unittest.main()
