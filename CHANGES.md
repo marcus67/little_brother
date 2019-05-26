@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 34 (May 26th, 2019)
+
+*   Closes #13, see [here](https://github.com/marcus67/little_brother/issues/13)
+*   Improve test coverage.
+*   Choose better colors grades for nested rows in admin and index pages
+
 ## Version 0.1 Revision 33 (May 11th, 2019)
 
 *   Boost test coverage.

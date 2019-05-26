@@ -84,6 +84,15 @@ PROCESSES_2 = [
     PINFO_2
 ]
 
+PROCESSES_3 = [
+    PINFO_3
+]
+
+def get_process_dict(p_processes):
+
+    return { process.get_key() : process for process in p_processes}
+
+
 
 def get_active_processes(p_start_time, p_end_time=None):
     return [

@@ -46,7 +46,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
     def test_single_process_before(self):
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes=test_data.PROCESSES_1, p_uid_map=test_data.UID_MAP)
+            p_processes= test_data.PROCESSES_1, p_uid_map=test_data.UID_MAP)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
         process_handler = client_process_handler.ClientProcessHandler(p_config=config,

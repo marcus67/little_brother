@@ -238,7 +238,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
 
         pss = process_statistics.get_process_statistics(
             p_rule_set_configs=rule_set_configs,
-            p_process_infos=test_data.PROCESSES_1,
+            p_process_infos=test_data.get_process_dict(p_processes=test_data.PROCESSES_3),
             p_reference_time=start_time,
             p_max_lookback_in_days=5,
             p_min_activity_duration=30)
