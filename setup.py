@@ -61,7 +61,7 @@ setup_params = {
     "debian_extra_files": [
         ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
         ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
-        ("etc/ruleset_handler.test.config", "etc/little-brother/ruleset_handler.test.config"),
+        ("etc/multi-rule-master.config", "etc/little-brother/multi-rule-master.config"),
     ]
 
 }
