@@ -72,6 +72,14 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
+        p_test_unit_class=test_rule_handler.TestRuleSetConfigModel, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_rule_handler.TestRulesectionHandler, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
         p_test_unit_class=test_persistence.TestPersistence, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(

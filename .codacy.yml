@@ -1,0 +1,9 @@
+engines:
+ duplication:
+   enabled: true
+   exclude_paths:
+     - little_brother/test/**
+
+exclude_paths:
+  - 'little_brother/templates/**'
+  - 'little_brother/static/contrib/**'
