@@ -162,7 +162,7 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
         a_config_model.process_name_pattern = "*"
 
         with self.assertRaises(configuration.ConfigurationException) as context:
-            a_config_model.regex_process_name_pattern
+            a_config_model.regex_process_name_pattern()
 
         self.assertIn("Invalid process REGEX", str(context.exception))
 
@@ -231,7 +231,7 @@ class TestRulesectionHandler(base_test.BaseTestCase):
         a_rule_set_section_handler = rule_handler.RuleSetSectionHandler()
         a_configuration.register_section_handler(p_section_handler=a_rule_set_section_handler)
 
-        filename = os.path.join(os.path.dirname(__file__), "etc/ruleset_handler.test.config")
+        filename = os.path.join(os.path.dirname(__file__), "resources/ruleset_handler.test.config")
         a_configuration.read_config_file(p_filename=filename)
 
         ruleset_configs = a_rule_set_section_handler.rule_set_configs

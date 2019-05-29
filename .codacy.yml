@@ -1,8 +1,8 @@
 engines:
- duplication:
-   enabled: true
-   exclude_paths:
-     - little_brother/test/**
+  duplication:
+    enabled: true
+    exclude_paths:
+      - little_brother/test/**
 
 exclude_paths:
   - 'little_brother/templates/**'
