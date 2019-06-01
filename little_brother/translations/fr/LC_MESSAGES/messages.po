@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  little-brother\n"
 "Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
-"POT-Creation-Date: 2019-05-19 01:49+0200\n"
+"POT-Creation-Date: 2019-06-02 00:51+0200\n"
 "PO-Revision-Date: 2019-03-01 22:28+0100\n"
 "Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
 "Language: fr\n"
@@ -284,23 +284,23 @@ msgstr ""
 msgid "Time per Day"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:85
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
 msgid "Minimum Break"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:86
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
 msgid "Free Play"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:97
 msgid "Show overrides for day"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:104
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:107
 msgid "effective"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:128
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:135
 msgid "override"
 msgstr ""
 

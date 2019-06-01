@@ -4,12 +4,16 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.1 Revision 35 (May 29th, 2019)
+## Version 0.1 Revision 37 (May 29th, 2019)
+
+*   Prepare pybabel files for Italian
+
+## Version 0.1 Revision 36 (May 29th, 2019)
 
 *   Closes #51, see [here](https://github.com/marcus67/little_brother/issues/51)
 *   Change defaults for database driver (to match preploaded PIP package for mysql)
 
-## Version 0.1 Revision 36 (June 1st, 2019)
+## Version 0.1 Revision 35 (June 1st, 2019)
 
 *   Closes #9, see [here](https://github.com/marcus67/little_brother/issues/9)
 *   Closes #50, see [here](https://github.com/marcus67/little_brother/issues/50)

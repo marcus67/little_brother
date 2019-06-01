@@ -372,3 +372,19 @@ The `[StatusServer]` configuration section of the master host should contain the
     ...
     proxy_prefix=/LittleBrother
     ...
+
+## Internationalization
+
+The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend, Currently, 
+the following languages are supported/prepared:
+
+| Language | Locale | Status    | Translation provided by |
+| -------- | ------ | --------- | ------------------------|
+| English  | en     | Available |  Marcus Rickert         |
+| German   | de     | Available |  Marcus Rickert         |
+| French   | fr     | Prepapred |  N.N.                   |
+| Italian  | it     | Prepapred |  N.N.                   |
+
+Your help with translations is greatly appreciated. Please, contact the author if you are interested in providing
+a translation. You do not necessarily have to clone this repository or be familiar with Python to do so.
+ 
