@@ -88,7 +88,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def __init__(self, p_config, p_client_device_configs):
 
-        super()._init__(p_config=p_config)
+        super().__init__(p_config=p_config)
         self._client_device_configs = p_client_device_configs
 
         try:

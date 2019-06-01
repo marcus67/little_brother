@@ -97,9 +97,9 @@ class PersistenceConfigModel(configuration.ConfigModel):
 
     def __init__(self):
         super(PersistenceConfigModel, self).__init__(SECTION_NAME)
-        self.database_driver = 'postgresql'
+        self.database_driver = 'mysql+pymysql'
         self.database_host = 'localhost'
-        self.database_port = 5432
+        self.database_port = 3306
         self.database_name = 'little_brother'
         self.database_user = 'little_brother'
         self.database_password = None

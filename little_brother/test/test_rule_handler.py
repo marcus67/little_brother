@@ -162,7 +162,7 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
         a_config_model.process_name_pattern = "*"
 
         with self.assertRaises(configuration.ConfigurationException) as context:
-            a_config_model.regex_process_name_pattern()
+            _a_pattern = a_config_model.regex_process_name_pattern
 
         self.assertIn("Invalid process REGEX", str(context.exception))
 
