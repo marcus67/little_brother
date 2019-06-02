@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 38 (June 2nd, 2019)
+
+*   Small changes in README.md and sample configuration file reflecting test installation 
+    from scratch on Ubuntu 18.10.
+
 ## Version 0.1 Revision 37 (May 29th, 2019)
 
 *   Prepare pybabel files for Italian

@@ -119,6 +119,14 @@ about which processes ("games") are being monitored for which user are held in W
 sections. These rules are regarded as "slow changing" so these settings files (hopefully) need not be changed 
 very often and justify this solution at least in one of the early release versions of the application.   
 
+## Tested Distributions ##
+
+| Distribution | Version   | Comments                                                               | Most Recent Test |
+| ------------ | --------- | ---------------------------------------------------------------------- | ---------------- |
+| Ubuntu       | 18.10     | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
+| Debian       | testing   |                                                                        | 02.JUN.2019      |
+
+
 ## Quick Install
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
@@ -129,8 +137,18 @@ on your system.
 The application is available as a Debian package 
 from the [`release`](https://sourceforge.net/projects/little-brother/files/release/) directory at SourceForge. 
 The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/master/) directory. 
-Install it as you would install any other
-Debian package.  After installation the system (`systemctl`) will try to start the application right away. 
+Install it as you would install any other Debian package with
+
+    dpkg -i PACKAGE.deb
+    apt-get install -f
+
+Note that the second command is required to install missing dependencies since `dpkg` does not run a dependency check.
+Instead, it will return with an error which will then be "fixed" by `apt-get`. Unless the system has an update-to-date 
+`pip3` installation the command `apt-get install -f` has to be run twice since the first time `pip3` will be upgraded
+and only the second time `pip3` will be available to install all required PIP packages. See issue
+https://github.com/marcus67/little_brother/issues/53.
+
+After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
 
 ### Configure the Software
@@ -159,7 +177,7 @@ You will have to make at least the following adaptation:
 Once your configuration is complete you will have to create the database scheme. This is done by calling the application
 with a specific option and passing the credentials of the database admin user:
 
-    run_little_brother.py --create-databases --option persistence.database_admin=ADMINUSER --option persistence.database_admin_password=PASSWORD
+    run_little_brother.py --config /etc/little-brother/little-brother.config --create-databases --option Persistence.database_admin=ADMINUSER Persistence.database_admin_password=PASSWORD
 
 Note that you can also configure the credentials in the configuration file although this is not recommended since the
 admin credentials are ONLY required during the creation of the database should be exposed a little as possible.
