@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 39 (June 5th, 2019)
+
+*   [Albano Battistella](https://github.com/albanobattistella) provided the Italian translation. Thanks! 
+*   Fixed some typos in the README file.
+
 ## Version 0.1 Revision 38 (June 2nd, 2019)
 
 *   Small changes in README.md and sample configuration file reflecting test installation 

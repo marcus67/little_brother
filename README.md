@@ -10,7 +10,7 @@ This project is still under construction. Please, bear with me. Thanks!
 
 `LittleBrother` is a simple parental control application monitoring specific processes (read "games") on Linux hosts
 to monitor and limit the play time of (young) children. It is designed as a client server application running
-on several hosts and combining playtimes spent across these hosts but it also works on a standalone host.
+on several hosts and combining playing time spent across these hosts but it also works on a standalone host.
 
 When the application determines that a user has exceeded her play time it will terminate the configured 
 process. Usually, the user will get several spoken warnings before she is actually kicked out so that she 
@@ -119,7 +119,7 @@ about which processes ("games") are being monitored for which user are held in W
 sections. These rules are regarded as "slow changing" so these settings files (hopefully) need not be changed 
 very often and justify this solution at least in one of the early release versions of the application.   
 
-## Tested Distributions ##
+## Tested Distributions
 
 | Distribution | Version   | Comments                                                               | Most Recent Test |
 | ------------ | --------- | ---------------------------------------------------------------------- | ---------------- |
@@ -136,8 +136,8 @@ on your system.
 
 The application is available as a Debian package 
 from the [`release`](https://sourceforge.net/projects/little-brother/files/release/) directory at SourceForge. 
-The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/master/) directory. 
-Install it as you would install any other Debian package with
+The latest build is available from the [`master`](https://sourceforge.net/projects/little-brother/files/master/) 
+directory. Install it as you would install any other Debian package with
 
     dpkg -i PACKAGE.deb
     apt-get install -f
@@ -145,8 +145,8 @@ Install it as you would install any other Debian package with
 Note that the second command is required to install missing dependencies since `dpkg` does not run a dependency check.
 Instead, it will return with an error which will then be "fixed" by `apt-get`. Unless the system has an update-to-date 
 `pip3` installation the command `apt-get install -f` has to be run twice since the first time `pip3` will be upgraded
-and only the second time `pip3` will be available to install all required PIP packages. See issue
-https://github.com/marcus67/little_brother/issues/53.
+and only the second time `pip3` will be available to install all required PIP packages. 
+See [pip3 issue](https://github.com/marcus67/little_brother/issues/53).
 
 After installation the system (`systemctl`) will try to start the application right away. 
 This will fail, however, since no valid configuration is available.
@@ -156,13 +156,15 @@ This will fail, however, since no valid configuration is available.
 There are several template files (see directory `/etc/little-brother`) which can be used as a basis for 
 your concrete configuration:
 
-*   <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the application on a single host with a simple
-rule set to start with.
+*   <A HREF="etc/minimal-master.config">`minimal-master.config`</A>: A minimal configuration file to run the 
+    application on a single host with a simple rule set to start with.
 
-*   <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file featuring a realistic rule set.
+*   <A HREF="etc/multi-rule-master.config">`multi-rule-master.config`</A>: A more elaborate configuration file 
+    featuring a realistic rule set.
 
-*   <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the application on a client. This file is relatively simple
-since it only contains the details to connect to the master host.
+*   <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>: A minimal configuration file to run the 
+    application on a client. This file is relatively simple since it only contains the details to connect 
+    to the master host.
 
 Choose the configuration file that best fits your needs and rename it to `little-brother.conf`. Look
 at the commented entries and adapt them if required.
@@ -182,7 +184,7 @@ with a specific option and passing the credentials of the database admin user:
 Note that you can also configure the credentials in the configuration file although this is not recommended since the
 admin credentials are ONLY required during the creation of the database should be exposed a little as possible.
 
-### Start the Applicaton
+### Start the Application
 
 Use `systemctl` to start the application:
 
@@ -197,7 +199,8 @@ where `[PORT]` corresponds to the port number configured with setting
 
 ## Extended Rule Configuration
 
-For the time being all configuration regarding rules on who and what to monitor must be done in the configuration file. A graphical user interface for administrative may be a central extension of one the future releases. 
+For the time being all configuration regarding rules on who and what to monitor must be done in the configuration file. 
+A graphical user interface for administrative may be a central extension of one the future releases. 
 
 A minimum rule set for a single user consists of a single rule defining:
 
@@ -288,19 +291,19 @@ denotes the maximum response time (measured in milliseconds) a ping may have to 
 responsive. The effective delay is computed as moving average over the past `sample_size` response times.
 
 Note that `LittleBrother` is not able terminate any processes on the monitored devices so that the users
-may easily exceed their permitted access times there. However, any login time on these devices are added to
-the access times on the Linux hosts so that the remainig access time is still influenced. Also, the minimum
+may easily exceed their permitted access times there. However, any login times on these devices are added to
+the access times on the Linux hosts so that the remaining access time is still influenced. Also, the minimum
 break time will apply the point of time when the last other device became inactive.      
   
 ## Client Server Mode
 
-In addtion to the master host any number of slave hosts may be configured. The assumption is that the users
-to be monitored have login permission to all those hosts and that the usernames on all hosts match. In this
+In addition to the master host any number of slave hosts may be configured. The assumption is that the users
+to be monitored have login permission to all those hosts and that the user names on all hosts match. In this
 case access times on all hosts are communicated to the master host and accumulated there. The master will
-apply the rule sets and determine which users have execeeded their access times. 
+apply the rule sets and determine which users have exceeded their access times. 
 
 A host is configured as slave by providing the `host_url` field in the `[MasterConnector]` section. 
-The slaves actively contact the master. The master has no knowlegde of the slaves beforehand. See below.
+The slaves actively contact the master. The master has no knowledge of the slaves beforehand. See below.
  
     [MasterConnector]
     host_url=http://localhost:5560
@@ -400,8 +403,8 @@ the following languages are supported/prepared:
 | -------- | ------ | --------- | ------------------------|
 | English  | en     | Available |  Marcus Rickert         |
 | German   | de     | Available |  Marcus Rickert         |
-| French   | fr     | Prepapred |  N.N.                   |
-| Italian  | it     | Prepapred |  N.N.                   |
+| Italian  | it     | Available |  Albano Battistella     |
+| French   | fr     | Prepared  |  N.N.                   |
 
 Your help with translations is greatly appreciated. Please, contact the author if you are interested in providing
 a translation. You do not necessarily have to clone this repository or be familiar with Python to do so.

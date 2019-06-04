@@ -35,6 +35,7 @@ LANGUAGES = {
     'en': 'English',
     'de': 'Deutsch',
     'fr': 'Français',
+    'it': 'Italiano',
 }
 
 SECTION_NAME = "StatusServer"
