@@ -132,6 +132,13 @@ very often and justify this solution at least in one of the early release versio
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
 on your system.
 
+### YouTube Video
+
+There is a YouTube video showing some of the steps below for an Ubuntu 18 target system:
+
+<A HREF="https://www.youtube.com/watch?v=Skb5Hz0XZuA"><IMG SRC="doc/youtube-presentations/2019-06-09_LittleBrother_YouTube_Presentation.thumb.png"></A>
+ 
+
 ### Download the Software
 
 The application is available as a Debian package 

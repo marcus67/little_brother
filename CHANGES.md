@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 40 (June 9th, 2019)
+
+*   Actually committed the Italian localization (files were missing, mea culpa) 
+*   Corrected name of fourth popup tool in sample configuration files
+*   Added YouTube presentation
+
 ## Version 0.1 Revision 39 (June 5th, 2019)
 
 *   [Albano Battistella](https://github.com/albanobattistella) provided the Italian translation. Thanks! 
@@ -21,7 +27,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.1 Revision 36 (May 29th, 2019)
 
 *   Closes #51, see [here](https://github.com/marcus67/little_brother/issues/51)
-*   Change defaults for database driver (to match preploaded PIP package for mysql)
+*   Change defaults for database driver (to match pre-loaded PIP package for mysql)
 
 ## Version 0.1 Revision 35 (June 1st, 2019)
 
