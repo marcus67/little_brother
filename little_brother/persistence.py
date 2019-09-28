@@ -79,6 +79,7 @@ class RuleOverride(Base):
     max_time_of_day = Column(Time)
     min_break = Column(Integer)
     free_play = Column(Boolean)
+    max_activity_duration = Column(Integer)
 
 
 def copy_attributes(p_from, p_to):
@@ -159,6 +160,15 @@ class Persistence(object):
 
             self._admin_engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
 
+        url = self.build_url()
+
+        fmt = "Database URL for normal access: '%s'" % tools.anonymize_url(url)
+        self._logger.info(fmt)
+
+        self._engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
+
+    def build_url(self):
+
         if self._config.database_user is not None:
             url = urllib.parse.urlunsplit(
                 (
@@ -173,10 +183,8 @@ class Persistence(object):
         else:
             url = "{driver}://".format(driver=self._config.database_driver)
 
-        fmt = "Database URL for normal access: '%s'" % tools.anonymize_url(url)
-        self._logger.info(fmt)
+        return url
 
-        self._engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
 
     def get_admin_session(self):
         if self._admin_session is None:
@@ -200,7 +208,7 @@ class Persistence(object):
 
         return sqlalchemy.orm.sessionmaker(bind=self._engine)()
 
-    def create_mysql(self):
+    def create_mysql(self, p_create_tables):
         fmt = "Creating database '%s'" % self._config.database_name
         self._logger.info(fmt)
 
@@ -238,12 +246,13 @@ class Persistence(object):
             fmt = "Access already granted"
             self._logger.info(fmt)
 
-        Base.metadata.create_all(self._engine)
+        if p_create_tables:
+            Base.metadata.create_all(self._engine)
 
     def init_mysql(self):
         pass
 
-    def create_postgresql(self):
+    def create_postgresql(self, p_create_tables):
 
         fmt = "Creating user %s" % self._config.database_user
         self._logger.info(fmt)
@@ -268,26 +277,28 @@ class Persistence(object):
             self._logger.info(fmt)
             return
 
-        Base.metadata.create_all(self._engine)
+        if p_create_tables:
+            Base.metadata.create_all(self._engine)
 
-    def create_sqlite(self):
+    def create_sqlite(self, p_create_tables):
 
-        Base.metadata.create_all(self._engine)
+        if p_create_tables:
+            Base.metadata.create_all(self._engine)
 
-    def check_schema(self):
+    def check_schema(self, p_create_tables=True):
         if self._admin_engine is None and self._config.database_admin is not None:
             raise configuration.ConfigurationException(
-                "check_schema () called without [StatusCollector].database_admin "
-                "and [StatusCollector].database_admin_password set")
+                "check_schema () called without [Persistence].database_admin "
+                "and [Persistence].database_admin_password set")
 
         if DATABASE_DRIVER_POSTGRESQL in self._config.database_driver:
-            self.create_postgresql()
+            self.create_postgresql(p_create_tables=p_create_tables)
 
         elif DATABASE_DRIVER_MYSQL in self._config.database_driver:
-            self.create_mysql()
+            self.create_mysql(p_create_tables=p_create_tables)
 
         elif DATABASE_DRIVER_SQLITE in self._config.database_driver:
-            self.create_sqlite()
+            self.create_sqlite(p_create_tables=p_create_tables)
 
         else:
             raise ("Unknown database driver %s" % self._config.database_driver)

@@ -26,6 +26,7 @@ setup_params = {
     # standard setup configuration
 
     "install_requires": [
+        'alembic',
         'python_google_speak',
         'requests',
         'psutil',
@@ -35,6 +36,7 @@ setup_params = {
         'flask',
         'flask-login',
         'Flask-Babel',
+        'Flask-Migrate',
         'python-base-app',
         'flask_helpers',
         'pyttsx3',
@@ -47,6 +49,9 @@ setup_params = {
     "scripts": ["run_little_brother.py", "run_test_suite.py"],
     "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
+
+    # Target version to be used to upgrade the database
+    "target_alembic_version": "647cf46033a9",
 
     # additional setup configuration used by CI stages
 

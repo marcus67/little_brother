@@ -16,6 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import psutil
+import alembic.util.messaging
+import alembic.config
 
 from little_brother import app_control
 from little_brother import audio_handler
@@ -47,6 +49,8 @@ def get_argument_parser(p_app_name):
     parser = base_app.get_argument_parser(p_app_name=p_app_name)
     parser.add_argument('--create-databases', dest='create_databases', action='store_const', const=True, default=False,
                         help='Creates database and database tables')
+    parser.add_argument('--upgrade-databases', action="store", dest='upgrade_databases',
+                        help='Upgrades database to specific alembic version')
     return parser
 
 
@@ -213,12 +217,34 @@ class App(base_app.BaseApp):
 
     def run_special_commands(self, p_arguments):
 
+        command_executed = False
+        basic_init_executed = False
+
         if p_arguments.create_databases:
             self.basic_init(p_full_startup=False)
-            self._persistence.check_schema()
-            return True
+            basic_init_executed = True
+            self._persistence.check_schema(p_create_tables=False)
+            self.upgrade_databases(p_alembic_version="head")
+            command_executed = True
 
-        return False
+        if p_arguments.upgrade_databases:
+            if not basic_init_executed:
+                self.basic_init(p_full_startup=False)
+            self.upgrade_databases(p_alembic_version=p_arguments.upgrade_databases)
+            command_executed = True
+
+        return command_executed
+
+    def upgrade_databases(self, p_alembic_version):
+
+        fmt = "Upgrading database to revision '{revision}'..."
+        self._logger.info(fmt.format(revision=p_alembic_version))
+
+        url = self._persistence.build_url()
+        alembic_argv = [ "-x", url, "upgrade", p_alembic_version ]
+        alembic.config.main(alembic_argv, prog="alembic.config.main")
+
+
 
     def start_services(self):
 
