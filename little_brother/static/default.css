@@ -76,8 +76,8 @@ DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #99bbda; }
 DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a7cdef; }
 DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #d5ebff; }
 
-DIV.STANDARD_TABLE DIV.SEPERATOR_ROW       { height:2x; }
-DIV.STANDARD_TABLE DIV.SEPERATOR_ROW_LINE  { height:2x; background-color:black; }
+DIV.STANDARD_TABLE DIV.SEPERATOR_ROW       { height:2px; }
+DIV.STANDARD_TABLE DIV.SEPERATOR_ROW_LINE  { height:2px; background-color:black; }
 
 DIV.STANDARD_TABLE DIV.HEADER_ROW { background-color: #F2F2F2; }
 DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { border-bottom-style: solid; }

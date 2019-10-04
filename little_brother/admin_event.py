@@ -27,6 +27,7 @@ EVENT_TYPE_LOGIN_PERMITTED = "LOGIN_PERMITTED"
 EVENT_TYPE_KILL_PROCESS = "KILL_PROCESS"
 EVENT_TYPE_UPDATE_CONFIG = "UPDATE_CONFIG"
 EVENT_TYPE_PROCESS_START = "PROCESS_START"
+EVENT_TYPE_PROCESS_DOWNTIME = "PROCESS_DOWNTIME"
 EVENT_TYPE_PROCESS_END = "PROCESS_END"
 EVENT_TYPE_SPEAK = "SPEAK"
 
@@ -52,7 +53,8 @@ class AdminEvent(object):
                  p_event_time=None,
                  p_process_start_time=None,
                  p_text=None,
-                 p_payload=None):
+                 p_payload=None,
+                 p_downtime=0):
         if p_event_time is None:
             p_event_time = datetime.datetime.now()
 
@@ -66,6 +68,7 @@ class AdminEvent(object):
         self.process_start_time = p_process_start_time
         self.text = p_text
         self.payload = p_payload
+        self.downtime = p_downtime
 
     def __str__(self):
         return "AdminEvent (type=%s, host=%s, user=%s, process=%s, PID=%s)" % (

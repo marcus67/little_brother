@@ -80,6 +80,25 @@ class ProcessHandler(object):
 
         return (pinfo, updated)
 
+    def handle_event_process_downtime(self, p_event):
+
+        key = p_event.get_key()
+
+        if key in self._process_infos:
+
+            fmt = "Process '{event}' delayed"
+            self._logger.info(fmt.format(event=str(p_event)))
+
+            pinfo = self._process_infos[key]
+            pinfo.downtime = p_event.downtime
+            updated = True
+
+        else:
+            updated = False
+
+        return (pinfo, updated)
+
+
     def handle_event_process_end(self, p_event):
 
         key = p_event.get_key()
@@ -143,5 +162,33 @@ class ProcessHandler(object):
             p_event_time=datetime.datetime.now(),
             p_pid=p_pinfo.pid)
 
+    @staticmethod
+    def create_admin_event_process_downtime_from_pinfo(p_pinfo):
+        return admin_event.AdminEvent(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME,
+            p_hostname=p_pinfo.hostname,
+            p_username=p_pinfo.username,
+            p_processhandler=p_pinfo.processhandler,
+            p_process_start_time=p_pinfo.start_time,
+            p_downtime=p_pinfo.downtime,
+            p_pid=p_pinfo.pid)
+
     def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map):
         pass
+
+    def get_downtime_corrected_admin_events(self, p_downtime):
+
+        events = []
+
+        for pinfo in self._process_infos.values():
+            if pinfo.is_active():
+                pinfo.downtime += p_downtime
+
+                fmt = "Correcting active process owned by {user} by {seconds} seconds"
+                self._logger.info(fmt.format(user=pinfo.username, seconds=p_downtime))
+
+                event = self.create_admin_event_process_downtime_from_pinfo(p_pinfo=pinfo)
+                events.append(event)
+
+        return events
+

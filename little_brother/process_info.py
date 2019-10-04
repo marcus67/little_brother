@@ -38,6 +38,7 @@ class ProcessInfo(object):
         self.pid = p_pid
         self.start_time = p_start_time
         self.end_time = p_end_time
+        self.downtime = 0
 
     def is_active(self):
         return self.end_time is None

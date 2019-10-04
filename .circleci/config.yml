@@ -42,11 +42,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.1_41.deb
+          path: debian/little-brother_0.1_42.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.1_41.deb
+            - little-brother_0.1_42.deb
 
   deploy:
     docker:

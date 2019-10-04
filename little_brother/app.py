@@ -270,6 +270,9 @@ class App(base_app.BaseApp):
         fmt = "Shutting down services -- END"
         self._logger.info(fmt)
 
+    def handle_downtime(self, p_downtime):
+
+        self._app_control.handle_downtime(p_downtime=p_downtime)
 
 def main():
     parser = get_argument_parser(p_app_name=APP_NAME)

@@ -1,7 +1,6 @@
 """initial DB model at 488c798
 
 Revision ID: 647cf46033a9
-Revises: 
 Create Date: 2019-09-14 23:56:13.526547
 
 """

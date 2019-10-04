@@ -51,6 +51,7 @@ class ProcessInfo(Base):
     processname = Column(String(1024))
     start_time = Column(DateTime)
     end_time = Column(DateTime)
+    downtime = Column(Integer, server_default="0")
 
 
 class AdminEvent(Base):
@@ -65,6 +66,7 @@ class AdminEvent(Base):
     event_type = Column(String(256))
     event_time = Column(DateTime)
     process_start_time = Column(DateTime)
+    downtime = Column(Integer, server_default="0")
 
 
 class RuleOverride(Base):
@@ -333,6 +335,7 @@ class Persistence(object):
         session = self.get_session()
         pinfo = session.query(ProcessInfo).filter(ProcessInfo.key == p_process_info.get_key()).one()
         pinfo.end_time = p_process_info.end_time
+        pinfo.downtime = p_process_info.downtime
         session.commit()
 
         if not self._reuse_session:

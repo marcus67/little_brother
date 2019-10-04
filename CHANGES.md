@@ -4,11 +4,19 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 42 (October 5th, 2019)
+
+*   Closes #8, see [here](https://github.com/marcus67/little_brother/issues/8)
+*   Fix some minor code quality problems reported by Codacy 
+*   Provide special builtin methods to RecurringTask to eliminate tuple handling
+
 ## Version 0.1 Revision 41 (June 20th, 2019)
 
 *   Closes #7, see [here](https://github.com/marcus67/little_brother/issues/7) 
     (has actually already been taken care of in previous commits)
+
 *   Closes #16, see [here](https://github.com/marcus67/little_brother/issues/16)
+
 *   Introduce alembic for database initialization and migration
 
 ## Version 0.1 Revision 40 (June 9th, 2019)

@@ -330,6 +330,13 @@ class AppControl(object):
 
         return handler
 
+    def handle_event_process_downtime(self, p_event):
+
+        pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_downtime(p_event)
+
+        if self._persistence is not None and updated:
+            self._persistence.update_process_info(p_process_info=pinfo)
+
     def handle_event_process_start(self, p_event):
 
         pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_start(p_event)
@@ -455,6 +462,9 @@ class AppControl(object):
 
         if p_event.event_type == admin_event.EVENT_TYPE_PROCESS_START:
             self.handle_event_process_start(p_event=p_event)
+
+        elif p_event.event_type == admin_event.EVENT_TYPE_PROCESS_DOWNTIME:
+            self.handle_event_process_downtime(p_event=p_event)
 
         elif p_event.event_type == admin_event.EVENT_TYPE_PROCESS_END:
             self.handle_event_process_end(p_event=p_event)
@@ -1014,3 +1024,10 @@ class AppControl(object):
             self._outgoing_events.remove(event)
 
         return events
+
+    def handle_downtime(self, p_downtime):
+
+        for process_handler in self._process_handlers.values():
+            events = process_handler.get_downtime_corrected_admin_events(p_downtime=p_downtime)
+
+            self.queue_events(p_events=events, p_to_master=True)
