@@ -3,6 +3,7 @@ engines:
     enabled: true
     exclude_paths:
       - little_brother/test/**
+      - alembic/versions/**
 
 exclude_paths:
   - 'little_brother/templates/**'

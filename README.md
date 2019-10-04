@@ -126,7 +126,6 @@ very often and justify this solution at least in one of the early release versio
 | Ubuntu       | 18.10     | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
 | Debian       | testing   |                                                                        | 02.JUN.2019      |
 
-
 ## Quick Install
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 

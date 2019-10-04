@@ -20,6 +20,7 @@ import os
 
 from little_brother import popup_handler
 from python_base_app import configuration
+from python_base_app import log_handling
 from python_base_app.test import base_test
 
 TEXT = "hallo"
@@ -37,7 +38,8 @@ class TestPopupHandler(base_test.BaseTestCase):
             os.unlink(popup_file)
 
         except Exception:
-            pass
+            logger = log_handling.get_logger()
+            logger.warning("Cannot delete popup file!")
 
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_gxmessage_init(self):

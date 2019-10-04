@@ -61,8 +61,10 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
 
     @staticmethod
+    def get_dummy_process_handler(p_reference_time=None, p_processes=None):
 
-    def get_dummy_process_handler(p_reference_time=None, p_processes=test_data.PROCESSES_1):
+        if p_processes is None:
+            p_processes = test_data.PROCESSES_1
 
         if p_reference_time is None:
             p_reference_time = test_data.START_TIME_1 + datetime.timedelta(seconds=1)
