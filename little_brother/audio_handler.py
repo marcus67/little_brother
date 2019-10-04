@@ -23,18 +23,14 @@ import subprocess
 
 import pyttsx3
 
+from little_brother import notification_handler
 from python_base_app import configuration
-from python_base_app import log_handling
-from python_base_app import tools
 
-REPLACE_PATTERN_AUDIO_TEXT_FILENAME = "infile"
-REPLACE_PATTERN_AUDIO_TEXT = "text"
-
-DEFAULT_SPEECH_GENERATOR_CMD_LINE = '/usr/bin/festival --tts --language american_english {{{pattern}}}'.format(pattern=REPLACE_PATTERN_AUDIO_TEXT_FILENAME)
+DEFAULT_SPEECH_GENERATOR_CMD_LINE = '/usr/bin/festival --tts --language american_english {{{pattern}}}'.format(
+    pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT_FILENAME)
 DEFAULT_AUDIO_MIXER_BIN = '/usr/bin/amixer'
 DEFAULT_AUDIO_FILE_PREFIX = "little-brother-speech-"
 DEFAULT_SPOOL_DIRECTORY = "/var/spool/little-brother"
-DEFAULT_MINIMUM_WAIT_BEFORE_REPEAT = 30 # seconds
 DEFAULT_SPEECH_WORDS_PER_MINUTE = 100
 
 SECTION_NAME = "AudioHandler"
@@ -46,40 +42,33 @@ SPEECH_ENGINE_EXTERNAL = "external"
 AUDIO_TEXT_FILE = "audio.txt"
 
 
-class AudioHandlerConfigModel(configuration.ConfigModel):
+class AudioHandlerConfigModel(notification_handler.NotificationHandlerConfigModel):
 
     def __init__(self):
-        super(AudioHandlerConfigModel, self).__init__(p_section_name=SECTION_NAME)
+        super().__init__(p_section_name=SECTION_NAME)
 
         self.cache_audio_files = False
-        self.speech_engine = SPEECH_ENGINE_PYTTSX3
+        self.speech_engine = configuration.NONE_STRING
         self.speech_words_per_minute = DEFAULT_SPEECH_WORDS_PER_MINUTE
-        self.mininum_waiting_time_before_repeat = DEFAULT_MINIMUM_WAIT_BEFORE_REPEAT  # seconds
         self.spool_dir = DEFAULT_SPOOL_DIRECTORY
         self.audio_file_prefix = DEFAULT_AUDIO_FILE_PREFIX
         self.audio_mixer_bin = DEFAULT_AUDIO_MIXER_BIN
-        self.locale = None
         self.audio_mixer_volume = configuration.NONE_INTEGER  # in percent
         self.speech_generator_cmd_line = DEFAULT_SPEECH_GENERATOR_CMD_LINE
 
+    def is_active(self):
 
-class AudioHandler(object):
+        return self.speech_engine is not None
+
+
+class AudioHandler(notification_handler.NotificationHandler):
 
     def __init__(self, p_config):
-
-        self._config = p_config
-
-        self._logger = log_handling.get_logger(self.__class__.__name__)
-
-        self._recent_texts = {}
 
         self._google_speak = None
         self._playsound = None
 
-        if self._config.locale is None:
-            self._config.locale = locale.getdefaultlocale()[0]
-
-        self.init_engine()
+        super().__init__(p_config=p_config)
 
     def init_engine_pyttsx3(self):
 
@@ -122,7 +111,7 @@ class AudioHandler(object):
             self.init_engine_google()
 
         else:
-            fmt = "init_egine(): invalid speech engine '%s'" % self._config.speech_engine
+            fmt = "init_engine(): invalid speech engine '%s'" % self._config.speech_engine
             self._logger.error(fmt)
             raise configuration.ConfigurationException(fmt)
 
@@ -135,32 +124,23 @@ class AudioHandler(object):
         hash_value = hashlib.sha224(text).hexdigest()
         return os.path.join(self._config.spool_dir, self._config.audio_file_prefix + hash_value)
 
-    def speak(self, p_text, p_locale=None):
-
-        last_time_spoken = self._recent_texts.get(p_text)
-
-        if p_locale is None:
-            p_locale = self._config.locale
-
-        if last_time_spoken is not None:
-            if datetime.datetime.now() < last_time_spoken + datetime.timedelta(
-                    seconds=self._config.mininum_waiting_time_before_repeat):
-                fmt = "Text '{text}' has been spoken less than {waiting_time} seconds ago -> ignoring"
-                self._logger.info(fmt.format(text=p_text, waiting_time=self._config.mininum_waiting_time_before_repeat))
-                return
+    def _notify(self, p_text, p_locale=None):
 
         if self._config.speech_engine == SPEECH_ENGINE_EXTERNAL:
-            a_thread = tools.start_simple_thread(method=self.speak_external_command, p_text=p_text, p_locale=p_locale)
+            self.speak_external_command(p_text=p_text, p_locale=p_locale)
 
         elif self._config.speech_engine == SPEECH_ENGINE_PYTTSX3:
-            a_thread = tools.start_simple_thread(method=self.speak_pyttsx, p_text=p_text, p_locale=p_locale)
+            self.speak_pyttsx(p_text=p_text, p_locale=p_locale)
+
+        elif self._config.speech_engine == SPEECH_ENGINE_GOOGLE:
+            self.speak_google(p_text=p_text, p_locale=p_locale)
 
         else:
-            a_thread = tools.start_simple_thread(method=self.speak_google, p_text=p_text, p_locale=p_locale)
+            fmt = "_notify(): invalid speech engine '%s'" % self._config.speech_engine
+            self._logger.error(fmt)
+            raise configuration.ConfigurationException(fmt)
 
         self._recent_texts[p_text] = datetime.datetime.now()
-
-        return a_thread
 
     def speak_pyttsx(self, p_text, p_locale=None):
 
@@ -191,7 +171,6 @@ class AudioHandler(object):
 
         self._playsound.playsound(audio_filename)
 
-
     def set_volume(self):
 
         if self._config.audio_mixer_volume is not None:
@@ -205,15 +184,16 @@ class AudioHandler(object):
 
             except Exception as e:
 
-                fmt = "cannot set audio volume using '%s': exception %s" % (cmd_line)
+                fmt = "cannot set audio volume using '%s': exception %s" % (cmd_line, str(e))
                 self._logger.warning(fmt)
-
 
     def speak_external_command(self, p_text, p_locale=None):
 
         self.set_volume()
 
-        if REPLACE_PATTERN_AUDIO_TEXT_FILENAME in self._config.speech_generator_cmd_line:
+        audio_text_filename = "<UNDEFINED>"
+
+        if notification_handler.REPLACE_PATTERN_AUDIO_TEXT_FILENAME in self._config.speech_generator_cmd_line:
             audio_text_filename = os.path.join(self._config.spool_dir, AUDIO_TEXT_FILE)
 
             try:
@@ -226,8 +206,8 @@ class AudioHandler(object):
                 return
 
         replacements = {
-            REPLACE_PATTERN_AUDIO_TEXT_FILENAME : audio_text_filename,
-            REPLACE_PATTERN_AUDIO_TEXT : p_text
+            notification_handler.REPLACE_PATTERN_AUDIO_TEXT_FILENAME: audio_text_filename,
+            notification_handler.REPLACE_PATTERN_AUDIO_TEXT: p_text
         }
 
         cmd_line = self._config.speech_generator_cmd_line.format(**replacements)

@@ -35,6 +35,7 @@ LANGUAGES = {
     'en': 'English',
     'de': 'Deutsch',
     'fr': 'Français',
+    'it': 'Italiano',
 }
 
 SECTION_NAME = "StatusServer"
@@ -77,6 +78,7 @@ BLUEPRINT_NAME = "little_brother"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
 
     def __init__(self):
@@ -116,7 +118,6 @@ class StatusServer(base_web_server.BaseWebServer):
         self._server_exception = None
 
         if self._is_master:
-
             self._blueprint = flask.Blueprint(BLUEPRINT_NAME, little_brother.__name__, static_folder="static")
             BLUEPRINT_ADAPTER.assign_view_handler_instance(p_blueprint=self._blueprint, p_view_handler_instance=self)
             BLUEPRINT_ADAPTER.check_view_methods()
@@ -126,13 +127,12 @@ class StatusServer(base_web_server.BaseWebServer):
             self._api_view_handler = api_view_handler.ApiViewHandler(
                 p_app=self._app, p_app_control=self._appcontrol, p_master_connector=self._master_connector)
 
-        test = self.about_view
-
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time
         self._app.jinja_env.filters['date_to_string'] = self.format_date
         self._app.jinja_env.filters['simple_date_to_string'] = self.format_simple_date
         self._app.jinja_env.filters['seconds_to_string'] = self.format_seconds
+        self._app.jinja_env.filters['boolean_to_string'] = self.format_boolean
         self._app.jinja_env.filters['format'] = self.format
 
         self._babel = flask_babel.Babel(self._app)
@@ -187,11 +187,18 @@ class StatusServer(base_web_server.BaseWebServer):
         else:
             return value.strftime(self._config.time_format)
 
-    def format_seconds(self, value):
+    @staticmethod
+    def format_seconds(value):
 
         return tools.get_duration_as_string(p_seconds=value, p_include_seconds=False)
 
-    def format(self, value, param_dict):
+    @staticmethod
+    def format_boolean(value):
+
+        return _("On") if value else _("Off")
+
+    @staticmethod
+    def format(value, param_dict):
 
         return value.format(**param_dict)
 
@@ -268,11 +275,12 @@ class StatusServer(base_web_server.BaseWebServer):
         )
         return page
 
-    def get_admin_forms(self, p_admin_infos):
+    @staticmethod
+    def get_admin_forms(p_admin_infos):
 
         forms = {}
 
-        forms[FORM_ID_CSRF] = flask_wtf.Form(csrf_enabled=True)
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
 
         for admin_info in p_admin_infos:
             for day_info in admin_info.day_infos:

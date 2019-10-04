@@ -18,47 +18,51 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import little_brother.settings
-
 from setuptools import setup
 
+import little_brother.settings
 
 setup_params = {
     # standard setup configuration
 
-    "install_requires" : [
+    "install_requires": [
+        'alembic',
         'python_google_speak',
         'requests',
-        'psutil', 
+        'psutil',
         'python-dateutil',
         'sqlalchemy',
         'pymysql',
-        'flask==0.12.1',
+        'flask',
         'flask-login',
         'Flask-Babel',
+        'Flask-Migrate',
         'python-base-app',
         'flask_helpers',
         'pyttsx3',
         'selenium'],
 
-    "packages" : [ 'little_brother', 'little_brother.test' ],
-                      
-    "include_package_data" : True,
-    
-    "scripts" : ["run_little_brother.py", "run_test_suite.py"],
-    "long_description" : "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
-                         "are exceeded.",
-    
+    "packages": ['little_brother', 'little_brother.test'],
+
+    "include_package_data": True,
+
+    "scripts": ["run_little_brother.py", "run_test_suite.py"],
+    "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
+                        "are exceeded.",
+
+    # Target version to be used to upgrade the database
+    "target_alembic_version": "647cf46033a9",
+
     # additional setup configuration used by CI stages
-    
+
     # technical name used for e.g. directories, PIP-package, and users
-    "create_user" : True,
-    "create_group" : True,
-    "user_group_mappings" : [ ( "little-brother", "audio" ) ],
-    "deploy_systemd_service" : True,
-    "deploy_sudoers_file" : True,
-    "contributing_setups" : [ "python_base_app", "flask_helpers" ],
-    "publish_debian_package" : True,
+    "create_user": True,
+    "create_group": True,
+    "user_group_mappings": [("little-brother", "audio")],
+    "deploy_systemd_service": True,
+    "deploy_sudoers_file": True,
+    "contributing_setups": ["python_base_app", "flask_helpers"],
+    "publish_debian_package": ["master", "release"],
     "debian_extra_files": [
         ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
         ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
@@ -69,4 +73,4 @@ setup_params = {
 setup_params.update(little_brother.settings.settings)
 
 if __name__ == '__main__':
-    setup(**setup_params) 
+    setup(**setup_params)

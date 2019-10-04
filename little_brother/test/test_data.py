@@ -22,6 +22,7 @@ import datetime
 import re
 
 from little_brother import process_info
+from little_brother import rule_handler
 
 USER_1 = "user1"
 UID_1 = 123
@@ -30,8 +31,8 @@ PID_1 = 12345
 
 HOSTNAME_1 = "host1"
 
-START_TIME_1 = datetime.datetime(2018,1,1,10,10,10)
-END_TIME_1 = datetime.datetime(2018,1,1,10,10,20)
+START_TIME_1 = datetime.datetime(2018, 1, 1, 10, 10, 10)
+END_TIME_1 = datetime.datetime(2018, 1, 1, 10, 10, 20)
 
 MAX_TIME_PER_DAY_1 = 3600
 MAX_TIME_PER_DAY_2 = 7200
@@ -41,9 +42,10 @@ MAX_TIME_OF_DAY_1 = datetime.time(hour=22)
 MIN_BREAK_1 = 1800
 FREEPLAY_1 = True
 
-UID_MAP = { UID_1 : USER_1 }
+UID_MAP = {UID_1: USER_1}
+USERNAME_MAP = {USER_1: UID_1}
 
-PROCESS_REGEX_MAP_1 = { USER_1 : re.compile(PROCESS_NAME_1) }
+PROCESS_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_NAME_1)}
 
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1)
@@ -56,11 +58,50 @@ END_TIME_NOW = START_TIME_NOW + datetime.timedelta(minutes=5)
 PINFO_3 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_NOW, p_end_time=END_TIME_NOW)
 
+RULESET_CONFIG_USER1_NO_RESTRICTIONS = rule_handler.RuleSetConfigModel()
+RULESET_CONFIG_USER1_NO_RESTRICTIONS.username = USER_1
+RULESET_CONFIG_USER1_NO_RESTRICTIONS.process_name_pattern = PROCESS_NAME_1
+
+RULESET_CONFIGS_USER1_NO_RESTRICTIONS = [RULESET_CONFIG_USER1_NO_RESTRICTIONS]
+
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS = rule_handler.RuleSetConfigModel()
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.username = USER_1
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.process_name_pattern = PROCESS_NAME_1
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.min_time_of_day = "00:00"
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.max_time_of_day = "00:01"
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.max_activity_duration = "0s"
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.min_break = "5m"
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.max_time_per_day = "0s"
+RULESET_CONFIG_USER1_ALL_RESTRICTIONS.post_process()
+
+RULESET_CONFIGS_USER1_ALL_RESTRICTIONS = [RULESET_CONFIG_USER1_ALL_RESTRICTIONS]
 
 PROCESSES_1 = [
-        PINFO_1
-    ]
+    PINFO_1
+]
 
 PROCESSES_2 = [
-        PINFO_2
+    PINFO_2
+]
+
+PROCESSES_3 = [
+    PINFO_3
+]
+
+def get_process_dict(p_processes):
+
+    return { process.get_key() : process for process in p_processes}
+
+
+
+def get_active_processes(p_start_time, p_end_time=None):
+    return [
+        process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
+                                 p_pid=PID_1, p_start_time=p_start_time, p_end_time=p_end_time)
     ]
+
+def get_dummy_ruleset_configs(p_ruleset_config):
+
+    return {
+        USER_1: p_ruleset_config
+    }

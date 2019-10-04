@@ -21,27 +21,31 @@
 
 import unittest
 
+from little_brother.test import test_audio_handler
+from little_brother.test import test_client_process_handler
+from little_brother.test import test_german_vacation_context_rule_handler
+from little_brother.test import test_persistence
+from little_brother.test import test_popup_handler
+from little_brother.test import test_process_info
+from little_brother.test import test_process_statistics
+from little_brother.test import test_rule_handler
+from little_brother.test import test_simple_weekday_context_rule_handler
+from little_brother.test import test_status_server
 from python_base_app import log_handling
-
 from python_base_app.test import base_test
 
-from little_brother.test import test_process_info
-from little_brother.test import test_client_process_handler
-from little_brother.test import test_audio_handler
-from little_brother.test import test_german_vacation_context_rule_handler
-from little_brother.test import test_simple_weekday_context_rule_handler
-from little_brother.test import test_rule_handler
-from little_brother.test import test_persistence
-from little_brother.test import test_status_server
 
 def add_test_cases(p_test_suite, p_config_filename=None):
-
     base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite, 
+        p_test_suite=p_test_suite,
         p_test_unit_class=test_process_info.TestProcessInfo, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite, 
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_process_statistics.TestProcessStatistics, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
         p_test_unit_class=test_client_process_handler.TestClientProcessHandler, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
@@ -50,19 +54,33 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
-        p_test_unit_class=test_german_vacation_context_rule_handler.TestGermanVacationContextRuleHandler, p_config_filename=p_config_filename)
+        p_test_unit_class=test_popup_handler.TestPopupHandler, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
-        p_test_unit_class=test_simple_weekday_context_rule_handler.TestWeekDayContextRuleHandler, p_config_filename=p_config_filename)
+        p_test_unit_class=test_german_vacation_context_rule_handler.TestGermanVacationContextRuleHandler,
+        p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_simple_weekday_context_rule_handler.TestWeekDayContextRuleHandler,
+        p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_rule_handler.TestRuleHandler, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
-         p_test_suite=p_test_suite,
-         p_test_unit_class=test_persistence.TestPersistence, p_config_filename=p_config_filename)
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_rule_handler.TestRuleSetConfigModel, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_rule_handler.TestRulesectionHandler, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_persistence.TestPersistence, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
@@ -75,8 +93,6 @@ def main():
     add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     base_test.run_test_suite(p_test_suite=test_suite)
 
+
 if __name__ == '__main__':
     main()
-    
-    
-    

@@ -50,55 +50,55 @@ class TestWeekDayContextRuleHandler(base_test.BaseTestCase):
             for selector in range(0,7):
 
                 self.assertEqual(rule_handler.is_active(p_reference_date=DAYS[day],
-                                                        p_context_details=PREDEFINED_SELECTORS[selector]),
-                                 day==selector)
+                                                        p_details=PREDEFINED_SELECTORS[selector]),
+                                 day == selector)
 
     def test_invalid_selector_length(self):
 
         rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
 
         with self.assertRaises(configuration.ConfigurationException):
-            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="X-----"))
+            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_details="X-----"))
 
         with self.assertRaises(configuration.ConfigurationException):
-            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="X-------"))
+            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_details="X-------"))
 
     def test_invalid_selector_character(self):
 
         rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
 
         with self.assertRaises(configuration.ConfigurationException):
-            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="X-------"))
+            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_details="X-------"))
 
         with self.assertRaises(configuration.ConfigurationException):
-            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="1-------"))
+            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_details="1-------"))
 
         with self.assertRaises(configuration.ConfigurationException):
-            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="Y-------"))
+            self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_details="Y-------"))
 
         with self.assertRaises(configuration.ConfigurationException):
-            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="#-------"))
+            self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_details="#-------"))
 
     def test_weekend(self):
 
         rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
 
-        self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="WEEKEND"))
-        self.assertFalse(rule_handler.is_active(p_reference_date=TUESDAY, p_context_details="WEEKEND"))
-        self.assertFalse(rule_handler.is_active(p_reference_date=WEDNESDAY, p_context_details="WEEKEND"))
-        self.assertFalse(rule_handler.is_active(p_reference_date=THURSDAY, p_context_details="WEEKEND"))
-        self.assertFalse(rule_handler.is_active(p_reference_date=FRIDAY, p_context_details="WEEKEND"))
-        self.assertTrue(rule_handler.is_active(p_reference_date=SUNDAY, p_context_details="WEEKEND"))
-        self.assertTrue(rule_handler.is_active(p_reference_date=SATURDAY, p_context_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=MONDAY, p_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=TUESDAY, p_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=WEDNESDAY, p_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=THURSDAY, p_details="WEEKEND"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=FRIDAY, p_details="WEEKEND"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=SUNDAY, p_details="WEEKEND"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=SATURDAY, p_details="WEEKEND"))
 
     def test_weekdays(self):
 
         rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
 
-        self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_context_details="WEEKDAYS"))
-        self.assertTrue(rule_handler.is_active(p_reference_date=TUESDAY, p_context_details="WEEKDAYS"))
-        self.assertTrue(rule_handler.is_active(p_reference_date=WEDNESDAY, p_context_details="WEEKDAYS"))
-        self.assertTrue(rule_handler.is_active(p_reference_date=THURSDAY, p_context_details="WEEKDAYS"))
-        self.assertTrue(rule_handler.is_active(p_reference_date=FRIDAY, p_context_details="WEEKDAYS"))
-        self.assertFalse(rule_handler.is_active(p_reference_date=SUNDAY, p_context_details="WEEKDAYS"))
-        self.assertFalse(rule_handler.is_active(p_reference_date=SATURDAY, p_context_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=MONDAY, p_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=TUESDAY, p_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=WEDNESDAY, p_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=THURSDAY, p_details="WEEKDAYS"))
+        self.assertTrue(rule_handler.is_active(p_reference_date=FRIDAY, p_details="WEEKDAYS"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=SUNDAY, p_details="WEEKDAYS"))
+        self.assertFalse(rule_handler.is_active(p_reference_date=SATURDAY, p_details="WEEKDAYS"))

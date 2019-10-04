@@ -15,38 +15,38 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
+import gettext
+import locale
 import pwd
 import queue
-import datetime
-import socket
 import re
-import locale
-import gettext
+import socket
 
-from python_base_app import log_handling
+from little_brother import admin_event
+from little_brother import constants, process_statistics
+from little_brother import german_vacation_context_rule_handler
+from little_brother import process_info
+from little_brother import rule_handler
+from little_brother import rule_override
+from little_brother import simple_context_rule_handlers
 from python_base_app import configuration
+from python_base_app import log_handling
 from python_base_app import tools
 from python_base_app import view_info
 
-from little_brother import constants, process_statistics
-from little_brother import admin_event
-from little_brother import rule_handler
-from little_brother import process_info
-from little_brother import rule_override
-from little_brother import german_vacation_context_rule_handler
-from little_brother import simple_context_rule_handlers
-
 DEFAULT_SCAN_ACTIVE = True
-DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7 # days
-DEFAULT_PROCESS_LOOKUP_IN_DAYS = 7 # days
-DEFAULT_MIN_ACTIVITY_DURATION = 60 # seconds
-DEFAULT_CHECK_INTERVAL = 5 # seconds
+DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
+DEFAULT_PROCESS_LOOKUP_IN_DAYS = 7  # days
+DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
+DEFAULT_CHECK_INTERVAL = 5  # seconds
 DEFAULT_LOCALE = "en_US"
 
 SECTION_NAME = "AppControl"
 
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x,y=None:x
+_ = lambda x, y=None: x
+
 
 class AppControlConfigModel(configuration.ConfigModel):
 
@@ -75,16 +75,20 @@ class AppControl(object):
                  p_process_handlers,
                  p_persistence,
                  p_rule_handler,
-                 p_audio_handler,
+                 p_notification_handlers,
                  p_master_connector,
-                 p_rule_set_configs):
+                 p_rule_set_configs,
+                 p_username_map=None):
+
+        if p_username_map is None:
+            p_username_map = {}
 
         self._config = p_config
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
         self._persistence = p_persistence
         self._rule_handler = p_rule_handler
-        self._audio_handler = p_audio_handler
+        self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
@@ -93,7 +97,7 @@ class AppControl(object):
         self._usernames = []
         self._process_regex_map = None
         self._uid_map = {}
-        self._username_map = {}
+        self._username_map = p_username_map
 
         self._logout_warnings = {}
 
@@ -109,11 +113,6 @@ class AppControl(object):
         self._outgoing_events = []
         self._could_not_send = False
 
-        self.history_labels = [ (_('{days} days ago'), {"days" : day }) for day in range(0, self._config.process_lookback_in_days + 1)]
-
-        self.history_labels[0] = (_('Today'), { "days": 0})
-        self.history_labels[1] = (_('Yesterday'), { "days" : 1})
-
         self._client_infos = {}
         self._rule_overrides = {}
 
@@ -127,23 +126,40 @@ class AppControl(object):
             fmt = "Scanning for this host has been deactivated in configuration"
             self._logger.warning(fmt)
 
+        self.init_labels_and_notifications()
+
+    def init_labels_and_notifications(self):
+
+        self.history_labels = [(_('{days} days ago'), {"days": day}) for day in
+                               range(0, self._config.process_lookback_in_days + 1)]
+
+        self.history_labels[0] = (_('Today'), {"days": 0})
+        self.history_labels[1] = (_('Yesterday'), {"days": 1})
+
         self.text_no_time_left = _("{user}, you do not have computer time left today. You will be logged out.")
-        self.text_no_time_left_approaching = _("{user}, you only have {minutes_left_before_logout} minutes left today. Please, log out.")
+        self.text_no_time_left_approaching = _(
+            "{user}, you only have {minutes_left_before_logout} minutes left today. Please, log out.")
         self.text_no_time_today = _("{user}, you do not have any computer time today. You will be logged out.")
         self.text_too_early = _("{user}, it is too early to use the computer. You will be logged out.")
         self.text_too_late = _("{user}, it is too late to use the computer. You will be logged out.")
-        self.text_too_late_approaching = _("{user}, in {minutes_left_before_logout} minutes it will be too late to use the computer. Please, log out.")
+        self.text_too_late_approaching = _(
+            "{user}, in {minutes_left_before_logout} minutes it will be too late to use the computer. Please, log out.")
         self.text_need_break = _("{user}, you have to take a break. You will be logged out.")
-        self.text_need_break_approaching = _("{user}, in {minutes_left_before_logout} minutes you will have to take a break. Please, log out.")
-        self.text_min_break = _("{user}, your break will only be over in {break_minutes_left} minutes. You will be logged out.")
-
+        self.text_need_break_approaching = _(
+            "{user}, in {minutes_left_before_logout} minutes you will have to take a break. Please, log out.")
+        self.text_min_break = _(
+            "{user}, your break will only be over in {break_minutes_left} minutes. You will be logged out.")
+        self.text_limited_session_start = _(
+            "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes in this session.")
+        self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
 
     def register_rule_context_handlers(self):
 
         self._rule_handler.register_context_rule_handler(simple_context_rule_handlers.DefaultContextRuleHandler(),
                                                          p_default=True)
         self._rule_handler.register_context_rule_handler(simple_context_rule_handlers.WeekdayContextRuleHandler())
-        self._rule_handler.register_context_rule_handler(german_vacation_context_rule_handler.GermanVacationContextRuleHandler())
+        self._rule_handler.register_context_rule_handler(
+            german_vacation_context_rule_handler.GermanVacationContextRuleHandler())
 
     def set_rule_set_configs(self, p_rule_set_configs):
 
@@ -172,14 +188,19 @@ class AppControl(object):
 
             for username in self._usernames_not_found:
                 try:
-                    user = pwd.getpwnam(username)
+                    uid = self._username_map.get(username)
+
+                    if uid is None:
+                        user = pwd.getpwnam(username)
+                        uid = user.pw_uid
+
                     usernames_found.append(username)
-                    self._uid_map[user.pw_uid] = username
-                    self._username_map[username] = user.pw_uid
+                    self._uid_map[uid] = username
+                    self._username_map[username] = uid
                     self._usernames.append(username)
 
                     fmt = "Found user information for user '{user}': UID={uid}"
-                    self._logger.info(fmt.format(user=username, uid=user.pw_uid))
+                    self._logger.info(fmt.format(user=username, uid=uid))
 
                 except KeyError:
                     fmt = "Cannot find user information for user '{user}', will retry later..."
@@ -309,6 +330,13 @@ class AppControl(object):
 
         return handler
 
+    def handle_event_process_downtime(self, p_event):
+
+        pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_downtime(p_event)
+
+        if self._persistence is not None and updated:
+            self._persistence.update_process_info(p_process_info=pinfo)
+
     def handle_event_process_start(self, p_event):
 
         pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_start(p_event)
@@ -320,6 +348,24 @@ class AppControl(object):
         else:
             if self._persistence is not None:
                 self._persistence.write_process_info(p_process_info=pinfo)
+
+        rule_result_info = self.get_current_rule_result_info(p_reference_time=datetime.datetime.now(),
+                                                             p_username=p_event.username)
+
+        if rule_result_info.activity_allowed():
+            if rule_result_info.limited_session_time():
+                self.queue_event_speak(
+                    p_hostname=p_event.hostname,
+                    p_username=p_event.username,
+                    p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
+                                                      p_text=self.text_limited_session_start))
+
+            else:
+                self.queue_event_speak(
+                    p_hostname=p_event.hostname,
+                    p_username=p_event.username,
+                    p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
+                                                      p_text=self.text_unlimited_session_start))
 
     def handle_event_process_end(self, p_event):
 
@@ -338,7 +384,9 @@ class AppControl(object):
     def handle_event_speak(self, p_event):
 
         user_locale = self.get_user_locale(p_username=p_event.username)
-        self._audio_handler.speak(p_text=p_event.text, p_locale=user_locale)
+
+        for notification_handler in self._notification_handlers:
+            notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
 
     def get_user_locale(self, p_username):
 
@@ -415,6 +463,9 @@ class AppControl(object):
         if p_event.event_type == admin_event.EVENT_TYPE_PROCESS_START:
             self.handle_event_process_start(p_event=p_event)
 
+        elif p_event.event_type == admin_event.EVENT_TYPE_PROCESS_DOWNTIME:
+            self.handle_event_process_downtime(p_event=p_event)
+
         elif p_event.event_type == admin_event.EVENT_TYPE_PROCESS_END:
             self.handle_event_process_end(p_event=p_event)
 
@@ -455,20 +506,7 @@ class AppControl(object):
             if new_events is not None:
                 self.queue_events(p_events=new_events, p_to_master=True, p_is_action=False)
 
-    # def scan_processes(self, p_reference_time):  # @DontTrace
-    #
-    #     for handler in self._process_handlers.values():
-    #         events = handler.scan_processes(
-    #             p_uid_map=self._uid_map, p_host_name=self._host_name,
-    #             p_process_regex_map=self.process_regex_map,
-    #             p_reference_time=p_reference_time)
-    #
-    #         self.queue_events(p_events=events, p_to_master=True)
-    #
-    #         if not self.is_master():
-    #             self.queue_events_locally(p_events=events)
-
-    def scan_processes(self, p_process_handler, p_reference_time = None):  # @DontTrace
+    def scan_processes(self, p_process_handler, p_reference_time=None, p_queue_events=True):  # @DontTrace
 
         if p_reference_time is None:
             p_reference_time = datetime.datetime.now()
@@ -478,10 +516,11 @@ class AppControl(object):
             p_process_regex_map=self.process_regex_map,
             p_reference_time=p_reference_time)
 
-        self.queue_events(p_events=events, p_to_master=True)
+        if p_queue_events:
+            self.queue_events(p_events=events, p_to_master=True)
 
-        if not self.is_master():
-            self.queue_events_locally(p_events=events)
+            if not self.is_master():
+                self.queue_events_locally(p_events=events)
 
     def get_process_infos(self):
 
@@ -565,7 +604,9 @@ class AppControl(object):
                 p_reference_date=override.reference_date,
                 p_max_time_per_day=override.max_time_per_day,
                 p_min_time_of_day=override.min_time_of_day,
-                p_max_time_of_day=override.max_time_of_day)
+                p_max_time_of_day=override.max_time_of_day,
+                p_min_break=override.min_break,
+                p_free_play=override.free_play)
 
             self._rule_overrides[new_override.get_key()] = new_override
 
@@ -573,11 +614,15 @@ class AppControl(object):
             len(overrides), self._config.process_lookback_in_days)
         self._logger.info(fmt)
 
-    def pick_text_for_ruleset(self, p_rule_result_info):
+    def pick_text_for_ruleset(self, p_rule_result_info, p_text=None):
 
-        t = gettext.translation('messages', localedir='little_brother/translations', languages= [p_rule_result_info.locale], fallback=True)
+        t = gettext.translation('messages', localedir='little_brother/translations',
+                                languages=[p_rule_result_info.locale], fallback=True)
 
-        if p_rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY:
+        if p_text is not None:
+            return t.gettext(p_text).format(**p_rule_result_info.args)
+
+        elif p_rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY:
             return t.gettext(self.text_no_time_left).format(**p_rule_result_info.args)
 
         elif p_rule_result_info.applying_rules & rule_handler.RULE_DAY_BLOCKED:
@@ -602,7 +647,8 @@ class AppControl(object):
 
     def pick_text_for_approaching_logout(self, p_rule_result_info):
 
-        t = gettext.translation('messages', localedir='little_brother/translations', languages=[p_rule_result_info.locale], fallback=True)
+        t = gettext.translation('messages', localedir='little_brother/translations',
+                                languages=[p_rule_result_info.locale], fallback=True)
 
         if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
             return t.gettext(self.text_no_time_left_approaching).format(**p_rule_result_info.args)
@@ -618,6 +664,39 @@ class AppControl(object):
             self._logger.warning(fmt)
             return ""
 
+    def get_current_rule_result_info(self, p_reference_time, p_username):
+
+        users_stat_infos = process_statistics.get_process_statistics(
+            p_process_infos=self.get_process_infos(),
+            p_reference_time=p_reference_time,
+            p_max_lookback_in_days=1,
+            p_rule_set_configs=self._rule_set_configs,
+            p_min_activity_duration=self._config.min_activity_duration)
+
+        rule_result_info = None
+        user_locale = self.get_user_locale(p_username=p_username)
+        rule_set = self._rule_handler.get_active_ruleset_config(p_username=p_username,
+                                                                p_reference_date=p_reference_time.date())
+
+        stat_infos = users_stat_infos.get(p_username)
+
+        if stat_infos is not None:
+            stat_info = stat_infos.get(rule_set.context)
+
+            if stat_info is not None:
+                self._logger.debug(str(stat_info))
+
+                key_rule_override = rule_override.get_key(p_username=p_username,
+                                                          p_reference_date=p_reference_time.date())
+                override = self._rule_overrides.get(key_rule_override)
+
+                rule_result_info = self._rule_handler.process_ruleset(
+                    p_stat_info=stat_info,
+                    p_reference_time=p_reference_time,
+                    p_rule_override=override,
+                    p_locale=user_locale)
+
+        return rule_result_info
 
     def process_rules(self, p_reference_time):
 
@@ -667,7 +746,7 @@ class AppControl(object):
                             for (hostname, processes) in stat_info.currently_active_host_processes.items():
 
                                 fmt = "User %s has %d active process(es) on host %s" % (
-                                username, len(processes), hostname)
+                                    username, len(processes), hostname)
                                 self._logger.debug(fmt)
 
                                 process_killed = False
@@ -807,7 +886,7 @@ class AppControl(object):
 
         for username in self._rule_set_configs.keys():
             rule_set = self._rule_handler.get_active_ruleset_config(p_username=username,
-                                                                    p_reference_date=reference_time)
+                                                                    p_reference_date=reference_time.date())
             stat_infos = users_stat_infos.get(username)
             user_locale = self.get_user_locale(p_username=username)
 
@@ -875,16 +954,16 @@ class AppControl(object):
                                                   p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
 
                     if reference_date == datetime.date.today():
-                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day" : reference_date} )
-                        day_info.short_label = (_('Today', 'short'), {"day" : reference_date} )
+                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day": reference_date})
+                        day_info.short_label = (_('Today', 'short'), {"day": reference_date})
 
                     elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day" : reference_date} )
-                        day_info.short_label = (_('Tomorrow', 'short'), {"day" : reference_date} )
+                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day": reference_date})
+                        day_info.short_label = (_('Tomorrow', 'short'), {"day": reference_date})
 
                     else:
-                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day" : reference_date} )
-                        day_info.short_label = (_("{day:%%A}"), {"day" : reference_date} )
+                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day": reference_date})
+                        day_info.short_label = (_("{day:%%A}"), {"day": reference_date})
 
                     admin_info.day_infos.append(day_info)
 
@@ -945,3 +1024,10 @@ class AppControl(object):
             self._outgoing_events.remove(event)
 
         return events
+
+    def handle_downtime(self, p_downtime):
+
+        for process_handler in self._process_handlers.values():
+            events = process_handler.get_downtime_corrected_admin_events(p_downtime=p_downtime)
+
+            self.queue_events(p_events=events, p_to_master=True)

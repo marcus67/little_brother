@@ -27,35 +27,37 @@ EVENT_TYPE_LOGIN_PERMITTED = "LOGIN_PERMITTED"
 EVENT_TYPE_KILL_PROCESS = "KILL_PROCESS"
 EVENT_TYPE_UPDATE_CONFIG = "UPDATE_CONFIG"
 EVENT_TYPE_PROCESS_START = "PROCESS_START"
+EVENT_TYPE_PROCESS_DOWNTIME = "PROCESS_DOWNTIME"
 EVENT_TYPE_PROCESS_END = "PROCESS_END"
 EVENT_TYPE_SPEAK = "SPEAK"
 
+
 def create_process_info_from_event(p_event):
-    
     return process_info.ProcessInfo(
-        p_hostname = p_event.hostname,
-        p_pid = p_event.pid,
-        p_username = p_event.username,
+        p_hostname=p_event.hostname,
+        p_pid=p_event.pid,
+        p_username=p_event.username,
         p_processhandler=p_event.processhandler,
-        p_processname = p_event.processname,
-        p_start_time = p_event.process_start_time)
+        p_processname=p_event.processname,
+        p_start_time=p_event.process_start_time)
+
 
 class AdminEvent(object):
 
-    def __init__(self, p_hostname=None, 
-                 p_username=None, 
+    def __init__(self, p_hostname=None,
+                 p_username=None,
                  p_pid=None,
                  p_processhandler=None,
                  p_processname=None,
-                 p_event_type=None, 
+                 p_event_type=None,
                  p_event_time=None,
                  p_process_start_time=None,
                  p_text=None,
-                 p_payload=None):
-        
+                 p_payload=None,
+                 p_downtime=0):
         if p_event_time is None:
-            p_event_time = datetime.datetime.now() 
-        
+            p_event_time = datetime.datetime.now()
+
         self.hostname = p_hostname
         self.username = p_username
         self.pid = p_pid
@@ -66,22 +68,21 @@ class AdminEvent(object):
         self.process_start_time = p_process_start_time
         self.text = p_text
         self.payload = p_payload
-        
+        self.downtime = p_downtime
+
     def __str__(self):
         return "AdminEvent (type=%s, host=%s, user=%s, process=%s, PID=%s)" % (
-            self.event_type, self.hostname, self.username, self.processname, 
+            self.event_type, self.hostname, self.username, self.processname,
             str(self.pid) if self.pid is not None else "-")
-        
+
     def __eq__(self, p_other):
-        
-        return (self.hostname == p_other.hostname and 
+        return (self.hostname == p_other.hostname and
                 self.username == p_other.username and
                 self.processhandler == p_other.processhandler and
                 self.pid == p_other.pid and
                 self.event_type == p_other.event_type and
                 self.text == p_other.text and
                 self.payload == p_other.payload)
-        
 
     def get_key(self):
         return process_info.get_key(p_hostname=self.hostname, p_pid=self.pid, p_start_time=self.process_start_time)

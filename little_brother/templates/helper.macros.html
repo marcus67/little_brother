@@ -21,7 +21,7 @@
 {% macro render_field(field) %}
   {% if field.errors %}
   <div class="form-group has-error">
-  {{ field(class_="form-control") }}
+  {{ field(class_="form-control " + field.extra_css_classes) }}
     <label class="control-label" for="{{ field.id }}">
     {% if field.errors|length == 1 %}
         {{ field.errors[0] }}
@@ -35,7 +35,7 @@
     </label>
   </div>
   {% else %}
-  {{ field(class_="form-control") }}
+  {{ field(class_="form-control " + field.extra_css_classes) }}
   {% endif %}
 {% endmacro %}
 

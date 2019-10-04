@@ -18,8 +18,8 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-SCRIPT_DIR=`dirname $0`
-BASE_DIR=`realpath ${SCRIPT_DIR}/..`
+SCRIPT_DIR=$(dirname $0)
+BASE_DIR=$(realpath ${SCRIPT_DIR}/..)
 
 PATH=${PATH}:${HOME}/.virtualenvs/little-brother/bin
-pybabel compile -d little_brother/translations
+pybabel compile -d ${BASE_DIR}/little_brother/translations

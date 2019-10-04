@@ -35,7 +35,7 @@ A:visited {
     color: black;
 }
 
-INPUT { width70px; }
+INPUT { width: 70px; }
 
 .navbar-brand { width: 200px; }
 .form-signin {  text-align: center; }
@@ -57,6 +57,7 @@ A.CVE_HYPERLINK:visited { color: inherit; }
 .col-xs-3 input { padding-left: 3px; padding-right: 3px; }
 .col-xs-4 input { padding-left: 4px; padding-right: 4px; }
 
+.rule-override { font-weight: bold; color: blue; }
 
 DIV.WIDTH100 { width: 100%; }
 DIV.FIXED400 { width: 400px; table-layout: fixed;}
@@ -71,10 +72,12 @@ DIV.STANDARD_TABLE DIV.TITLE_ROW DIV.COL { font-size:24px; text-align: center; }
 DIV.STANDARD_TABLE DIV.TITLE_ROW { background-color: #E2E2E2; font-weight:bold;  }
 
 DIV.STANDARD_TABLE DIV.ROWLEVEL_1 { background-color: #829eb8; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #92b1cd; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a3c4e3; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #afd1f1; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_5  { background-color: #bbdeff; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #99bbda; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a7cdef; }
+DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #d5ebff; }
+
+DIV.STANDARD_TABLE DIV.SEPERATOR_ROW       { height:2px; }
+DIV.STANDARD_TABLE DIV.SEPERATOR_ROW_LINE  { height:2px; background-color:black; }
 
 DIV.STANDARD_TABLE DIV.HEADER_ROW { background-color: #F2F2F2; }
 DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { border-bottom-style: solid; }
@@ -93,3 +96,23 @@ UL {
 }
 
 .CODE { font-family:monospace; }
+
+.CONTEXT { font-style:italic; }
+
+.center { text-align: center; }
+
+/* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  80% { opacity: 0; }
+}
+
+/* https://stackoverflow.com/questions/41081275/bootstrap-left-align-checkbox-in-horizontal-form */
+.move-left {
+    width: auto;
+    box-shadow: none;
+}

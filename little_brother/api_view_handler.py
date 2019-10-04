@@ -15,31 +15,30 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import flask
 import json
 
+import flask
+
 import little_brother
-
 from flask_helpers import blueprint_adapter
-from python_base_app import tools
-from python_base_app import log_handling
 from little_brother import constants
-
+from python_base_app import log_handling
+from python_base_app import tools
 
 API_BLUEPRINT_NAME = "API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 class ApiViewHandler(object):
-    
+
     def __init__(self, p_app, p_app_control, p_master_connector):
-        
         self._appcontrol = p_app_control
         self._master_connector = p_master_connector
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._blueprint = flask.Blueprint(API_BLUEPRINT_NAME, little_brother.__name__)
         API_BLUEPRINT_ADAPTER.assign_view_handler_instance(p_blueprint=self._blueprint,
-            p_view_handler_instance=self)
+                                                           p_view_handler_instance=self)
         API_BLUEPRINT_ADAPTER.check_view_methods()
         p_app.register_blueprint(self._blueprint)
 

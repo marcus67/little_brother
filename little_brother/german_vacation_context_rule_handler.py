@@ -15,18 +15,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import requests
-import json
 import collections
 import datetime
+import json
 
+import requests
+
+from little_brother import context_rule_handler
 from python_base_app import configuration
 from python_base_app import log_handling
 
-from little_brother import context_rule_handler
-
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x:x
+_ = lambda x: x
 
 _("vacation")
 
@@ -34,12 +34,28 @@ CALENDAR_CONTEXT_RULE_HANDLER_NAME = "german-vacation-calendar"
 
 SECTION_NAME = "GermanVacationCalendar"
 
+ENTRY_FILTER = [
+    'Herbst',
+    'Weihnachten',
+    'Sommer',
+    'Himmelfahrt',
+    'Ostern',
+    'Allerheiligen',
+    'Christi Himmelfahrt',
+    'Pfingstmontag',
+    'Reformationstag',
+    'Buß- und Bettag',
+    'Heilige Drei Könige',
+    'Mariä Himmelfahrt',
+    'Pfingsten'
+]
+
 VacationEntry = collections.namedtuple("VacationEntry", ["name", "start_date", "end_date"])
+
 
 class GermanVacationContextRuleHandlerConfig(configuration.ConfigModel):
 
     def __init__(self):
-
         super().__init__(p_section_name=SECTION_NAME)
 
         # See https://www.mehr-schulferien.de
@@ -62,7 +78,6 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
         self._config = GermanVacationContextRuleHandlerConfig()
         self._cache = {}
 
-
     def get_configuration_section_handler(self):
         return configuration.SimpleConfigurationSectionHandler(p_config_model=self._config)
 
@@ -80,7 +95,7 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             try:
                 result = json.loads(request.content.decode("UTF-8"))
                 state_data = result['data']
-                self._federal_state_map = { state['name'] : state['id'] for state in state_data }
+                self._federal_state_map = {state['name']: state['id'] for state in state_data}
 
             except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
@@ -92,7 +107,6 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
         if self._vacation_data is None:
             url = self._config.vacation_data_url
             request = requests.get(url)
-
 
             if request.status_code != 200:
                 fmt = "HTTP code {error_code} while downloading {url}"
@@ -107,10 +121,13 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
                 self._vacation_data = {}
 
                 for (state_name, state_id) in self._federal_state_map.items():
-                    entries = [ VacationEntry(name=entry['name'],
-                                              start_date=datetime.datetime.strptime(entry['starts_on'], self._config.date_format).date(),
-                                              end_date=datetime.datetime.strptime(entry['ends_on'], self._config.date_format).date() )
-                                                for entry in vacation_entries if entry['federal_state_id'] == state_id ]
+                    entries = [VacationEntry(name=entry['name'],
+                                             start_date=datetime.datetime.strptime(entry['starts_on'],
+                                                                                   self._config.date_format).date(),
+                                             end_date=datetime.datetime.strptime(entry['ends_on'],
+                                                                                 self._config.date_format).date())
+                               for entry in vacation_entries if
+                               entry['federal_state_id'] == state_id and entry['name'] in ENTRY_FILTER]
                     self._vacation_data[state_name] = entries
                     count = count + len(entries)
 
@@ -121,9 +138,9 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             fmt = "downloaded {count} vacation entries for Germany"
             self._logger.info(fmt.format(count=count))
 
-    def is_active(self, p_reference_date, p_context_details):
+    def is_active(self, p_reference_date, p_details):
 
-        state_name=p_context_details
+        state_name = p_details
 
         key = "{date}|{state}".format(date=datetime.datetime.strftime(p_reference_date, "%d%m%Y"), state=state_name)
 
@@ -134,14 +151,14 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
         self.check_data()
 
-        vacation_entries = self._vacation_data.get(p_context_details)
+        vacation_entries = self._vacation_data.get(p_details)
 
         if vacation_entries is None:
             fmt = "unknown federal state name {name}"
             raise configuration.ConfigurationException(fmt.format(name=state_name))
 
         for entry in vacation_entries:
-            if p_reference_date >= entry.start_date and p_reference_date <= entry.end_date:
+            if entry.start_date <= p_reference_date <= entry.end_date:
                 self._cache[key] = True
                 return True
 

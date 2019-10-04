@@ -16,15 +16,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
-import sqlalchemy.orm
-import sqlalchemy.ext.declarative
 import urllib.parse
 
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean
 from sqlalchemy.exc import ProgrammingError
 
-from python_base_app import log_handling
 from python_base_app import configuration
+from python_base_app import log_handling
 from python_base_app import tools
 
 Base = sqlalchemy.ext.declarative.declarative_base()
@@ -51,6 +51,7 @@ class ProcessInfo(Base):
     processname = Column(String(1024))
     start_time = Column(DateTime)
     end_time = Column(DateTime)
+    downtime = Column(Integer, server_default="0")
 
 
 class AdminEvent(Base):
@@ -65,6 +66,7 @@ class AdminEvent(Base):
     event_type = Column(String(256))
     event_time = Column(DateTime)
     process_start_time = Column(DateTime)
+    downtime = Column(Integer, server_default="0")
 
 
 class RuleOverride(Base):
@@ -79,6 +81,7 @@ class RuleOverride(Base):
     max_time_of_day = Column(Time)
     min_break = Column(Integer)
     free_play = Column(Boolean)
+    max_activity_duration = Column(Integer)
 
 
 def copy_attributes(p_from, p_to):
@@ -97,17 +100,18 @@ class PersistenceConfigModel(configuration.ConfigModel):
 
     def __init__(self):
         super(PersistenceConfigModel, self).__init__(SECTION_NAME)
-        self.database_driver = 'postgresql'
+        self.database_driver = 'mysql+pymysql'
         self.database_host = 'localhost'
-        self.database_port = 5432
+        self.database_port = 3306
         self.database_name = 'little_brother'
         self.database_user = 'little_brother'
         self.database_password = None
         self.database_admin = 'postgres'
         self.database_admin_password = None
 
-        #: Number of seconds that a database connection will be kept in the pool before it is discarded. It has to be shorter than
-        #: than the maximum time that a database server will keep a connection alive. In case of MySql this will be eight hours.
+        #: Number of seconds that a database connection will be kept in the pool before it is discarded.
+        #: It has to be shorter than the maximum time that a database server will keep a connection alive.
+        #: In case of MySql this will be eight hours.
         #: See https://stackoverflow.com/questions/6471549/avoiding-mysql-server-has-gone-away-on-infrequently-used-python-flask-server
         #: Default value: :data:`` 
         self.pool_recycle = 3600
@@ -158,6 +162,15 @@ class Persistence(object):
 
             self._admin_engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
 
+        url = self.build_url()
+
+        fmt = "Database URL for normal access: '%s'" % tools.anonymize_url(url)
+        self._logger.info(fmt)
+
+        self._engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
+
+    def build_url(self):
+
         if self._config.database_user is not None:
             url = urllib.parse.urlunsplit(
                 (
@@ -172,10 +185,8 @@ class Persistence(object):
         else:
             url = "{driver}://".format(driver=self._config.database_driver)
 
-        fmt = "Database URL for normal access: '%s'" % tools.anonymize_url(url)
-        self._logger.info(fmt)
+        return url
 
-        self._engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
 
     def get_admin_session(self):
         if self._admin_session is None:
@@ -199,7 +210,7 @@ class Persistence(object):
 
         return sqlalchemy.orm.sessionmaker(bind=self._engine)()
 
-    def create_mysql(self):
+    def create_mysql(self, p_create_tables):
         fmt = "Creating database '%s'" % self._config.database_name
         self._logger.info(fmt)
 
@@ -237,12 +248,13 @@ class Persistence(object):
             fmt = "Access already granted"
             self._logger.info(fmt)
 
-        Base.metadata.create_all(self._engine)
+        if p_create_tables:
+            Base.metadata.create_all(self._engine)
 
     def init_mysql(self):
         pass
 
-    def create_postgresql(self):
+    def create_postgresql(self, p_create_tables):
 
         fmt = "Creating user %s" % self._config.database_user
         self._logger.info(fmt)
@@ -260,32 +272,35 @@ class Persistence(object):
 
         try:
             self._create_table_engine.execute("CREATE DATABASE %s WITH OWNER = %s ENCODING = 'UTF8';" % (
-            self._config.database_name, self._config.database_user))
+                self._config.database_name, self._config.database_user))
 
         except ProgrammingError:
             fmt = "Database %s already exists" % self._config.database_name
             self._logger.info(fmt)
             return
 
-        Base.metadata.create_all(self._engine)
+        if p_create_tables:
+            Base.metadata.create_all(self._engine)
 
-    def create_sqlite(self):
+    def create_sqlite(self, p_create_tables):
 
-        Base.metadata.create_all(self._engine)
+        if p_create_tables:
+            Base.metadata.create_all(self._engine)
 
-    def check_schema(self):
+    def check_schema(self, p_create_tables=True):
         if self._admin_engine is None and self._config.database_admin is not None:
             raise configuration.ConfigurationException(
-                "check_schema () called without [StatusCollector].database_admin and [StatusCollector].database_admin_password set")
+                "check_schema () called without [Persistence].database_admin "
+                "and [Persistence].database_admin_password set")
 
         if DATABASE_DRIVER_POSTGRESQL in self._config.database_driver:
-            self.create_postgresql()
+            self.create_postgresql(p_create_tables=p_create_tables)
 
         elif DATABASE_DRIVER_MYSQL in self._config.database_driver:
-            self.create_mysql()
+            self.create_mysql(p_create_tables=p_create_tables)
 
         elif DATABASE_DRIVER_SQLITE in self._config.database_driver:
-            self.create_sqlite()
+            self.create_sqlite(p_create_tables=p_create_tables)
 
         else:
             raise ("Unknown database driver %s" % self._config.database_driver)
@@ -320,6 +335,7 @@ class Persistence(object):
         session = self.get_session()
         pinfo = session.query(ProcessInfo).filter(ProcessInfo.key == p_process_info.get_key()).one()
         pinfo.end_time = p_process_info.end_time
+        pinfo.downtime = p_process_info.downtime
         session.commit()
 
         if not self._reuse_session:
@@ -335,6 +351,8 @@ class Persistence(object):
             override.min_time_of_day = p_rule_override.min_time_of_day
             override.max_time_of_day = p_rule_override.max_time_of_day
             override.max_time_per_day = p_rule_override.max_time_per_day
+            override.min_break = p_rule_override.min_break
+            override.free_play = p_rule_override.free_play
 
         else:
             override = create_class_instance(RuleOverride, p_initial_values=p_rule_override)

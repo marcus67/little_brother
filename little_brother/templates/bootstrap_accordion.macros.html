@@ -19,7 +19,6 @@
 -->
 
 {% macro begin() -%}
-
 <DIV ID="accordion{{caller()}}" ROLE="tablist">
   	<DIV CLASS="card">
     	<DIV CLASS="card-header" ROLE="tab" ID="summary{{caller()}}">
@@ -46,39 +45,39 @@
 </A>
 {%- endmacro %}
 
+// The following comments have deliberately been moved out of the macro to reduce the size of the generated file.
+
+// The following code snippet is based on https://www.geekpub.de/2015/01/bootstrap-3-accordion-status-merken-mit-cookies/
+// ad (1): The following handler creates a cookie if the accordion is not collapsed.
+
+// ad (2): The following handler removes the cookie when the accordion is collapsed.
+// In the following handler we have to make sure we only call the Cookies.remove method for the
+// element by which the trigger was raised. In Bootstrap (or JavaScript?) there seems to be a mechanism which makes the event
+// travel up the DOM tree so that the trigger handler is also called for enclosing accordions. This would lead to the cookies
+// of whole path of accordions up the root be removed and hence to be collapsed.
+// The correction is based on https://stackoverflow.com/questions/32070392/jquery-show-bs-collapse-event-for-nested-bootstrap-collapsible-buttons-fires-on
+
+// ad (3): The following is executed when the page is loaded. It opens the accordion when a matching cookie is found.
 
 {% macro script() -%}
 <SCRIPT type="text/javascript">
-
-// The following code snippet is based on https://www.geekpub.de/2015/01/bootstrap-3-accordion-status-merken-mit-cookies/
-
-	// The following handler creates a cookie if the accordion is not collapsed.
-
+	// (1)
 	$("#accordion{{caller()}}").on('shown.bs.collapse', function () {
         var active = $("#accordion{{caller()}} .in").attr('id');
         Cookies.set('activeAccordionGroup_{{caller()}}', active);
     });
-    
-    // The following handler removes the cookie when the accordion is collapsed.
-    
-    // In the following handler we have to make sure we only call the Cookies.remove method for the
-    // element by which the trigger was raised. In Bootstrap (or JavaScript?) there seems to be a mechanism which makes the event
-    // travel up the DOM tree so that the trigger handler is also called for enclosing accordions. This would lead to the cookies 
-    // of whole path of accordions up the root be removed and hence to be collapsed.
-    
-    // The correction is based on https://stackoverflow.com/questions/32070392/jquery-show-bs-collapse-event-for-nested-bootstrap-collapsible-buttons-fires-on
+
+    // (2)
     $("#accordion{{caller()}}").on('hidden.bs.collapse', function (e) {
     	if ($(this)[0] == e.target.parentNode) {
         	Cookies.remove('activeAccordionGroup_{{caller()}}');
         }
     });
-    
-    // The following is executed when the page is loaded. It opens the accordion when a matching cookie is found. 
+
+    // (3)
     var last=Cookies.get('activeAccordionGroup_{{caller()}}');
     if (last!=null) {
         $("#" + last).addClass("in");
     }
 </SCRIPT>
 {%- endmacro %}
-
-

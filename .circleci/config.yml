@@ -21,7 +21,7 @@
 # but only to python_base_app/templates/gitlab-ci.template.yml!                  #
 ##################################################################################
 
-version: 2.1
+version: 2.0
 jobs:
   build:
     #working_directory: ~
@@ -38,7 +38,37 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
-      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
-      - run: pwd && ls -la && codecov
+      - run: codecov
       - store_artifacts:
           path: htmlcov
+      - store_artifacts:
+          path: debian/little-brother_0.1_42.deb
+      - persist_to_workspace:
+          root: debian
+          paths:
+            - little-brother_0.1_42.deb
+
+  deploy:
+    docker:
+      - image: accso/docker-python-app:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: debian
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
+
+workflows:
+    version: 2
+    build_and_deploy:
+      jobs:
+        - build
+        - deploy:
+            requires:
+              - build
+            filters:
+              branches:
+                only:
+                  - master
+                  - release
