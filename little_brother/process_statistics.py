@@ -26,6 +26,7 @@ class Activity(object):
         self.host_process_counts = {}
         self.start_time = p_start_time
         self.end_time = None
+        self.downtime = 0
 
     def add_host_process(self, p_hostname):
 
@@ -37,21 +38,38 @@ class Activity(object):
         process_count = process_count + 1
         self.host_process_counts[p_hostname] = process_count
 
+
+    def set_end_time(self, p_end_time):
+
+        self.end_time = p_end_time
+
+
+    def set_downtime(self, p_downtime):
+
+        if p_downtime > self.downtime:
+            self.downtime = p_downtime
+
+
     @property
-    def duration(self):
+    def duration(self, p_reference_time=None):
 
         if self.end_time is not None and self.start_time is not None:
-            return (self.end_time - self.start_time).total_seconds()
+            return max((self.end_time - self.start_time).total_seconds() - self.downtime, 0)
 
         else:
             return None
 
+    def current_duration(self, p_reference_time):
+
+        return max((p_reference_time - self.start_time).total_seconds() -self.downtime, 0)
+
     def __str__(self):
 
-        return "Activity([%s, %s], %s)" % (
-            tools.get_timestamp_as_string(self.start_time),
-            tools.get_timestamp_as_string(self.end_time),
-            tools.get_duration_as_string(self.duration))
+        fmt = "Activity([{start_time}, {end_time}], {duration}, downtime={downtime})"
+        return  fmt.format(start_time=tools.get_timestamp_as_string(self.start_time),
+                           end_time=tools.get_timestamp_as_string(self.end_time),
+                           duration=tools.get_duration_as_string(self.duration),
+                           downtime=tools.get_duration_as_string(self.downtime))
 
     @property
     def host_infos(self):
@@ -103,6 +121,19 @@ class DayStatistics(object):
         return seconds
 
     @property
+    def downtime(self):
+
+        seconds = 0
+
+        for activity in self.activities:
+            secs = activity.downtime
+
+            if secs is not None:
+                seconds = seconds + secs
+
+        return seconds
+
+    @property
     def host_infos(self):
 
         return ", ".join(
@@ -138,6 +169,7 @@ class ProcessStatisticsInfo(object):
             self.current_activity = Activity(p_start_time=p_start_time)
 
         self.current_activity.add_host_process(p_process_info.hostname)
+        self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
         self.active_processes = self.active_processes + 1
 
     def add_process_end(self, p_process_info, p_end_time):
@@ -164,7 +196,8 @@ class ProcessStatisticsInfo(object):
 
         if self.active_processes == 0:
             if p_process_info.end_time is not None:
-                self.current_activity.end_time = p_end_time
+                self.current_activity.set_end_time(p_end_time=p_end_time)
+                self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
 
                 if lookback <= self.max_lookback_in_days:
                     self.day_statistics[lookback].add_activity(self.current_activity)
@@ -224,6 +257,18 @@ class ProcessStatisticsInfo(object):
         return duration
 
     @property
+    def todays_downtime(self):
+
+        downtime = self.day_statistics[0].downtime
+
+        active_downtime = self.current_activity_downtime
+
+        if active_downtime is not None:
+            downtime = downtime + active_downtime
+
+        return downtime
+
+    @property
     def seconds_since_last_activity(self):
 
         if self.last_inactivity_start_time is not None:
@@ -241,7 +286,16 @@ class ProcessStatisticsInfo(object):
             return None
 
         else:
-            return (self.reference_time - self.current_activity.start_time).total_seconds()
+            return self.current_activity.current_duration(p_reference_time=self.reference_time)
+
+    @property
+    def current_activity_downtime(self):
+
+        if self.current_activity is None:
+            return None
+
+        else:
+            return self.current_activity.downtime
 
     # @property
     # def seconds_in_last_activity(self):
@@ -291,6 +345,7 @@ def get_process_statistics(
         p_reference_time,
         p_max_lookback_in_days,
         p_min_activity_duration):
+
     users_stat_infos = get_empty_stat_infos(
         p_rule_set_configs=p_rule_set_configs,
         p_reference_time=p_reference_time,

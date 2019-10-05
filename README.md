@@ -97,6 +97,8 @@ Users are invited to provide translations for other languages.
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools.
 
+*   Downtime of a server during playtime (e.g. due to hybernation) is automatically substracted from the play time.
+
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
@@ -137,7 +139,6 @@ There is a YouTube video showing some of the steps below for an Ubuntu 18 target
 
 <A HREF="https://www.youtube.com/watch?v=Skb5Hz0XZuA"><IMG SRC="doc/youtube-presentations/2019-06-09_LittleBrother_YouTube_Presentation.thumb.png"></A>
  
-
 ### Download the Software
 
 The application is available as a Debian package 

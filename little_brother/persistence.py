@@ -113,7 +113,7 @@ class PersistenceConfigModel(configuration.ConfigModel):
         #: It has to be shorter than the maximum time that a database server will keep a connection alive.
         #: In case of MySql this will be eight hours.
         #: See https://stackoverflow.com/questions/6471549/avoiding-mysql-server-has-gone-away-on-infrequently-used-python-flask-server
-        #: Default value: :data:`` 
+        #: Default value: :data:``
         self.pool_recycle = 3600
 
 
@@ -186,7 +186,6 @@ class Persistence(object):
             url = "{driver}://".format(driver=self._config.database_driver)
 
         return url
-
 
     def get_admin_session(self):
         if self._admin_session is None:

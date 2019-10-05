@@ -150,7 +150,11 @@ class ProcessHandler(object):
 
     @staticmethod
     def create_admin_event_process_start_from_pinfo(p_pinfo, p_reference_time=None):
-        if p_reference_time is None:
+
+        if p_pinfo.start_time is not None:
+            p_reference_time = p_pinfo.start_time
+
+        elif p_reference_time is None:
             p_reference_time = datetime.datetime.now()
 
         return admin_event.AdminEvent(

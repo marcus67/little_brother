@@ -21,12 +21,12 @@
 import datetime
 import os.path
 
-from python_base_app import configuration
-
-from python_base_app.test import base_test
-
-from little_brother import rule_handler
 from little_brother import german_vacation_context_rule_handler
+from little_brother import rule_handler
+from little_brother import rule_override
+from little_brother import simple_context_rule_handlers
+from python_base_app import configuration
+from python_base_app.test import base_test
 
 TEST_USER = "user1"
 
@@ -41,12 +41,10 @@ LABEL_1 = "LABEL1"
 LABEL_2 = "LABEL2"
 LABEL_3 = "LABEL3"
 
-from little_brother import simple_context_rule_handlers
 
 class TestRuleHandler(base_test.BaseTestCase):
 
     def test_priority(self):
-
         a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=self.create_dummy_ruleset_configs())
 
         active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=NORMAL_DAY_1)
@@ -61,13 +59,17 @@ class TestRuleHandler(base_test.BaseTestCase):
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=VACATION_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER,
+                                                                   p_reference_date=VACATION_DAY_1)
         self.assertIsNotNone(active_rule_set)
-        self.assertEqual(active_rule_set.context, german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
+        self.assertEqual(active_rule_set.context,
+                         german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=VACATION_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER,
+                                                                   p_reference_date=VACATION_DAY_2)
         self.assertIsNotNone(active_rule_set)
-        self.assertEqual(active_rule_set.context, german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
+        self.assertEqual(active_rule_set.context,
+                         german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
         active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=WEEKEND_DAY_3)
         self.assertIsNotNone(active_rule_set)
@@ -96,16 +98,12 @@ class TestRuleHandler(base_test.BaseTestCase):
 
         return {TEST_USER: [default_config, weekend_config, vacation_config]}
 
-
-
     @staticmethod
     def create_dummy_rule_handler(p_ruleset_configs):
-
         default_context_rule_handler = simple_context_rule_handlers.DefaultContextRuleHandler()
         weekend_context_rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
         vacation_context_rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
         rulehandler_config = rule_handler.RuleHandlerConfigModel()
-
 
         a_rule_handler = rule_handler.RuleHandler(p_config=rulehandler_config, p_rule_set_configs=p_ruleset_configs)
         a_rule_handler.register_context_rule_handler(p_context_rule_handler=default_context_rule_handler,
@@ -116,10 +114,21 @@ class TestRuleHandler(base_test.BaseTestCase):
         return a_rule_handler
 
 
+class TestRuleOverride(base_test.BaseTestCase):
+
+    def test_str(self):
+        override = rule_override.RuleOverride(p_username=TEST_USER, p_reference_date=NORMAL_DAY_1,
+                                              p_max_time_per_day=100,
+                                              p_min_time_of_day=datetime.time(hour=12, minute=34),
+                                              p_max_time_of_day=datetime.time(hour=23, minute=45),
+                                              p_min_break=10, p_free_play=False)
+
+        self._logger.info(str(override))
+
+
 class TestRuleSetConfigModel(base_test.BaseTestCase):
 
     def test_init(self):
-
         a_config_model = rule_handler.RuleSetConfigModel()
         self.assertIsNotNone(a_config_model)
 
@@ -157,7 +166,6 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
         self.assertEqual(a_config_model.label, LABEL_1)
 
     def test_regex(self):
-
         a_config_model = rule_handler.RuleSetConfigModel()
         a_config_model.process_name_pattern = "*"
 
@@ -166,10 +174,7 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
 
         self.assertIn("Invalid process REGEX", str(context.exception))
 
-
-
     def test_post_process(self):
-
         a_config_model = rule_handler.RuleSetConfigModel()
         a_config_model.min_time_of_day = "21:00:00"
         a_config_model.max_time_of_day = "21:00:00"
@@ -195,7 +200,6 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
         a_config_model.post_process()
 
     def test_apply_override(self):
-
         a_config_model = rule_handler.RuleSetConfigModel()
         a_config_override_model = rule_handler.RuleSetConfigModel()
 
@@ -219,10 +223,35 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
         self.assertEqual(new_rule_set.min_break, "4")
         self.assertEqual(new_rule_set.free_play, True)
 
+    def test_apply_empty_override(self):
+        a_config_model = rule_handler.RuleSetConfigModel()
+
+        a_config_model.min_break = "1m"
+        a_config_model.min_time_of_day = "12:34"
+        a_config_model.max_time_of_day = "23:45"
+        a_config_model.max_time_per_day = "1h"
+        a_config_model.free_play = True
+
+        a_config_override_model = rule_handler.RuleSetConfigModel()
+
+        new_rule_set = rule_handler.apply_override(p_rule_set=a_config_model, p_rule_override=a_config_override_model)
+
+        self.assertEqual(new_rule_set.min_time_of_day_class, "")
+        self.assertEqual(new_rule_set.max_time_of_day_class, "")
+        self.assertEqual(new_rule_set.max_time_per_day_class, "")
+        self.assertEqual(new_rule_set.min_break_class, "")
+        self.assertEqual(new_rule_set.free_play_class, "")
+
+        self.assertEqual(new_rule_set.min_time_of_day, "12:34")
+        self.assertEqual(new_rule_set.max_time_of_day, "23:45")
+        self.assertEqual(new_rule_set.max_time_per_day, "1h")
+        self.assertEqual(new_rule_set.min_break, "1m")
+        self.assertEqual(new_rule_set.free_play, True)
+
+
 class TestRulesectionHandler(base_test.BaseTestCase):
 
     def test_read_config_file(self):
-
         a_configuration = configuration.Configuration()
 
         rule_handler_section = rule_handler.RuleHandlerConfigModel()
@@ -251,14 +280,15 @@ class TestRulesectionHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_configuration)
 
     def test_read_time_of_day(self):
-
         self.assertIsNone(rule_handler.RuleSetSectionHandler.read_time_of_day(None))
 
+        self.assertEqual(rule_handler.RuleSetSectionHandler.read_time_of_day("12:34"),
+                         datetime.time(hour=12, minute=34))
 
-        self.assertEqual(rule_handler.RuleSetSectionHandler.read_time_of_day("12:34"), datetime.time(hour=12, minute=34))
+        self.assertEqual(rule_handler.RuleSetSectionHandler.read_time_of_day("12"),
+                         datetime.time(hour=12))
 
         with self.assertRaises(configuration.ConfigurationException) as context:
             rule_handler.RuleSetSectionHandler.read_time_of_day("x")
 
         self.assertIn("Invalid time of day format", str(context.exception))
-

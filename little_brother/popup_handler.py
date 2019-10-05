@@ -30,6 +30,7 @@ POPUP_ENGINE_XMESSAGE = "xmessage"
 POPUP_ENGINE_GXMESSAGE = "gxmessage"
 POPUP_ENGINE_ZENITY = "zenity"
 POPUP_ENGINE_YAD = "yad"
+POPUP_ENGINE_SHELL_ECHO = "echo"
 
 POPUP_ENGINES = {
     POPUP_ENGINE_XMESSAGE: "/usr/bin/xmessage -nearmouse {{{pattern}}}".format(
@@ -40,6 +41,8 @@ POPUP_ENGINES = {
     POPUP_ENGINE_ZENITY: "/usr/bin/X11/zenity --info --text='{{{pattern}}}'".format(
         pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
     POPUP_ENGINE_YAD: "/usr/bin/X11/yad --text='{{{pattern}}}'".format(
+        pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
+    POPUP_ENGINE_SHELL_ECHO: "/bin/bash -c 'echo {{{pattern}}}'".format(
         pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)
 }
 

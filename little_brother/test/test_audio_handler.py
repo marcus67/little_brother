@@ -17,12 +17,14 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
+import tempfile
 
 from little_brother import audio_handler
 from python_base_app import configuration
+from python_base_app import log_handling
 from python_base_app.test import base_test
 
-SPOOL_DIR = "/tmp"
+SPOOL_DIR = tempfile.gettempdir()
 TEXT = "hallo"
 LOCALE = "de_DE"
 
@@ -37,8 +39,10 @@ class TestAudioHandler(base_test.BaseTestCase):
         try:
             os.unlink(audio_file)
 
-        except Exception:
-            pass
+        except Exception as e:
+            logger = log_handling.get_logger()
+            fmt = "Cannot delete audio file {filename}: {exception}"
+            logger.warning(fmt.format(filename=audio_file, exception=str(e)))
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
     def test_engine_google_init(self):
@@ -61,9 +65,8 @@ class TestAudioHandler(base_test.BaseTestCase):
         self.assertIsNotNone(a_handler)
 
         self.delete_audio_file(p_audio_handler=a_handler)
-        a_handler.notify(p_text="hallo", p_locale=LOCALE)
-
-        a_handler.notify(p_text="hallo", p_locale=LOCALE)
+        a_handler.notify(p_text=TEXT, p_locale=LOCALE)
+        a_handler.notify(p_text=TEXT, p_locale=LOCALE)
 
     @base_test.skip_if_env("NO_AUDIO_OUTPUT")
     def test_spool_dir_and_file(self):

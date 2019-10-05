@@ -58,6 +58,7 @@ A.CVE_HYPERLINK:visited { color: inherit; }
 .col-xs-4 input { padding-left: 4px; padding-right: 4px; }
 
 .rule-override { font-weight: bold; color: blue; }
+.downtime { font-weight: bold; color: yellow; }
 
 DIV.WIDTH100 { width: 100%; }
 DIV.FIXED400 { width: 400px; table-layout: fixed;}
@@ -108,7 +109,7 @@ UL {
 }
 
 @keyframes blinker {
-  80% { opacity: 0; }
+  80% { opacity: 0.5; }
 }
 
 /* https://stackoverflow.com/questions/41081275/bootstrap-left-align-checkbox-in-horizontal-form */

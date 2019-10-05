@@ -4,6 +4,17 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 43 (October 5th, 2019)
+
+*   Closes #8 again, see [here](https://github.com/marcus67/little_brother/issues/8) after actually considering
+    downtimes in statistics
+    
+*   Fix some minor code quality problems reported by Codacy 
+
+*   Added output of downtime values to status page using font color yellow.
+
+*   Increase test coverage for popup_handler.py and rule_handler.py
+
 ## Version 0.1 Revision 42 (October 5th, 2019)
 
 *   Closes #8, see [here](https://github.com/marcus67/little_brother/issues/8)

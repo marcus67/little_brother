@@ -29,17 +29,27 @@ LOCALE = "de_DE"
 
 class TestPopupHandler(base_test.BaseTestCase):
 
-    @staticmethod
-    def delete_popup_file(p_popup_handler):
+    # @staticmethod
+    # def delete_popup_file(p_popup_handler):
+    #
+    #     popup_file = p_popup_handler.get_popup_filename(p_text=TEXT, p_locale=None)
+    #
+    #     try:
+    #         os.unlink(popup_file)
+    #
+    #     except Exception:
+    #         logger = log_handling.get_logger()
+    #         logger.warning("Cannot delete popup file!")
 
-        popup_file = p_popup_handler.get_popup_filename(p_text=TEXT, p_locale=None)
+    def test_engine_bash_shell_init(self):
 
-        try:
-            os.unlink(popup_file)
+        a_config = popup_handler.PopupHandlerConfigModel()
+        a_config.popup_engine = popup_handler.POPUP_ENGINE_SHELL_ECHO
+        a_handler = popup_handler.PopupHandler(p_config=a_config)
 
-        except Exception:
-            logger = log_handling.get_logger()
-            logger.warning("Cannot delete popup file!")
+        self.assertIsNotNone(a_handler)
+
+        a_handler.notify(p_text=TEXT)
 
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_gxmessage_init(self):
