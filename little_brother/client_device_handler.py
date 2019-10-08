@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import re
+import shlex
 import subprocess
 
 from little_brother import admin_event
@@ -112,13 +113,17 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
         Remember that a host may not respond to a ping (ICMP) request even if the host name is valid.
         """
 
-        # Ping command count option as function of OS
-        param = '-n 1' if tools.is_windows() else '-c 1'
+        fmt = "{ping_command} -w 1 {c_option} {host}"
+        raw_command = fmt.format(ping_command=self._config.ping_command,
+                                 # Ping command count option as function of OS
+                                 c_option='-n 1' if tools.is_windows() else '-c 1',
+                                 host=shlex.quote(p_host))
 
-        # Building the command. Ex: "ping -c 1 google.com"
-        command = [self._config.ping_command, param, p_host]
-
+        command = shlex.split(raw_command)
         delay = None
+
+        fmt = "Executing command {cmd} in Popen"
+        self._logger.debug(fmt.format(cmd=command))
 
         proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 

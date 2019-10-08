@@ -4,11 +4,19 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 44 (October 9th, 2019)
+
+*   Closes #30, see [here](https://github.com/marcus67/little_brother/issues/30)
+*   Closes #4, see [here](https://github.com/marcus67/little_brother/issues/30)
+*   Increased default value for DEFAULT_MINIMUM_DOWNTIME_DURATION to 20
+*   Improved exception handling upon startup
+*   Improved security of Popen by using shlex
+
 ## Version 0.1 Revision 43 (October 5th, 2019)
 
 *   Closes #8 again, see [here](https://github.com/marcus67/little_brother/issues/8) after actually considering
     downtimes in statistics
-    
+
 *   Fix some minor code quality problems reported by Codacy 
 
 *   Added output of downtime values to status page using font color yellow.

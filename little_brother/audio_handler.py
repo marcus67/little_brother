@@ -19,6 +19,7 @@ import datetime
 import hashlib
 import locale
 import os.path
+import shlex
 import subprocess
 
 import pyttsx3
@@ -174,7 +175,9 @@ class AudioHandler(notification_handler.NotificationHandler):
     def set_volume(self):
 
         if self._config.audio_mixer_volume is not None:
-            cmd_line = "%s -q sset Master %d%%" % (self._config.audio_mixer_bin, self._config.audio_mixer_volume)
+            cmd_line = "%s -q sset Master %d%%" % (
+                shlex.quote(self._config.audio_mixer_bin),
+                self._config.audio_mixer_volume)
 
             try:
                 fmt = "speak_external_command(): set volume to %d%%" % self._config.audio_mixer_volume

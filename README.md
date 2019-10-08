@@ -97,7 +97,7 @@ Users are invited to provide translations for other languages.
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools.
 
-*   Downtime of a server during playtime (e.g. due to hybernation) is automatically substracted from the play time.
+*   Downtime of a server during playtime (e.g. due to hibernation) is automatically substracted from the play time.
 
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
