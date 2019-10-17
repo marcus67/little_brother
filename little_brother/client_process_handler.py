@@ -69,7 +69,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             pinfo = admin_event.create_process_info_from_event(p_event=p_event)
             return [self.create_admin_event_process_end_from_pinfo(p_pinfo=pinfo)]
 
-        subprocess.run([self._config.sudo_command, self._config.kill_command, "-%d" % p_event.pid])
+        subprocess.run([self._config.sudo_command, self._config.kill_command, "-SIGHUP", "-%d" % p_event.pid])
         _gone, alive = psutil.wait_procs([proc], timeout=self._config.kill_delay)
 
         if len(alive) > 0:

@@ -35,6 +35,12 @@ DATABASE_DRIVER_MYSQL = 'mysql'
 DATABASE_DRIVER_POSTGRESQL = 'postgresql'
 DATABASE_DRIVER_SQLITE = 'sqlite'
 
+DATABASE_DRIVERS = [
+    DATABASE_DRIVER_MYSQL,
+    DATABASE_DRIVER_POSTGRESQL,
+    DATABASE_DRIVER_SQLITE
+]
+
 #: Default value for option :class:`PersistenceConfigModel.pool_recycle`
 DEFAULT_POOL_RECYCLE = 3600
 
@@ -302,7 +308,10 @@ class Persistence(object):
             self.create_sqlite(p_create_tables=p_create_tables)
 
         else:
-            raise ("Unknown database driver %s" % self._config.database_driver)
+            fmt = "Unknown database driver '{driver}'. Known drivers: {drivers}"
+            raise configuration.ConfigurationException(
+                fmt.format(driver=self._config.database_driver,
+                           drivers="'" + "', '".join(DATABASE_DRIVERS) + "'"))
 
     def log_admin_event(self, p_admin_event):
 
