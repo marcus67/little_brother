@@ -22,6 +22,7 @@ from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import log_handling
 
+import abc
 
 class ProcessHandlerConfigModel(configuration.ConfigModel):
 
@@ -31,7 +32,7 @@ class ProcessHandlerConfigModel(configuration.ConfigModel):
         self.check_interval = base_app.DEFAULT_TASK_INTERVAL
 
 
-class ProcessHandler(object):
+class ProcessHandler(object, metaclass=abc.ABCMeta):
 
     def __init__(self, p_config):
 
@@ -118,7 +119,9 @@ class ProcessHandler(object):
         return pinfo
 
     def handle_event_kill_process(self, p_event):
-        pass
+
+        if self.can_kill_processes():
+            raise NotImplementedError("handle_event_kill_process not implemented although handler can kill processes")
 
     def add_historic_process(self, p_process_info):
         self._process_infos[p_process_info.get_key()] = p_process_info
@@ -178,7 +181,8 @@ class ProcessHandler(object):
             p_downtime=p_pinfo.downtime,
             p_pid=p_pinfo.pid)
 
-    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map):
+    @abc.abstractmethod
+    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map): # pragma: no cover
         pass
 
     def get_downtime_corrected_admin_events(self, p_downtime):
