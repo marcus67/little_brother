@@ -94,6 +94,7 @@ class ProcessHandler(object):
             updated = True
 
         else:
+            pinfo = None
             updated = False
 
         return (pinfo, updated)

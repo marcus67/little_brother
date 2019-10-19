@@ -17,3 +17,4 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 little-brother ALL=(root) NOPASSWD: /bin/kill *
+little-brother ALL=(root) NOPASSWD: /bin/launchctl *

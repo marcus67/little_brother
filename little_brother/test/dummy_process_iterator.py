@@ -18,7 +18,7 @@
 
 import collections
 
-uids_tuple = collections.namedtuple('uids', ['real'])
+uids_tuple = collections.namedtuple('uids', ['real', 'effective'])
 
 
 class DummyProcess(object):
@@ -28,7 +28,7 @@ class DummyProcess(object):
         self._uid = p_user_map[p_pinfo.username]
 
     def uids(self):
-        return uids_tuple(real=self._uid)
+        return uids_tuple(real=self._uid, effective=self._uid)
 
     def name(self):
         return self._pinfo.processname

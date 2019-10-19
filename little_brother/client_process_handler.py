@@ -19,13 +19,20 @@ import datetime
 import subprocess
 
 import psutil
+import shlex
+
+from python_base_app import log_handling
+from python_base_app import tools
 
 from little_brother import admin_event
 from little_brother import process_handler
 from little_brother import process_info
-from python_base_app import log_handling
 
 SECTION_NAME = "ClientProcessHandler"
+
+PROCESS_ID_PATTERN = "pid"
+USER_ID_PATTERN = "uid"
+SIGNAL_ID_PATTERN = "signal"
 
 
 class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
@@ -34,7 +41,12 @@ class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel)
         super(ClientProcessHandlerConfigModel, self).__init__(p_section_name=SECTION_NAME)
 
         self.sudo_command = "/usr/bin/sudo"
-        self.kill_command = "/bin/kill"
+
+        if tools.is_mac_os():
+            self.kill_command_pattern = "/bin/launchctl bootout gui/{uid}"
+        else:
+            self.kill_command_pattern = "/bin/kill -{signal} {process}"
+
         self.kill_delay = 5  # seconds
 
 
@@ -43,18 +55,15 @@ class ClientProcessHandler(process_handler.ProcessHandler):
     def __init__(self, p_config, p_process_iterator_factory):
 
         super().__init__(p_config=p_config)
-        # self._config = p_config
         self._process_iterator_factory = p_process_iterator_factory
-
         self._logger = log_handling.get_logger(self.__class__.__name__)
-
         self._process_infos = {}
 
     @staticmethod
     def can_kill_processes():
         return True
 
-    def handle_event_kill_process(self, p_event):
+    def handle_event_kill_process(self, p_event, p_username_map):
 
         fmt = "Kill process %d of user %s on host %s with signal SIGHUP" % (
             p_event.pid, p_event.username, p_event.hostname)
@@ -69,14 +78,55 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             pinfo = admin_event.create_process_info_from_event(p_event=p_event)
             return [self.create_admin_event_process_end_from_pinfo(p_pinfo=pinfo)]
 
-        subprocess.run([self._config.sudo_command, self._config.kill_command, "-SIGHUP", "-%d" % p_event.pid])
+        uid = p_username_map.get(p_event.username)
+
+        if uid is None:
+            fmt = "handle_event_kill_process: cannot find uid for username '{username}'"
+            self._logger.warning(fmt.format(username=p_event.username))
+
+        params = {
+            'pid': p_event.pid,
+            'username': p_event.username,
+            'uid': uid,
+            'signal': 'SIGHUP',
+            'host': p_event.hostname
+        }
+
+        fmt = "Killing process {pid} of user '{username}' on host '{host}'"
+
+        if "{signal}" in self._config.kill_command_pattern:
+            fmt = fmt + " with signal {signal}"
+
+        self._logger.info(fmt.format(**params))
+
+        kill_command = self._config.sudo_command + " " + self._config.kill_command_pattern.format(**params)
+
+        fmt = "Executing sudo command '{cmd}'..."
+        self._logger.debug(fmt.format(cmd=kill_command))
+
+        cmd_array = shlex.split(kill_command)
+        subprocess.run(cmd_array)
+
+
         _gone, alive = psutil.wait_procs([proc], timeout=self._config.kill_delay)
 
         if len(alive) > 0:
-            fmt = "Kill process %d of user %s on host %s with signal SIGKILL" % (
-                p_event.pid, p_event.username, p_event.hostname)
-            self._logger.debug(fmt)
-            subprocess.run([self._config.sudo_command, self._config.kill_command, "-SIGKILL", "-%d" % p_event.pid])
+            params['signal'] = "SIGKILL"
+
+            fmt = "Second attempt: killing process {pid} of user '{username}' on host '{host}'"
+
+            if "{signal}" in self._config.kill_command_pattern:
+                fmt = fmt + " with signal {signal}"
+
+            self._logger.info(fmt.format(**params))
+
+            kill_command = self._config.sudo_command + " " + self._config.kill_command_pattern.format(**params)
+
+            fmt = "Executing sudo command '{cmd}'..."
+            self._logger.debug(fmt.format(cmd=kill_command))
+
+            cmd_array = shlex.split(kill_command)
+            subprocess.run(cmd_array)
 
         return []
 
@@ -92,8 +142,12 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             try:
                 uids = proc.uids()
 
-                if uids.real in p_uid_map:
-                    username = p_uid_map[uids.real]
+                # On Mac OS the process we want to kill has the real user id set to root but the effective user id
+                # set to the actual user.
+                uid = uids.effective
+
+                if uid in p_uid_map:
+                    username = p_uid_map[uid]
                     proc_name = proc.name()
 
                     if p_process_regex_map[username].match(proc_name):
@@ -115,7 +169,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                                 p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
                                 p_hostname=p_host_name,
                                 p_processhandler=self.id,
-                                p_username=p_uid_map[uids.real],
+                                p_username=p_uid_map[uid],
                                 p_processname=proc.name(),
                                 p_process_start_time=start_time,
                                 p_pid=proc.pid)

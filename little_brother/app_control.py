@@ -379,7 +379,8 @@ class AppControl(object):
 
     def handle_event_kill_process(self, p_event):
 
-        return self.get_process_handler(p_id=p_event.processhandler).handle_event_kill_process(p_event)
+        return self.get_process_handler(
+            p_id=p_event.processhandler).handle_event_kill_process(p_event, p_username_map=self._username_map)
 
     def handle_event_speak(self, p_event):
 
