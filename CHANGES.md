@@ -4,6 +4,16 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 45 (October 9th, 2019)
+
+*   Closes #60, see [here](https://github.com/marcus67/little_brother/issues/60)
+*   Make ProcessControl an abstract base class
+*   Use launchctl to terminate login process under MacOs
+*   Remove duplicate PopupHandler section in minimal-master.config
+*   Switch to effective user id in process infos
+*   Add missing -SIGHUP for MacOs kill command
+*   Use ConfigurationException
+
 ## Version 0.1 Revision 44 (October 9th, 2019)
 
 *   Closes #30, see [here](https://github.com/marcus67/little_brother/issues/30)

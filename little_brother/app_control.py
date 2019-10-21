@@ -608,6 +608,7 @@ class AppControl(object):
                 p_min_time_of_day=override.min_time_of_day,
                 p_max_time_of_day=override.max_time_of_day,
                 p_min_break=override.min_break,
+                p_max_activity_duration=override.max_activity_duration,
                 p_free_play=override.free_play)
 
             self._rule_overrides[new_override.get_key()] = new_override

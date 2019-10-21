@@ -361,6 +361,7 @@ class Persistence(object):
             override.max_time_per_day = p_rule_override.max_time_per_day
             override.min_break = p_rule_override.min_break
             override.free_play = p_rule_override.free_play
+            override.max_activity_duration = p_rule_override.max_activity_duration
 
         else:
             override = create_class_instance(RuleOverride, p_initial_values=p_rule_override)
