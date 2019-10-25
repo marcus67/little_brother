@@ -4,7 +4,14 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.1 Revision 45 (October 9th, 2019)
+## Version 0.1 Revision 46 (October 25st, 2019)
+
+*   Generate script for building Docker images
+*   Add list typed option values to configuration files
+*   Improve test coverage of Configuration.py
+*   Provide initial Docker images for little-brother servers (non functional)
+
+## Version 0.1 Revision 45 (October 21st, 2019)
 
 *   Closes #60, see [here](https://github.com/marcus67/little_brother/issues/60)
 *   Make ProcessControl an abstract base class
@@ -17,7 +24,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.1 Revision 44 (October 9th, 2019)
 
 *   Closes #30, see [here](https://github.com/marcus67/little_brother/issues/30)
-*   Closes #4, see [here](https://github.com/marcus67/little_brother/issues/30)
+*   Closes #4, see [here](https://github.com/marcus67/little_brother/issues/4)
 *   Increased default value for DEFAULT_MINIMUM_DOWNTIME_DURATION to 20
 *   Improved exception handling upon startup
 *   Improved security of Popen by using shlex

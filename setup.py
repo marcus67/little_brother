@@ -53,6 +53,13 @@ setup_params = {
     # Target version to be used to upgrade the database
     "target_alembic_version": "647cf46033a9",
 
+    "docker_hub_user": "marcusrickert",
+    "docker_contexts": [ 'little-brother-base',
+                         #'docker/little-brother-master',
+                         #'docker/little-brother-master',
+                         'little-brother-slave',
+                         ],
+
     # additional setup configuration used by CI stages
 
     # technical name used for e.g. directories, PIP-package, and users
