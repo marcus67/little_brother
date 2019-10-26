@@ -23,6 +23,7 @@ import shlex
 
 from python_base_app import log_handling
 from python_base_app import tools
+from python_base_app import configuration
 
 from little_brother import admin_event
 from little_brother import process_handler
@@ -45,7 +46,7 @@ class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel)
         if tools.is_mac_os():
             self.kill_command_pattern = "/bin/launchctl bootout gui/{uid}"
         else:
-            self.kill_command_pattern = "/bin/kill -{signal} {process}"
+            self.kill_command_pattern = "/bin/kill -{signal} {pid}"
 
         self.kill_delay = 5  # seconds
 
@@ -99,7 +100,12 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
         self._logger.info(fmt.format(**params))
 
-        kill_command = self._config.sudo_command + " " + self._config.kill_command_pattern.format(**params)
+        try:
+            kill_command = self._config.sudo_command + " " + self._config.kill_command_pattern.format(**params)
+
+        except Exception as e:
+            fmt = "Exception '{estr}' while generating kill command"
+            raise configuration.ConfigurationException(fmt.format(estr=str(e)))
 
         fmt = "Executing sudo command '{cmd}'..."
         self._logger.debug(fmt.format(cmd=kill_command))

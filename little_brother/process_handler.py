@@ -118,7 +118,7 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
         return pinfo
 
-    def handle_event_kill_process(self, p_event):
+    def handle_event_kill_process(self, p_event, p_username_map):
 
         if self.can_kill_processes():
             raise NotImplementedError("handle_event_kill_process not implemented although handler can kill processes")

@@ -4,7 +4,13 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.1 Revision 46 (October 25st, 2019)
+## Version 0.1 Revision 47 (October 26th, 2019)
+
+*   Fixed problem with generated kill command under Linux
+*   Fixed several issues reported by Codacy
+*   Turned CI status into a table (including MacOS branch)
+
+## Version 0.1 Revision 46 (October 25th, 2019)
 
 *   Generate script for building Docker images
 *   Add list typed option values to configuration files

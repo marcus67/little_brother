@@ -1,26 +1,26 @@
 # Use postgres/example user/password credentials
-version: '3.1'
-services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: "test1234"
-      PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - "${HOME}/var/postgresql-little-brother:/var/lib/postgresql/data"
-    ports:
-      - "5435:5432"
-  dpkg-deb:
-    image: marcusrickert/dpkg-deb:latest
-    build: ./debian-package-build-tool
+  version: '3.1'
+  services:
+    db:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_PASSWORD: "test1234"
+        PGDATA: /var/lib/postgresql/data/pgdata
+      volumes:
+        - "${HOME}/var/postgresql-little-brother:/var/lib/postgresql/data"
+      ports:
+        - "5435:5432"
+    dpkg-deb:
+      image: marcusrickert/dpkg-deb:latest
+      build: ./debian-package-build-tool
 
-  slave:
-    image: marcusrickert/little-brother-slave:latest
-    environment:
-      # See https://docs.docker.com/docker-for-mac/networking/
-      - "MASTER_HOST_URL=http://host.docker.internal:5560"
-      - "MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN"
-    #network_mode: host
-    pid: host
-    userns_mode: host
+    slave:
+      image: marcusrickert/little-brother-slave:latest
+      environment:
+        # See https://docs.docker.com/docker-for-mac/networking/
+        - "MASTER_HOST_URL=http://host.docker.internal:5560"
+        - "MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN"
+      #network_mode: host
+      pid: host
+      userns_mode: host

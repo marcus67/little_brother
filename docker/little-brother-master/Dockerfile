@@ -1,2 +1,2 @@
 FROM marcusrickert/little-brother-base:latest
-MAINTAINER marcus.rickert@web.de
+LABEL maintainer="marcus.rickert@web.de"

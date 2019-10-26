@@ -1,5 +1,5 @@
-FROM bitnami/minideb
-MAINTAINER marcus.rickert@web.de
+FROM bitnami/minideb:buster
+LABEL maintainer="marcus.rickert@web.de"
 COPY assets/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && \
     mkdir -p /deb_root
