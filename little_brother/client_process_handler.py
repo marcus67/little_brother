@@ -64,7 +64,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
     def can_kill_processes():
         return True
 
-    def handle_event_kill_process(self, p_event, p_username_map):
+    def handle_event_kill_process(self, p_event, p_username_map=None):
 
         fmt = "Kill process %d of user %s on host %s with signal SIGHUP" % (
             p_event.pid, p_event.username, p_event.hostname)
