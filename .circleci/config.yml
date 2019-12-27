@@ -83,6 +83,6 @@ workflows:
                 only:
                   - master
                   - release
-        - docker
+        - docker:
             requires:
               - build
