@@ -59,6 +59,17 @@ jobs:
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
 
+  docker:
+    docker:
+      - image: accso/docker-docker:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: debian
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES
+
 workflows:
     version: 2
     build_and_deploy:
@@ -72,3 +83,6 @@ workflows:
                 only:
                   - master
                   - release
+        - docker
+            requires:
+              - build
