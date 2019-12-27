@@ -74,6 +74,8 @@ setup_params = {
     "deploy_sudoers_file": True,
     "contributing_setups": ["python_base_app", "flask_helpers"],
     "publish_debian_package": ["master", "release"],
+    "publish_docker_images": ["master", "release"],
+    "publish_latest_docker_image": "release",
     "debian_extra_files": [
         ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
         ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
