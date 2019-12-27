@@ -5,4 +5,3 @@ RUN chmod +x /entrypoint.sh && \
     mkdir -p /deb_root
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
-

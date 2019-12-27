@@ -1,4 +1,21 @@
-# Use postgres/example user/password credentials
+#    Copyright (C) 2019  Marcus Rickert
+#
+#    See https://github.com/marcus67/python_base_app
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
   version: '3.1'
   services:
     db:
@@ -11,16 +28,21 @@
         - "${HOME}/var/postgresql-little-brother:/var/lib/postgresql/data"
       ports:
         - "5435:5432"
-    dpkg-deb:
-      image: marcusrickert/dpkg-deb:latest
-      build: ./debian-package-build-tool
 
     slave:
       image: marcusrickert/little-brother-slave:latest
+      container_name: little-brother-slave-${HOSTNAME}
+      domainname: docker
+      hostname: little-brother-slave-${HOSTNAME}
       environment:
-        # See https://docs.docker.com/docker-for-mac/networking/
-        - "MASTER_HOST_URL=http://host.docker.internal:5560"
-        - "MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN"
-      #network_mode: host
+        - "MASTER_HOST_URL=${MASTER_HOST_URL}"
+        - "MASTER_ACCESS_TOKEN=${MASTER_ACCESS_TOKEN}"
+        - "DISPLAY=${DISPLAY}"
+      volumes:
+        - "/tmp/.X11-unix:/tmp/.X11-unix"
+        - "/etc/asound.conf:/etc/asound.conf"
+        # https://serverfault.com/questions/683605/docker-container-time-timezone-will-not-reflect-changes
+        - "/etc/localtime:/etc/localtime:ro"
+      devices:
+        - "/dev/snd:/dev/snd"
       pid: host
-      userns_mode: host

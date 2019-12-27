@@ -24,6 +24,8 @@
 stages:
 - build
 - install_and_check
+- docker
+
 
 make_debian_package:
   image: accso/docker-python-app:latest
@@ -50,4 +52,13 @@ check_installation:
     - ./htmlcov/*
   variables:
     # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+build_docker_images:
+  image: accso/docker-docker:latest
+  stage: docker
+  script:
+  - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.
+  variables:
+    # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive

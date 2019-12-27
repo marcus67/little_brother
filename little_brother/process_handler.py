@@ -182,7 +182,7 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
             p_pid=p_pinfo.pid)
 
     @abc.abstractmethod
-    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map): # pragma: no cover
+    def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map): # pragma: no cover
         pass
 
     def get_downtime_corrected_admin_events(self, p_downtime):

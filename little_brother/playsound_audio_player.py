@@ -15,13 +15,30 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-settings = {
-    "name": "little-brother",
-    "url": "https://github.com/marcus67/little_brother",
-    "display_url": "github.com/marcus67/little_brother",
-    "version": "0.1",
-    "description": "",
-    "author": "Marcus Rickert",
-    "author_email": "little-brother@web.de",
-    "debian_package_revision": "48",
-}
+from python_base_app import configuration
+
+from little_brother import base_audio_player
+
+class PlaysoundAudioPlayer(base_audio_player.BaseAudioPlayer):
+
+
+    def __init__(self):
+
+        super().__init__()
+        self._player = None
+
+        try:
+            import playsound
+            self._play_command = playsound.playsound
+
+        except:
+            fmt = "Cannot load module 'playsound'"
+            self._logger.error(fmt)
+            raise configuration.ConfigurationException(fmt)
+
+        self._logger.info("audio player 'playsound' loaded")
+
+
+    def play_audio_file(self, p_audio_filename):  # pragma: no cover
+        self._play_command(p_audio_filename)
+

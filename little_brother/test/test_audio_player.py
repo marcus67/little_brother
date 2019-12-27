@@ -16,9 +16,28 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from little_brother import process_handler
+import os
 
-class DummyProcessHandler(process_handler.ProcessHandler):
+from little_brother import audio_handler
+from little_brother import mpg123_audio_player
+from little_brother import playsound_audio_player
+from python_base_app.test import base_test
 
-    def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map):
-        pass
+HELLO_MPG = os.path.join(os.path.dirname(__file__), "resources/hello.mpg")
+
+
+class TestAudioPlayer(base_test.BaseTestCase):
+
+    @base_test.skip_if_env("NO_AUDIO_OUTPUT")
+    def test_mpg123_player(self):
+
+        a_config = audio_handler.AudioHandlerConfigModel()
+        a_player = mpg123_audio_player.Mpg123AudioPlayer(p_mpg123_binary = a_config.mpg123_binary)
+        a_player.play_audio_file(HELLO_MPG)
+
+    @base_test.skip_if_env("NO_AUDIO_OUTPUT")
+    def test_playsound_player(self):
+
+        a_player = playsound_audio_player.PlaysoundAudioPlayer()
+        a_player.play_audio_file(HELLO_MPG)
+

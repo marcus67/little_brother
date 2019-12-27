@@ -1,7 +1,3 @@
-![Under Construction Logo](doc/logo_under_construction_sign_wide.png)
-
-This project is still under construction. Please, bear with me. Thanks!
-
 ![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
 
 # Parental Control Application `LittleBrother`
@@ -18,13 +14,17 @@ can log out gracefully in time.
 
 ## Contact
 
-Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments to little-brother(at)web.de.
+Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments 
+to little-brother(at)web.de.
 
 ## Screenshots
 
 The following screenshots show the web frontend of `LittleBrother`. Click on the thumbnails to enlarge. 
 
-<A HREF="doc/screenshot_status.png">![Screenshot Status](doc/screenshot_status.thumb.png)</A> <A HREF="doc/screenshot_login.png">![Screenshot Status](doc/screenshot_login.thumb.png)</A> <A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> <A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
+<A HREF="doc/screenshot_status.png">![Screenshot Status](doc/screenshot_status.thumb.png)</A> 
+<A HREF="doc/screenshot_login.png">![Screenshot Status](doc/screenshot_login.thumb.png)</A> 
+<A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> 
+<A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
 
 ## Change History 
 
@@ -32,11 +32,21 @@ See [here](CHANGES.md)
 
 ## GitHub Status
 
-<A HREF="https://github.com/marcus67/little_brother"><IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> <A HREF="https://github.com/marcus67/little_brother/stargazers"><IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> <A HREF="https://github.com/marcus67/little_brother/watchers"><IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> <A HREF="https://github.com/marcus67/little_brother/issues"><IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> <A HREF="https://github.com/marcus67/little_brother/pulls"><IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
+<A HREF="https://github.com/marcus67/little_brother">
+<IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> 
+<A HREF="https://github.com/marcus67/little_brother/stargazers">
+<IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> 
+<A HREF="https://github.com/marcus67/little_brother/watchers">
+<IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> 
+<A HREF="https://github.com/marcus67/little_brother/issues">
+<IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> 
+<A HREF="https://github.com/marcus67/little_brother/pulls">
+<IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
 
 ## SourceForge Download Status
 
-<a href="https://sourceforge.net/projects/little-brother/files/latest/download"><img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg" ></a>
+<a href="https://sourceforge.net/projects/little-brother/files/latest/download">
+<img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg"></a>
 
 ## Continuous Integration Status Overview
 
@@ -97,6 +107,9 @@ be used to determine the activity on those devices. In contrast to the Linux hos
 will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
 
+* There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a Linux 
+host with a Docker deamon available.    
+
 ## Architecture
 
 The [page](ARCHITECTURE.md) gives a detailed description of the architecture of the application.    
@@ -119,10 +132,11 @@ very often and justify this solution at least in one of the early release versio
 | Ubuntu       | 18.10     | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
 | Debian       | testing   |                                                                        | 02.JUN.2019      |
 
-## Quick Install
+## Quick Install (Debian Package)
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
-on your system.
+on your system. This guide works both for master and slave setups. For setting up a slave there is a second option
+using Docker. See the [Docker](DOCKER.md) page for more details.
 
 ### YouTube Video
 

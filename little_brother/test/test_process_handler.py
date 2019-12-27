@@ -464,7 +464,8 @@ class TestProcessHandler(base_test.BaseTestCase):
     def test_scan_processes(self):
 
         a_process_handler = self.get_process_handler()
-        a_process_handler.scan_processes(p_reference_time=None, p_host_name=None, p_uid_map=None, p_process_regex_map=None)
+        a_process_handler.scan_processes(p_reference_time=None, p_host_name=None,
+                                         p_login_mapping=None, p_server_group=None, p_process_regex_map=None)
 
 if __name__ == "__main__":
     unittest.main()

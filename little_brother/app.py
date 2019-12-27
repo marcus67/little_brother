@@ -182,11 +182,16 @@ class App(base_app.BaseApp):
             p_rule_set_configs=self._rule_set_section_handler.rule_set_configs,
             p_master_connector=self._master_connector)
 
-        task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
-                                      p_handler_method=lambda: self._app_control.scan_processes(
-                                          p_process_handler=process_handler),
-                                      p_interval=process_handler._config.check_interval)
-        self.add_recurring_task(p_recurring_task=task)
+        if self._config[app_control.SECTION_NAME].scan_active:
+            task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
+                                          p_handler_method=lambda: self._app_control.scan_processes(
+                                              p_process_handler=process_handler),
+                                          p_interval=process_handler._config.check_interval)
+            self.add_recurring_task(p_recurring_task=task)
+
+        else:
+            fmt = "Process scanning for this host has been deactivated in configuration"
+            self._logger.warning(fmt)
 
         if device_handler:
             task = base_app.RecurringTask(
@@ -266,6 +271,9 @@ class App(base_app.BaseApp):
         if self._app_control is not None:
             self._app_control.stop()
             self._app_control = None
+
+        for handler in self._notification_handlers:
+            handler.stop_engine()
 
         fmt = "Shutting down services -- END"
         self._logger.info(fmt)

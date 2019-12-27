@@ -60,6 +60,10 @@ class NotificationHandler(object):
 
         pass
 
+    def stop_engine(self):
+
+        pass
+
     def notify(self, p_text, p_locale=None):
 
         last_time_spoken = self._recent_texts.get(p_text)

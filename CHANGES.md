@@ -4,6 +4,24 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 48 (December 26th, 2019)
+
+*   Added Docker image for slave process
+*   Support for overriding of settings using environment
+*   Abstraction of the audio engine (class `BaseAudioPlayer`)
+*   Support for `mpg123` as audio engine (new)
+*   Support for `playsound` as audio engine (rewritten as engine)
+*   Support for `pyglet` as audio engine (new)
+*   Correct handling of default locale on slave device
+*   Distribution of login mappings from master to slave (for Docker containers and MacOS)
+*   New CI stage to build docker images
+*   Consistent hiding of sensitive variable values in logging
+*   Packages `sudo` and `procps` added to the Debian package dependencies
+*   Explicit call of `pip3` using absolute path in Debian control file 
+*   Closes #53, see [here](https://github.com/marcus67/little_brother/issues/53)
+*   Provide simple shell script to grant message clients access to X server
+*   Several test cases added
+
 ## Version 0.1 Revision 47 (October 26th, 2019)
 
 *   Fixed problem with generated kill command under Linux

@@ -21,11 +21,13 @@
 import copy
 import datetime
 
+from python_base_app.test import base_test
+
 from little_brother import admin_event
 from little_brother import client_process_handler
+from little_brother import login_mapping
 from little_brother.test import dummy_process_iterator
 from little_brother.test import test_data
-from python_base_app.test import base_test
 
 
 class TestClientProcessHandler(base_test.BaseTestCase):
@@ -46,14 +48,16 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
     def test_single_process_before(self):
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes= test_data.PROCESSES_1, p_uid_map=test_data.UID_MAP)
+            p_processes= test_data.PROCESSES_1, p_login_mapping=test_data.LOGIN_MAPPING)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
         process_handler = client_process_handler.ClientProcessHandler(p_config=config,
                                                                       p_process_iterator_factory=process_iterator_factory)
         process_iterator_factory.set_reference_time(
             p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=-1))
-        events = process_handler.scan_processes(p_uid_map=test_data.UID_MAP, p_host_name=test_data.HOSTNAME_1,
+        events = process_handler.scan_processes(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())
 
@@ -70,7 +74,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
             p_reference_time = test_data.START_TIME_1 + datetime.timedelta(seconds=1)
 
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes=p_processes, p_uid_map=test_data.UID_MAP)
+            p_processes=p_processes, p_login_mapping=test_data.LOGIN_MAPPING)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
         process_handler = client_process_handler.ClientProcessHandler(p_config=config,
@@ -84,7 +88,9 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
         process_handler = self.get_dummy_process_handler()
 
-        events = process_handler.scan_processes(p_uid_map=test_data.UID_MAP, p_host_name=test_data.HOSTNAME_1,
+        events = process_handler.scan_processes(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())
 
@@ -98,14 +104,16 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
     def test_single_process_after(self):
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes=test_data.PROCESSES_2, p_uid_map=test_data.UID_MAP)
+            p_processes=test_data.PROCESSES_2, p_login_mapping=test_data.LOGIN_MAPPING)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
         process_handler = client_process_handler.ClientProcessHandler(p_config=config,
                                                                       p_process_iterator_factory=process_iterator_factory)
         process_iterator_factory.set_reference_time(
             p_reference_time=test_data.END_TIME_1 + datetime.timedelta(seconds=1))
-        events = process_handler.scan_processes(p_uid_map=test_data.UID_MAP, p_host_name=test_data.HOSTNAME_1,
+        events = process_handler.scan_processes(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())
 
@@ -115,14 +123,16 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         processes = copy.deepcopy(test_data.PROCESSES_1)
 
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes=processes, p_uid_map=test_data.UID_MAP)
+            p_processes=processes, p_login_mapping=test_data.LOGIN_MAPPING)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
         process_handler = client_process_handler.ClientProcessHandler(p_config=config,
                                                                       p_process_iterator_factory=process_iterator_factory)
         process_iterator_factory.set_reference_time(
             p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=1))
-        events = process_handler.scan_processes(p_uid_map=test_data.UID_MAP, p_host_name=test_data.HOSTNAME_1,
+        events = process_handler.scan_processes(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())
 
@@ -141,7 +151,9 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         now = datetime.datetime.now()
         process_iterator_factory.set_reference_time(
             p_reference_time=test_data.END_TIME_1 + datetime.timedelta(seconds=1))
-        events = process_handler.scan_processes(p_uid_map=test_data.UID_MAP, p_host_name=test_data.HOSTNAME_1,
+        events = process_handler.scan_processes(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_REGEX_MAP_1, p_reference_time=now)
 
         self.check_list_has_n_elements(p_list=events, p_n=1)

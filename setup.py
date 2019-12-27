@@ -46,18 +46,22 @@ setup_params = {
 
     "include_package_data": True,
 
-    "scripts": ["run_little_brother.py", "run_test_suite.py"],
+    "scripts": [
+        "run_little_brother.py",
+        "run_test_suite.py",
+        "bin/little-brother-grant-x-access.sh"
+    ],
     "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
 
     # Target version to be used to upgrade the database
     "target_alembic_version": "647cf46033a9",
 
-    "docker_hub_user": "marcusrickert",
-    "docker_contexts": [ 'little-brother-base',
+    "docker_registry_user": "marcusrickert",
+    # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
+    "docker_contexts": [ ('little-brother-base', False),
                          #'docker/little-brother-master',
-                         #'docker/little-brother-master',
-                         'little-brother-slave',
+                         ('little-brother-slave', True),
                          ],
 
     # additional setup configuration used by CI stages

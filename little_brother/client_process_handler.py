@@ -64,7 +64,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
     def can_kill_processes():
         return True
 
-    def handle_event_kill_process(self, p_event, p_username_map=None):
+    def handle_event_kill_process(self, p_event, p_server_group=None, p_login_mapping=None):
 
         fmt = "Kill process %d of user %s on host %s with signal SIGHUP" % (
             p_event.pid, p_event.username, p_event.hostname)
@@ -79,7 +79,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             pinfo = admin_event.create_process_info_from_event(p_event=p_event)
             return [self.create_admin_event_process_end_from_pinfo(p_pinfo=pinfo)]
 
-        uid = p_username_map.get(p_event.username)
+        uid = p_login_mapping.get_uid_by_login(p_server_group=p_server_group, p_login=p_event.username)
 
         if uid is None:
             fmt = "handle_event_kill_process: cannot find uid for username '{username}'"
@@ -136,7 +136,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
         return []
 
-    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map):
+    def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map):
 
         current_processes = {}
         events = []
@@ -151,9 +151,9 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                 # On Mac OS the process we want to kill has the real user id set to root but the effective user id
                 # set to the actual user.
                 uid = uids.effective
+                username = p_login_mapping.get_login_by_uid(p_server_group=p_server_group, p_uid=uid)
 
-                if uid in p_uid_map:
-                    username = p_uid_map[uid]
+                if username is not None:
                     proc_name = proc.name()
 
                     if p_process_regex_map[username].match(proc_name):
@@ -175,7 +175,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                                 p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
                                 p_hostname=p_host_name,
                                 p_processhandler=self.id,
-                                p_username=p_uid_map[uid],
+                                p_username=username,
                                 p_processname=proc.name(),
                                 p_process_start_time=start_time,
                                 p_pid=proc.pid)

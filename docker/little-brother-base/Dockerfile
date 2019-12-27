@@ -1,5 +1,7 @@
 FROM marcusrickert/docker-minipython:latest
 LABEL maintainer="marcus.rickert@web.de"
 COPY assets/*.deb /tmp
-RUN dpkg -i /tmp/*.deb \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends alsaplayer-alsa mpg123
+#COPY assets/pulse-client.conf /etc/pulse/pulse-client.conf
+RUN (dpkg -i /tmp/*.deb || true)\
     && DEBIAN_FRONTEND=noninteractive apt-get install -f -y --no-install-recommends

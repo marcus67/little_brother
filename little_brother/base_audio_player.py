@@ -15,13 +15,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-settings = {
-    "name": "little-brother",
-    "url": "https://github.com/marcus67/little_brother",
-    "display_url": "github.com/marcus67/little_brother",
-    "version": "0.1",
-    "description": "",
-    "author": "Marcus Rickert",
-    "author_email": "little-brother@web.de",
-    "debian_package_revision": "48",
-}
+from python_base_app import log_handling
+
+import abc
+
+
+class BaseAudioPlayer(object, metaclass=abc.ABCMeta):
+
+    def __init__(self):
+
+        self._logger = log_handling.get_logger(self.__class__.__name__)
+
+    @abc.abstractmethod
+    def play_audio_file(self, p_audio_filename):  # pragma: no cover
+        pass
+
+    def stop(self):
+        pass
