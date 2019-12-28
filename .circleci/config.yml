@@ -68,6 +68,8 @@ jobs:
           at: debian
       - run: git submodule sync
       - run: git submodule update --init
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES
 
 workflows:
