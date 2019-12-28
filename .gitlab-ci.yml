@@ -55,7 +55,7 @@ check_installation:
     GIT_SUBMODULE_STRATEGY: recursive
 
 build_docker_images:
-  image: accso/docker-docker:latest
+  image: marcusrickert/docker-docker-ci:latest
   stage: docker
   script:
   - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.

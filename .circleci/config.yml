@@ -61,7 +61,7 @@ jobs:
 
   docker:
     docker:
-      - image: accso/docker-docker:latest
+      - image: marcusrickert/docker-docker-ci:latest
     steps:
       - checkout
       - attach_workspace:
