@@ -1,4 +1,5 @@
-FROM marcusrickert/docker-minipython:latest
+#FROM marcusrickert/docker-minipython:latest
+FROM accso/docker-python-app:latest
 LABEL maintainer="marcus.rickert@web.de"
 COPY assets/*.deb /tmp
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends alsaplayer-alsa mpg123
