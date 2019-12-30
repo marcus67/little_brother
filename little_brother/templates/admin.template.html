@@ -85,9 +85,9 @@
 						<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
 						<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
 						<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 ">{{_('Minimum Break')}}</DIV>
+			    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1 ">{{_('Minimum Break')}}</DIV>
+			    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1">{{_('Max Duration')}}</DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2">{{_('Free Play')}}</DIV>
-			    		<DIV CLASS="col-xs-3  hidden-sm col-md-1 "></DIV>
 			    	</DIV>
 			    	{% for day_info in admin_info.day_infos %}
 			    	   	{% call accordion.begin() %}{{day_info.html_key}}{% endcall %}
@@ -111,9 +111,9 @@
  								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
 								<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
 								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg "></DIV>
-					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_break_class }}">{{ day_info.effective_rule_set.min_break|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_break_class }}">{{ day_info.effective_rule_set.min_break|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_activity_duration_class }}">{{ _(day_info.effective_rule_set.max_activity_duration|seconds_to_string) }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  {{ day_info.effective_rule_set.free_play_class }}">{{ _(day_info.effective_rule_set.free_play|boolean_to_string) }}</DIV>
-					    		<DIV CLASS="col-xs-3  hidden-sm col-md-1  col-lg-1  "></DIV>
 					    	</DIV>
 					    {% call accordion.details() %}{{day_info.html_key}}{% endcall %}
 				    		<DIV CLASS="row ROWLEVEL_4">
@@ -126,9 +126,9 @@
  								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
 								<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
 								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
-					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ day_info.rule_set.min_break|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ day_info.rule_set.min_break|seconds_to_string }}</DIV>
+					    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ _(day_info.rule_set.max_activity_duration|seconds_to_string) }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">{{ _(day_info.rule_set.free_play|boolean_to_string) }}</DIV>
-					    		<DIV CLASS="col-xs-3  hidden-sm col-md-1  col-lg-1  "></DIV>
 					    	</DIV>
 				    		<DIV CLASS="row ROWLEVEL_4">
 				    			<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
@@ -139,9 +139,9 @@
  								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
 								<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
 								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[day_info.html_key].min_break) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ helper.render_field(forms[day_info.html_key].min_break) }}</DIV>
+					    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ helper.render_field(forms[day_info.html_key].max_activity_duration) }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">{{ helper.render_field(forms[day_info.html_key].free_play) }}</DIV>
-					    		<DIV CLASS="col-xs-3  hidden-sm col-md-1  col-lg-1  "></DIV>
 					    	</DIV>
 						{{ accordion.end() }}    	
 			    	{% endfor %}

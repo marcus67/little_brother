@@ -21,5 +21,9 @@
 SCRIPT_DIR=$(dirname $0)
 BASE_DIR=$(realpath ${SCRIPT_DIR}/..)
 
+if [ ! "${VIRTUALENV}" == "" ]; then
+    source ${VIRTUALENV}/bin/activate
+fi
+
 PATH=${PATH}:${HOME}/.virtualenvs/little-brother/bin
 pybabel compile -d ${BASE_DIR}/little_brother/translations

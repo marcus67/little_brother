@@ -252,6 +252,10 @@ def apply_override(p_rule_set, p_rule_override):
             rule_set.free_play = True
             rule_set.free_play_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
 
+        if p_rule_override.max_activity_duration is not None:
+            rule_set.max_activity_duration = p_rule_override.max_activity_duration
+            rule_set.max_activity_duration_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
+
     return rule_set
 
 

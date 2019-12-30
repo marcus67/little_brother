@@ -83,7 +83,7 @@ class TestStatusServer(base_test.BaseTestCase):
             p_notification_handlers=[],
             p_rule_set_configs=p_ruleset_configs,
             p_master_connector=_master_connector,
-            p_username_map=test_data.USERNAME_MAP)
+            p_login_mapping=test_data.LOGIN_MAPPING)
 
         status_server_config = status_server.StatusServerConfigModel()
         status_server_config.admin_username = ADMIN_USERNAME

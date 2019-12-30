@@ -18,17 +18,17 @@
 
 import collections
 
-uids_tuple = collections.namedtuple('uids', ['real'])
+uids_tuple = collections.namedtuple('uids', ['real', 'effective'])
 
 
 class DummyProcess(object):
 
-    def __init__(self, p_pinfo, p_user_map):
+    def __init__(self, p_pinfo, p_login_mapping):
         self._pinfo = p_pinfo
-        self._uid = p_user_map[p_pinfo.username]
+        self._uid = p_login_mapping.get_uid_by_login(p_pinfo.username)
 
     def uids(self):
-        return uids_tuple(real=self._uid)
+        return uids_tuple(real=self._uid, effective=self._uid)
 
     def name(self):
         return self._pinfo.processname
@@ -43,10 +43,9 @@ class DummyProcess(object):
 
 class DummyProcessFactory(object):
 
-    def __init__(self, p_processes, p_uid_map):
+    def __init__(self, p_processes, p_login_mapping):
         self._processes = p_processes
-        self._uid_map = p_uid_map
-        self._user_map = {item[1]: item[0] for item in p_uid_map.items()}
+        self._login_mapping = p_login_mapping
         self._reference_time = None
 
     def set_reference_time(self, p_reference_time):
@@ -56,6 +55,6 @@ class DummyProcessFactory(object):
         if self._reference_time is None:
             raise Exception("_reference_time is None")
 
-        return [DummyProcess(p, p_user_map=self._user_map) for p in self._processes
+        return [DummyProcess(p, p_login_mapping=self._login_mapping) for p in self._processes
                 if self._reference_time >= p.start_time and (
                         p.end_time is None or self._reference_time < p.end_time)].__iter__()

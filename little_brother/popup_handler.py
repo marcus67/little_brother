@@ -33,17 +33,28 @@ POPUP_ENGINE_YAD = "yad"
 POPUP_ENGINE_SHELL_ECHO = "echo"
 
 POPUP_ENGINES = {
-    POPUP_ENGINE_XMESSAGE: "/usr/bin/xmessage -nearmouse {{{pattern}}}".format(
-        pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
-    POPUP_ENGINE_GXMESSAGE: "/usr/bin/X11/gxmessage -title LittleBrother -encoding {{{encoding_pattern}}} -nearmouse {{{text_pattern}}}".format(
-        text_pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT,
-        encoding_pattern=notification_handler.REPLACE_PATTERN_ENCODING),
-    POPUP_ENGINE_ZENITY: "/usr/bin/X11/zenity --info --text='{{{pattern}}}'".format(
-        pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
-    POPUP_ENGINE_YAD: "/usr/bin/X11/yad --text='{{{pattern}}}'".format(
-        pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
-    POPUP_ENGINE_SHELL_ECHO: "/bin/bash -c 'echo {{{pattern}}}'".format(
-        pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)
+    POPUP_ENGINE_XMESSAGE: ["/usr/bin/xmessage",
+                            "{{{binary_pattern}}} -nearmouse {{{pattern}}}".format(
+                                 binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
+                                 pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+    POPUP_ENGINE_GXMESSAGE: ["/usr/bin/X11/gxmessage",
+                             "{{{binary_pattern}}} -title LittleBrother "
+                             "-encoding {{{encoding_pattern}}} -nearmouse {{{text_pattern}}}".format(
+                                 binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
+                                 text_pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT,
+                                 encoding_pattern=notification_handler.REPLACE_PATTERN_ENCODING)],
+    POPUP_ENGINE_ZENITY: ["/usr/bin/X11/zenity",
+                          "{{{binary_pattern}}} --info --text='{{{pattern}}}'".format(
+                              binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
+                              pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+    POPUP_ENGINE_YAD: ["/usr/bin/X11/yad",
+                       "{{{binary_pattern}}} --text='{{{pattern}}}'".format(
+                           binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
+                           pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+    POPUP_ENGINE_SHELL_ECHO: ["/bin/bash",
+                              "{{{binary_pattern}}} -c 'echo {{{pattern}}}'".format(
+                                  binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
+                                  pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)]
 }
 
 
@@ -54,6 +65,7 @@ class PopupHandlerConfigModel(notification_handler.NotificationHandlerConfigMode
 
         self.cache_popup_files = False
         self.popup_engine = configuration.NONE_STRING
+        self.engine_binary = configuration.NONE_STRING
         self.engine_cmd_line = configuration.NONE_STRING
         self.encoding = "UTF-8"
         self.x11_display = ":0.0"
@@ -70,10 +82,16 @@ class PopupHandler(notification_handler.NotificationHandler):
 
     def _notify(self, p_text, p_locale=None):
 
-        popup_command_line = POPUP_ENGINES.get(self._config.popup_engine)
+        popup_command_info = POPUP_ENGINES.get(self._config.popup_engine)
 
-        if popup_command_line is not None:
-            self.popup_command(p_text=p_text, p_locale=p_locale, p_command_line=popup_command_line)
+        if popup_command_info is not None:
+            if self._config.engine_binary is not None:
+                popup_binary = self._config.engine_binary
+            else:
+                popup_binary = popup_command_info[0]
+
+            self.popup_command(p_text=p_text, p_locale=p_locale, p_command_line=popup_command_info[1],
+                               p_binary=popup_binary)
 
         else:
             fmt = "_notify(): invalid popup engine '%s'" % self._config.popup_engine
@@ -84,18 +102,21 @@ class PopupHandler(notification_handler.NotificationHandler):
 
     def init_engine(self):
 
-        popup_command_line = POPUP_ENGINES.get(self._config.popup_engine)
+        popup_command_info = POPUP_ENGINES.get(self._config.popup_engine)
 
-        if popup_command_line is None:
-            fmt = "init_engine(): invalid popup engine '%s'" % self._config.popup_engine
-            self._logger.error(fmt)
-            raise configuration.ConfigurationException(fmt)
+        if popup_command_info is None:
+            fmt = "init_engine(): invalid popup engine '{engine}'; valid engines: {engines}"
+            msg = fmt.format(engine=self._config.popup_engine,
+                             engines="'" + "', '".join(POPUP_ENGINES.keys()) + "'")
+            self._logger.error(msg)
+            raise configuration.ConfigurationException(msg)
 
-    def popup_command(self, p_command_line, p_text, p_locale=None):
+    def popup_command(self, p_command_line, p_text, p_binary, p_locale=None):
 
         replacements = {
             notification_handler.REPLACE_PATTERN_AUDIO_TEXT: p_text,
             notification_handler.REPLACE_PATTERN_ENCODING: self._config.encoding,
+            notification_handler.REPLACE_PATTERN_BINARY: p_binary
         }
 
         cmd_line = p_command_line.format(**replacements).encode(self._config.encoding)

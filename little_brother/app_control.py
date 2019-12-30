@@ -30,6 +30,7 @@ from little_brother import process_info
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
+from little_brother import login_mapping
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -55,10 +56,12 @@ class AppControlConfigModel(configuration.ConfigModel):
 
         self.process_lookback_in_days = DEFAULT_PROCESS_LOOKUP_IN_DAYS
         self.admin_lookahead_in_days = DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS
+        self.server_group = login_mapping.DEFAULT_SERVER_GROUP
         self.hostname = configuration.NONE_STRING
         self.scan_active = DEFAULT_SCAN_ACTIVE
         self.check_interval = DEFAULT_CHECK_INTERVAL
         self.min_activity_duration = DEFAULT_MIN_ACTIVITY_DURATION
+        self.user_mappings = [ configuration.NONE_STRING ]
 
 
 class ClientInfo(object):
@@ -78,10 +81,10 @@ class AppControl(object):
                  p_notification_handlers,
                  p_master_connector,
                  p_rule_set_configs,
-                 p_username_map=None):
+                 p_login_mapping=None):
 
-        if p_username_map is None:
-            p_username_map = {}
+        if p_login_mapping is None:
+            p_login_mapping = login_mapping.LoginMapping()
 
         self._config = p_config
         self._debug_mode = p_debug_mode
@@ -96,8 +99,9 @@ class AppControl(object):
         self._usernames_not_found = []
         self._usernames = []
         self._process_regex_map = None
-        self._uid_map = {}
-        self._username_map = p_username_map
+        #self._uid_map = {}
+        #self._username_map = p_login_mapping
+        self._login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
 
         self._logout_warnings = {}
 
@@ -121,10 +125,6 @@ class AppControl(object):
 
         else:
             self._host_name = self._config.hostname
-
-        if not self._config.scan_active:
-            fmt = "Scanning for this host has been deactivated in configuration"
-            self._logger.warning(fmt)
 
         self.init_labels_and_notifications()
 
@@ -188,15 +188,16 @@ class AppControl(object):
 
             for username in self._usernames_not_found:
                 try:
-                    uid = self._username_map.get(username)
+                    uid = self._login_mapping.get_uid_by_login(p_server_group=self._config.server_group, p_login=username)
 
                     if uid is None:
                         user = pwd.getpwnam(username)
                         uid = user.pw_uid
+                        new_entry = login_mapping.LoginUidMappingEntry(username, uid)
+                        self._login_mapping.add_entry(p_server_group=self._config.server_group,
+                                                      p_login_uid_mapping_entry=new_entry)
 
                     usernames_found.append(username)
-                    self._uid_map[uid] = username
-                    self._username_map[username] = uid
                     self._usernames.append(username)
 
                     fmt = "Found user information for user '{user}': UID={uid}"
@@ -222,9 +223,6 @@ class AppControl(object):
         self.retrieve_user_mappings()
 
         reference_time = datetime.datetime.now()
-
-        # if self._config.scan_active:
-        #     self.scan_processes(p_reference_time=reference_time)
 
         self.process_queue()
 
@@ -349,23 +347,24 @@ class AppControl(object):
             if self._persistence is not None:
                 self._persistence.write_process_info(p_process_info=pinfo)
 
-        rule_result_info = self.get_current_rule_result_info(p_reference_time=datetime.datetime.now(),
-                                                             p_username=p_event.username)
+        if self.is_master():
+            rule_result_info = self.get_current_rule_result_info(p_reference_time=datetime.datetime.now(),
+                                                                 p_username=p_event.username)
 
-        if rule_result_info.activity_allowed():
-            if rule_result_info.limited_session_time():
-                self.queue_event_speak(
-                    p_hostname=p_event.hostname,
-                    p_username=p_event.username,
-                    p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
-                                                      p_text=self.text_limited_session_start))
+            if rule_result_info.activity_allowed():
+                if rule_result_info.limited_session_time():
+                    self.queue_event_speak(
+                        p_hostname=p_event.hostname,
+                        p_username=p_event.username,
+                        p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
+                                                          p_text=self.text_limited_session_start))
 
-            else:
-                self.queue_event_speak(
-                    p_hostname=p_event.hostname,
-                    p_username=p_event.username,
-                    p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
-                                                      p_text=self.text_unlimited_session_start))
+                else:
+                    self.queue_event_speak(
+                        p_hostname=p_event.hostname,
+                        p_username=p_event.username,
+                        p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
+                                                          p_text=self.text_unlimited_session_start))
 
     def handle_event_process_end(self, p_event):
 
@@ -379,11 +378,17 @@ class AppControl(object):
 
     def handle_event_kill_process(self, p_event):
 
-        return self.get_process_handler(p_id=p_event.processhandler).handle_event_kill_process(p_event)
+        return self.get_process_handler(
+            p_id=p_event.processhandler).handle_event_kill_process(p_event, p_server_group=self._config.server_group,
+                                                                   p_login_mapping=self._login_mapping)
 
     def handle_event_speak(self, p_event):
 
-        user_locale = self.get_user_locale(p_username=p_event.username)
+        if p_event.locale is None:
+            user_locale = self.get_user_locale(p_username=p_event.username)
+
+        else:
+            user_locale = p_event.locale
 
         for notification_handler in self._notification_handlers:
             notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
@@ -417,9 +422,17 @@ class AppControl(object):
             rule_set_configs[username] = rulesets
 
             fmt = "Received rule set config for user {username}"
-            self._logger.debug(fmt.format(username=username))
+            self._logger.info(fmt.format(username=username))
 
         self.set_rule_set_configs(p_rule_set_configs=rule_set_configs)
+
+    def handle_event_update_login_mapping(self, p_event):
+
+        self._login_mapping.from_json(p_json=p_event.payload)
+
+        server_group_names = ', '.join(self._login_mapping.get_server_group_names())
+        fmt = "Received login mapping for server group(s) {group_names}"
+        self._logger.info(fmt.format(group_names=server_group_names))
 
     def update_client_info(self, p_event):
 
@@ -435,6 +448,7 @@ class AppControl(object):
 
         self.update_client_info(p_event)
         self.send_config_to_slave(p_event.hostname)
+        self.send_login_mapping_to_slave(p_event.hostname)
         self.send_historic_process_infos()
 
     def handle_event_start_master(self):
@@ -453,6 +467,11 @@ class AppControl(object):
         }
 
         self.queue_event_update_config(p_hostname=p_hostname, p_config=config)
+
+    def send_login_mapping_to_slave(self, p_hostname):
+
+        self.queue_event_update_login_mapping(p_hostname=p_hostname,
+                                              p_login_mapping=self._login_mapping.to_json())
 
     def process_event(self, p_event):
 
@@ -484,6 +503,9 @@ class AppControl(object):
         elif p_event.event_type == admin_event.EVENT_TYPE_UPDATE_CONFIG:
             self.handle_event_update_config(p_event=p_event)
 
+        elif p_event.event_type == admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING:
+            self.handle_event_update_login_mapping(p_event=p_event)
+
         else:
             raise Exception("Invalid event type '%s' found" % p_event.event_type)
 
@@ -512,7 +534,8 @@ class AppControl(object):
             p_reference_time = datetime.datetime.now()
 
         events = p_process_handler.scan_processes(
-            p_uid_map=self._uid_map, p_host_name=self._host_name,
+            p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
+            p_host_name=self._host_name,
             p_process_regex_map=self.process_regex_map,
             p_reference_time=p_reference_time)
 
@@ -607,6 +630,7 @@ class AppControl(object):
                 p_min_time_of_day=override.min_time_of_day,
                 p_max_time_of_day=override.max_time_of_day,
                 p_min_break=override.min_break,
+                p_max_activity_duration=override.max_activity_duration,
                 p_free_play=override.free_play)
 
             self._rule_overrides[new_override.get_key()] = new_override
@@ -811,11 +835,14 @@ class AppControl(object):
 
     def queue_event_speak(self, p_hostname, p_username, p_text):
 
+        locale = self.get_user_locale(p_username=p_username)
+
         event = admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_SPEAK,
             p_hostname=p_hostname,
             p_username=p_username,
-            p_text=p_text)
+            p_text=p_text,
+            p_locale=locale)
         self.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_start_client(self):
@@ -850,6 +877,14 @@ class AppControl(object):
             p_event_type=admin_event.EVENT_TYPE_UPDATE_CONFIG,
             p_hostname=p_hostname,
             p_payload=p_config)
+        self.queue_event(p_event=event, p_is_action=True)
+
+    def queue_event_update_login_mapping(self, p_hostname, p_login_mapping):
+
+        event = admin_event.AdminEvent(
+            p_event_type=admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING,
+            p_hostname=p_hostname,
+            p_payload=p_login_mapping)
         self.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_historic_process_start(self, p_pinfo):

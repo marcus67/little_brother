@@ -24,7 +24,10 @@ import subprocess
 
 import pyttsx3
 
+from little_brother import mpg123_audio_player
 from little_brother import notification_handler
+from little_brother import playsound_audio_player
+from little_brother import pyglet_audio_player
 from python_base_app import configuration
 
 DEFAULT_SPEECH_GENERATOR_CMD_LINE = '/usr/bin/festival --tts --language american_english {{{pattern}}}'.format(
@@ -42,6 +45,14 @@ SPEECH_ENGINE_EXTERNAL = "external"
 
 AUDIO_TEXT_FILE = "audio.txt"
 
+AUDIO_PLAYER_PLAYSOUND = "playsound"
+AUDIO_PLAYER_PYGLET = "pyglet"
+AUDIO_PLAYER_MPG123 = "mpg123"
+
+DEFAULT_MPG123_binary = "/usr/bin/mpg123"
+
+DEFAULT_AUDIO_PLAYER = AUDIO_PLAYER_PLAYSOUND
+
 
 class AudioHandlerConfigModel(notification_handler.NotificationHandlerConfigModel):
 
@@ -56,9 +67,10 @@ class AudioHandlerConfigModel(notification_handler.NotificationHandlerConfigMode
         self.audio_mixer_bin = DEFAULT_AUDIO_MIXER_BIN
         self.audio_mixer_volume = configuration.NONE_INTEGER  # in percent
         self.speech_generator_cmd_line = DEFAULT_SPEECH_GENERATOR_CMD_LINE
+        self.audio_player = DEFAULT_AUDIO_PLAYER
+        self.mpg123_binary = DEFAULT_MPG123_binary
 
     def is_active(self):
-
         return self.speech_engine is not None
 
 
@@ -67,7 +79,7 @@ class AudioHandler(notification_handler.NotificationHandler):
     def __init__(self, p_config):
 
         self._google_speak = None
-        self._playsound = None
+        self._audio_player = None
 
         super().__init__(p_config=p_config)
 
@@ -76,15 +88,26 @@ class AudioHandler(notification_handler.NotificationHandler):
         self._pyttsx3_engine = pyttsx3.init()
         self._pyttsx3_engine.setProperty('rate', self._config.speech_words_per_minute)
 
-    def check_playsound(self):
+    def check_audio_player(self):
 
         try:
-            import playsound
-            self._playsound = playsound
+            if self._config.audio_player == AUDIO_PLAYER_PLAYSOUND:
+                self._audio_player = playsound_audio_player.PlaysoundAudioPlayer()
 
-        except:
-            fmt = "init_engine_google(): cannot load module 'playsound'"
-            self._logger.error(fmt)
+            elif self._config.audio_player == AUDIO_PLAYER_PYGLET:
+                self._audio_player = pyglet_audio_player.PygletAudioPlayer()
+
+            elif self._config.audio_player == AUDIO_PLAYER_MPG123:
+                self._audio_player = mpg123_audio_player.Mpg123AudioPlayer(self._config.mpg123_binary)
+
+            else:
+                fmt = "Invalid audio player '{player}'"
+                self._logger.error(fmt, player=self._config.audio_player)
+                raise configuration.ConfigurationException(fmt)
+
+        except Exception:
+            fmt = "Cannot load audio player '{player}'"
+            self._logger.error(fmt, player=self._config.audio_player)
             raise configuration.ConfigurationException(fmt)
 
     def init_engine_google(self):
@@ -98,7 +121,7 @@ class AudioHandler(notification_handler.NotificationHandler):
             self._logger.error(fmt)
             raise configuration.ConfigurationException(fmt)
 
-        self.check_playsound()
+        self.check_audio_player()
 
     def init_engine(self):
 
@@ -115,6 +138,12 @@ class AudioHandler(notification_handler.NotificationHandler):
             fmt = "init_engine(): invalid speech engine '%s'" % self._config.speech_engine
             self._logger.error(fmt)
             raise configuration.ConfigurationException(fmt)
+
+    def stop_engine(self):
+        if self._audio_player is not None:
+            self._audio_player.stop()
+
+        super().stop_engine()
 
     def get_audio_filename(self, p_text, p_locale=None):
 
@@ -170,7 +199,7 @@ class AudioHandler(notification_handler.NotificationHandler):
             with open(audio_filename, "wb") as f:
                 f.write(data)
 
-        self._playsound.playsound(audio_filename)
+        self._audio_player.play_audio_file(audio_filename)
 
     def set_volume(self):
 

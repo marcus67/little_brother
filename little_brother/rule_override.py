@@ -28,7 +28,7 @@ class RuleOverride(object):
 
     def __init__(self, p_username, p_reference_date, p_max_time_per_day=None,
                  p_min_time_of_day=None, p_max_time_of_day=None,
-                 p_min_break=None, p_free_play=False):
+                 p_min_break=None, p_free_play=False, p_max_activity_duration=None):
         self.username = p_username
         self.reference_date = p_reference_date
         self.max_time_per_day = p_max_time_per_day
@@ -36,6 +36,7 @@ class RuleOverride(object):
         self.max_time_of_day = p_max_time_of_day
         self.min_break = p_min_break
         self.free_play = p_free_play
+        self.max_activity_duration = p_max_activity_duration
 
     def get_key(self):
         return get_key(p_username=self.username, p_reference_date=self.reference_date)
@@ -44,12 +45,16 @@ class RuleOverride(object):
         min_time = tools.get_time_as_string(p_timestamp=self.min_time_of_day)
         max_time = tools.get_time_as_string(p_timestamp=self.max_time_of_day)
         date = tools.get_date_as_string(p_date=self.reference_date)
-        duration = tools.get_duration_as_string(p_seconds=self.max_time_per_day)
+        max_time_per_day = tools.get_duration_as_string(p_seconds=self.max_time_per_day)
         min_break = tools.get_duration_as_string(p_seconds=self.min_break)
+        max_activity_duration = tools.get_duration_as_string(p_seconds=self.max_activity_duration)
 
-        return "Rule override (user=%s, date=%s, time-of-day=[%s to %s], "\
-               "max-time-per-day:%s, min-break:%s, free-play:%s)" % (
-                    self.username, date, min_time, max_time, duration, min_break, self.free_play)
+        fmt = "Rule override (user={user}, date={date}, time-of-day=[{min_time} to {max_time}], "\
+              "max-time-per-day:{max_time_per_day}, min-break:{min_break}, "\
+              "max-activity-duration:{max_activity_duration} free-play:free_play)"
+        return fmt.format(user=self.username, date=date, min_time=min_time, max_time=max_time,
+                          max_time_per_day=max_time_per_day, min_break=min_break,
+                          max_activity_duration=max_activity_duration, free_play=self.free_play)
 
 
 class RuleOverrideForm(custom_form.ModelForm):
@@ -58,3 +63,4 @@ class RuleOverrideForm(custom_form.ModelForm):
     max_time_per_day = custom_fields.DurationField("MaxTimePerDay")
     min_break = custom_fields.DurationField("MinBreak")
     free_play = custom_fields.BooleanField("FreePlay")
+    max_activity_duration = custom_fields.DurationField("MaxActivityDuration")

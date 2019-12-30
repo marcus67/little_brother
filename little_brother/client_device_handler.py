@@ -188,7 +188,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         return None
 
-    def scan_processes(self, p_reference_time, p_uid_map, p_host_name, p_process_regex_map):
+    def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map):
 
         current_device_infos = {}
         events = []

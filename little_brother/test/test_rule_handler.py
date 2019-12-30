@@ -128,6 +128,10 @@ class TestRuleOverride(base_test.BaseTestCase):
 
 class TestRuleSetConfigModel(base_test.BaseTestCase):
 
+    def test_str(self):
+        config = rule_handler.RuleSetConfigModel()
+        self._logger.info(str(config))
+
     def test_init(self):
         a_config_model = rule_handler.RuleSetConfigModel()
         self.assertIsNotNone(a_config_model)

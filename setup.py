@@ -46,12 +46,23 @@ setup_params = {
 
     "include_package_data": True,
 
-    "scripts": ["run_little_brother.py", "run_test_suite.py"],
+    "scripts": [
+        "run_little_brother.py",
+        "run_test_suite.py",
+        "bin/little-brother-grant-x-access.sh"
+    ],
     "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
 
     # Target version to be used to upgrade the database
     "target_alembic_version": "647cf46033a9",
+
+    "docker_registry_user": "marcusrickert",
+    # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
+    "docker_contexts": [ ('little-brother-base', False),
+                         #'docker/little-brother-master',
+                         ('little-brother-slave', True),
+                         ],
 
     # additional setup configuration used by CI stages
 
@@ -63,6 +74,8 @@ setup_params = {
     "deploy_sudoers_file": True,
     "contributing_setups": ["python_base_app", "flask_helpers"],
     "publish_debian_package": ["master", "release"],
+    "publish_docker_images": ["master", "release"],
+    "publish_latest_docker_image": "release",
     "debian_extra_files": [
         ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
         ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
