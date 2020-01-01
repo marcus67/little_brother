@@ -5,14 +5,20 @@
 
 ## Overview
 
-Currently, there is a docker image available to run a LittleBrother slave process. The easiest way to use it is as 
-follows:
+Currently, there is a [docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-slave) 
+available to run a LittleBrother slave process. The easiest way to use it is as follows:
  
 *   Download the [docker-compose.yml](docker/docker-compose.yml) file from GitHub and store in a local directory.
 *   Copy the [template.env](docker/template.env) file from GitHib and save it as `.env` into the same directory.
 *   Edit the environment variables in the `.env` file. See the comments in the file.
 *   Open a shell in the directory.
 *   Start the container by issuing in the shell: `docker-compose up -d slave`. 
+
+## Tag Naming Conventions
+
+The tag names of the images are derived from the pattern `BRANCH-REVISION` where `BRANCH` is either `master` or
+`release` and `REVISION` represents the number as listed in [changes](CHANGES.md). The special tag `latest` is used
+for the most up-to-date release revision.
 
 ## Security Details
 
