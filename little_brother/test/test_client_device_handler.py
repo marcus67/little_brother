@@ -32,6 +32,7 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
         self.assertIsInstance(p_list, list)
         self.assertEqual(len(p_list), p_n)
 
+    @base_test.skip_if_env("NO_PING")
     def test_existing_host(self):
         config = client_device_handler.ClientDeviceHandlerConfigModel()
 
