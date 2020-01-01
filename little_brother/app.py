@@ -15,9 +15,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import psutil
-import alembic.util.messaging
 import alembic.config
+import alembic.util.messaging
+import psutil
 
 from little_brother import app_control
 from little_brother import audio_handler
@@ -186,7 +186,7 @@ class App(base_app.BaseApp):
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
                                           p_handler_method=lambda: self._app_control.scan_processes(
                                               p_process_handler=process_handler),
-                                          p_interval=process_handler._config.check_interval)
+                                          p_interval=process_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
         else:
@@ -197,7 +197,7 @@ class App(base_app.BaseApp):
             task = base_app.RecurringTask(
                 p_name="app_control.scan_processes(DeviceHandler)",
                 p_handler_method=lambda: self._app_control.scan_processes(p_process_handler=device_handler),
-                p_interval=device_handler._config.check_interval)
+                p_interval=device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
         if self._config[status_server.SECTION_NAME].is_active():
@@ -209,15 +209,15 @@ class App(base_app.BaseApp):
                 p_is_master=self.is_master())
 
         elif self.is_master():
-            msg = "Master instance requires port number for webserver"
+            msg = "Master instance requires port number for web server"
             raise configuration.ConfigurationException(msg)
 
         else:
-            msg = "Slave instance will not start webserver due to missing port number"
+            msg = "Slave instance will not start web server due to missing port number"
             self._logger.warn(msg)
 
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
-                                      p_interval=self._app_control._config.check_interval)
+                                      p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
 
     def run_special_commands(self, p_arguments):
@@ -235,6 +235,7 @@ class App(base_app.BaseApp):
         if p_arguments.upgrade_databases:
             if not basic_init_executed:
                 self.basic_init(p_full_startup=False)
+
             self.upgrade_databases(p_alembic_version=p_arguments.upgrade_databases)
             command_executed = True
 
@@ -246,10 +247,8 @@ class App(base_app.BaseApp):
         self._logger.info(fmt.format(revision=p_alembic_version))
 
         url = self._persistence.build_url()
-        alembic_argv = [ "-x", url, "upgrade", p_alembic_version ]
+        alembic_argv = ["-x", url, "upgrade", p_alembic_version]
         alembic.config.main(alembic_argv, prog="alembic.config.main")
-
-
 
     def start_services(self):
 
@@ -281,6 +280,7 @@ class App(base_app.BaseApp):
     def handle_downtime(self, p_downtime):
 
         self._app_control.handle_downtime(p_downtime=p_downtime)
+
 
 def main():
     parser = get_argument_parser(p_app_name=APP_NAME)

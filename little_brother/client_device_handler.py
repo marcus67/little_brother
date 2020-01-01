@@ -33,7 +33,7 @@ CLIENT_DEVICE_SECTION_PREFIX = "ClientDevice"
 DEFAULT_PING_COMMAND = "/bin/ping"
 DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_MAX_ACTIVE_PING_DELAY = 100  # milliseconds
-DEFAULT_PING_RESULT_REGEX = "rtt min/avg/max/mdev = [\d\.]+/([\d\.]+)/[\d\.]+/[\d\.]+ ms"
+DEFAULT_PING_RESULT_REGEX = r"rtt min/avg/max/mdev = [\d\.]+/([\d\.]+)/[\d\.]+/[\d\.]+ ms"
 DEFAULT_SAMPLE_SIZE = 10
 
 

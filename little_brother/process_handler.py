@@ -42,6 +42,11 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
         self._process_infos = {}
 
+
+    @property
+    def check_interval(self):
+        return self._config.check_interval
+
     @property
     def process_infos(self):
 

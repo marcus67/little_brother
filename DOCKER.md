@@ -18,14 +18,17 @@ follows:
 
 *   In order for LittleBrother to be able to kill processes, the configuration contains the option `pid: host`. 
 This makes sure that the container sees ALL processes including those running *outside* the container. 
+
 *   In order to be able to "speak" (that is play sound files), the process inside the container has to access the sound
 device of the host. This is made possible by mounting the file `/etc/asound.conf` and the device `/dev/snd` 
 into the container.
+
 *   In order to be able to open message boxes as X clients, the X Windows device `/tmp/.X11-unix` is mounted into the 
 container. The opening of the message boxes actually requires a second step. See [Using Popups](README.md#using-popups). 
 Also, the environment variable `DISPLAY` is exported into the container. Make sure that the variable contains the 
 X display identifier that is used by the users which are to be monitored by LittleBrother. In most cases this 
 should be `:0.0` or `localhost:0.0`.
+
 *   In order to synchronize the clock inside the container to the timezone of the host, the file `/etc/localtime`
 is mounted into the container. When clocks are not synchronized the playing times of monitored users will be computed
 incorrectly.

@@ -26,11 +26,11 @@ import socket
 from little_brother import admin_event
 from little_brother import constants, process_statistics
 from little_brother import german_vacation_context_rule_handler
+from little_brother import login_mapping
 from little_brother import process_info
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
-from little_brother import login_mapping
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -61,7 +61,7 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.scan_active = DEFAULT_SCAN_ACTIVE
         self.check_interval = DEFAULT_CHECK_INTERVAL
         self.min_activity_duration = DEFAULT_MIN_ACTIVITY_DURATION
-        self.user_mappings = [ configuration.NONE_STRING ]
+        self.user_mappings = [configuration.NONE_STRING]
 
 
 class ClientInfo(object):
@@ -99,8 +99,8 @@ class AppControl(object):
         self._usernames_not_found = []
         self._usernames = []
         self._process_regex_map = None
-        #self._uid_map = {}
-        #self._username_map = p_login_mapping
+        # self._uid_map = {}
+        # self._username_map = p_login_mapping
         self._login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
 
         self._logout_warnings = {}
@@ -127,6 +127,10 @@ class AppControl(object):
             self._host_name = self._config.hostname
 
         self.init_labels_and_notifications()
+
+    @property
+    def check_interval(self):
+        return self._config.check_interval
 
     def init_labels_and_notifications(self):
 
@@ -188,7 +192,8 @@ class AppControl(object):
 
             for username in self._usernames_not_found:
                 try:
-                    uid = self._login_mapping.get_uid_by_login(p_server_group=self._config.server_group, p_login=username)
+                    uid = self._login_mapping.get_uid_by_login(p_server_group=self._config.server_group,
+                                                               p_login=username)
 
                     if uid is None:
                         user = pwd.getpwnam(username)

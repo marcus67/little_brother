@@ -30,7 +30,7 @@
         - "5435:5432"
 
     slave:
-      image: marcusrickert/little-brother-slave:latest
+      image: marcusrickert/little-brother-slave:${RELEASE:-latest}
       container_name: little-brother-slave-${HOSTNAME}
       domainname: docker
       hostname: little-brother-slave-${HOSTNAME}

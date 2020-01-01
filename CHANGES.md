@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 49 (January 1st, 2020)
+
+*   Remove some coding warnings
+*   Add test cases for class ClientDeviceHandler
+*   Add specific versions to apt-get packages in Dockerfile
+
 ## Version 0.1 Revision 48 (December 26th, 2019)
 
 *   Added Docker image for slave process
