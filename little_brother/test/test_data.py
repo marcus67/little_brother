@@ -23,6 +23,7 @@ import re
 
 from little_brother import process_info
 from little_brother import rule_handler
+from little_brother import login_mapping
 
 USER_1 = "user1"
 UID_1 = 123
@@ -42,8 +43,10 @@ MAX_TIME_OF_DAY_1 = datetime.time(hour=22)
 MIN_BREAK_1 = 1800
 FREEPLAY_1 = True
 
-UID_MAP = {UID_1: USER_1}
-USERNAME_MAP = {USER_1: UID_1}
+LOGIN_MAPPING = login_mapping.LoginMapping(p_default_server_group=login_mapping.DEFAULT_SERVER_GROUP)
+LOGIN_UID_MAPPING_ENTRY = p_login_uid_mapping_entry=login_mapping.LoginUidMappingEntry(USER_1, UID_1)
+LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                        p_login_uid_mapping_entry=LOGIN_UID_MAPPING_ENTRY)
 
 PROCESS_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_NAME_1)}
 

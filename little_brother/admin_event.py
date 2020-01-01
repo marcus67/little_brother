@@ -26,6 +26,7 @@ EVENT_TYPE_LOGIN_NOT_PERMITTED = "LOGIN_NOT_PERMITTED"
 EVENT_TYPE_LOGIN_PERMITTED = "LOGIN_PERMITTED"
 EVENT_TYPE_KILL_PROCESS = "KILL_PROCESS"
 EVENT_TYPE_UPDATE_CONFIG = "UPDATE_CONFIG"
+EVENT_TYPE_UPDATE_LOGIN_MAPPING = "UPDATE_LOGIN_MAPPING"
 EVENT_TYPE_PROCESS_START = "PROCESS_START"
 EVENT_TYPE_PROCESS_DOWNTIME = "PROCESS_DOWNTIME"
 EVENT_TYPE_PROCESS_END = "PROCESS_END"
@@ -53,6 +54,7 @@ class AdminEvent(object):
                  p_event_time=None,
                  p_process_start_time=None,
                  p_text=None,
+                 p_locale=None,
                  p_payload=None,
                  p_downtime=0):
         if p_event_time is None:
@@ -67,6 +69,7 @@ class AdminEvent(object):
         self.event_time = p_event_time
         self.process_start_time = p_process_start_time
         self.text = p_text
+        self.locale = p_locale
         self.payload = p_payload
         self.downtime = p_downtime
 

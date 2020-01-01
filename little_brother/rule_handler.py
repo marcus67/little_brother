@@ -79,6 +79,8 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.min_time_of_day_class = ""
         self.max_time_of_day_class = ""
         self.max_time_per_day_class = ""
+        self.min_break_class = ""
+        self.free_play_class = ""
 
         self._regex_process_name_pattern = None
 
@@ -116,7 +118,7 @@ class RuleSetConfigModel(configuration.ConfigModel):
         min_break = str(self.min_break) if self.min_break is not None else "-"
         return "Rule set (user=%s, context=%s, time-of-day=[%s to %s], max-time-per-day:%s, max-duration=%s, min-break=%s, free-play=%i)" % (
             self.username, self.context, min_time, max_time, max_time_per_day, max_duration, min_break, self.free_play)
-    
+
     def post_process(self):
 
         self.min_time_of_day = RuleSetSectionHandler.read_time_of_day(p_time_of_day=self.min_time_of_day)
@@ -249,6 +251,10 @@ def apply_override(p_rule_set, p_rule_override):
         if p_rule_override.free_play:
             rule_set.free_play = True
             rule_set.free_play_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
+
+        if p_rule_override.max_activity_duration is not None:
+            rule_set.max_activity_duration = p_rule_override.max_activity_duration
+            rule_set.max_activity_duration_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
 
     return rule_set
 

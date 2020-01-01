@@ -1,7 +1,3 @@
-![Under Construction Logo](doc/logo_under_construction_sign_wide.png)
-
-This project is still under construction. Please, bear with me. Thanks!
-
 ![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
 
 # Parental Control Application `LittleBrother`
@@ -18,46 +14,51 @@ can log out gracefully in time.
 
 ## Contact
 
-Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments to little-brother(at)web.de.
+Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments 
+to little-brother(at)web.de.
 
 ## Screenshots
 
 The following screenshots show the web frontend of `LittleBrother`. Click on the thumbnails to enlarge. 
 
-<A HREF="doc/screenshot_status.png">![Screenshot Status](doc/screenshot_status.thumb.png)</A> <A HREF="doc/screenshot_login.png">![Screenshot Status](doc/screenshot_login.thumb.png)</A> <A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> <A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
+<A HREF="doc/screenshot_status.png">![Screenshot Status](doc/screenshot_status.thumb.png)</A> 
+<A HREF="doc/screenshot_login.png">![Screenshot Status](doc/screenshot_login.thumb.png)</A> 
+<A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> 
+<A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
 
 ## Change History 
 
 See [here](CHANGES.md)
 
-## CircleCI Continuous Integration Status
-
-<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A> 
-<A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> 
-
-## Test Coverage Status
-
-<A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A> 
-<A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>
-
 ## GitHub Status
 
-<A HREF="https://github.com/marcus67/little_brother"><IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> <A HREF="https://github.com/marcus67/little_brother/stargazers"><IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> <A HREF="https://github.com/marcus67/little_brother/watchers"><IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> <A HREF="https://github.com/marcus67/little_brother/issues"><IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> <A HREF="https://github.com/marcus67/little_brother/pulls"><IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
+<A HREF="https://github.com/marcus67/little_brother">
+<IMG SRC="https://img.shields.io/github/forks/marcus67/little_brother.svg?label=forks"></A> 
+<A HREF="https://github.com/marcus67/little_brother/stargazers">
+<IMG SRC="https://img.shields.io/github/stars/marcus67/little_brother.svg?label=stars"></A> 
+<A HREF="https://github.com/marcus67/little_brother/watchers">
+<IMG SRC="https://img.shields.io/github/watchers/marcus67/little_brother.svg?label=watchers"></A> 
+<A HREF="https://github.com/marcus67/little_brother/issues">
+<IMG SRC="https://img.shields.io/github/issues/marcus67/little_brother.svg"></A> 
+<A HREF="https://github.com/marcus67/little_brother/pulls">
+<IMG SRC="https://img.shields.io/github/issues-pr/marcus67/little_brother.svg"></A>
 
 ## SourceForge Download Status
 
-<a href="https://sourceforge.net/projects/little-brother/files/latest/download"><img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg" ></a>
+<a href="https://sourceforge.net/projects/little-brother/files/latest/download">
+<img alt="Download little-brother" src="https://img.shields.io/sourceforge/dm/little-brother.svg"></a>
 
-## Snyk Vulnerability Status
+## Continuous Integration Status Overview
 
-The vulnerability status is derived from the Python PIP packages found in `requirement.txt` which is in itself
+| Status | Master | Mac OS Test | Release |
+|:------ |:------ |:------------------ |:------- |
+| CircleCI | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> |
+| Test Coverage | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A> | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A> | 
+| Snyk Vulnerability | <a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> | not available | not available |
+| Codacy Code Quality | <a href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a> | not available | not available |
+
+Note: The vulnerability status is derived from the Python PIP packages found in `requirement.txt` which is in itself
 is generated from `pip freeze`.
-
-<a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>
-
-## Code Quality Status
-
-<a href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a>
 
 ## Features
 
@@ -97,12 +98,17 @@ Users are invited to provide translations for other languages.
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools.
 
+*   Downtime of a server during playtime (e.g. due to hibernation) is automatically substracted from the play time.
+
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
 be used to determine the activity on those devices. In contrast to the Linux hosts, the application
 will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
+
+*   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
+Linux host with a Docker deamon available.    
 
 ## Architecture
 
@@ -124,12 +130,14 @@ very often and justify this solution at least in one of the early release versio
 | Distribution | Version   | Comments                                                               | Most Recent Test |
 | ------------ | --------- | ---------------------------------------------------------------------- | ---------------- |
 | Ubuntu       | 18.10     | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
-| Debian       | testing   |                                                                        | 02.JUN.2019      |
+| Debian       | testing   |                                                                        | 01.JAN.2020      |
+| Debian       | buster    | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
 
-## Quick Install
+## Quick Install (Debian Package)
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
-on your system.
+on your system. This guide works both for master and slave setups. For setting up a slave there is a second option
+using Docker. See the [Docker](DOCKER.md) page for more details.
 
 ### YouTube Video
 
@@ -137,7 +145,6 @@ There is a YouTube video showing some of the steps below for an Ubuntu 18 target
 
 <A HREF="https://www.youtube.com/watch?v=Skb5Hz0XZuA"><IMG SRC="doc/youtube-presentations/2019-06-09_LittleBrother_YouTube_Presentation.thumb.png"></A>
  
-
 ### Download the Software
 
 The application is available as a Debian package 

@@ -24,6 +24,7 @@ from python_base_app import log_handling
 from python_base_app import tools
 
 REPLACE_PATTERN_AUDIO_TEXT_FILENAME = "infile"
+REPLACE_PATTERN_BINARY = "binary"
 REPLACE_PATTERN_AUDIO_TEXT = "text"
 REPLACE_PATTERN_ENCODING = "encoding"
 
@@ -56,6 +57,10 @@ class NotificationHandler(object):
         self.init_engine()
 
     def init_engine(self):
+
+        pass
+
+    def stop_engine(self):
 
         pass
 

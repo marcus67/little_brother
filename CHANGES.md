@@ -4,6 +4,72 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.1 Revision 49 (January 1st, 2020)
+
+*   Remove some coding warnings
+*   Add test cases for class ClientDeviceHandler
+*   Add specific versions to apt-get packages in Dockerfile
+
+## Version 0.1 Revision 48 (December 26th, 2019)
+
+*   Added Docker image for slave process
+*   Support for overriding of settings using environment
+*   Abstraction of the audio engine (class `BaseAudioPlayer`)
+*   Support for `mpg123` as audio engine (new)
+*   Support for `playsound` as audio engine (rewritten as engine)
+*   Support for `pyglet` as audio engine (new)
+*   Correct handling of default locale on slave device
+*   Distribution of login mappings from master to slave (for Docker containers and MacOS)
+*   New CI stage to build docker images
+*   Consistent hiding of sensitive variable values in logging
+*   Packages `sudo` and `procps` added to the Debian package dependencies
+*   Explicit call of `pip3` using absolute path in Debian control file 
+*   Closes #53, see [here](https://github.com/marcus67/little_brother/issues/53)
+*   Provide simple shell script to grant message clients access to X server
+*   Several test cases added
+
+## Version 0.1 Revision 47 (October 26th, 2019)
+
+*   Fixed problem with generated kill command under Linux
+*   Fixed several issues reported by Codacy
+*   Turned CI status into a table (including MacOS branch)
+
+## Version 0.1 Revision 46 (October 25th, 2019)
+
+*   Generate script for building Docker images
+*   Add list typed option values to configuration files
+*   Improve test coverage of Configuration.py
+*   Provide initial Docker images for little-brother servers (non functional)
+
+## Version 0.1 Revision 45 (October 21st, 2019)
+
+*   Closes #60, see [here](https://github.com/marcus67/little_brother/issues/60)
+*   Make ProcessControl an abstract base class
+*   Use launchctl to terminate login process under MacOs
+*   Remove duplicate PopupHandler section in minimal-master.config
+*   Switch to effective user id in process infos
+*   Add missing -SIGHUP for MacOs kill command
+*   Use ConfigurationException
+
+## Version 0.1 Revision 44 (October 9th, 2019)
+
+*   Closes #30, see [here](https://github.com/marcus67/little_brother/issues/30)
+*   Closes #4, see [here](https://github.com/marcus67/little_brother/issues/4)
+*   Increased default value for DEFAULT_MINIMUM_DOWNTIME_DURATION to 20
+*   Improved exception handling upon startup
+*   Improved security of Popen by using shlex
+
+## Version 0.1 Revision 43 (October 5th, 2019)
+
+*   Closes #8 again, see [here](https://github.com/marcus67/little_brother/issues/8) after actually considering
+    downtimes in statistics
+
+*   Fix some minor code quality problems reported by Codacy 
+
+*   Added output of downtime values to status page using font color yellow.
+
+*   Increase test coverage for popup_handler.py and rule_handler.py
+
 ## Version 0.1 Revision 42 (October 5th, 2019)
 
 *   Closes #8, see [here](https://github.com/marcus67/little_brother/issues/8)

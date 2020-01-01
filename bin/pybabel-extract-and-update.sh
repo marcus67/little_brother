@@ -21,6 +21,10 @@
 SCRIPT_DIR=$(dirname $0)
 BASE_DIR=$(realpath ${SCRIPT_DIR}/..)
 
+if [ ! "${VIRTUALENV}" == "" ]; then
+    source ${VIRTUALENV}/bin/activate
+fi
+
 PATH=${PATH}:${HOME}/.virtualenvs/little-brother/bin
 pybabel extract -F ${BASE_DIR}/etc/babel.cfg -o ${BASE_DIR}/etc/messages.pot \
         ${BASE_DIR}/little_brother \

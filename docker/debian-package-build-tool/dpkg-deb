@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+echo "dpkg-deb $@"
+
+docker_options=""
+script_options="dpkg-deb"
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+    do
+    key="$1"
+
+    case $key in
+        --build)
+        BUILD_FILE="$2"
+        shift # past argument
+        shift # past value
+        ;;
+        *)    # unknown option
+        POSITIONAL+=("$1") # save it in an array for later
+        shift # past argument
+        ;;
+    esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+if [ ! "${BUILD_FILE}" == "" ]; then
+    BUILD_PATH=$(dirname "${BUILD_FILE}")
+    BUILD_FILE=$(basename "${BUILD_FILE}")
+    docker_options="${docker_options} -v $(realpath ${BUILD_PATH}):/deb_root"
+    script_options="${script_options} --build /deb_root/${BUILD_FILE}"
+fi
+
+echo "docker run --rm -t ${docker_options} marcusrickert/dpkg-deb ${script_options}"
+docker run --rm -t ${docker_options} marcusrickert/dpkg-deb ${script_options}
