@@ -4,7 +4,13 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.1 Revision 49 (January 1st, 2020)
+## Version 0.2 Revision 50 (January 3rd, 2020)
+
+*   Try both paths `/usr/bin/pip3` and `/usr/local/bin/pip3` during Debian package post installation
+*   Install PIP package `setuptools` during Debian package post installation 
+*   Add `python-dev` and `python3-dev` to Debian dependencies
+
+## Version 0.2 Revision 49 (January 1st, 2020)
 
 *   Remove some coding warnings
 *   Add test cases for class ClientDeviceHandler
