@@ -132,6 +132,7 @@ very often and justify this solution at least in one of the early release versio
 | Ubuntu       | 18.10     | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
 | Debian       | testing   |                                                                        | 01.JAN.2020      |
 | Debian       | buster    | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
+| Mint         | 19        |                                                                        | 03.JAN.2020      |
 
 ## Quick Install (Debian Package)
 
