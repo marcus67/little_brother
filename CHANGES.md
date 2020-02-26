@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 51 (February 26th, 2020)
+
+*   Upgrade PIP package `codecov` to version 2.0.16 due to 
+    [CVE-2019-10800](https://snyk.io/vuln/SNYK-PYTHON-CODECOV-552149) 
+
 ## Version 0.2 Revision 50 (January 3rd, 2020)
 
 *   Try both paths `/usr/bin/pip3` and `/usr/local/bin/pip3` during Debian package post installation
