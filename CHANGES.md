@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 52 (March 4th, 2020)
+
+*   Add troubleshooting page. 
+
 ## Version 0.2 Revision 51 (February 26th, 2020)
 
 *   Upgrade PIP package `codecov` to version 2.0.16 due to 

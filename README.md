@@ -211,6 +211,11 @@ In case no errors are returned the web interface should be available at
     
 where `[PORT]` corresponds to the port number configured with setting  
 
+### Troubleshooting
+
+So, you went through all of the above but LittleBrother does not seem to work? Maybe this 
+[troubleshooting page](TROUBLESHOOTING.md) can help you.
+
 ## Extended Rule Configuration
 
 For the time being all configuration regarding rules on who and what to monitor must be done in the configuration file. 
