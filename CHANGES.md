@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 53 (March 7th, 2020)
+
+*   Move alembic files into package directory to make them available in the pip installation directory
+*   Add command line option '--stamp-databases' to force an alembic database revision  
+
 ## Version 0.2 Revision 52 (March 4th, 2020)
 
 *   Add troubleshooting page. 

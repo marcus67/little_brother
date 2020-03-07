@@ -28,6 +28,6 @@ include little_brother/static/contrib/initializr/js/vendor/*.js
 include little_brother/static/contrib/js-cookie/*.js
 include little_brother/test/resources/*
 include little_brother/translations/*/*/messages.mo
-include alembic/env.py
-include alembic/versions/*.py
-include alembic.ini
+include little_brother/alembic/env.py
+include little_brother/alembic/versions/*.py
+include little_brother/alembic.ini

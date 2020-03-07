@@ -18,6 +18,7 @@
 import alembic.config
 import alembic.util.messaging
 import psutil
+import os.path
 
 from little_brother import app_control
 from little_brother import audio_handler
@@ -51,6 +52,8 @@ def get_argument_parser(p_app_name):
                         help='Creates database and database tables')
     parser.add_argument('--upgrade-databases', action="store", dest='upgrade_databases',
                         help='Upgrades database to specific alembic version')
+    parser.add_argument('--stamp-databases', action="store", dest='stamp_databases',
+                        help='Sets alembic database version to a specific value')
     return parser
 
 
@@ -232,6 +235,13 @@ class App(base_app.BaseApp):
             self.upgrade_databases(p_alembic_version="head")
             command_executed = True
 
+        if p_arguments.stamp_databases:
+            if not basic_init_executed:
+                self.basic_init(p_full_startup=False)
+
+            self.stamp_databases(p_alembic_version=p_arguments.stamp_databases)
+            command_executed = True
+
         if p_arguments.upgrade_databases:
             if not basic_init_executed:
                 self.basic_init(p_full_startup=False)
@@ -243,11 +253,30 @@ class App(base_app.BaseApp):
 
     def upgrade_databases(self, p_alembic_version):
 
-        fmt = "Upgrading database to revision '{revision}'..."
-        self._logger.info(fmt.format(revision=p_alembic_version))
+        url = self._persistence.build_url()
+        alembic_working_dir = os.path.dirname(__file__)
+
+        fmt = "Upgrading database to revision '{revision}' using alembic with working directory {working_dir}..."
+        self._logger.info(fmt.format(revision=p_alembic_version,
+                                     working_dir=alembic_working_dir))
+
+        alembic_argv = ["-x", url,
+                        "upgrade", p_alembic_version]
+        os.chdir(alembic_working_dir)
+        alembic.config.main(alembic_argv, prog="alembic.config.main")
+
+    def stamp_databases(self, p_alembic_version):
 
         url = self._persistence.build_url()
-        alembic_argv = ["-x", url, "upgrade", p_alembic_version]
+        alembic_working_dir = os.path.dirname(__file__)
+
+        fmt = "Stamping database to revision '{revision}' using alembic with working directory {working_dir}..."
+        self._logger.info(fmt.format(revision=p_alembic_version,
+                                     working_dir=alembic_working_dir))
+
+        alembic_argv = ["-x", url,
+                        "stamp", p_alembic_version]
+        os.chdir(alembic_working_dir)
         alembic.config.main(alembic_argv, prog="alembic.config.main")
 
     def start_services(self):
