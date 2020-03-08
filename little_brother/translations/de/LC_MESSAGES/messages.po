@@ -151,7 +151,7 @@ msgstr "Aktivität auf {hh_mm} pro Tag beschränkt"
 
 #: /Users/mr/PycharmProjects/LittleBrotherGitHub/little_brother/rule_handler.py:376
 msgid "No activity exceeding {hh_mm}"
-msgstr "Nicht mehr als {hh_mm} Aktivität am Tag"
+msgstr "Nicht mehr als {hh_mm} Aktivität am Stück"
 
 #: /Users/mr/PycharmProjects/LittleBrotherGitHub/little_brother/rule_handler.py:410
 msgid "Minimum break time {hh_mm} not reached"

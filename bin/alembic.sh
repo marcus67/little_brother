@@ -14,5 +14,5 @@ if [ "$1" == "" ] ; then
     exit 1
 fi
 
-cd $ {WORK_DIR}
+cd ${WORK_DIR}
 alembic "$@"
