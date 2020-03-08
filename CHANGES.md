@@ -8,6 +8,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Move alembic files into package directory to make them available in the pip installation directory
 *   Add command line option '--stamp-databases' to force an alembic database revision  
+*   Correct alembic.sh (invalid use of env variable)
+*   Correct German translation
+*   Exclude alembic delta scripts from duplicate checks (after move of directory)
 
 ## Version 0.2 Revision 52 (March 4th, 2020)
 
