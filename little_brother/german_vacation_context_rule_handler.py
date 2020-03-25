@@ -47,7 +47,8 @@ ENTRY_FILTER = [
     'Buß- und Bettag',
     'Heilige Drei Könige',
     'Mariä Himmelfahrt',
-    'Pfingsten'
+    'Pfingsten',
+    'Schulschließung wegen der COVID-19-Pandemie (Corona)'
 ]
 
 VacationEntry = collections.namedtuple("VacationEntry", ["name", "start_date", "end_date"])
@@ -59,8 +60,9 @@ class GermanVacationContextRuleHandlerConfig(configuration.ConfigModel):
         super().__init__(p_section_name=SECTION_NAME)
 
         # See https://www.mehr-schulferien.de
-        self.federal_states_url = "https://www.mehr-schulferien.de/api/v1.0/federal_states"
-        self.vacation_data_url = "https://www.mehr-schulferien.de/api/v1.0/periods"
+        self.locations_url = "https://www.mehr-schulferien.de/api/v2.0/locations"
+        self.vacation_data_url = "https://www.mehr-schulferien.de/api/v2.0/periods"
+        self.vacation_type_url = "https://www.mehr-schulferien.de/api/v2.0/holiday_or_vacation_types"
         self.date_format = "%Y-%m-%d"
 
 
@@ -73,6 +75,7 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._vacation_data = None
+        self._vacation_type_map = None
         self._federal_state_map = None
 
         self._config = GermanVacationContextRuleHandlerConfig()
@@ -81,11 +84,11 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
     def get_configuration_section_handler(self):
         return configuration.SimpleConfigurationSectionHandler(p_config_model=self._config)
 
-    def check_data(self):
+    def check_vacation_type_map(self):
 
-        if self._federal_state_map is None:
+        if self._vacation_type_map is None:
 
-            url = self._config.federal_states_url
+            url = self._config.vacation_type_url
             request = requests.get(url)
 
             if request.status_code != 200:
@@ -94,8 +97,37 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
             try:
                 result = json.loads(request.content.decode("UTF-8"))
-                state_data = result['data']
-                self._federal_state_map = {state['name']: state['id'] for state in state_data}
+                vacation_types = result['data']
+                self._vacation_type_map = { vacation_type['id']: vacation_type['name'] for vacation_type in vacation_types}
+
+            except Exception as e:
+                fmt = "error {exception} while decoding data from {url}"
+                raise Exception(fmt.format(exception=str(e), url=url))
+
+            fmt = "downloaded index metadata for {count} vacation types"
+            self._logger.info(fmt.format(count=len(self._vacation_type_map)))
+
+
+
+    def check_locations(self):
+
+        if self._federal_state_map is None:
+
+            url = self._config.locations_url
+            request = requests.get(url)
+
+            if request.status_code != 200:
+                fmt = "HTTP code {error_code} while downloading {url}"
+                raise Exception(fmt.format(error_code=request.status_code, url=url))
+
+            try:
+                result = json.loads(request.content.decode("UTF-8"))
+                locations = result['data']
+
+                fmt = "downloaded {count} locations of Germany"
+                self._logger.info(fmt.format(count=len(locations)))
+
+                self._federal_state_map = {location['name']: location['id'] for location in locations if location['is_federal_state']}
 
             except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
@@ -104,6 +136,9 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             fmt = "downloaded index metadata for {count} federal states of Germany"
             self._logger.info(fmt.format(count=len(self._federal_state_map)))
 
+
+    def check_vacation_data(self):
+
         if self._vacation_data is None:
             url = self._config.vacation_data_url
             request = requests.get(url)
@@ -111,6 +146,10 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             if request.status_code != 200:
                 fmt = "HTTP code {error_code} while downloading {url}"
                 raise Exception(fmt.format(error_code=request.status_code, url=url))
+
+            selected_vacation_types = [ type_id for (type_id, type_name) in self._vacation_type_map.items() if
+                                        type_name in ENTRY_FILTER ]
+
 
             count = 0
 
@@ -121,13 +160,14 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
                 self._vacation_data = {}
 
                 for (state_name, state_id) in self._federal_state_map.items():
-                    entries = [VacationEntry(name=entry['name'],
+                    entries = [VacationEntry(name=self._vacation_type_map[entry['holiday_or_vacation_type_id']],
                                              start_date=datetime.datetime.strptime(entry['starts_on'],
                                                                                    self._config.date_format).date(),
                                              end_date=datetime.datetime.strptime(entry['ends_on'],
                                                                                  self._config.date_format).date())
                                for entry in vacation_entries if
-                               entry['federal_state_id'] == state_id and entry['name'] in ENTRY_FILTER]
+                               entry['location_id'] == state_id and
+                               entry['holiday_or_vacation_type_id'] in selected_vacation_types]
                     self._vacation_data[state_name] = entries
                     count = count + len(entries)
 
@@ -137,6 +177,14 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
             fmt = "downloaded {count} vacation entries for Germany"
             self._logger.info(fmt.format(count=count))
+
+
+    def check_data(self):
+
+        self.check_vacation_type_map()
+        self.check_locations()
+        self.check_vacation_data()
+
 
     def is_active(self, p_reference_date, p_details):
 

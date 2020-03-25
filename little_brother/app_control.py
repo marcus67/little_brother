@@ -23,6 +23,11 @@ import queue
 import re
 import socket
 
+from python_base_app import configuration
+from python_base_app import log_handling
+from python_base_app import tools
+from python_base_app import view_info
+
 from little_brother import admin_event
 from little_brother import constants, process_statistics
 from little_brother import german_vacation_context_rule_handler
@@ -31,10 +36,8 @@ from little_brother import process_info
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
-from python_base_app import configuration
-from python_base_app import log_handling
-from python_base_app import tools
-from python_base_app import view_info
+from little_brother import user_status
+
 
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
@@ -119,6 +122,7 @@ class AppControl(object):
 
         self._client_infos = {}
         self._rule_overrides = {}
+        self._user_status = {}
 
         if self._config.hostname is None:
             self._host_name = socket.getfqdn()
@@ -741,9 +745,7 @@ class AppControl(object):
             p_min_activity_duration=self._config.min_activity_duration)
 
         for username in self._rule_set_configs.keys():
-
             if username in self._usernames:
-
                 user_locale = self.get_user_locale(p_username=username)
                 rule_set = self._rule_handler.get_active_ruleset_config(p_username=username,
                                                                         p_reference_date=p_reference_time.date())
@@ -768,6 +770,22 @@ class AppControl(object):
                             p_reference_time=p_reference_time,
                             p_rule_override=override,
                             p_locale=user_locale)
+
+                        current_user_status = self._user_status.get(username)
+
+                        if current_user_status is None:
+                            current_user_status = user_status.UserStatus(p_username=username)
+                            self._user_status[username] = current_user_status
+
+                        if (rule_result_info.limited_session_time()):
+                            current_user_status.minutes_left_in_session = rule_result_info.get_minutes_left_in_session()
+
+                        else:
+                            current_user_status.minutes_left_in_session = None
+
+                        current_user_status.activity_allowed = rule_result_info.activity_allowed()
+                        current_user_status.logged_in = stat_info.current_activity is not None
+
 
                         if rule_result_info.applying_rules > 0:
                             fmt = "Process %s" % str(rule_result_info.effective_rule_set)
@@ -1072,3 +1090,7 @@ class AppControl(object):
             events = process_handler.get_downtime_corrected_admin_events(p_downtime=p_downtime)
 
             self.queue_events(p_events=events, p_to_master=True)
+
+    def get_user_status(self, p_username):
+
+        return self._user_status.get(p_username)

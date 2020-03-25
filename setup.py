@@ -39,7 +39,6 @@ setup_params = {
         'Flask-Migrate',
         'python-base-app',
         'flask_helpers',
-        'pyttsx3',
         'selenium'],
 
     "packages": ['little_brother', 'little_brother.test'],

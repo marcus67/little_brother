@@ -44,7 +44,7 @@ DEFAULT_PROCESS_PATTERN = "systemd|.*sh"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
-# Dummy function to trigger extraction by pybabel...
+# Dummy function to trigger extraction by pybabel...F
 _ = lambda x: x
 
 
@@ -216,6 +216,10 @@ class RuleResultInfo(object):
         if self.minutes_left_in_session is None or p_minutes_left < self.minutes_left_in_session:
             self.minutes_left_in_session = p_minutes_left
             self.args['minutes_left_in_session'] = p_minutes_left
+
+    def get_minutes_left_in_session(self):
+
+        return self.args.get('minutes_left_in_session')
 
     def activity_allowed(self):
 

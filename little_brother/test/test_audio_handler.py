@@ -92,49 +92,49 @@ class TestAudioHandler(base_test.BaseTestCase):
 
         a_handler.stop_engine()
 
-    @base_test.skip_if_env("NO_AUDIO_OUTPUT")
-    def test_engine_pyttsx3_init(self):
+    # @base_test.skip_if_env("NO_AUDIO_OUTPUT")
+    # def test_engine_pyttsx3_init(self):
+    #
+    #     a_config = audio_handler.AudioHandlerConfigModel()
+    #     a_config.speech_engine = audio_handler.SPEECH_ENGINE_PYTTSX3
+    #     a_handler = audio_handler.AudioHandler(p_config=a_config)
+    #
+    #     self.assertIsNotNone(a_handler)
+    #
+    #     a_handler.stop_engine()
 
-        a_config = audio_handler.AudioHandlerConfigModel()
-        a_config.speech_engine = audio_handler.SPEECH_ENGINE_PYTTSX3
-        a_handler = audio_handler.AudioHandler(p_config=a_config)
-
-        self.assertIsNotNone(a_handler)
-
-        a_handler.stop_engine()
-
-    @base_test.skip_if_env("NO_AUDIO_OUTPUT")
-    def test_engine_pyttsx3_speak(self):
-
-        a_config = audio_handler.AudioHandlerConfigModel()
-        a_config.speech_engine = audio_handler.SPEECH_ENGINE_PYTTSX3
-        a_config.spool_dir = SPOOL_DIR
-        a_handler = audio_handler.AudioHandler(p_config=a_config)
-
-        self.assertIsNotNone(a_handler)
-
-        self.delete_audio_file(p_audio_handler=a_handler)
-        a_thread = a_handler.notify(p_text=TEXT)
-        a_thread.join()
-
-        a_handler.stop_engine()
-
-    @base_test.skip_if_env("NO_AUDIO_OUTPUT")
-    def test_engine_pyttsx3_speak_mixer(self):
-
-        a_config = audio_handler.AudioHandlerConfigModel()
-        a_config.speech_engine = audio_handler.SPEECH_ENGINE_PYTTSX3
-        a_config.spool_dir = SPOOL_DIR
-        a_config.audio_mixer_volume = 50
-        a_handler = audio_handler.AudioHandler(p_config=a_config)
-
-        self.assertIsNotNone(a_handler)
-
-        self.delete_audio_file(p_audio_handler=a_handler)
-        a_thread = a_handler.notify(p_text=TEXT)
-        a_thread.join()
-
-        a_handler.stop_engine()
+    # @base_test.skip_if_env("NO_AUDIO_OUTPUT")
+    # def test_engine_pyttsx3_speak(self):
+    #
+    #     a_config = audio_handler.AudioHandlerConfigModel()
+    #     a_config.speech_engine = audio_handler.SPEECH_ENGINE_PYTTSX3
+    #     a_config.spool_dir = SPOOL_DIR
+    #     a_handler = audio_handler.AudioHandler(p_config=a_config)
+    #
+    #     self.assertIsNotNone(a_handler)
+    #
+    #     self.delete_audio_file(p_audio_handler=a_handler)
+    #     a_thread = a_handler.notify(p_text=TEXT)
+    #     a_thread.join()
+    #
+    #     a_handler.stop_engine()
+    #
+    # @base_test.skip_if_env("NO_AUDIO_OUTPUT")
+    # def test_engine_pyttsx3_speak_mixer(self):
+    #
+    #     a_config = audio_handler.AudioHandlerConfigModel()
+    #     a_config.speech_engine = audio_handler.SPEECH_ENGINE_PYTTSX3
+    #     a_config.spool_dir = SPOOL_DIR
+    #     a_config.audio_mixer_volume = 50
+    #     a_handler = audio_handler.AudioHandler(p_config=a_config)
+    #
+    #     self.assertIsNotNone(a_handler)
+    #
+    #     self.delete_audio_file(p_audio_handler=a_handler)
+    #     a_thread = a_handler.notify(p_text=TEXT)
+    #     a_thread.join()
+    #
+    #     a_handler.stop_engine()
 
     def test_engine_external_init(self):
 

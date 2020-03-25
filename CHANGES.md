@@ -4,6 +4,14 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 54 (March 24th, 2020)
+
+*   Remove speech engine support for `pyttsx3` due to [issue 67](https://github.com/marcus67/little_brother/issues/67)
+*   Fixes #67
+*   Remove audio player support for `playsound` due to persisting issues with import of module `gi` 
+*   Add taskbar app (see [issue 66](https://github.com/marcus67/little_brother/issues/66))
+*   Update calendar handler for German school vacation to API version 2.0
+
 ## Version 0.2 Revision 53 (March 7th, 2020)
 
 *   Move alembic files into package directory to make them available in the pip installation directory

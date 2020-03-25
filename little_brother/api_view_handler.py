@@ -28,6 +28,8 @@ from python_base_app import tools
 API_BLUEPRINT_NAME = "API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+# Dummy function to trigger extraction by pybabel...F
+_ = lambda x: x
 
 class ApiViewHandler(object):
 
@@ -65,4 +67,31 @@ class ApiViewHandler(object):
         self._logger.debug(msg.format(count=len(return_events), hostname=hostname))
 
         return flask.Response(json.dumps(return_events, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
+                              mimetype='application/json')
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_URL_STATUS, methods=["GET"])
+    def api_status(self):
+        request = flask.request
+        data = request.get_json()
+
+        username = request.args.get(constants.API_URL_PARAM_USERNAME)
+
+        if username is None:
+            msg = _("username '{username}' not specified")
+            return flask.Response('{{ "{errortag}" : "{msg}" }}'.format(msg=msg, errortag=constants.JSON_ERROR),
+                                  status=constants.HTTP_STATUS_CODE_NOT_FOUND,
+                                  mimetype='application/json')
+
+        user_status = self._appcontrol.get_user_status(p_username=username)
+
+        if user_status is None:
+            msg = _("username '{username}' not being monitored")
+            return flask.Response('{{ "{errortag}" : "{msg}" }}'.format(msg=msg, errortag=constants.JSON_ERROR),
+                                  status=constants.HTTP_STATUS_CODE_NOT_FOUND,
+                                  mimetype='application/json')
+
+        msg = "Received status request for user '{username}'"
+        self._logger.debug(msg.format(username=username))
+
+        return flask.Response(json.dumps(user_status, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
                               mimetype='application/json')

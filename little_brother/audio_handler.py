@@ -22,11 +22,11 @@ import os.path
 import shlex
 import subprocess
 
-import pyttsx3
+#import pyttsx3
 
 from little_brother import mpg123_audio_player
 from little_brother import notification_handler
-from little_brother import playsound_audio_player
+#from little_brother import playsound_audio_player
 from little_brother import pyglet_audio_player
 from python_base_app import configuration
 
@@ -39,19 +39,19 @@ DEFAULT_SPEECH_WORDS_PER_MINUTE = 100
 
 SECTION_NAME = "AudioHandler"
 
-SPEECH_ENGINE_PYTTSX3 = "pyttsx3"
+#SPEECH_ENGINE_PYTTSX3 = "pyttsx3"
 SPEECH_ENGINE_GOOGLE = "google"
 SPEECH_ENGINE_EXTERNAL = "external"
 
 AUDIO_TEXT_FILE = "audio.txt"
 
-AUDIO_PLAYER_PLAYSOUND = "playsound"
+#AUDIO_PLAYER_PLAYSOUND = "playsound"
 AUDIO_PLAYER_PYGLET = "pyglet"
 AUDIO_PLAYER_MPG123 = "mpg123"
 
 DEFAULT_MPG123_binary = "/usr/bin/mpg123"
 
-DEFAULT_AUDIO_PLAYER = AUDIO_PLAYER_PLAYSOUND
+DEFAULT_AUDIO_PLAYER = AUDIO_PLAYER_MPG123
 
 
 class AudioHandlerConfigModel(notification_handler.NotificationHandlerConfigModel):
@@ -83,18 +83,18 @@ class AudioHandler(notification_handler.NotificationHandler):
 
         super().__init__(p_config=p_config)
 
-    def init_engine_pyttsx3(self):
-
-        self._pyttsx3_engine = pyttsx3.init()
-        self._pyttsx3_engine.setProperty('rate', self._config.speech_words_per_minute)
+    # def init_engine_pyttsx3(self):
+    #
+    #     self._pyttsx3_engine = pyttsx3.init()
+    #     self._pyttsx3_engine.setProperty('rate', self._config.speech_words_per_minute)
 
     def check_audio_player(self):
 
         try:
-            if self._config.audio_player == AUDIO_PLAYER_PLAYSOUND:
-                self._audio_player = playsound_audio_player.PlaysoundAudioPlayer()
+            # if self._config.audio_player == AUDIO_PLAYER_PLAYSOUND:
+            #     self._audio_player = playsound_audio_player.PlaysoundAudioPlayer()
 
-            elif self._config.audio_player == AUDIO_PLAYER_PYGLET:
+            if self._config.audio_player == AUDIO_PLAYER_PYGLET:
                 self._audio_player = pyglet_audio_player.PygletAudioPlayer()
 
             elif self._config.audio_player == AUDIO_PLAYER_MPG123:
@@ -128,8 +128,8 @@ class AudioHandler(notification_handler.NotificationHandler):
         if self._config.speech_engine == SPEECH_ENGINE_EXTERNAL:
             pass
 
-        elif self._config.speech_engine == SPEECH_ENGINE_PYTTSX3:
-            self.init_engine_pyttsx3()
+        # elif self._config.speech_engine == SPEECH_ENGINE_PYTTSX3:
+        #     self.init_engine_pyttsx3()
 
         elif self._config.speech_engine == SPEECH_ENGINE_GOOGLE:
             self.init_engine_google()
@@ -159,8 +159,8 @@ class AudioHandler(notification_handler.NotificationHandler):
         if self._config.speech_engine == SPEECH_ENGINE_EXTERNAL:
             self.speak_external_command(p_text=p_text, p_locale=p_locale)
 
-        elif self._config.speech_engine == SPEECH_ENGINE_PYTTSX3:
-            self.speak_pyttsx(p_text=p_text, p_locale=p_locale)
+        # elif self._config.speech_engine == SPEECH_ENGINE_PYTTSX3:
+        #     self.speak_pyttsx(p_text=p_text, p_locale=p_locale)
 
         elif self._config.speech_engine == SPEECH_ENGINE_GOOGLE:
             self.speak_google(p_text=p_text, p_locale=p_locale)
@@ -172,19 +172,19 @@ class AudioHandler(notification_handler.NotificationHandler):
 
         self._recent_texts[p_text] = datetime.datetime.now()
 
-    def speak_pyttsx(self, p_text, p_locale=None):
-
-        if self._config.audio_mixer_volume is not None:
-            fmt = "speak_pyttsx(): set volume to %d%%" % self._config.audio_mixer_volume
-            self._logger.debug(fmt)
-
-            self._pyttsx3_engine.setProperty("volume", 1.0 * self._config.audio_mixer_volume / 100.0)
-
-        fmt = "speak_pyttsx(): speak '%s'" % p_text
-        self._logger.debug(fmt)
-
-        self._pyttsx3_engine.say(p_text)
-        self._pyttsx3_engine.runAndWait()
+    # def speak_pyttsx(self, p_text, p_locale=None):
+    #
+    #     if self._config.audio_mixer_volume is not None:
+    #         fmt = "speak_pyttsx(): set volume to %d%%" % self._config.audio_mixer_volume
+    #         self._logger.debug(fmt)
+    #
+    #         self._pyttsx3_engine.setProperty("volume", 1.0 * self._config.audio_mixer_volume / 100.0)
+    #
+    #     fmt = "speak_pyttsx(): speak '%s'" % p_text
+    #     self._logger.debug(fmt)
+    #
+    #     self._pyttsx3_engine.say(p_text)
+    #     self._pyttsx3_engine.runAndWait()
 
     def speak_google(self, p_text, p_locale=None):
 

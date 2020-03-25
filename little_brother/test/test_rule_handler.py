@@ -30,12 +30,12 @@ from python_base_app.test import base_test
 
 TEST_USER = "user1"
 
-NORMAL_DAY_1 = datetime.datetime.strptime("12.04.2019", "%d.%m.%Y").date()
-WEEKEND_DAY_1 = datetime.datetime.strptime("13.04.2019", "%d.%m.%Y").date()
-WEEKEND_DAY_2 = datetime.datetime.strptime("14.04.2019", "%d.%m.%Y").date()
-VACATION_DAY_1 = datetime.datetime.strptime("15.04.2019", "%d.%m.%Y").date()
-VACATION_DAY_2 = datetime.datetime.strptime("26.04.2019", "%d.%m.%Y").date()
-WEEKEND_DAY_3 = datetime.datetime.strptime("27.04.2019", "%d.%m.%Y").date()
+NORMAL_DAY_1 = datetime.datetime.strptime("09.09.2020", "%d.%m.%Y").date()
+WEEKEND_DAY_1 = datetime.datetime.strptime("12.09.2020", "%d.%m.%Y").date()
+WEEKEND_DAY_2 = datetime.datetime.strptime("13.09.2020", "%d.%m.%Y").date()
+VACATION_DAY_1 = datetime.datetime.strptime("14.10.2020", "%d.%m.%Y").date()
+VACATION_DAY_2 = datetime.datetime.strptime("16.10.2020", "%d.%m.%Y").date()
+WEEKEND_DAY_3 = datetime.datetime.strptime("07.11.2020", "%d.%m.%Y").date()
 
 LABEL_1 = "LABEL1"
 LABEL_2 = "LABEL2"

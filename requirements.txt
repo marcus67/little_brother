@@ -42,7 +42,6 @@ python-dateutil==2.8.0
 python-editor==1.0.4
 python-google-speak==0.1
 python-Levenshtein==0.12.0
-pyttsx3==2.7
 pytz==2019.1
 requests==2.22.0
 ruamel.yaml==0.15.94

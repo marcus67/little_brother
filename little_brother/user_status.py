@@ -15,25 +15,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os.path
 
-API_URL = "/api"
-API_REL_URL_EVENTS = "events"
-API_URL_EVENTS = os.path.join(API_URL, API_REL_URL_EVENTS)
+class UserStatus(object):
 
-API_REL_URL_STATUS = "status"
-API_URL_STATUS = os.path.join(API_URL, API_REL_URL_STATUS)
+    def __init__(self, p_username=None):
 
-API_URL_PARAM_USERNAME = "username"
-
-JSON_HOSTNAME = "hostname"
-JSON_EVENTS = "events"
-JSON_RULESETS = "rulesets"
-JSON_USERNAME = "username"
-JSON_PROCESS_NAME_PATTERN = "process_name_pattern"
-JSON_ACCESS_TOKEN = "secret"
-JSON_ERROR = "error"
-
-HTTP_STATUS_CODE_OK = 200
-HTTP_STATUS_CODE_UNAUTHORIZED = 401
-HTTP_STATUS_CODE_NOT_FOUND = 404
+        self.username = p_username
+        self.minutes_left_in_session = None
+        self.activity_allowed = False
+        self.logged_in = False
