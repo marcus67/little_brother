@@ -267,6 +267,7 @@ class StatusServer(base_web_server.BaseWebServer):
             ABOUT_HTML_TEMPLATE,
             user_infos=self._appcontrol.get_user_infos(),
             settings=settings.settings,
+            extended_settings=settings.extended_settings,
             git_metadata=git.git_metadata,
             authentication=self.get_authenication_info(),
             navigation={

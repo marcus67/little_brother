@@ -53,7 +53,7 @@
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
     		<DIV CLASS="col-xs-3">{{_('Repository')}}</DIV>
-			<DIV CLASS="col-xs-9"><A HREF="{{ settings.url }}">{{ settings.display_url }}</A></DIV>
+			<DIV CLASS="col-xs-9"><A HREF="{{ settings.url }}">{{ extended_settings.display_url }}</A></DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
     		<DIV CLASS="col-xs-3">{{_('Version')}}</DIV>
@@ -61,7 +61,7 @@
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
     		<DIV CLASS="col-xs-3">Debian {{_('Package Revision')}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ settings.debian_package_revision }}</DIV>
+    		<DIV CLASS="col-xs-9">{{ extended_settings.debian_package_revision }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
     		<DIV CLASS="col-xs-3">{{_('Git Commit ID')}}</DIV>
