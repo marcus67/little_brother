@@ -51,7 +51,7 @@ class Activity(object):
 
 
     @property
-    def duration(self, p_reference_time=None):
+    def duration(self):
 
         if self.end_time is not None and self.start_time is not None:
             return max((self.end_time - self.start_time).total_seconds() - self.downtime, 0)
@@ -395,6 +395,12 @@ def get_process_statistics(
             if user_stat_info.current_activity is not None:
                 login_date = user_stat_info.current_activity.start_time.date()
                 lookback = int((user_stat_info.reference_date - login_date).total_seconds() / (24 * 3600))
+
+                # If there's an actity more than lookback days back enlarge the stat array accordingly...
+                if lookback >= len(user_stat_info.day_statistics):
+                    for i in range(len(user_stat_info.day_statistics), lookback + 1):
+                        user_stat_info.day_statistics.append(DayStatistics())
+
                 user_stat_info.day_statistics[lookback].add_activity(user_stat_info.current_activity)
 
     return users_stat_infos
