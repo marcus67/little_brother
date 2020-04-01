@@ -142,7 +142,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
             xpath = "//DIV[DIV[1] = 'Debian Package Revision' and DIV[2] = '{debian_package_revision}']"
             driver.find_element_by_xpath(
-                xpath.format(debian_package_revision=settings.settings['debian_package_revision']))
+                xpath.format(debian_package_revision=settings.extended_settings['debian_package_revision']))
 
             driver.close()
 
