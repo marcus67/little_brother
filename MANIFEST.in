@@ -17,12 +17,9 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 include little_brother/templates/*.html
-include little_brother/templates/*.txt
 include little_brother/static/icons/*.ico
-include little_brother/static/icons/*.jpg
 include little_brother/static/icons/*.png
 include little_brother/static/*.css
-include little_brother/static/*.js
 include little_brother/static/contrib/initializr/css/*.css
 include little_brother/static/contrib/initializr/js/vendor/*.js
 include little_brother/static/contrib/js-cookie/*.js

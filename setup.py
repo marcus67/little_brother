@@ -48,10 +48,14 @@ setup_params = {
     "scripts": [
         "run_little_brother.py",
         "run_test_suite.py",
+        "run_little_brother_taskbar.py",
         "bin/little-brother-grant-x-access.sh"
     ],
     "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
+}
+
+extended_setup_params = {
 
     # Target version to be used to upgrade the database
     "target_alembic_version": "647cf46033a9",
@@ -82,7 +86,11 @@ setup_params = {
     ]
 
 }
+
 setup_params.update(little_brother.settings.settings)
+extended_setup_params.update(little_brother.settings.extended_settings)
+extended_setup_params.update(setup_params)
+
 
 if __name__ == '__main__':
     setup(**setup_params)

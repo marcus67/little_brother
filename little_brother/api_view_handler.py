@@ -72,7 +72,6 @@ class ApiViewHandler(object):
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_URL_STATUS, methods=["GET"])
     def api_status(self):
         request = flask.request
-        data = request.get_json()
 
         username = request.args.get(constants.API_URL_PARAM_USERNAME)
 

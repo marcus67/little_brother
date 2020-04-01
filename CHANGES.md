@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 55 (April 1st, 2020)
+
+*   Move taskbar app into a [repository](https://github.com/marcus67/little_brother_taskbar) of its own
+*   Split setup configuration into standard and extended settings 
+*   Remove superfluous entries in MANIFEST.in
+
 ## Version 0.2 Revision 54 (March 24th, 2020)
 
 *   Remove speech engine support for `pyttsx3` due to [issue 67](https://github.com/marcus67/little_brother/issues/67)
