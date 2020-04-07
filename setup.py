@@ -40,7 +40,7 @@ setup_params = {
 
     "scripts": [
         "run_little_brother.py",
-        "run_test_suite.py",
+        "run_little_brother_test_suite.py",
         "bin/little-brother-grant-x-access.sh"
     ],
     "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
