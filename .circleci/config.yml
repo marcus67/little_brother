@@ -42,12 +42,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.2_55.deb
+          path: debian/little-brother_0.2_56.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.2_55.deb
-
+            - little-brother_0.2_56.deb
   deploy:
     docker:
       - image: accso/docker-python-app:latest
@@ -58,7 +57,6 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
-
   docker:
     docker:
       - image: marcusrickert/docker-docker-ci:release-0.9

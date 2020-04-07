@@ -19,27 +19,20 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from setuptools import setup
+from os import path
 
 import little_brother.settings
+
+this_directory = path.abspath(path.dirname(__file__))
+
+with open(path.join(this_directory, 'requirements.txt')) as f:
+    install_requires = f.read().splitlines()
+
 
 setup_params = {
     # standard setup configuration
 
-    "install_requires": [
-        'alembic',
-        'python_google_speak',
-        'requests',
-        'psutil',
-        'python-dateutil',
-        'sqlalchemy',
-        'pymysql',
-        'flask',
-        'flask-login',
-        'Flask-Babel',
-        'Flask-Migrate',
-        'python-base-app',
-        'flask_helpers',
-        'selenium'],
+    "install_requires": install_requires,
 
     "packages": ['little_brother', 'little_brother.test'],
 
