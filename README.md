@@ -57,8 +57,7 @@ See [here](CHANGES.md)
 | Snyk Vulnerability | <a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> | not available | not available |
 | Codacy Code Quality | <a href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a> | not available | not available |
 
-Note: The vulnerability status is derived from the Python PIP packages found in `requirement.txt` which is in itself
-is generated from `pip freeze`.
+Note: The vulnerability status is derived from the Python PIP packages found in `requirements.txt`.
 
 ## Features
 
@@ -108,7 +107,9 @@ will not be able the terminate the activity. The play time, however, will be add
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
 
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
-Linux host with a Docker deamon available.    
+Linux host with a Docker deamon available.
+*   There is a helper application (see https://github.com/marcus67/little_brother_taskbar) to display the remaining
+playtime of a monitored user.
 
 ## Architecture
 
@@ -362,6 +363,9 @@ slaves and the master in local area network. If the master host is to be accessi
 be put behind a reverse proxy handling the HTTPS termination (see below). 
 
 ## Using Popups
+
+**Note:** The popups described below are obsolete. They have been replaced by the 
+[LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar). 
 
 It is possible to activate popups to nofify the user about impending logouts. See the section `[PopupHandler]` 
 in the configuration file (e.g. <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>).

@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 57 (April 11th, 2020)
+
+*   Mention new `LittleBrotherTaskbar` in `README.md`
+*   Remove `python-base-app` from `requirements.txt`
+
 ## Version 0.2 Revision 56 (April 8th, 2020)
 
 *   Upgrade to new `python_base_app`
