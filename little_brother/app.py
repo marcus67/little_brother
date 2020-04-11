@@ -21,7 +21,6 @@ import psutil
 import os.path
 
 from little_brother import app_control
-from little_brother import audio_handler
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import master_connector
@@ -29,6 +28,7 @@ from little_brother import persistence
 from little_brother import popup_handler
 from little_brother import rule_handler
 from little_brother import status_server
+from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
 

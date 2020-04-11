@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 58 (April 12th, 2020)
+
+*   Moved helper classes for audio handling from LittleBrother to python_base_app
+
 ## Version 0.2 Revision 57 (April 11th, 2020)
 
 *   Mention new `LittleBrotherTaskbar` in `README.md`

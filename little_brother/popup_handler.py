@@ -21,8 +21,7 @@ import subprocess
 
 from python_base_app import configuration
 from python_base_app import exceptions
-
-from little_brother import notification_handler
+from python_base_app import notification_handler
 
 SECTION_NAME = "PopupHandler"
 
@@ -35,8 +34,8 @@ POPUP_ENGINE_SHELL_ECHO = "echo"
 POPUP_ENGINES = {
     POPUP_ENGINE_XMESSAGE: ["/usr/bin/xmessage",
                             "{{{binary_pattern}}} -nearmouse {{{pattern}}}".format(
-                                 binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
-                                 pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+                                binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
+                                pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
     POPUP_ENGINE_GXMESSAGE: ["/usr/bin/X11/gxmessage",
                              "{{{binary_pattern}}} -title LittleBrother "
                              "-encoding {{{encoding_pattern}}} -nearmouse {{{text_pattern}}}".format(
@@ -122,14 +121,14 @@ class PopupHandler(notification_handler.NotificationHandler):
         cmd_line = p_command_line.format(**replacements).encode(self._config.encoding)
 
         try:
-
             fmt = "popup_command(): execute '%s'" % cmd_line
             self._logger.debug(fmt)
 
             extended_env = os.environ.copy()
             extended_env['DISPLAY'] = self._config.x11_display
 
-            popen = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=extended_env)
+            popen = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                     env=extended_env)
             _stdout, stderr = popen.communicate()
             exit_code = popen.returncode
 
