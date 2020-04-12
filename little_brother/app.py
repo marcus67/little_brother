@@ -88,6 +88,7 @@ class App(base_app.BaseApp):
         p_configuration.add_section(app_control_section)
 
         audio_handler_section = audio_handler.AudioHandlerConfigModel()
+        audio_handler_section.spool_dir = os.path.join("/var/spool", DIR_NAME)
         p_configuration.add_section(audio_handler_section)
 
         popup_handler_section = popup_handler.PopupHandlerConfigModel()

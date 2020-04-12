@@ -20,11 +20,11 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:80
 msgid "username '{username}' not specified"
-msgstr ""
+msgstr "utente '{username}' non specificato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:88
 msgid "username '{username}' not being monitored"
-msgstr ""
+msgstr "utente '{username}' non monitorato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:141
 msgid "{days} days ago"
@@ -42,46 +42,46 @@ msgstr "Ieri"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
 msgid "{user}, you do not have computer time left today. You will be logged out."
-msgstr "{utente}, non ti e' rimasto più tempo oggi al computer. Sarai disconnesso."
+msgstr "{user}, non ti e' rimasto più tempo oggi al computer. Sarai disconnesso."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today. "
 "Please, log out."
 msgstr ""
-"{utente}, hai solo {minuti_rimanenti_prima_del_logout} minuti rimasti "
+"{user}, hai solo {minutes_left_before_logout} minuti rimasti "
 "oggi. Per favore, esci."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
 msgid "{user}, you do not have any computer time today. You will be logged out."
-msgstr "{utente}, non hai tempo al computer oggi. Sarai disconnesso."
+msgstr "{user}, non hai tempo al computer oggi. Sarai disconnesso."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:151
 msgid "{user}, it is too early to use the computer. You will be logged out."
-msgstr "{utente}, è troppo presto per usare il computer. Sarai disconnesso."
+msgstr "{user}, è troppo presto per usare il computer. Sarai disconnesso."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
 msgid "{user}, it is too late to use the computer. You will be logged out."
-msgstr "{utente}, è troppo tardi per usare il computer. Sarai disconnesso."
+msgstr "{user}, è troppo tardi per usare il computer. Sarai disconnesso."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:153
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer. Please, log out."
 msgstr ""
-"{utente}, in {minuti_rimanenti_prima_del_logout} minuti sarà troppo tardi"
+"{user}, in {minutes_left_before_logout} minuti sarà troppo tardi"
 " per utilizzare il computer. Per favore, esci."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:155
 msgid "{user}, you have to take a break. You will be logged out."
-msgstr "{utente}, devi fare una pausa. Sarai disconnesso."
+msgstr "{user}, devi fare una pausa. Sarai disconnesso."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break. Please, log out."
 msgstr ""
-"{utente}, in {minuti_rimanenti_prima_del_logout} minuti dovrai fare una "
+"{user}, in {minutes_left_before_logout} minuti dovrai fare una "
 "pausa. Per favore, esci."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:158
@@ -89,7 +89,7 @@ msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes. You"
 " will be logged out."
 msgstr ""
-"{utente}, la tua pausa sarà terminata tra {pausa_minuti_rimanenti} "
+"{user}, la tua pausa sarà terminata tra {break_minutes_left} "
 "minuti. Sarai disconnesso."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:160
@@ -97,22 +97,22 @@ msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes in this session."
 msgstr ""
-"Ciao {utente}, potrai giocare per {minuti_rimanenti_in_sessione} minuti "
+"Ciao {user}, potrai giocare per {minutes_left_in_session} minuti "
 "in questa sessione."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
 msgid "Hello {user}, you have unlimited playtime in this session."
-msgstr "Ciao {utente}, hai tempo di gioco illimitato in questa sessione."
+msgstr "Ciao {user}, hai tempo di gioco illimitato in questa sessione."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1016
 #, python-format
 msgid "Today ({day:%%a})"
-msgstr "Oggi ({giorno:%%a})"
+msgstr "Oggi ({day:%%a})"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1020
 #, python-format
 msgid "Tomorrow ({day:%%a})"
-msgstr "Domani ({giorno:%%a})"
+msgstr "Domani ({day:%%a})"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1021
 msgid "Tomorrow"
@@ -121,12 +121,12 @@ msgstr "Domani"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1024
 #, python-format
 msgid "{day:%%Y-%%m-%%d (%%a)}"
-msgstr "{giorno:%%Y-%%m-%%d (%%a)}"
+msgstr "{day:%%Y-%%m-%%d (%%a)}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1025
 #, python-format
 msgid "{day:%%A}"
-msgstr "{giorno:%%A}"
+msgstr "{day:%%A}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
 msgid "vacation"
@@ -150,7 +150,7 @@ msgstr "Attività limitate a {hh_mm} al giorno"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:380
 msgid "No activity exceeding {hh_mm}"
-msgstr "Nessuna attività superiore a {} hh_mm"
+msgstr "Nessuna attività superiore a {hh_mm}    "
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:414
 msgid "Minimum break time {hh_mm} not reached"
@@ -449,10 +449,10 @@ msgstr "Nome utente o password errati"
 #~ msgstr "Email o password errate"
 
 #~ msgid "{day:%%y-%%m-%%d (%%a)}"
-#~ msgstr "{giorno:%%y-%%m-%%d (%%a)}"
+#~ msgstr "{day:%%y-%%m-%%d (%%a)}"
 
 #~ msgid "{day:%%a}"
-#~ msgstr "{giorno:%%a}"
+#~ msgstr "{day:%%a}"
 
 #~ msgid "{days} days ago"
 #~ msgstr "{days} giorni fa"

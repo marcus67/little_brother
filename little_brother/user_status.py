@@ -24,3 +24,5 @@ class UserStatus(object):
         self.minutes_left_in_session = None
         self.activity_allowed = False
         self.logged_in = False
+        self.locale = None
+        self.notification = None

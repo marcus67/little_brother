@@ -108,8 +108,9 @@ hence will have an impact on the time allowed and also on the break time rules o
 
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
 Linux host with a Docker deamon available.
-*   There is a helper application (see https://github.com/marcus67/little_brother_taskbar) to display the remaining
-playtime of a monitored user.
+
+*   There is a helper application ([LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) to 
+display the remaining playtime of a monitored user.
 
 ## Architecture
 

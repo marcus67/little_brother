@@ -732,6 +732,18 @@ class AppControl(object):
 
         return rule_result_info
 
+    def get_current_user_status(self, p_username):
+
+        current_user_status = self._user_status.get(p_username)
+
+        if current_user_status is None:
+            current_user_status = user_status.UserStatus(p_username=p_username)
+            current_user_status.locale = self.get_user_locale(p_username=p_username)
+            self._user_status[p_username] = current_user_status
+
+        return current_user_status
+
+
     def process_rules(self, p_reference_time):
 
         fmt = "Processing rules START..."
@@ -771,11 +783,7 @@ class AppControl(object):
                             p_rule_override=override,
                             p_locale=user_locale)
 
-                        current_user_status = self._user_status.get(username)
-
-                        if current_user_status is None:
-                            current_user_status = user_status.UserStatus(p_username=username)
-                            self._user_status[username] = current_user_status
+                        current_user_status = self.get_current_user_status(p_username=username)
 
                         if (rule_result_info.limited_session_time()):
                             current_user_status.minutes_left_in_session = rule_result_info.get_minutes_left_in_session()
@@ -857,6 +865,10 @@ class AppControl(object):
     ################################################################################################################################
 
     def queue_event_speak(self, p_hostname, p_username, p_text):
+
+        current_user_status = self.get_current_user_status(p_username=p_username)
+
+        current_user_status.notification = p_text
 
         locale = self.get_user_locale(p_username=p_username)
 

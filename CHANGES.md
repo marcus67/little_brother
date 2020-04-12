@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 59 (April 12th, 2020)
+
+*   Export locale and current notification message for use in LittleBrotherTaskbar
+*   Supply missing Italian translations and correct some variable references in them 
+
 ## Version 0.2 Revision 58 (April 12th, 2020)
 
 *   Moved helper classes for audio handling from LittleBrother to python_base_app
