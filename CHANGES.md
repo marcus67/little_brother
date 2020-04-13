@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2 Revision 60 (April 13th, 2020)
+
+*   Closes #68, see [here](https://github.com/marcus67/little_brother/issues/68)
+*   Closes #69, see [here](https://github.com/marcus67/little_brother/issues/69)
+*   Remove some Codacy warnings
+
 ## Version 0.2 Revision 59 (April 12th, 2020)
 
 *   Export locale and current notification message for use in LittleBrotherTaskbar

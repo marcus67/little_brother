@@ -400,7 +400,7 @@ class RuleHandler(object):
         if p_rule_set.min_break is not None and p_rule_set.max_activity_duration is not None:
             seconds_since_last_activity = p_stat_info.seconds_since_last_activity
 
-            if p_stat_info.previous_activity_duration is not None:
+            if p_stat_info.previous_activity_duration is not None and p_rule_set.max_activity_duration > 0:
                 fraction_used = min(1.0 * p_stat_info.previous_activity_duration / p_rule_set.max_activity_duration,
                                     1.0)
                 min_relative_break = fraction_used * p_rule_set.min_break
@@ -418,7 +418,7 @@ class RuleHandler(object):
                     (min_relative_break - seconds_since_last_activity + 30) / 60)
                 p_rule_result_info.args['break_minutes_left'] = p_rule_result_info.break_minutes_left
 
-        return 0
+        return
 
     def process_ruleset(self, p_stat_info, p_reference_time, p_rule_override, p_locale):
 

@@ -144,21 +144,21 @@ class AppControl(object):
         self.history_labels[0] = (_('Today'), {"days": 0})
         self.history_labels[1] = (_('Yesterday'), {"days": 1})
 
-        self.text_no_time_left = _("{user}, you do not have computer time left today. You will be logged out.")
+        self.text_no_time_left = _("{user}, you do not have computer time left today.\nYou will be logged out.")
         self.text_no_time_left_approaching = _(
-            "{user}, you only have {minutes_left_before_logout} minutes left today. Please, log out.")
-        self.text_no_time_today = _("{user}, you do not have any computer time today. You will be logged out.")
-        self.text_too_early = _("{user}, it is too early to use the computer. You will be logged out.")
-        self.text_too_late = _("{user}, it is too late to use the computer. You will be logged out.")
+            "{user}, you only have {minutes_left_before_logout} minutes left today.\nPlease, log out.")
+        self.text_no_time_today = _("{user}, you do not have any computer time today.\nYou will be logged out.")
+        self.text_too_early = _("{user}, it is too early to use the computer.\nYou will be logged out.")
+        self.text_too_late = _("{user}, it is too late to use the computer.\nYou will be logged out.")
         self.text_too_late_approaching = _(
-            "{user}, in {minutes_left_before_logout} minutes it will be too late to use the computer. Please, log out.")
-        self.text_need_break = _("{user}, you have to take a break. You will be logged out.")
+            "{user}, in {minutes_left_before_logout} minutes it will be too late to use the computer.\nPlease, log out.")
+        self.text_need_break = _("{user}, you have to take a break.\nYou will be logged out.")
         self.text_need_break_approaching = _(
-            "{user}, in {minutes_left_before_logout} minutes you will have to take a break. Please, log out.")
+            "{user}, in {minutes_left_before_logout} minutes you will have to take a break.\nPlease, log out.")
         self.text_min_break = _(
-            "{user}, your break will only be over in {break_minutes_left} minutes. You will be logged out.")
+            "{user}, your break will only be over in {break_minutes_left} minutes.\nYou will be logged out.")
         self.text_limited_session_start = _(
-            "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes in this session.")
+            "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes\nin this session.")
         self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
 
     def register_rule_context_handlers(self):

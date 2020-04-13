@@ -35,25 +35,30 @@ POPUP_ENGINES = {
     POPUP_ENGINE_XMESSAGE: ["/usr/bin/xmessage",
                             "{{{binary_pattern}}} -nearmouse {{{pattern}}}".format(
                                 binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
-                                pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+                                pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
+                            lambda x:x.replace("\n", " ")],
     POPUP_ENGINE_GXMESSAGE: ["/usr/bin/X11/gxmessage",
                              "{{{binary_pattern}}} -title LittleBrother "
                              "-encoding {{{encoding_pattern}}} -nearmouse {{{text_pattern}}}".format(
                                  binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
                                  text_pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT,
-                                 encoding_pattern=notification_handler.REPLACE_PATTERN_ENCODING)],
+                                 encoding_pattern=notification_handler.REPLACE_PATTERN_ENCODING),
+                             lambda x:x.replace("\n", " ")],
     POPUP_ENGINE_ZENITY: ["/usr/bin/X11/zenity",
-                          "{{{binary_pattern}}} --info --text='{{{pattern}}}'".format(
+                          "{{{binary_pattern}}} --no-wrap --info --text='{{{pattern}}}'".format(
                               binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
-                              pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+                              pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
+                          None],
     POPUP_ENGINE_YAD: ["/usr/bin/X11/yad",
                        "{{{binary_pattern}}} --text='{{{pattern}}}'".format(
                            binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
-                           pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)],
+                           pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
+                       None],
     POPUP_ENGINE_SHELL_ECHO: ["/bin/bash",
                               "{{{binary_pattern}}} -c 'echo {{{pattern}}}'".format(
                                   binary_pattern=notification_handler.REPLACE_PATTERN_BINARY,
-                                  pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT)]
+                                  pattern=notification_handler.REPLACE_PATTERN_AUDIO_TEXT),
+                              None]
 }
 
 
@@ -88,6 +93,9 @@ class PopupHandler(notification_handler.NotificationHandler):
                 popup_binary = self._config.engine_binary
             else:
                 popup_binary = popup_command_info[0]
+
+            if popup_command_info[2] is not None:
+                p_text = popup_command_info[2](p_text)
 
             self.popup_command(p_text=p_text, p_locale=p_locale, p_command_line=popup_command_info[1],
                                p_binary=popup_binary)

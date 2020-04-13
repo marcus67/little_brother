@@ -20,7 +20,7 @@ from little_brother import popup_handler
 from python_base_app import configuration
 from python_base_app.test import base_test
 
-TEXT = "hallo"
+TEXT = "This is a sufficiently long text to check\nthe correct width and height of the popup windows."
 LOCALE = "de_DE"
 
 
@@ -46,7 +46,7 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         self.assertIsNotNone(a_handler)
 
-        a_handler.notify(p_text=TEXT)
+        a_handler.notify(p_text="bash:" + TEXT)
 
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_gxmessage_init(self):
@@ -57,7 +57,7 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         self.assertIsNotNone(a_handler)
 
-        a_handler.notify(p_text=TEXT)
+        a_handler.notify(p_text="gxmessage:" + TEXT)
 
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_xmessage_init(self):
@@ -79,7 +79,7 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         self.assertIsNotNone(a_handler)
 
-        a_handler.notify(p_text=TEXT)
+        a_handler.notify(p_text="yad: " + TEXT)
 
     @base_test.skip_if_env("NO_POPUPS")
     def test_engine_zenity_init(self):
@@ -90,7 +90,7 @@ class TestPopupHandler(base_test.BaseTestCase):
 
         self.assertIsNotNone(a_handler)
 
-        a_handler.notify(p_text=TEXT)
+        a_handler.notify(p_text="zenity: " + TEXT)
 
     def test_engine_invalid(self):
 

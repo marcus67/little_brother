@@ -50,7 +50,7 @@ msgid "Yesterday"
 msgstr "Hier"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
-msgid "{user}, you do not have computer time left today. You will be logged out."
+msgid "{user}, you do not have computer time left today.\nYou will be logged out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
@@ -60,43 +60,43 @@ msgid ""
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
-msgid "{user}, you do not have any computer time today. You will be logged out."
+msgid "{user}, you do not have any computer time today.\nYou will be logged out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:151
-msgid "{user}, it is too early to use the computer. You will be logged out."
+msgid "{user}, it is too early to use the computer.\nYou will be logged out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
-msgid "{user}, it is too late to use the computer. You will be logged out."
+msgid "{user}, it is too late to use the computer.\nYou will be logged out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:153
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
-"use the computer. Please, log out."
+"use the computer.\nPlease, log out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:155
-msgid "{user}, you have to take a break. You will be logged out."
+msgid "{user}, you have to take a break.\nYou will be logged out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
-"break. Please, log out."
+"break.\nPlease, log out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:158
 msgid ""
-"{user}, your break will only be over in {break_minutes_left} minutes. You"
+"{user}, your break will only be over in {break_minutes_left} minutes.\nYou"
 " will be logged out."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:160
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
-"minutes in this session."
+"minutes\nin this session."
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162

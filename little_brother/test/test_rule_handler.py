@@ -25,6 +25,7 @@ from little_brother import german_vacation_context_rule_handler
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
+from little_brother import process_statistics
 from python_base_app import configuration
 from python_base_app.test import base_test
 
@@ -40,6 +41,15 @@ WEEKEND_DAY_3 = datetime.datetime.strptime("07.11.2020", "%d.%m.%Y").date()
 LABEL_1 = "LABEL1"
 LABEL_2 = "LABEL2"
 LABEL_3 = "LABEL3"
+
+HOSTNAME = "hostname"
+HOSTNAME2 = "hostname2"
+USERNAME = "username"
+PROCESS_NAME = "processname"
+PID = 123
+MIN_ACTIVITY_DURATION = 60
+MAX_LOOKBACK_IN_DAYS = 10
+DURATION = 55  # seconds
 
 
 class TestRuleHandler(base_test.BaseTestCase):
@@ -76,11 +86,18 @@ class TestRuleHandler(base_test.BaseTestCase):
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
 
     @staticmethod
-    def create_dummy_ruleset_configs():
-        # DEFAULT
+    def create_dummy_ruleset_config():
+
         default_config = rule_handler.RuleSetConfigModel()
         default_config.username = TEST_USER
         default_config.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
+
+        return default_config
+
+    @staticmethod
+    def create_dummy_ruleset_configs():
+        # DEFAULT
+        default_config = TestRuleHandler.create_dummy_ruleset_config()
 
         # VACATION
         vacation_config = rule_handler.RuleSetConfigModel()
@@ -112,6 +129,125 @@ class TestRuleHandler(base_test.BaseTestCase):
         a_rule_handler.register_context_rule_handler(p_context_rule_handler=vacation_context_rule_handler)
 
         return a_rule_handler
+
+    def test_min_break_time(self):
+
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        previous_activity_start = reference_time + datetime.timedelta(seconds=-1200)
+        previous_activity_end = previous_activity_start + datetime.timedelta(seconds=600)
+
+        previous_activity = process_statistics.Activity(p_start_time=previous_activity_start)
+        previous_activity.set_end_time(previous_activity_end)
+
+        previous_short_activity_end = previous_activity_start + datetime.timedelta(seconds=200)
+        previous_short_activity = process_statistics.Activity(p_start_time=previous_activity_start)
+        previous_short_activity.set_end_time(previous_short_activity_end)
+
+        rule_set.max_activity_duration = 600
+
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        stat_info.previous_activity = previous_activity
+
+        # Check that playing is not allowed after full break minus one second
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-299)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_set.min_break = 300
+
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+
+        # Check that playing is allowed after full break minus one second but with free_play activated
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-299)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_set.min_break = 300
+        rule_set.free_play = True
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+
+        # Check that playing is allowed after full break
+        rule_set.free_play = False
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-300)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_set.min_break = 300
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+
+        # Check that playing is not allowed after break after short period (1/3 of max) minus one second
+        stat_info.previous_activity = previous_short_activity
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-99)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+        self.assertEqual(rule_result_info.args['break_minutes_left'], 0)
+
+        # Check that playing is not allowed after break after short period (1/3 of max) minus one second
+        # but with max_activity_duration=0
+        stat_info.previous_activity = previous_short_activity
+        rule_result_info = rule_handler.RuleResultInfo()
+        rule_set.max_activity_duration = 0
+        activity_start_time = reference_time + datetime.timedelta(seconds=-299)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+
+        # Check that playing is allowed after break after short period (1/3 of max)
+        # but with max_activity_duration=0
+        stat_info.previous_activity = previous_short_activity
+        rule_result_info = rule_handler.RuleResultInfo()
+        rule_set.max_activity_duration = 0
+        activity_start_time = reference_time + datetime.timedelta(seconds=-300)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+
+        # Check that playing is allowed after break after short period (1/3 of max)
+        stat_info.previous_activity = previous_short_activity
+        rule_set.max_activity_duration = 600
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-100)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+
+        # Check that playing is not allowed after break after short period (1/3 of max) minus 31 second and
+        # that the number of break minutes left = 1
+        stat_info.previous_activity = previous_short_activity
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-69)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+        self.assertEqual(rule_result_info.args['break_minutes_left'], 1)
+
+        # Check that playing is not allowed after break after short period (1/3 of max) minus 91 second and
+        # that the number of break minutes left = 2
+        stat_info.previous_activity = previous_short_activity
+        rule_result_info = rule_handler.RuleResultInfo()
+        activity_start_time = reference_time + datetime.timedelta(seconds=-9)
+        stat_info.last_inactivity_start_time = activity_start_time
+        rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
+                                                 p_rule_result_info=rule_result_info)
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+        self.assertEqual(rule_result_info.args['break_minutes_left'], 2)
 
 
 class TestRuleOverride(base_test.BaseTestCase):
