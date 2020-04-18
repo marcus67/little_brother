@@ -2,7 +2,7 @@
 
 # Copyright (C) 2019  Marcus Rickert
 #
-# See https://github.com/marcus67/little_brother
+# See https://github.com/marcus67/little_brother_taskbar
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -15,30 +15,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from python_base_app import configuration
 
-from little_brother import base_audio_player
+class UserStatus(object):
 
-class PlaysoundAudioPlayer(base_audio_player.BaseAudioPlayer):
+    def __init__(self, p_username=None):
 
-
-    def __init__(self):
-
-        super().__init__()
-        self._player = None
-
-        try:
-            import playsound
-            self._play_command = playsound.playsound
-
-        except:
-            fmt = "Cannot load module 'playsound'"
-            self._logger.error(fmt)
-            raise configuration.ConfigurationException(fmt)
-
-        self._logger.info("audio player 'playsound' loaded")
-
-
-    def play_audio_file(self, p_audio_filename):  # pragma: no cover
-        self._play_command(p_audio_filename)
-
+        self.username = p_username
+        self.minutes_left_in_session = None
+        self.activity_allowed = False
+        self.logged_in = False
+        self.locale = None
+        self.notification = None

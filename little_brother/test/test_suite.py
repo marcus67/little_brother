@@ -21,8 +21,6 @@
 
 import unittest
 
-from little_brother.test import test_audio_handler
-from little_brother.test import test_audio_player
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_process_handler
@@ -34,6 +32,7 @@ from little_brother.test import test_process_statistics
 from little_brother.test import test_rule_handler
 from little_brother.test import test_simple_weekday_context_rule_handler
 from little_brother.test import test_status_server
+from little_brother.test import test_prometheus
 
 from python_base_app import log_handling
 from python_base_app.test import base_test
@@ -59,14 +58,6 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_process_handler.TestProcessHandler, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=test_audio_handler.TestAudioHandler, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=test_audio_player.TestAudioPlayer, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
@@ -105,6 +96,10 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_status_server.TestStatusServer, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_prometheus.TestPrometheus, p_config_filename=p_config_filename)
 
 
 def main():

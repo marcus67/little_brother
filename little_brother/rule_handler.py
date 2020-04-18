@@ -44,7 +44,7 @@ DEFAULT_PROCESS_PATTERN = "systemd|.*sh"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
-# Dummy function to trigger extraction by pybabel...
+# Dummy function to trigger extraction by pybabel...F
 _ = lambda x: x
 
 
@@ -216,6 +216,10 @@ class RuleResultInfo(object):
         if self.minutes_left_in_session is None or p_minutes_left < self.minutes_left_in_session:
             self.minutes_left_in_session = p_minutes_left
             self.args['minutes_left_in_session'] = p_minutes_left
+
+    def get_minutes_left_in_session(self):
+
+        return self.args.get('minutes_left_in_session')
 
     def activity_allowed(self):
 
@@ -396,7 +400,7 @@ class RuleHandler(object):
         if p_rule_set.min_break is not None and p_rule_set.max_activity_duration is not None:
             seconds_since_last_activity = p_stat_info.seconds_since_last_activity
 
-            if p_stat_info.previous_activity_duration is not None:
+            if p_stat_info.previous_activity_duration is not None and p_rule_set.max_activity_duration > 0:
                 fraction_used = min(1.0 * p_stat_info.previous_activity_duration / p_rule_set.max_activity_duration,
                                     1.0)
                 min_relative_break = fraction_used * p_rule_set.min_break
@@ -414,7 +418,7 @@ class RuleHandler(object):
                     (min_relative_break - seconds_since_last_activity + 30) / 60)
                 p_rule_result_info.args['break_minutes_left'] = p_rule_result_info.break_minutes_left
 
-        return 0
+        return
 
     def process_ruleset(self, p_stat_info, p_reference_time, p_rule_override, p_locale):
 

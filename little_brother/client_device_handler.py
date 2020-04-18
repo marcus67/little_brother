@@ -18,6 +18,7 @@
 import re
 import shlex
 import subprocess
+import collections
 
 from little_brother import admin_event
 from little_brother import process_handler
@@ -35,6 +36,12 @@ DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_MAX_ACTIVE_PING_DELAY = 100  # milliseconds
 DEFAULT_PING_RESULT_REGEX = r"rtt min/avg/max/mdev = [\d\.]+/([\d\.]+)/[\d\.]+/[\d\.]+ ms"
 DEFAULT_SAMPLE_SIZE = 10
+
+
+
+DEFAULT_SERVER_GROUP = "default-group"
+
+DeviceStat = collections.namedtuple('DeviceStat', ['devicename', 'active', 'response_time', 'moving_average_response_time'])
 
 
 class ClientDeviceHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
@@ -187,6 +194,32 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
                 return most_recent_pinfo
 
         return None
+
+    def get_number_of_monitored_devices(self):
+
+        return len(self._client_device_configs)
+
+    def get_device_stats(self):
+
+        device_stats = []
+
+        for device_config in self._client_device_configs.values():
+            response_time = None
+            moving_average_response_time = None
+            active = False
+
+            if device_config.hostname in self._device_infos:
+                device_info = self._device_infos[device_config.hostname]
+
+                if device_info is not None:
+                    response_time = device_info.get_latest_value()
+                    moving_average_response_time = device_info.get_value()
+                    active = True
+
+            stat = DeviceStat(device_config.name, active, response_time, moving_average_response_time)
+            device_stats.append(stat)
+
+        return device_stats
 
     def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map):
 

@@ -16,20 +16,20 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 git_metadata = {
-    "commit_id" : "<unknown>",
-    "branch" : "<unknown>",
-    "author_name" : "<unknown>",
-    "author_email" : "<unknown>"
+    "commit_id": "<unknown>",
+    "branch": "<unknown>",
+    "author_name": "<unknown>",
+    "author_email": "<unknown>"
 }
 
 try:
     from little_brother import git_metadata
 
     git_metadata = {
-        "commit_id" : git_metadata.GIT_COMMIT_ID[0:16],
-        "branch" : git_metadata.GIT_BRANCH,
-        "author_name" : git_metadata.GIT_AUTHOR_NAME,
-        "author_email" :git_metadata.GIT_AUTHOR_EMAIL
+        "commit_id": git_metadata.GIT_COMMIT_ID[0:16],
+        "branch": git_metadata.GIT_BRANCH,
+        "author_name": git_metadata.GIT_AUTHOR_NAME,
+        "author_email":git_metadata.GIT_AUTHOR_EMAIL
     }
 
 except Exception as e:

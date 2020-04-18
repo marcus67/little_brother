@@ -96,15 +96,17 @@
 				    			<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg">
 									<!-- {{ _('Show overrides for day') }}-->
 				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
-        								{{ _(day_info.short_label[0])|format(day_info.short_label[1]) }}
+        								<!-- { { _(day_info.short_label[0])|format(day_info.short_label[1]) }} -->
+        								{{ day_info.reference_date|format_babel_date(_(day_info.short_format)) }}
 				        			{{ accordion.toggle_end() }}
 					    		</DIV>
 				    			<DIV CLASS="hidden-xs col-sm-2 col-md-2 ">
 				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
-        								{{ _(day_info.label[0])|format(day_info.label[1]) }}
+        								<!-- { { _(day_info.label[0])|format(day_info.label[1]) }} -->
+        								{{ day_info.reference_date|format_babel_date(_(day_info.long_format)) }}
 				        			{{ accordion.toggle_end() }}
 					    		</DIV>
-					    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT ">{{_('effective')}}</DIV>
+					    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT ">{{ _(day_info.rule_set.label) }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_time_of_day_class }}">{{ day_info.effective_rule_set.min_time_of_day|time_to_string }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_time_of_day_class }}">{{ day_info.effective_rule_set.max_time_of_day|time_to_string }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_time_per_day_class }}">{{ day_info.effective_rule_set.max_time_per_day|seconds_to_string }}</DIV>

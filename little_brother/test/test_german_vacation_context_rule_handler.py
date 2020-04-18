@@ -51,25 +51,25 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("30.09.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
+        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("11.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
     def test_is_active_first_day_of_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("01.10.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
+        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("12.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
     def test_is_active_last_day_of_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("21.10.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
+        self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("24.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
     def test_is_not_active_first_day_after_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
-        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("22.10.2016", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
+        self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("25.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
 
     def test_exception_when_invalid_federal_state_url(self):
@@ -77,7 +77,7 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
         config = german_vacation_context_rule_handler.GermanVacationContextRuleHandlerConfig()
-        config.federal_states_url="INVALID"
+        config.locations_url= "INVALID"
 
         rule_handler._config = config
 

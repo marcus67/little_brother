@@ -4,7 +4,81 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.1 Revision 49 (January 1st, 2020)
+## Version 0.2.1 Revision 61 (April 18th, 2020)
+
+*   Closes #23, see [here](https://github.com/marcus67/little_brother/issues/23)
+*   Closes #54, see [here](https://github.com/marcus67/little_brother/issues/54)
+*   Closes #73, see [here](https://github.com/marcus67/little_brother/issues/73)
+*   Added country flags to the README
+*   Provided sample configuration for Grafana
+*   Added Dutch localization (locale "nl")
+*   Use completely localized date format (including day of week) for admin page
+*   Show supported languages on the "About" page
+*   Upgrade to `python_base_app` version 0.1.8
+
+## Version 0.2 Revision 60 (April 13th, 2020)
+
+*   Closes #68, see [here](https://github.com/marcus67/little_brother/issues/68)
+*   Closes #69, see [here](https://github.com/marcus67/little_brother/issues/69)
+*   Remove some Codacy warnings
+
+## Version 0.2 Revision 59 (April 12th, 2020)
+
+*   Export locale and current notification message for use in LittleBrotherTaskbar
+*   Supply missing Italian translations and correct some variable references in them 
+
+## Version 0.2 Revision 58 (April 12th, 2020)
+
+*   Moved helper classes for audio handling from LittleBrother to python_base_app
+
+## Version 0.2 Revision 57 (April 11th, 2020)
+
+*   Mention new `LittleBrotherTaskbar` in `README.md`
+*   Remove `python-base-app` from `requirements.txt`
+
+## Version 0.2 Revision 56 (April 8th, 2020)
+
+*   Upgrade to new `python_base_app`
+*   Dynamically generate `install_requires` in `setup.py`
+
+## Version 0.2 Revision 55 (April 1st, 2020)
+
+*   Move taskbar app into a [repository](https://github.com/marcus67/little_brother_taskbar) of its own
+*   Split setup configuration into standard and extended settings 
+*   Remove superfluous entries in MANIFEST.in
+
+## Version 0.2 Revision 54 (March 24th, 2020)
+
+*   Remove speech engine support for `pyttsx3` due to [issue 67](https://github.com/marcus67/little_brother/issues/67)
+*   Fixes #67
+*   Remove audio player support for `playsound` due to persisting issues with import of module `gi` 
+*   Add taskbar app (see [issue 66](https://github.com/marcus67/little_brother/issues/66))
+*   Update calendar handler for German school vacation to API version 2.0
+
+## Version 0.2 Revision 53 (March 7th, 2020)
+
+*   Move alembic files into package directory to make them available in the pip installation directory
+*   Add command line option '--stamp-databases' to force an alembic database revision  
+*   Correct alembic.sh (invalid use of env variable)
+*   Correct German translation
+*   Exclude alembic delta scripts from duplicate checks (after move of directory)
+
+## Version 0.2 Revision 52 (March 4th, 2020)
+
+*   Add troubleshooting page. 
+
+## Version 0.2 Revision 51 (February 26th, 2020)
+
+*   Upgrade PIP package `codecov` to version 2.0.16 due to 
+    [CVE-2019-10800](https://snyk.io/vuln/SNYK-PYTHON-CODECOV-552149) 
+
+## Version 0.2 Revision 50 (January 3rd, 2020)
+
+*   Try both paths `/usr/bin/pip3` and `/usr/local/bin/pip3` during Debian package post installation
+*   Install PIP package `setuptools` during Debian package post installation 
+*   Add `python-dev` and `python3-dev` to Debian dependencies
+
+## Version 0.2 Revision 49 (January 1st, 2020)
 
 *   Remove some coding warnings
 *   Add test cases for class ClientDeviceHandler

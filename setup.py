@@ -19,28 +19,20 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from setuptools import setup
+from os import path
 
 import little_brother.settings
+
+this_directory = path.abspath(path.dirname(__file__))
+
+with open(path.join(this_directory, 'requirements.txt')) as f:
+    install_requires = f.read().splitlines()
+
 
 setup_params = {
     # standard setup configuration
 
-    "install_requires": [
-        'alembic',
-        'python_google_speak',
-        'requests',
-        'psutil',
-        'python-dateutil',
-        'sqlalchemy',
-        'pymysql',
-        'flask',
-        'flask-login',
-        'Flask-Babel',
-        'Flask-Migrate',
-        'python-base-app',
-        'flask_helpers',
-        'pyttsx3',
-        'selenium'],
+    "install_requires": install_requires,
 
     "packages": ['little_brother', 'little_brother.test'],
 
@@ -48,11 +40,14 @@ setup_params = {
 
     "scripts": [
         "run_little_brother.py",
-        "run_test_suite.py",
+        "run_little_brother_test_suite.py",
         "bin/little-brother-grant-x-access.sh"
     ],
     "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
+}
+
+extended_setup_params = {
 
     # Target version to be used to upgrade the database
     "target_alembic_version": "647cf46033a9",
@@ -83,7 +78,11 @@ setup_params = {
     ]
 
 }
+
 setup_params.update(little_brother.settings.settings)
+extended_setup_params.update(little_brother.settings.extended_settings)
+extended_setup_params.update(setup_params)
+
 
 if __name__ == '__main__':
     setup(**setup_params)

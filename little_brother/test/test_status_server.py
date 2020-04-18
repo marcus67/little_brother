@@ -78,6 +78,8 @@ class TestStatusServer(base_test.BaseTestCase):
             p_config=app_control_config,
             p_debug_mode=False,
             p_process_handlers=p_process_handlers,
+            p_device_handler=None,
+            p_prometheus_client=None,
             p_persistence=_persistence,
             p_rule_handler=_rule_handler,
             p_notification_handlers=[],
@@ -142,7 +144,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
             xpath = "//DIV[DIV[1] = 'Debian Package Revision' and DIV[2] = '{debian_package_revision}']"
             driver.find_element_by_xpath(
-                xpath.format(debian_package_revision=settings.settings['debian_package_revision']))
+                xpath.format(debian_package_revision=settings.extended_settings['debian_package_revision']))
 
             driver.close()
 

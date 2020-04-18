@@ -50,15 +50,14 @@ See [here](CHANGES.md)
 
 ## Continuous Integration Status Overview
 
-| Status | Master | Mac OS Test | Release |
-|:------ |:------ |:------------------ |:------- |
-| CircleCI | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> |
-| Test Coverage | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A> | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A> | 
-| Snyk Vulnerability | <a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> | not available | not available |
-| Codacy Code Quality | <a href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a> | not available | not available |
+| Status              | Master | Mac OS Test | Release |
+|:------------------- |:------ |:------------------ |:------- |
+| CircleCI            | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A>                                                                                                                                                                                 | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> |
+| Test Coverage       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A>                                                                                                                                                                                               | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A>       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>        | 
+| Snyk Vulnerability  | <a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>         | not available                                                                                                                                                                                     | not available                                                                                                                                                                           |
+| Codacy Code Quality | <a href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a>                                                                                         | not available                                                                                                                                                                                     | not available                                                                                                                                                                           |
 
-Note: The vulnerability status is derived from the Python PIP packages found in `requirement.txt` which is in itself
-is generated from `pip freeze`.
+Note: The vulnerability status is derived from the Python PIP packages found in `requirements.txt`.
 
 ## Features
 
@@ -92,11 +91,11 @@ days into the future.
 *   The web application can be run behind a proxy so that it will be accessible from away allowing remote 
 administration after receiving calls from young users begging for more play time.
 
-*   The application has international language support. Currently English and German translations are provided.
-Users are invited to provide translations for other languages.
+*   There is a helper application ([LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) to 
+display the remaining playtime of a monitored user and speak the notifications.
 
-*   The application uses voice generation to inform the user over impending logouts. Also these spoken
-messages are internationalized. Optionally, users can be notified using four different popup tools.
+*   The application has international language support. Currently English, Italian and German translations are provided.
+Users are invited to provide translations for other languages.
 
 *   Downtime of a server during playtime (e.g. due to hibernation) is automatically substracted from the play time.
 
@@ -108,7 +107,12 @@ will not be able the terminate the activity. The play time, however, will be add
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
 
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
-Linux host with a Docker deamon available.    
+Linux host with a Docker deamon available.
+
+*   The application uses voice generation to inform the user over impending logouts. Also these spoken
+messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
+functionality of the `LittleBrother` application has been replaced by the `LittleBrotherTaskbar.` 
+
 
 ## Architecture
 
@@ -127,11 +131,12 @@ very often and justify this solution at least in one of the early release versio
 
 ## Tested Distributions
 
-| Distribution | Version   | Comments                                                               | Most Recent Test |
-| ------------ | --------- | ---------------------------------------------------------------------- | ---------------- |
-| Ubuntu       | 18.10     | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
-| Debian       | testing   |                                                                        | 01.JAN.2020      |
-| Debian       | buster    | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
+| Distribution | Version       | Comments                                                               | Most Recent Test |
+| ------------ | ------------- | ---------------------------------------------------------------------- | ---------------- |
+| Ubuntu       | 18.10         | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
+| Debian       | buster        | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
+| Debian       | 10.3 (buster) | Feedback from a user as regular install with Mate desktop              | 05.MAR.2020      |
+| Mint         | 19            |                                                                        | 03.JAN.2020      |
 
 ## Quick Install (Debian Package)
 
@@ -209,6 +214,11 @@ In case no errors are returned the web interface should be available at
     http://localhost:[PORT]/
     
 where `[PORT]` corresponds to the port number configured with setting  
+
+### Troubleshooting
+
+So, you went through all of the above but LittleBrother does not seem to work? Maybe this 
+[troubleshooting page](TROUBLESHOOTING.md) can help you.
 
 ## Extended Rule Configuration
 
@@ -330,14 +340,7 @@ slaves.
 
 ## Monitoring the Application
 
-The application `LittleBrother` has a simple HTTP health check endpoint with relative url `/health` which 
-can be monitored by systems such as `icinga`. 
-The endpoint will always return HTTP code `200` and the text `OK`. It is automatically active for the master
-host since the master host always has its web frontend active anyway. For the slaves the endpoint has to be
-activated by setting at least the port the section `[StatusServer]` as in the example below.
-
-    [StatusServer]
-    port=5561
+`LittleBrother` offers two options for operational monitoring. See [here](OPERATIONAL_MONITORING.md) for details.
   
 ## Caveats
 
@@ -356,6 +359,9 @@ slaves and the master in local area network. If the master host is to be accessi
 be put behind a reverse proxy handling the HTTPS termination (see below). 
 
 ## Using Popups
+
+**Note:** The popups described below are obsolete. They have been replaced by the 
+[LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar). 
 
 It is possible to activate popups to nofify the user about impending logouts. See the section `[PopupHandler]` 
 in the configuration file (e.g. <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>).
@@ -409,15 +415,18 @@ The `[StatusServer]` configuration section of the master host should contain the
 
 ## Internationalization
 
-The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend, Currently, 
-the following languages are supported/prepared:
+The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend. Currently, 
+the following languages are supported or currently in preparation:
 
-| Language | Locale | Status    | Translation provided by |
-| -------- | ------ | --------- | ------------------------|
-| English  | en     | Available |  Marcus Rickert         |
-| German   | de     | Available |  Marcus Rickert         |
-| Italian  | it     | Available |  Albano Battistella     |
-| French   | fr     | Prepared  |  N.N.                   |
+| Flag                                                           | Language      | Locale | Status         | Translation provided by |
+| ---------------------------------------------------------------| ------------- | ------ | -------------- | ------------------------|
+| ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Available      |  Marcus Rickert         |
+| ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Available      |  Marcus Rickert         |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Available      |  Albano Battistella     |
+| ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Available      |  Simone & Lex           |
+| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | In preparation |  N.N.                   |
+| ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | In preparation |  N.N.                   |
+| ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | In preparation |  N.N.                   |
 
 Your help with translations is greatly appreciated. Please, contact the author if you are interested in providing
 a translation. You do not necessarily have to clone this repository or be familiar with Python to do so.
