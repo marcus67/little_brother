@@ -415,7 +415,7 @@ The `[StatusServer]` configuration section of the master host should contain the
 
 ## Internationalization
 
-The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend, Currently, 
+The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend. Currently, 
 the following languages are supported or currently in preparation:
 
 | Flag                                                           | Language      | Locale | Status         | Translation provided by |
@@ -423,7 +423,7 @@ the following languages are supported or currently in preparation:
 | ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Available      |  Marcus Rickert         |
 | ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Available      |  Marcus Rickert         |
 | ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Available      |  Albano Battistella     |
-| ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Available      |  N.N.                   |
+| ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Available      |  Simone & Lex           |
 | ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | In preparation |  N.N.                   |
 | ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | In preparation |  N.N.                   |
 | ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | In preparation |  N.N.                   |

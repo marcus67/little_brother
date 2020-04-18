@@ -35,4 +35,3 @@ that you also have to have a server instance of [Prometheus](https://prometheus.
 screenshot shows the contents of the Grafana dashboard defined by the configuration.
 
 <A HREF="doc/screenshot_grafana_monitoring.png">![Screenshot Grafana Dashboard](doc/screenshot_grafana_monitoring.small.png)</A> 
- 
