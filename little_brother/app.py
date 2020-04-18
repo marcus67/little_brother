@@ -28,6 +28,7 @@ from little_brother import persistence
 from little_brother import popup_handler
 from little_brother import rule_handler
 from little_brother import status_server
+from little_brother import prometheus
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
@@ -75,11 +76,13 @@ class App(base_app.BaseApp):
         self._status_server = None
         self._persistence = None
         self._process_handlers = None
+        self._client_device_handler = None
         self._app_control = None
         self._rule_handler = None
         self._master_connector = None
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
+        self._prometheus_client = None
         self.app_config = None
 
     def load_configuration(self, p_configuration):
@@ -118,6 +121,9 @@ class App(base_app.BaseApp):
         master_connector_section = master_connector.MasterConnectorConfigModel()
         p_configuration.add_section(master_connector_section)
 
+        prometheus_client_section = prometheus.PrometheusClientConfigModel()
+        p_configuration.add_section(prometheus_client_section)
+
         self.app_config = AppConfigModel()
         p_configuration.add_section(self.app_config)
 
@@ -128,8 +134,6 @@ class App(base_app.BaseApp):
         return self._config[master_connector.SECTION_NAME].host_url is None
 
     def prepare_services(self, p_full_startup=True):
-
-        device_handler = None
 
         if self.is_master():
             self._persistence = persistence.Persistence(
@@ -170,21 +174,29 @@ class App(base_app.BaseApp):
             fmt = "Found {count} client device configuration entry/ies -> activating client device handler"
             self._logger.info(fmt.format(count=len(client_device_configs)))
 
-            device_handler = client_device_handler.ClientDeviceHandler(
+            self._client_device_handler = client_device_handler.ClientDeviceHandler(
                 p_config=self._config[client_device_handler.SECTION_NAME],
                 p_client_device_configs=client_device_configs)
 
-            self._process_handlers[device_handler.id] = device_handler
+            self._process_handlers[self._client_device_handler.id] = self._client_device_handler
+
+        config = self._config[prometheus.SECTION_NAME]
+
+        if config.is_active():
+            self._prometheus_client = prometheus.PrometheusClient(
+                p_logger=self._logger, p_config=config)
 
         self._app_control = app_control.AppControl(
             p_config=self._config[app_control.SECTION_NAME],
             p_debug_mode=self._app_config.debug_mode,
             p_process_handlers=self._process_handlers,
+            p_device_handler=self._client_device_handler,
             p_persistence=self._persistence,
             p_rule_handler=self._rule_handler,
             p_notification_handlers=self._notification_handlers,
             p_rule_set_configs=self._rule_set_section_handler.rule_set_configs,
-            p_master_connector=self._master_connector)
+            p_master_connector=self._master_connector,
+            p_prometheus_client=self._prometheus_client)
 
         if self._config[app_control.SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
@@ -197,11 +209,11 @@ class App(base_app.BaseApp):
             fmt = "Process scanning for this host has been deactivated in configuration"
             self._logger.warning(fmt)
 
-        if device_handler:
+        if self._client_device_handler:
             task = base_app.RecurringTask(
                 p_name="app_control.scan_processes(DeviceHandler)",
-                p_handler_method=lambda: self._app_control.scan_processes(p_process_handler=device_handler),
-                p_interval=device_handler.check_interval)
+                p_handler_method=lambda: self._app_control.scan_processes(p_process_handler=self._client_device_handler),
+                p_interval=self._client_device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
         if self._config[status_server.SECTION_NAME].is_active():
@@ -223,6 +235,7 @@ class App(base_app.BaseApp):
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
+
 
     def run_special_commands(self, p_arguments):
 
@@ -287,6 +300,9 @@ class App(base_app.BaseApp):
 
         if self._app_control is not None:
             self._app_control.start()
+
+        if self._prometheus_client is not None:
+            self._prometheus_client.start()
 
     def stop_services(self):
 

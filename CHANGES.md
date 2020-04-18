@@ -4,6 +4,18 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.2.1 Revision 61 (April 18th, 2020)
+
+*   Closes #23, see [here](https://github.com/marcus67/little_brother/issues/23)
+*   Closes #54, see [here](https://github.com/marcus67/little_brother/issues/54)
+*   Closes #73, see [here](https://github.com/marcus67/little_brother/issues/73)
+*   Added country flags to the README
+*   Provided sample configuration for Grafana
+*   Added Dutch localization (locale "nl")
+*   Use completely localized date format (including day of week) for admin page
+*   Show supported languages on the "About" page
+*   Upgrade to `python_base_app` version 0.1.8
+
 ## Version 0.2 Revision 60 (April 13th, 2020)
 
 *   Closes #68, see [here](https://github.com/marcus67/little_brother/issues/68)

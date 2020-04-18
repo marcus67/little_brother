@@ -22,6 +22,8 @@ import flask_babel
 import flask_login
 import flask_wtf
 
+import babel.dates
+
 import little_brother
 from flask_helpers import blueprint_adapter
 from little_brother import api_view_handler
@@ -34,8 +36,9 @@ from python_base_app import tools
 LANGUAGES = {
     'en': 'English',
     'de': 'Deutsch',
-    'fr': 'Français',
+#    'fr': 'Français',
     'it': 'Italiano',
+    'nl': 'Nederlands'
 }
 
 SECTION_NAME = "StatusServer"
@@ -134,10 +137,17 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['seconds_to_string'] = self.format_seconds
         self._app.jinja_env.filters['boolean_to_string'] = self.format_boolean
         self._app.jinja_env.filters['format'] = self.format
+        self._app.jinja_env.filters['format_babel_date'] = self.format_babel_date
 
         self._babel = flask_babel.Babel(self._app)
         self._babel.localeselector(self.get_request_locale)
         gettext.bindtextdomain("messages", "little_brother/translations")
+
+    def measure(self, p_hostname, p_service, p_duration):
+
+        self._appcontrol.set_prometheus_http_requests_summary(p_hostname=p_hostname,
+                                                              p_service=p_service,
+                                                              p_duration=p_duration)
 
     def get_request_locale(self):
         locale = flask.request.accept_languages.best_match(LANGUAGES)
@@ -147,13 +157,17 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def login_view(self):
 
-        page = flask.render_template(
-            LOGIN_HTML_TEMPLATE,
-            authentication=self.get_authenication_info(),
-            navigation={
-                'current_view': ADMIN_VIEW_NAME},
-        )
-        return page
+        request = flask.request
+        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
+                                                         p_service=request.url_rule, p_duration=duration)):
+
+            page = flask.render_template(
+                LOGIN_HTML_TEMPLATE,
+                authentication=self.get_authenication_info(),
+                navigation={
+                    'current_view': ADMIN_VIEW_NAME},
+            )
+            return page
 
     def format_datetime(self, value):
 
@@ -202,6 +216,11 @@ class StatusServer(base_web_server.BaseWebServer):
 
         return value.format(**param_dict)
 
+    #@staticmethod
+    def format_babel_date(self, value, format_string):
+
+        return babel.dates.format_date(value, format_string, locale=self.get_request_locale())
+
     @BLUEPRINT_ADAPTER.route_method("/")
     def entry_view(self):
 
@@ -221,60 +240,74 @@ class StatusServer(base_web_server.BaseWebServer):
     @flask_login.login_required
     def admin_view(self):
 
-        admin_infos = self._appcontrol.get_admin_infos()
-        forms = self.get_admin_forms(p_admin_infos=admin_infos)
+        request = flask.request
+        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
+                                                         p_service=request.url_rule, p_duration=duration)):
 
-        valid_and_submitted = True
+            admin_infos = self._appcontrol.get_admin_infos()
+            forms = self.get_admin_forms(p_admin_infos=admin_infos)
 
-        for form in forms.values():
-            if not form.validate_on_submit():
-                valid_and_submitted = False
+            valid_and_submitted = True
 
-        if valid_and_submitted:
-            self.save_admin_data(admin_infos, forms)
-            return flask.redirect(flask.url_for("little_brother.admin"))
+            for form in forms.values():
+                if not form.validate_on_submit():
+                    valid_and_submitted = False
 
-        for admin_info in admin_infos:
-            for day_info in admin_info.day_infos:
-                forms[day_info.html_key].load_from_model(p_model=day_info.override)
+            if valid_and_submitted:
+                self.save_admin_data(admin_infos, forms)
+                return flask.redirect(flask.url_for("little_brother.admin"))
 
-        return flask.render_template(
-            ADMIN_HTML_TEMPLATE,
-            admin_infos=admin_infos,
-            authentication=self.get_authenication_info(),
-            forms=forms,
-            navigation={
-                'current_view': ADMIN_VIEW_NAME},
-        )
+            for admin_info in admin_infos:
+                for day_info in admin_info.day_infos:
+                    forms[day_info.html_key].load_from_model(p_model=day_info.override)
+
+            return flask.render_template(
+                ADMIN_HTML_TEMPLATE,
+                admin_infos=admin_infos,
+                authentication=self.get_authenication_info(),
+                forms=forms,
+                navigation={
+                    'current_view': ADMIN_VIEW_NAME},
+            )
 
     @BLUEPRINT_ADAPTER.route_method("/status", endpoint="index")
     def index_view(self):
 
-        page = flask.render_template(
-            INDEX_HTML_TEMPLATE,
-            user_infos=self._appcontrol.get_user_infos(),
-            authentication=self.get_authenication_info(),
-            navigation={
-                'current_view': INDEX_VIEW_NAME},
-        )
+        request = flask.request
+        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
+                                                         p_service=request.url_rule, p_duration=duration)):
+
+            page = flask.render_template(
+                INDEX_HTML_TEMPLATE,
+                user_infos=self._appcontrol.get_user_infos(),
+                app_control_config=self._appcontrol._config,
+                authentication=self.get_authenication_info(),
+                navigation={
+                    'current_view': INDEX_VIEW_NAME},
+            )
 
         return page
 
     @BLUEPRINT_ADAPTER.route_method("/about", endpoint="about")
     def about_view(self):
 
-        page = flask.render_template(
-            ABOUT_HTML_TEMPLATE,
-            user_infos=self._appcontrol.get_user_infos(),
-            settings=settings.settings,
-            extended_settings=settings.extended_settings,
-            git_metadata=git.git_metadata,
-            authentication=self.get_authenication_info(),
-            navigation={
-                'current_view': ABOUT_VIEW_NAME}
+        request = flask.request
+        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
+                                                         p_service=request.url_rule, p_duration=duration)):
 
-        )
-        return page
+            page = flask.render_template(
+                ABOUT_HTML_TEMPLATE,
+                user_infos=self._appcontrol.get_user_infos(),
+                settings=settings.settings,
+                extended_settings=settings.extended_settings,
+                git_metadata=git.git_metadata,
+                authentication=self.get_authenication_info(),
+                languages=sorted([(a_locale, a_language) for a_locale, a_language in LANGUAGES.items()]),
+                navigation={
+                    'current_view': ABOUT_VIEW_NAME}
+
+            )
+            return page
 
     @staticmethod
     def get_admin_forms(p_admin_infos):

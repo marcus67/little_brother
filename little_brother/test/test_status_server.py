@@ -78,6 +78,8 @@ class TestStatusServer(base_test.BaseTestCase):
             p_config=app_control_config,
             p_debug_mode=False,
             p_process_handlers=p_process_handlers,
+            p_device_handler=None,
+            p_prometheus_client=None,
             p_persistence=_persistence,
             p_rule_handler=_rule_handler,
             p_notification_handlers=[],

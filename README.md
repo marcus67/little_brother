@@ -91,11 +91,11 @@ days into the future.
 *   The web application can be run behind a proxy so that it will be accessible from away allowing remote 
 administration after receiving calls from young users begging for more play time.
 
-*   The application has international language support. Currently English and German translations are provided.
-Users are invited to provide translations for other languages.
+*   There is a helper application ([LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) to 
+display the remaining playtime of a monitored user and speak the notifications.
 
-*   The application uses voice generation to inform the user over impending logouts. Also these spoken
-messages are internationalized. Optionally, users can be notified using four different popup tools.
+*   The application has international language support. Currently English, Italian and German translations are provided.
+Users are invited to provide translations for other languages.
 
 *   Downtime of a server during playtime (e.g. due to hibernation) is automatically substracted from the play time.
 
@@ -109,8 +109,10 @@ hence will have an impact on the time allowed and also on the break time rules o
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
 Linux host with a Docker deamon available.
 
-*   There is a helper application ([LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) to 
-display the remaining playtime of a monitored user.
+*   The application uses voice generation to inform the user over impending logouts. Also these spoken
+messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
+functionality of the `LittleBrother` application has been replaced by the `LittleBrotherTaskbar.` 
+
 
 ## Architecture
 
@@ -338,14 +340,7 @@ slaves.
 
 ## Monitoring the Application
 
-The application `LittleBrother` has a simple HTTP health check endpoint with relative url `/health` which 
-can be monitored by systems such as `icinga`. 
-The endpoint will always return HTTP code `200` and the text `OK`. It is automatically active for the master
-host since the master host always has its web frontend active anyway. For the slaves the endpoint has to be
-activated by setting at least the port the section `[StatusServer]` as in the example below.
-
-    [StatusServer]
-    port=5561
+`LittleBrother` offers two options for operational monitoring. See [here](OPERATIONAL_MONITORING.md) for details.
   
 ## Caveats
 
@@ -421,14 +416,17 @@ The `[StatusServer]` configuration section of the master host should contain the
 ## Internationalization
 
 The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend, Currently, 
-the following languages are supported/prepared:
+the following languages are supported or currently in preparation:
 
-| Language | Locale | Status    | Translation provided by |
-| -------- | ------ | --------- | ------------------------|
-| English  | en     | Available |  Marcus Rickert         |
-| German   | de     | Available |  Marcus Rickert         |
-| Italian  | it     | Available |  Albano Battistella     |
-| French   | fr     | Prepared  |  N.N.                   |
+| Flag                                                           | Language      | Locale | Status         | Translation provided by |
+| ---------------------------------------------------------------| ------------- | ------ | -------------- | ------------------------|
+| ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Available      |  Marcus Rickert         |
+| ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Available      |  Marcus Rickert         |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Available      |  Albano Battistella     |
+| ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Available      |  N.N.                   |
+| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | In preparation |  N.N.                   |
+| ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | In preparation |  N.N.                   |
+| ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | In preparation |  N.N.                   |
 
 Your help with translations is greatly appreciated. Please, contact the author if you are interested in providing
 a translation. You do not necessarily have to clone this repository or be familiar with Python to do so.

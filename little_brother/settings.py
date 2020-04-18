@@ -18,7 +18,7 @@
 settings = {
     "name": "little-brother",
     "url": "https://github.com/marcus67/little_brother",
-    "version": "0.2",
+    "version": "0.2.1",
     "description": "",
     "author": "Marcus Rickert",
     "author_email": "little-brother@web.de",
@@ -26,5 +26,5 @@ settings = {
 
 extended_settings = {
     "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "60",
+    "debian_package_revision": "61",
 }

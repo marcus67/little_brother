@@ -44,7 +44,9 @@ DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
 DEFAULT_PROCESS_LOOKUP_IN_DAYS = 7  # days
 DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_CHECK_INTERVAL = 5  # seconds
+DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_LOCALE = "en_US"
+DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60 # seconds
 
 SECTION_NAME = "AppControl"
 
@@ -65,6 +67,8 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.check_interval = DEFAULT_CHECK_INTERVAL
         self.min_activity_duration = DEFAULT_MIN_ACTIVITY_DURATION
         self.user_mappings = [configuration.NONE_STRING]
+        self.index_refresh_interval = DEFAULT_INDEX_REFRESH_INTERVAL
+        self.maximum_client_ping_interval = DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL
 
 
 class ClientInfo(object):
@@ -79,11 +83,13 @@ class AppControl(object):
     def __init__(self, p_config,
                  p_debug_mode,
                  p_process_handlers,
+                 p_device_handler,
                  p_persistence,
                  p_rule_handler,
                  p_notification_handlers,
                  p_master_connector,
                  p_rule_set_configs,
+                 p_prometheus_client,
                  p_login_mapping=None):
 
         if p_login_mapping is None:
@@ -92,10 +98,12 @@ class AppControl(object):
         self._config = p_config
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
+        self._device_handler = p_device_handler
         self._persistence = p_persistence
         self._rule_handler = p_rule_handler
         self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
+        self._prometheus_client = p_prometheus_client
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -131,6 +139,11 @@ class AppControl(object):
             self._host_name = self._config.hostname
 
         self.init_labels_and_notifications()
+
+    def get_number_of_monitored_users_function(self):
+        return lambda: len(self._usernames)
+
+
 
     @property
     def check_interval(self):
@@ -227,6 +240,44 @@ class AppControl(object):
 
         return self._master_connector._config.host_url is None
 
+    def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
+
+        if self._prometheus_client is not None:
+            self._prometheus_client.set_http_requests_summary(p_hostname=p_hostname,
+                                                              p_service=p_service,
+                                                              p_duration=p_duration)
+
+    def set_metrics(self):
+
+        if self._prometheus_client is not None:
+            self._prometheus_client.set_number_of_monitored_users(len(self._usernames))
+
+            if self._config.scan_active:
+                self._prometheus_client.set_monitored_host(self._host_name, True)
+
+            latest_ping_time = tools.get_current_time() + \
+                               datetime.timedelta(seconds=-self._config.maximum_client_ping_interval)
+
+            for hostname, client_info in self._client_infos.items():
+                active = client_info.last_message > latest_ping_time
+                self._prometheus_client.set_monitored_host(hostname, active)
+
+            if self._device_handler is not None:
+                device_stats = self._device_handler.get_device_stats()
+                self._prometheus_client.set_number_of_monitored_devices(
+                    self._device_handler.get_number_of_monitored_devices())
+
+                for stat in device_stats:
+                    self._prometheus_client.set_device_active(stat.devicename, stat.active)
+                    self._prometheus_client.set_device_response_time(stat.devicename, stat.response_time)
+                    self._prometheus_client.set_device_moving_average_response_time(stat.devicename,
+                                                                                    stat.moving_average_response_time)
+
+            else:
+                self._prometheus_client.set_number_of_monitored_devices(0)
+
+
+
     def check(self):
 
         self.retrieve_user_mappings()
@@ -238,6 +289,7 @@ class AppControl(object):
         if self.is_master():
             self.process_rules(p_reference_time=reference_time)
             self.process_queue()
+            self.set_metrics()
 
         else:
             self.send_events()
@@ -443,19 +495,19 @@ class AppControl(object):
         fmt = "Received login mapping for server group(s) {group_names}"
         self._logger.info(fmt.format(group_names=server_group_names))
 
-    def update_client_info(self, p_event):
+    def update_client_info(self, p_hostname):
 
-        client_info = self._client_infos.get(p_event.hostname)
+        client_info = self._client_infos.get(p_hostname)
 
         if client_info is None:
-            client_info = ClientInfo(p_host_name=p_event.hostname)
-            self._client_infos[p_event.hostname] = client_info
+            client_info = ClientInfo(p_host_name=p_hostname)
+            self._client_infos[p_hostname] = client_info
 
-        client_info.last_message = p_event.event_time
+        client_info.last_message = tools.get_current_time()
 
     def handle_event_start_client(self, p_event):
 
-        self.update_client_info(p_event)
+        self.update_client_info(p_event.hostname)
         self.send_config_to_slave(p_event.hostname)
         self.send_login_mapping_to_slave(p_event.hostname)
         self.send_historic_process_infos()
@@ -758,6 +810,9 @@ class AppControl(object):
 
         for username in self._rule_set_configs.keys():
             if username in self._usernames:
+
+                user_active = False
+
                 user_locale = self.get_user_locale(p_username=username)
                 rule_set = self._rule_handler.get_active_ruleset_config(p_username=username,
                                                                         p_reference_date=p_reference_time.date())
@@ -792,8 +847,8 @@ class AppControl(object):
                             current_user_status.minutes_left_in_session = None
 
                         current_user_status.activity_allowed = rule_result_info.activity_allowed()
-                        current_user_status.logged_in = stat_info.current_activity is not None
-
+                        user_active = stat_info.current_activity is not None
+                        current_user_status.logged_in = user_active
 
                         if rule_result_info.applying_rules > 0:
                             fmt = "Process %s" % str(rule_result_info.effective_rule_set)
@@ -811,6 +866,9 @@ class AppControl(object):
                                     processhandler = self._process_handlers.get(processhandler_id)
 
                                     if processhandler is not None and processhandler.can_kill_processes():
+                                        if self._prometheus_client is not None:
+                                            self._prometheus_client.count_forced_logouts(p_username=username)
+
                                         self.queue_event_kill_process(
                                             p_hostname=hostname,
                                             p_username=username,
@@ -831,6 +889,10 @@ class AppControl(object):
                             for (hostname, processes) in stat_info.currently_active_host_processes.items():
                                 self.issue_logout_warning(p_hostname=hostname, p_username=username,
                                                           p_rule_result_info=rule_result_info)
+
+                if self._prometheus_client is not None:
+                    self._prometheus_client.set_user_active(p_username=username, p_is_active=user_active)
+
 
         fmt = "Processing rules END..."
         self._logger.debug(fmt)
@@ -1025,16 +1087,22 @@ class AppControl(object):
                                                   p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
 
                     if reference_date == datetime.date.today():
-                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day": reference_date})
-                        day_info.short_label = (_('Today', 'short'), {"day": reference_date})
+#                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day": reference_date})
+#                        day_info.short_label = (_('Today', 'short'), {"day": reference_date})
+                         day_info.long_format = _("'Today ('EEE')'", 'long')
+                         day_info.short_format = _("'Today'", 'short')
 
                     elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day": reference_date})
-                        day_info.short_label = (_('Tomorrow', 'short'), {"day": reference_date})
+#                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day": reference_date})
+#                        day_info.short_label = (_('Tomorrow', 'short'), {"day": reference_date})
+                        day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
+                        day_info.short_format = _("'Tomorrow'", 'short')
 
                     else:
-                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day": reference_date})
-                        day_info.short_label = (_("{day:%%A}"), {"day": reference_date})
+#                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day": reference_date})
+#                        day_info.short_label = (_("{day:%%A}"), {"day": reference_date})
+                        day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
+                        day_info.short_format = _("EEE")
 
                     admin_info.day_infos.append(day_info)
 

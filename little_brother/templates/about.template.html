@@ -79,6 +79,16 @@
     		<DIV CLASS="col-xs-3">{{_("Git Author's Email Address")}}</DIV>
     		<DIV CLASS="col-xs-9">{{ git_metadata.author_email }}</DIV>
     	</DIV>
+    	<DIV CLASS="row  ROWLEVEL_3">
+    		<DIV CLASS="col-xs-3">{{_("Supported Languages")}}</DIV>
+    		<DIV CLASS="col-xs-9">
+				<UL>
+					{% for language in languages %}
+						<LI>{{ language[1] }} ({{ language[0] }})</LI>
+					{% endfor %}
+				</UL>
+			</DIV>
+    	</DIV>
 
     </DIV> <!-- CLASS="container" -->
 
