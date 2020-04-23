@@ -38,7 +38,12 @@ LANGUAGES = {
     'de': 'Deutsch',
 #    'fr': 'Français',
     'it': 'Italiano',
-    'nl': 'Nederlands'
+    'nl': 'Nederlands',
+    'fi': 'Suomen kieli',
+    'tr': 'Türkçe',
+    'ru': 'Русский язык',
+    'ja': '日本語',
+    'bn': 'বাংলা'
 }
 
 SECTION_NAME = "StatusServer"

@@ -15,7 +15,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import time
 import prometheus_client
+
+from little_brother import settings
 
 SECTION_NAME = "PrometheusClient"
 
@@ -69,6 +72,16 @@ class PrometheusClient(object):
             self._summary_http_requests = prometheus_client.Summary(self._config.prefix + "http_requests",
                                                                     "request duration [ms] and count",
                                                                     ['service', 'hostname'])
+
+            self._info_system = prometheus_client.Info(self._config.prefix + "system",
+                                                       "system information")
+            self._info_system.info({ "version": settings.settings['version'],
+                                     "revision": settings.extended_settings['debian_package_revision']})
+
+            self._gauge_uptime = prometheus_client.Gauge(self._config.prefix + "uptime",
+                                                         "uptime in seconds")
+            self._start_time = time.time()
+            self._gauge_uptime.set_function(lambda : time.time() - self._start_time)
 
         def start(self):
 

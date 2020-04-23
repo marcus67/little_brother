@@ -1,0 +1,440 @@
+# Finnish translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-04-18 12:22+0200\n"
+"PO-Revision-Date: 2020-04-19 11:47+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fi\n"
+"Language-Team: fi <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:80
+msgid "username '{username}' not specified"
+msgstr "Käyttäjätunnista '{username}' ei määritetty"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:88
+msgid "username '{username}' not being monitored"
+msgstr "Käyttäjätunnusta '{username}' ei tarkkailla"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
+msgid "{days} days ago"
+msgstr "{days} päivää sitten"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:155
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+msgid "Today"
+msgstr "Tänään"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+msgid "Yesterday"
+msgstr "Eilen"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:158
+msgid ""
+"{user}, you do not have computer time left today.\n"
+"You will be logged out."
+msgstr "{user}, sinulla ei ole tietokoneaikaa jäljellä.\n"
+"Sinut kirjataan ulos."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"Please, log out."
+msgstr "{user}, sinulla on vain {minutes_left_before_logout} minuuttia jäljellä tänään.\n"
+"Kirjaudu ulos, ole hyvä."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+msgid ""
+"{user}, you do not have any computer time today.\n"
+"You will be logged out."
+msgstr "{user}, sinulla ei ole lainkaan tietokoneaikaa jäljellä tänään.\n"
+"Sinut kirjataan ulos."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+msgid ""
+"{user}, it is too early to use the computer.\n"
+"You will be logged out."
+msgstr "{user}, on liian aikaista käyttää tietokonetta.\n"
+"Sinut kirjataan ulos."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:163
+msgid ""
+"{user}, it is too late to use the computer.\n"
+"You will be logged out."
+msgstr "{user}, on liian myöhäinen aika käyttää tietokonetta.\n"
+"Sinut kirjataan ulos."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"use the computer.\n"
+"Please, log out."
+msgstr "{user}, {minutes_left_before_logout} minuutin kuluttua on liian myöhäinen aika "
+"käyttää tietokonetta.\n"
+"Kirjaudu ulos, ole hyvä."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:166
+msgid ""
+"{user}, you have to take a break.\n"
+"You will be logged out."
+msgstr "{user}, sinun tulee pitää tauko.\n"
+"Sinut kirjataan ulos."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"break.\n"
+"Please, log out."
+msgstr "{user}, {minutes_left_before_logout} minuutin kuluttua sinun tulee pitää "
+"tauko.\n"
+"Kirjaudu ulos, ole hyvä."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+msgid ""
+"{user}, your break will only be over in {break_minutes_left} minutes.\n"
+"You will be logged out."
+msgstr "{user}, taukosi on ohi {break_minutes_left} minuutissa.\n"
+"Sinut kirjataan ulos."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+msgid ""
+"Hello {user}, you will be allowed to play for {minutes_left_in_session} "
+"minutes\n"
+"in this session."
+msgstr "Hei {user}, voit pelata {minutes_left_in_session} "
+"minuuttia\n"
+"tässä istunnossa."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:173
+msgid "Hello {user}, you have unlimited playtime in this session."
+msgstr "Hei {user}, voit pelata rajoittamattoman ajan tässä istunnossa."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1083
+msgid "'Today ('EEE')'"
+msgstr "'Tänään ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+msgid "'Today'"
+msgstr "'Tänään'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1089
+msgid "'Tomorrow ('EEE')'"
+msgstr "'Huomenna ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+msgid "'Tomorrow'"
+msgstr "'Huomenna'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1095
+msgid "yyyy-MM-dd' ('EEE')'"
+msgstr "dd.MM.yyyy' ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+msgid "EEE"
+msgstr "EEE"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
+msgid "vacation"
+msgstr "loma"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
+msgid "No activity before {hh_mm} hours"
+msgstr "Ei aktiviteettia ennen {hh_mm}"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
+msgid "No activity after {hh_mm} hours"
+msgstr "Ei aktiviteettia {hh_mm} jälkeen"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:348
+msgid "Day blocked: no activity permitted"
+msgstr "Päivä suljettu: mikään aktiviteetti ei sallittu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:354
+msgid "Activity limited to {hh_mm} per day"
+msgstr "Aktiviteetti rajoitettu {hh_mm} per päivä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:380
+msgid "No activity exceeding {hh_mm}"
+msgstr "Ei aktiviteettia yli {hh_mm}"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:414
+msgid "Minimum break time {hh_mm} not reached"
+msgstr "Tauon minimipituus {hh_mm} ei saavutettu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
+msgid "default"
+msgstr "oletus"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
+msgid "weekday"
+msgstr "viikonpäivä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
+msgid "weekend"
+msgstr "viikonloppu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
+msgid "weekdays"
+msgstr "viikonpäiviä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
+msgid "mondays"
+msgstr "maanantait"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
+msgid "tuesdays"
+msgstr "tiistait"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
+msgid "wednesdays"
+msgstr "keskiviikot"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
+msgid "thursdays"
+msgstr "torstait"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
+msgid "fridays"
+msgstr "perjantait"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
+msgid "saturdays"
+msgstr "lauantait"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
+msgid "sundays"
+msgstr "sunnuntait"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+msgid "On"
+msgstr "Päällä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+msgid "Off"
+msgstr "Pois päältä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
+msgid "About"
+msgstr "Tietoa"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:51
+msgid "Setting"
+msgstr "Asetus"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:52
+msgid "Value"
+msgstr "Arvo"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:55
+msgid "Repository"
+msgstr "Repository"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:59
+msgid "Version"
+msgstr "Versio"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:63
+msgid "Package Revision"
+msgstr "Package revision"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:67
+msgid "Git Commit ID"
+msgstr "Git Commit ID"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:71
+msgid "Git Branch Name"
+msgstr "Git Branch Nimi"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:75
+msgid "Git Author's Name"
+msgstr "Git Tekijän Nimi"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:79
+msgid "Git Author's Email Address"
+msgstr "Git Tekijän Sähköpostiosoite"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:83
+msgid "Supported Languages"
+msgstr "Tuetut Kielet"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:36
+msgid "Administration"
+msgstr "Administration"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:47
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:42
+msgid "User"
+msgstr "Käyttäjä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:55
+msgid "Show configurations of upcoming days"
+msgstr "Näytä konfiguraatiot tuleville päiville"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:66
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
+msgid "Today's Activity"
+msgstr "Tämän päivän aktiviteetti"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:74
+msgid "Save"
+msgstr "Tallenna"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:80
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:110
+msgid "Day"
+msgstr "Päivä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:81
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:43
+msgid "Context"
+msgstr "Konteksti"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:82
+msgid "Min Time of Day"
+msgstr "Minimi kellonaika"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:83
+msgid "Max Time of Day"
+msgstr "Maksimi Kellonaika"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
+msgid "Time per Day"
+msgstr "Aika per Päivä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
+msgid "Minimum Break"
+msgstr "Minimitauko"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
+msgid "Max Duration"
+msgstr "Maksimikesto"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:90
+msgid "Free Play"
+msgstr "Vapaa pelaaminen"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:97
+msgid "Show overrides for day"
+msgstr "Show overrides for day"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
+msgid "override"
+msgstr "override"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
+msgid "Status"
+msgstr "Tila"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+msgid "Previous Activity Start Time"
+msgstr "Edellisen aktiviteetin aloitussaika"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+msgid "Previous Activity End Time"
+msgstr "Edellisen aktiviteetin päättymisaika"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:50
+msgid "Current Activity Start Time"
+msgstr "Nykyisen aktiviteetin aloitusaika"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+msgid "Current Activity Duration"
+msgstr "Nykyisen aktiviteetin kesto"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+msgid "Current"
+msgstr "Nykyinen"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
+msgid "Activity permitted"
+msgstr "Aktiviteetti sallittu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+msgid "OK?"
+msgstr "OK?"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
+msgid "Reasons"
+msgstr "Syyt"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:64
+msgid "Show durations of most recent days"
+msgstr "Näytä kestot viimeisimmiltä päiviltä"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:111
+msgid "Active Time"
+msgstr "Aktiivisuus-aika"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:112
+msgid "Active"
+msgstr "Aktiivinen"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
+msgid "Activity Start"
+msgstr "Aktiviteetin alku"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
+msgid "Start"
+msgstr "Alku"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
+msgid "Activity End"
+msgstr "Aktiviteetti loppu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
+msgid "End"
+msgstr "Loppu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
+msgid "Host(#procs)"
+msgstr "Host(#procs)"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:124
+msgid "Show activity times"
+msgstr "Näytä aktiviteettiajat"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:19
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:39
+msgid "Login"
+msgstr "Kirjaudu"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:32
+msgid "Username"
+msgstr "Käyttäjätunnus"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:33
+msgid "Password"
+msgstr "Salasana"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:40
+msgid "Admin"
+msgstr "Admin"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
+msgid "Signed in as"
+msgstr "Kirjautunut"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+msgid "Logout"
+msgstr "Kirjaudu ulos"
+
+#: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:34
+msgid "Please log in to access this page."
+msgstr "Kirjaudu käyttääksesi tätä sivua."
+
+#: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:135
+msgid "Wrong login or password"
+msgstr "Väärä käyttäjätunnus tai salasana"
+

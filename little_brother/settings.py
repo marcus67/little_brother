@@ -26,5 +26,5 @@ settings = {
 
 extended_settings = {
     "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "61",
+    "debian_package_revision": "62",
 }
