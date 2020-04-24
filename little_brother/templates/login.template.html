@@ -2,7 +2,9 @@
 {% import 'helper.macros.html' as helpers %}
 
 <HTML>
-  <META http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  {{ helpers.locale_font(rel_font_size) }}
+
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <HEAD>
     <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
@@ -25,18 +27,18 @@
 
     <div class="wrapper">
     	<form class="form-signin" ACTION="" METHOD="post">       
-            <h2 class="form-signin-heading"><IMG SRC="{{url_for('little_brother.static', filename='icons/icon_baby-panda_128x128.png')}}"> <div>Little Brother</div></h2>
+            <h2 class="form-signin-heading localetext"><IMG SRC="{{url_for('little_brother.static', filename='icons/icon_baby-panda_128x128.png')}}"> <div>Little Brother</div></h2>
 
             {{ helpers.render_flashed_messages() }}
 
-  			<input type="text" class="form-control" name="username" placeholder="{{_('Username')}}" required="" autofocus="" />
-  			<input type="password" class="form-control" name="password" placeholder="{{_('Password')}}" required=""/>
+  			<input type="text" class="form-control localetext" name="username" placeholder="{{_('Username')}}" required="" autofocus="" />
+  			<input type="password" class="form-control localetext" name="password" placeholder="{{_('Password')}}" required=""/>
   			<!--      
   			<label class="checkbox">
     			<input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
   			</label>
   			-->
-      		<button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Login')}}</button>
+      		<button class="btn btn-lg btn-primary btn-block localetext" type="submit">{{_('Login')}}</button>
 	    </form>
   	</div>
 

@@ -18,9 +18,12 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -->
 
-
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
+{% import 'helper.macros.html' as helper %}
+
+  {{ helper.locale_font(rel_font_size) }}
+
   <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <HEAD>
     <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -39,23 +42,23 @@
 	{% include 'navbar.include.html' %}
     <DIV CLASS="container STANDARD_TABLE container">
     	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 ">{{_('User')}}</DIV>
-    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 ">{{_('Context')}}</DIV>
+    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('User')}}</DIV>
+    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('Context')}}</DIV>
 
-    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1 ">{{_("Today's Activity")}}</DIV>
-			<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg">{{_('Today')}}</DIV>
+    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1  localetext">{{_("Today's Activity")}}</DIV>
+			<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Today')}}</DIV>
 
-    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">{{_('Previous Activity Start Time')}}</DIV>
-    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">{{_('Previous Activity End Time')}}</DIV>
-    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">{{_('Current Activity Start Time')}}</DIV>
+    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Previous Activity Start Time')}}</DIV>
+    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Previous Activity End Time')}}</DIV>
+    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Current Activity Start Time')}}</DIV>
 
-    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1 ">{{_('Current Activity Duration')}}</DIV>
-			<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg">{{_('Current')}}</DIV>
+    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1  localetext">{{_('Current Activity Duration')}}</DIV>
+			<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Current')}}</DIV>
 
-    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  center ">{{_('Activity permitted')}}</DIV>
-    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  hidden-lg center ">{{_('OK?')}}</DIV>
+    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  center  localetext">{{_('Activity permitted')}}</DIV>
+    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  hidden-lg center  localetext">{{_('OK?')}}</DIV>
     		<!--<DIV CLASS="col-xs-1 hidden-sm hidden-md hidden-lg"></DIV> -->
-    		<DIV CLASS="hidden-xs col-sm-5  col-md-3 col-lg-4">{{_('Reasons')}}</DIV>
+    		<DIV CLASS="hidden-xs col-sm-5  col-md-3 col-lg-4 localetext">{{_('Reasons')}}</DIV>
     	</DIV>
 		{% for username, user_info in user_infos.items() %}
 	    	{% call accordion.begin() %}status_{{username}}_summary{% endcall %}	    			        
@@ -66,7 +69,7 @@
 		        			{{ username }}
 		        		{{ accordion.toggle_end() }}
 	        		</DIV>		        		
-		    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 ">{{ _(user_info.active_rule_set.label) }}</DIV>
+		    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{ _(user_info.active_rule_set.label) }}</DIV>
 
 		    		<DIV CLASS="col-xs-2  col-sm-1  col-md-2  col-lg-1 ">
 						{{ user_info.active_stat_info.todays_activity_duration|seconds_to_string }}
@@ -95,7 +98,7 @@
 		    				<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_denied.png') }}" WIDTH="16">
 		    			{% endif %}
 		    		</DIV>
-		    		<DIV CLASS="col-xs-12 col-sm-5  col-md-3  col-lg-4">
+		    		<DIV CLASS="col-xs-12 col-sm-5  col-md-3  col-lg-4 localetext">
 						<UL>
 			    		{% for rule_template in user_info.active_rule_result_info.applying_rule_text_templates %}
 			    			<LI>{{ _(rule_template[0])|format(rule_template[1]) }}</LI>
@@ -107,20 +110,20 @@
 			{% call accordion.details() %}status_{{username}}_summary{% endcall %}
 		    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
 		    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
-		    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 ">{{_('Day')}}</DIV>
-		    		<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 ">{{_('Active Time')}}</DIV>
-		    		<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg ">{{_('Active')}}</DIV>
-		    		<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 ">{{_('Activity Start')}}</DIV>
-		    		<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg ">{{_('Start')}}</DIV>
-		    		<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 ">{{_('Activity End')}}</DIV>
-		    		<DIV CLASS="hidden-xs col-sm-1  hidden-md hidden-lg ">{{_('End')}}</DIV>
-		    		<DIV CLASS="col-xs-5  col-sm-6  col-md-6  col-lg-7 ">{{_('Host(#procs)')}}</DIV>
+		    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('Day')}}</DIV>
+		    		<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Active Time')}}</DIV>
+		    		<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Active')}}</DIV>
+		    		<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Activity Start')}}</DIV>
+		    		<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Start')}}</DIV>
+		    		<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Activity End')}}</DIV>
+		    		<DIV CLASS="hidden-xs col-sm-1  hidden-md hidden-lg localetext">{{_('End')}}</DIV>
+		    		<DIV CLASS="col-xs-5  col-sm-6  col-md-6  col-lg-7  localetext">{{_('Host(#procs)')}}</DIV>
 		    	</DIV>
 		    	{% for i in range (0, user_info.max_lookback_in_days) %}
 	    			{% call accordion.begin() %}status_{{username}}_{{i}}{% endcall %}			    			        
 			    		<DIV CLASS="row ROWLEVEL_3">
 			    			<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
-			    			<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1">
+			    			<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 localetext">
 								<!-- {{ _('Show activity times') }} -->
 					    		{% call accordion.toggle_begin(tooltip='Show activity times') %}status_{{username}}_{{i}}{% endcall %}
 									{{ _(user_info.history_labels[i][0])|format(user_info.history_labels[i][1]) }}

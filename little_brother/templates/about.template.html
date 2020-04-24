@@ -18,8 +18,10 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -->
 
-
 <HTML>
+{% import 'helper.macros.html' as helper %}
+  {{ helper.locale_font(rel_font_size) }}
+
   <META http-equiv="Content-Type" content="text/html;charset=UTF-9">
   <HEAD>
     <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -48,39 +50,39 @@
     <DIV CLASS="container STANDARD_TABLE condensed-container">
 
     	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-    		<DIV CLASS="col-xs-3">{{_('Setting')}}</DIV>
-    		<DIV CLASS="col-xs-9">{{_('Value')}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_('Setting')}}</DIV>
+    		<DIV CLASS="col-xs-9 localetext">{{_('Value')}}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_('Repository')}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_('Repository')}}</DIV>
 			<DIV CLASS="col-xs-9"><A HREF="{{ settings.url }}">{{ extended_settings.display_url }}</A></DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_('Version')}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_('Version')}}</DIV>
     		<DIV CLASS="col-xs-9">{{ settings.version }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">Debian {{_('Package Revision')}}</DIV>
+			<DIV CLASS="col-xs-3 localetext"><SPAN CLASS="nonlocaletext">Debian</SPAN> {{_('Package Revision')}}</DIV>
     		<DIV CLASS="col-xs-9">{{ extended_settings.debian_package_revision }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_('Git Commit ID')}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_('Git Commit ID')}}</DIV>
     		<DIV CLASS="col-xs-9">{{ git_metadata.commit_id }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_('Git Branch Name')}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_('Git Branch Name')}}</DIV>
     		<DIV CLASS="col-xs-9">{{ git_metadata.branch }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_("Git Author's Name")}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_("Git Author's Name")}}</DIV>
     		<DIV CLASS="col-xs-9">{{ git_metadata.author_name }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_("Git Author's Email Address")}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_("Git Author's Email Address")}}</DIV>
     		<DIV CLASS="col-xs-9">{{ git_metadata.author_email }}</DIV>
     	</DIV>
     	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3">{{_("Supported Languages")}}</DIV>
+    		<DIV CLASS="col-xs-3 localetext">{{_("Supported Languages")}}</DIV>
     		<DIV CLASS="col-xs-9">
 				<UL>
 					{% for language in languages %}

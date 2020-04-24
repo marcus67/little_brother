@@ -46,6 +46,10 @@ LANGUAGES = {
     'bn': 'বাংলা'
 }
 
+LOCALE_REL_FONT_SIZES = {
+    'bn': 125     # scale Bangla fonts to 125% for readability
+}
+
 SECTION_NAME = "StatusServer"
 
 HEALTH_VIEW_NAME = "health"
@@ -143,10 +147,16 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['boolean_to_string'] = self.format_boolean
         self._app.jinja_env.filters['format'] = self.format
         self._app.jinja_env.filters['format_babel_date'] = self.format_babel_date
+        self._app.jinja_env.filters['invert'] = self.invert
+
 
         self._babel = flask_babel.Babel(self._app)
         self._babel.localeselector(self.get_request_locale)
         gettext.bindtextdomain("messages", "little_brother/translations")
+
+    def invert(self, rel_font_size):
+
+        return str(int(1.0/float(rel_font_size)*10000.0))
 
     def measure(self, p_hostname, p_service, p_duration):
 
@@ -168,6 +178,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
             page = flask.render_template(
                 LOGIN_HTML_TEMPLATE,
+                rel_font_size=self.get_rel_font_size(),
                 authentication=self.get_authenication_info(),
                 navigation={
                     'current_view': ADMIN_VIEW_NAME},
@@ -268,12 +279,20 @@ class StatusServer(base_web_server.BaseWebServer):
 
             return flask.render_template(
                 ADMIN_HTML_TEMPLATE,
+                rel_font_size=self.get_rel_font_size(),
                 admin_infos=admin_infos,
                 authentication=self.get_authenication_info(),
                 forms=forms,
                 navigation={
                     'current_view': ADMIN_VIEW_NAME},
             )
+
+    def get_rel_font_size(self):
+
+        rel_font_size = LOCALE_REL_FONT_SIZES.get(self.get_request_locale())
+        if not rel_font_size:
+            rel_font_size = 100
+        return rel_font_size
 
     @BLUEPRINT_ADAPTER.route_method("/status", endpoint="index")
     def index_view(self):
@@ -284,6 +303,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
             page = flask.render_template(
                 INDEX_HTML_TEMPLATE,
+                rel_font_size=self.get_rel_font_size(),
                 user_infos=self._appcontrol.get_user_infos(),
                 app_control_config=self._appcontrol._config,
                 authentication=self.get_authenication_info(),
@@ -302,6 +322,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
             page = flask.render_template(
                 ABOUT_HTML_TEMPLATE,
+                rel_font_size=self.get_rel_font_size(),
                 user_infos=self._appcontrol.get_user_infos(),
                 settings=settings.settings,
                 extended_settings=settings.extended_settings,

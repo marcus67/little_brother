@@ -13,6 +13,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Added Bangla localization (locale "bn")
 *   Added two Prometheus metrics to provide version information and uptime
 *   Updated Grafana dashboard 
+*   Optional font scaling depending on request locale (for e.g. Bangla)
 
 ## Version 0.2.1 Revision 61 (April 18th, 2020)
 

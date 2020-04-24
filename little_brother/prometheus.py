@@ -101,6 +101,8 @@ class PrometheusClient(object):
             prometheus_client.REGISTRY.unregister(self._counter_forced_logouts)
             prometheus_client.REGISTRY.unregister(self._gauge_active_users)
             prometheus_client.REGISTRY.unregister(self._gauge_device_moving_average_response_time)
+            prometheus_client.REGISTRY.unregister(self._gauge_uptime)
+            prometheus_client.REGISTRY.unregister(self._info_system)
 
         def set_user_active(self, p_username, p_is_active):
 

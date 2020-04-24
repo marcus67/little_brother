@@ -43,10 +43,17 @@
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-warning fade in">
+        <div class="alert alert-warning fade in localetext">
             {{ _(message) }}
         </div>
         {% endfor %}
       {% endif %}
     {% endwith %}
+{% endmacro %}
+
+{% macro locale_font( rel_font_size ) %}
+<style>
+   .localetext { font-size: {{ rel_font_size }}%; }
+   .nonlocaletext { font-size: {{ rel_font_size|invert }}%; }
+</style>
 {% endmacro %}
