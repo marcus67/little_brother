@@ -36,7 +36,7 @@ from python_base_app import tools
 LANGUAGES = {
     'en': 'English',
     'de': 'Deutsch',
-#    'fr': 'Français',
+    'fr': 'Français',
     'it': 'Italiano',
     'nl': 'Nederlands',
     'fi': 'Suomen kieli',

@@ -11,6 +11,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Added Russian localization (locale "ru")
 *   Added Japanese localization (locale "ja")
 *   Added Bangla localization (locale "bn")
+*   Added French localization (locale "fr")
 *   Added two Prometheus metrics to provide version information and uptime
 *   Updated Grafana dashboard 
 *   Optional font scaling depending on request locale (for e.g. Bangla)

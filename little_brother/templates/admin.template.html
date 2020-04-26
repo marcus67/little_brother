@@ -97,7 +97,7 @@
 				    		<DIV CLASS="row ROWLEVEL_3">
 				    			<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 "></DIV>
 				    			<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg localetext">
-									<!-- {{ _('Show overrides for day') }}-->
+									<!-- { { _('Show overrides for day') }}-->
 				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
         								<!-- { { _(day_info.short_label[0])|format(day_info.short_label[1]) }} -->
         								{{ day_info.reference_date|format_babel_date(_(day_info.short_format)) }}
