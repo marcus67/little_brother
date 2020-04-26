@@ -427,7 +427,7 @@ the following languages are supported or currently in preparation (in the order 
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Available      |  Isakkii Kosonen        |
 | ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Available      |  Albano Battistella     |
 | ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Available      |  Selay Dogan            |
-| ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Available      |  Jewgenij Moldawski     |
+| ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Available      |  J. Moldawski           |
 | ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Available      |  Arik M.                |
 | ![Flag Bangladesh](doc/bangladesh-flag-icon-32.png)            | Bangla        | bn     | Available      |  N.N.                   |
 | ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | In preparation |  N.N.                   |
