@@ -4,8 +4,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Project-Id-Version: LittleBrother\n"
+"Report-Msgid-Bugs-To: little-brother@web.de\n"
 "POT-Creation-Date: 2020-04-18 12:22+0200\n"
 "PO-Revision-Date: 2020-04-26 12:11+0200\n"
 "Language: fr\n"

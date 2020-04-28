@@ -1,15 +1,15 @@
-# Russian translations for PROJECT.
+# Russian translations for LittleBrother.
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# J. Moldawski, 2020.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Project-Id-Version: LittleBrother\n"
+"Report-Msgid-Bugs-To: little-brother@web.de\n"
 "POT-Creation-Date: 2020-04-18 12:22+0200\n"
 "PO-Revision-Date: 2020-04-20 09:53+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: J. Moldawski\n"
 "Language: ru\n"
 "Language-Team: ru <LL@li.org>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -218,11 +218,11 @@ msgstr "воскресенье"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
 msgid "On"
-msgstr "включено"
+msgstr "да"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
 msgid "Off"
-msgstr "выключено"
+msgstr "нет"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:35
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
@@ -285,7 +285,7 @@ msgstr "Показать конфигурацию ближайших дней"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:66
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
 msgid "Today's Activity"
-msgstr "Произошедшее за сегодня"
+msgstr "Сегодняшнее время пользования"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:74
 msgid "Save"
@@ -303,15 +303,15 @@ msgstr "Контекст"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:82
 msgid "Min Time of Day"
-msgstr "Минимальное время дня"
+msgstr "Разрешно от"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:83
 msgid "Max Time of Day"
-msgstr "Махимальние время дня"
+msgstr "Разрешено до"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
 msgid "Time per Day"
-msgstr "Время в день"
+msgstr "Время пользования за день"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
 msgid "Minimum Break"
@@ -319,7 +319,7 @@ msgstr "Минимальная пауза"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
 msgid "Max Duration"
-msgstr "Максимальная продолжительность"
+msgstr "Максимальное пользование"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:90
 msgid "Free Play"
@@ -331,7 +331,7 @@ msgstr "Показать измененные значения для дня"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
 msgid "override"
-msgstr "изменяют"
+msgstr "изменение"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:35
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
@@ -425,7 +425,7 @@ msgstr "Администратор"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
 msgid "Signed in as"
-msgstr "В системе под именем"
+msgstr "Пользователь:"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
 msgid "Logout"
