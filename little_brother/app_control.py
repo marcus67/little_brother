@@ -23,11 +23,6 @@ import queue
 import re
 import socket
 
-from python_base_app import configuration
-from python_base_app import log_handling
-from python_base_app import tools
-from python_base_app import view_info
-
 from little_brother import admin_event
 from little_brother import constants, process_statistics
 from little_brother import german_vacation_context_rule_handler
@@ -37,7 +32,10 @@ from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
-
+from python_base_app import configuration
+from python_base_app import log_handling
+from python_base_app import tools
+from python_base_app import view_info
 
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
@@ -46,7 +44,7 @@ DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_CHECK_INTERVAL = 5  # seconds
 DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_LOCALE = "en_US"
-DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60 # seconds
+DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
 
 SECTION_NAME = "AppControl"
 
@@ -82,14 +80,14 @@ class AppControl(object):
 
     def __init__(self, p_config,
                  p_debug_mode,
-                 p_process_handlers,
-                 p_device_handler,
-                 p_persistence,
-                 p_rule_handler,
-                 p_notification_handlers,
-                 p_master_connector,
                  p_rule_set_configs,
-                 p_prometheus_client,
+                 p_process_handlers=None,
+                 p_device_handler=None,
+                 p_persistence=None,
+                 p_rule_handler=None,
+                 p_notification_handlers=None,
+                 p_master_connector=None,
+                 p_prometheus_client=None,
                  p_login_mapping=None):
 
         if p_login_mapping is None:
@@ -142,8 +140,6 @@ class AppControl(object):
 
     def get_number_of_monitored_users_function(self):
         return lambda: len(self._usernames)
-
-
 
     @property
     def check_interval(self):
@@ -275,8 +271,6 @@ class AppControl(object):
 
             else:
                 self._prometheus_client.set_number_of_monitored_devices(0)
-
-
 
     def check(self):
 
@@ -795,7 +789,6 @@ class AppControl(object):
 
         return current_user_status
 
-
     def process_rules(self, p_reference_time):
 
         fmt = "Processing rules START..."
@@ -892,7 +885,6 @@ class AppControl(object):
 
                 if self._prometheus_client is not None:
                     self._prometheus_client.set_user_active(p_username=username, p_is_active=user_active)
-
 
         fmt = "Processing rules END..."
         self._logger.debug(fmt)
@@ -1087,20 +1079,20 @@ class AppControl(object):
                                                   p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
 
                     if reference_date == datetime.date.today():
-#                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day": reference_date})
-#                        day_info.short_label = (_('Today', 'short'), {"day": reference_date})
-                         day_info.long_format = _("'Today ('EEE')'", 'long')
-                         day_info.short_format = _("'Today'", 'short')
+                        #                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day": reference_date})
+                        #                        day_info.short_label = (_('Today', 'short'), {"day": reference_date})
+                        day_info.long_format = _("'Today ('EEE')'", 'long')
+                        day_info.short_format = _("'Today'", 'short')
 
                     elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-#                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day": reference_date})
-#                        day_info.short_label = (_('Tomorrow', 'short'), {"day": reference_date})
+                        #                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day": reference_date})
+                        #                        day_info.short_label = (_('Tomorrow', 'short'), {"day": reference_date})
                         day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
                         day_info.short_format = _("'Tomorrow'", 'short')
 
                     else:
-#                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day": reference_date})
-#                        day_info.short_label = (_("{day:%%A}"), {"day": reference_date})
+                        #                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day": reference_date})
+                        #                        day_info.short_label = (_("{day:%%A}"), {"day": reference_date})
                         day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
                         day_info.short_format = _("EEE")
 

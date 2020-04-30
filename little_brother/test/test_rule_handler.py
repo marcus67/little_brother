@@ -26,6 +26,7 @@ from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
 from little_brother import process_statistics
+from little_brother import process_info
 from python_base_app import configuration
 from python_base_app.test import base_test
 
@@ -95,43 +96,53 @@ class TestRuleHandler(base_test.BaseTestCase):
         return default_config
 
     @staticmethod
-    def create_dummy_ruleset_configs():
+    def create_dummy_ruleset_configs(p_create_complex_configs=True):
+
+        configs = []
+
         # DEFAULT
         default_config = TestRuleHandler.create_dummy_ruleset_config()
 
-        # VACATION
-        vacation_config = rule_handler.RuleSetConfigModel()
-        vacation_config.username = TEST_USER
-        vacation_config.priority = 2
-        vacation_config.context = german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME
-        vacation_config.context_details = "Nordrhein-Westfalen"
+        configs.append(default_config)
 
-        # WEEKEND
-        weekend_config = rule_handler.RuleSetConfigModel()
-        weekend_config.username = TEST_USER
-        weekend_config.priority = 3
-        weekend_config.context = simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME
-        weekend_config.context_details = simple_context_rule_handlers.WEEKDAY_PREDEFINED_DETAILS["weekend"]
+        if p_create_complex_configs:
+            # VACATION
+            vacation_config = rule_handler.RuleSetConfigModel()
+            vacation_config.username = TEST_USER
+            vacation_config.priority = 2
+            vacation_config.context = german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME
+            vacation_config.context_details = "Nordrhein-Westfalen"
 
-        return {TEST_USER: [default_config, weekend_config, vacation_config]}
+            configs.append(vacation_config)
+
+            # WEEKEND
+            weekend_config = rule_handler.RuleSetConfigModel()
+            weekend_config.username = TEST_USER
+            weekend_config.priority = 3
+            weekend_config.context = simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME
+            weekend_config.context_details = simple_context_rule_handlers.WEEKDAY_PREDEFINED_DETAILS["weekend"]
+
+            configs.append(weekend_config)
+
+        return {TEST_USER: configs}
 
     @staticmethod
-    def create_dummy_rule_handler(p_ruleset_configs):
+    def create_dummy_rule_handler(p_ruleset_configs, p_create_complex_handlers=True):
         default_context_rule_handler = simple_context_rule_handlers.DefaultContextRuleHandler()
-        weekend_context_rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
-        vacation_context_rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
         rulehandler_config = rule_handler.RuleHandlerConfigModel()
 
         a_rule_handler = rule_handler.RuleHandler(p_config=rulehandler_config, p_rule_set_configs=p_ruleset_configs)
         a_rule_handler.register_context_rule_handler(p_context_rule_handler=default_context_rule_handler,
                                                      p_default=True)
-        a_rule_handler.register_context_rule_handler(p_context_rule_handler=weekend_context_rule_handler)
-        a_rule_handler.register_context_rule_handler(p_context_rule_handler=vacation_context_rule_handler)
+        if p_create_complex_handlers:
+            weekend_context_rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+            vacation_context_rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
+            a_rule_handler.register_context_rule_handler(p_context_rule_handler=weekend_context_rule_handler)
+            a_rule_handler.register_context_rule_handler(p_context_rule_handler=vacation_context_rule_handler)
 
         return a_rule_handler
 
     def test_min_break_time(self):
-
 
         reference_time = datetime.datetime.utcnow()
         rule_set = TestRuleHandler.create_dummy_ruleset_config()
@@ -248,6 +259,260 @@ class TestRuleHandler(base_test.BaseTestCase):
                                                  p_rule_result_info=rule_result_info)
         self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
         self.assertEqual(rule_result_info.args['break_minutes_left'], 2)
+
+    def test_max_session_duration(self):
+
+        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+                                                        p_create_complex_handlers=False)
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        activity_start = reference_time + datetime.timedelta(seconds=-1200)
+
+        rule_set.max_activity_duration = 1199
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        a_process_info = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_pid=PID,
+                                                  p_start_time=activity_start)
+        stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
+
+        # Check that playing is allowed up to the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
+                                               p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION,
+                         rule_handler.RULE_ACTIVITY_DURATION)
+
+        rule_set.max_activity_duration = 1201
+
+        # Check that playing is allowed after the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
+                                               p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION, 0)
+
+    def test_max_session_duration_with_downtime(self):
+
+        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+                                                        p_create_complex_handlers=False)
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        activity_start = reference_time + datetime.timedelta(seconds=-1200)
+
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        a_process_info = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_pid=PID,
+                                                  p_start_time=activity_start,
+                                                  p_downtime=300)
+        stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
+
+        # Check that playing is allowed up to the maximum session time
+        rule_set.max_activity_duration = 899
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
+                                               p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION,
+                         rule_handler.RULE_ACTIVITY_DURATION)
+
+        rule_set.max_activity_duration = 901
+
+        # Check that playing is allowed after the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
+                                               p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION, 0)
+
+    def test_max_session_duration_with_downtime(self):
+
+        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+                                                        p_create_complex_handlers=False)
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        activity_start = reference_time + datetime.timedelta(seconds=-1200)
+
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        a_process_info = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_pid=PID,
+                                                  p_start_time=activity_start,
+                                                  p_downtime=300)
+        stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
+
+        # Check that playing is allowed up to the maximum session time
+        rule_set.max_activity_duration = 899
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
+                                               p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION,
+                         rule_handler.RULE_ACTIVITY_DURATION)
+
+        rule_set.max_activity_duration = 901
+
+        # Check that playing is allowed after the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
+                                               p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION, 0)
+
+    def test_max_time_per_day(self):
+
+        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+                                                        p_create_complex_handlers=False)
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        activity_start = reference_time + datetime.timedelta(seconds=-1200)
+
+        activity = process_statistics.Activity(p_start_time=activity_start)
+
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        stat_info.current_activity = activity
+
+        # Check that playing is allowed up to the maximum session time
+        rule_set.max_time_per_day = 1199
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
+                                          p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
+                         rule_handler.RULE_TIME_PER_DAY)
+
+        rule_set.max_time_per_day = 1201
+
+        # Check that playing is allowed after the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
+                                          p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY, 0)
+
+    def test_max_time_per_day_with_downtime(self):
+
+        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+                                                        p_create_complex_handlers=False)
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        activity_start = reference_time + datetime.timedelta(seconds=-1200)
+
+
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        a_process_info = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_pid=PID,
+                                                  p_start_time=activity_start,
+                                                  p_downtime=300)
+        stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
+
+        # Check that playing is allowed up to the maximum session time
+        rule_set.max_time_per_day = 899
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
+                                          p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
+                         rule_handler.RULE_TIME_PER_DAY)
+
+        rule_set.max_time_per_day = 901
+
+        # Check that playing is allowed after the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
+                                          p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY, 0)
+
+    def test_max_time_per_day_with_downtime_and_previous_activity(self):
+
+        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
+        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+                                                        p_create_complex_handlers=False)
+
+        reference_time = datetime.datetime.utcnow()
+        rule_set = TestRuleHandler.create_dummy_ruleset_config()
+
+        activity_start = reference_time + datetime.timedelta(seconds=-2000)
+        activity_end = reference_time + datetime.timedelta(seconds=-1700)
+
+
+        stat_info = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=reference_time,
+                                                             p_min_activity_duration=MIN_ACTIVITY_DURATION,
+                                                             p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
+
+        a_process_info = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_pid=PID,
+                                                  p_start_time=activity_start,
+                                                  p_downtime=50)
+        stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
+
+        a_process_info.end_time = activity_end
+
+        stat_info.add_process_end(p_process_info=a_process_info, p_end_time=activity_end)
+
+
+        activity_start = reference_time + datetime.timedelta(seconds=-500)
+
+        a_process_info = process_info.ProcessInfo(p_hostname=HOSTNAME, p_username=USERNAME, p_pid=PID,
+                                                  p_start_time=activity_start,
+                                                  p_downtime=100)
+        stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
+
+
+        # Check that playing is allowed up to the maximum session time
+        rule_set.max_time_per_day = 649
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
+                                          p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
+                         rule_handler.RULE_TIME_PER_DAY)
+
+        rule_set.max_time_per_day = 651
+
+        # Check that playing is allowed after the maximum session time
+        rule_result_info = rule_handler.RuleResultInfo()
+
+        a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
+                                          p_rule_result_info=rule_result_info)
+
+        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY, 0)
 
 
 class TestRuleOverride(base_test.BaseTestCase):

@@ -61,7 +61,7 @@ class Activity(object):
 
     def current_duration(self, p_reference_time):
 
-        return max((p_reference_time - self.start_time).total_seconds() -self.downtime, 0)
+        return max((p_reference_time - self.start_time).total_seconds() - self.downtime, 0)
 
     def __str__(self):
 
@@ -191,13 +191,14 @@ class ProcessStatisticsInfo(object):
 
         self.active_processes = self.active_processes - 1
 
-        login_date = self.current_activity.start_time.date()
-        lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
 
         if self.active_processes == 0:
             if p_process_info.end_time is not None:
                 self.current_activity.set_end_time(p_end_time=p_end_time)
                 self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
+
+                login_date = self.current_activity.start_time.date()
+                lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
 
                 if lookback <= self.max_lookback_in_days:
                     self.day_statistics[lookback].add_activity(self.current_activity)
@@ -296,11 +297,6 @@ class ProcessStatisticsInfo(object):
 
         else:
             return self.current_activity.downtime
-
-    # @property
-    # def seconds_in_last_activity(self):
-    #
-    #     return self.last_activity.duration
 
     def __str__(self):
 

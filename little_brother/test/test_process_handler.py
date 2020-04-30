@@ -18,27 +18,27 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
-import datetime
 import copy
+import datetime
+import unittest
 
+from little_brother import admin_event
+from little_brother import process_handler
+from little_brother.test import dummy_process_handler
+from little_brother.test import test_data
 from python_base_app.test import base_test
 
-from little_brother import process_handler
-from little_brother import admin_event
-from little_brother.test import test_data
-from little_brother.test import dummy_process_handler
+DOWNTIME = 12.3
 
 
 class TestProcessHandler(base_test.BaseTestCase):
 
-    def get_process_handler(self):
-
+    @staticmethod
+    def get_process_handler():
         config = process_handler.ProcessHandlerConfigModel(p_section_name="ProcessHandler")
         return dummy_process_handler.DummyProcessHandler(p_config=config)
 
     def test_create_admin_event_process_start_from_pinfo(self):
-
         pinfo = test_data.PINFO_1
 
         reference_time = datetime.datetime.now()
@@ -73,7 +73,6 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertLess(diff_time, 0.01)
 
     def test_create_admin_event_process_end_from_pinfo(self):
-
         pinfo = test_data.PINFO_1
 
         reference_time = datetime.datetime.now()
@@ -104,10 +103,7 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertLess(diff_time, 0.01)
 
     def test_create_admin_event_process_downtime_from_pinfo(self):
-
         pinfo = test_data.PINFO_1
-
-        reference_time = datetime.datetime.now()
 
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_downtime_from_pinfo(
             p_pinfo=pinfo)
@@ -122,14 +118,12 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(pinfo.downtime, an_admin_event.downtime)
 
     def test_can_kill_processes(self):
-
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
 
         self.assertFalse(a_process_handler.can_kill_processes())
 
     def test_property_process_infos(self):
-
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
 
         process_infos = a_process_handler.process_infos
 
@@ -138,10 +132,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(0, len(process_infos))
 
     def test_handle_event_process_start(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -156,10 +149,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertIn(key, process_infos)
 
     def test_handle_event_process_end(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -187,10 +179,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(reference_time, pinfo.end_time)
 
     def test_handle_event_process_downtime(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -200,8 +191,6 @@ class TestProcessHandler(base_test.BaseTestCase):
         key = an_admin_event.get_key()
 
         self.assertIn(key, process_infos)
-
-        reference_time = datetime.datetime.now()
 
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_downtime_from_pinfo(
             p_pinfo=pinfo)
@@ -220,10 +209,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(pinfo.downtime, an_admin_event.downtime)
 
     def test_handle_event_process_end_invalid_pinfo(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_end_from_pinfo(
             p_pinfo=pinfo)
         returned_pinfo = a_process_handler.handle_event_process_end(p_event=an_admin_event)
@@ -236,12 +224,10 @@ class TestProcessHandler(base_test.BaseTestCase):
 
         self.assertNotIn(key, process_infos)
 
-
     def test_handle_event_process_downtime_invalid_pinfo(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_downtime_from_pinfo(
             p_pinfo=pinfo)
         (returned_pinfo, handled) = a_process_handler.handle_event_process_downtime(p_event=an_admin_event)
@@ -255,12 +241,10 @@ class TestProcessHandler(base_test.BaseTestCase):
 
         self.assertNotIn(key, process_infos)
 
-
     def test_handle_event_process_start_same_event(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -278,10 +262,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(1, len(process_infos))
 
     def test_handle_event_process_start_different_events(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -309,10 +292,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertIn(key, process_infos)
 
     def test_handle_event_downtime(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -327,19 +309,17 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertIn(key, process_infos)
 
     def test_handle_event_kill_process(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_kill_process(p_event=an_admin_event)
 
     def test_add_historic_process(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         a_process_handler.add_historic_process(p_process_info=pinfo)
 
         process_infos = a_process_handler.process_infos
@@ -352,10 +332,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertIn(key, process_infos)
 
     def test_get_artificial_termination_events(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -383,10 +362,9 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(termination_event.pid, an_admin_event.pid)
 
     def test_get_artificial_activation_events(self):
-
         pinfo = test_data.PINFO_1
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
@@ -413,12 +391,10 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(admin_event.EVENT_TYPE_PROCESS_START, activation_event.event_type)
         self.assertEqual(activation_event.pid, an_admin_event.pid)
 
-
     def test_get_downtime_corrected_admin_events(self):
-
         pinfo1 = copy.copy(test_data.PINFO_1)
 
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
             p_pinfo=pinfo1)
         an_admin_event.downtime = 0
@@ -437,8 +413,6 @@ class TestProcessHandler(base_test.BaseTestCase):
 
         self.assertIsNotNone(process_infos)
         self.assertEqual(2, len(process_infos))
-
-        DOWNTIME=12.3
 
         corrected_events = a_process_handler.get_downtime_corrected_admin_events(p_downtime=DOWNTIME)
         self.assertIsNotNone(corrected_events)
@@ -459,13 +433,11 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(DOWNTIME, pinfo1.downtime)
         self.assertEqual(0, pinfo2.downtime)
 
-
-
     def test_scan_processes(self):
-
-        a_process_handler = self.get_process_handler()
+        a_process_handler = TestProcessHandler.get_process_handler()
         a_process_handler.scan_processes(p_reference_time=None, p_host_name=None,
                                          p_login_mapping=None, p_server_group=None, p_process_regex_map=None)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,6 +15,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Added two Prometheus metrics to provide version information and uptime
 *   Updated Grafana dashboard 
 *   Optional font scaling depending on request locale (for e.g. Bangla)
+*   Closes #79, see [here](https://github.com/marcus67/little_brother/issues/79)
+*   Add test cases for classes `RuleHandler` and `AppControl`
 
 ## Version 0.2.1 Revision 61 (April 18th, 2020)
 

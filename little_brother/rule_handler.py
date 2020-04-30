@@ -341,7 +341,9 @@ class RuleHandler(object):
             return
 
         if p_rule_set.max_time_per_day is not None:
-            if p_stat_info.todays_activity_duration >= p_rule_set.max_time_per_day:
+            todays_activity_duration = p_stat_info.todays_activity_duration
+
+            if todays_activity_duration >= p_rule_set.max_time_per_day:
                 if p_rule_set.max_time_per_day == 0:
                     p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_DAY_BLOCKED
                     p_rule_result_info.applying_rule_text_templates.append(
@@ -358,7 +360,7 @@ class RuleHandler(object):
 
             if p_rule_set.max_time_per_day > 0:
                 time_left_in_minutes = int(
-                    (p_rule_set.max_time_per_day - p_stat_info.todays_activity_duration + 30) / 60)
+                    (p_rule_set.max_time_per_day - todays_activity_duration + 30) / 60)
                 p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
                 if time_left_in_minutes <= self._config.warning_before_logout:
