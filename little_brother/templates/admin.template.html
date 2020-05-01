@@ -69,7 +69,7 @@
 							{{_("Today's Activity")}}: <SPAN CLASS="nonlocaletext">{{ admin_info.user_info.active_stat_info.todays_activity_duration|seconds_to_string }}/{{ admin_info.day_infos[0].effective_rule_set.max_time_per_day|seconds_to_string }}</SPAN>
 							<UL>
 							{% for rule_template in admin_info.user_info.active_rule_result_info.applying_rule_text_templates %}
-								<LI>{{ _(rule_template[0])|format(rule_template[1]) }}</LI>
+								<LI>{{ _(rule_template[0])|format(rule_template[1])|safe }}</LI>
 							{% endfor %}
 							</UL>
 						</DIV>
@@ -100,13 +100,13 @@
 									<!-- { { _('Show overrides for day') }}-->
 				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
         								<!-- { { _(day_info.short_label[0])|format(day_info.short_label[1]) }} -->
-        								{{ day_info.reference_date|format_babel_date(_(day_info.short_format)) }}
+        								{{ day_info.reference_date|format_babel_date(_(day_info.short_format))|safe }}
 				        			{{ accordion.toggle_end() }}
 					    		</DIV>
 				    			<DIV CLASS="hidden-xs col-sm-2 col-md-2 localetext">
 				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
         								<!-- { { _(day_info.label[0])|format(day_info.label[1]) }} -->
-        								{{ day_info.reference_date|format_babel_date(_(day_info.long_format)) }}
+        								{{ day_info.reference_date|format_babel_date(_(day_info.long_format))|safe }}
 				        			{{ accordion.toggle_end() }}
 					    		</DIV>
 					    		<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT localetext">{{ _(day_info.rule_set.label) }}</DIV>

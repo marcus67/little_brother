@@ -429,7 +429,7 @@ the following languages are supported or currently in preparation (in the order 
 | ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Available      |  Selay Dogan            |
 | ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Available      |  J. Moldawski           |
 | ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Available      |  Arik M.                |
-| ![Flag Bangladesh](doc/bangladesh-flag-icon-32.png)            | Bangla        | bn     | Available      |  N.N.                   |
+| ![Flag Bangladesh](doc/bangladesh-flag-icon-32.png)            | Bangla        | bn     | Available      |  Rownak Jyoti Zaman     |
 | ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | In preparation |  N.N.                   |
 | ![Flag Thailand](doc/thailand-flag-icon-32.png)                | Thai          | th     | In preparation |  N.N.                   |
 | ![Flag Lithuania](doc/lithuania-flag-icon-32.png)              | Lithuanian    | lt     | In preparation |  N.N.                   |

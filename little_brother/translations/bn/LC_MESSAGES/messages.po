@@ -1,15 +1,15 @@
-# Bangla translations for PROJECT.
+# Bangla translations for LittleBrother.
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR Rownak Jyoti Zaman <jyotizaman@yahoo.com>, 2020.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Project-Id-Version: LittleBrother\n"
+"Report-Msgid-Bugs-To: little-brother@web.de\n"
 "POT-Creation-Date: 2020-04-18 12:22+0200\n"
 "PO-Revision-Date: 2020-04-20 10:00+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Rownak Jyoti Zaman <jyotizaman@yahoo.com>\n"
 "Language: bn\n"
 "Language-Team: bn <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -20,11 +20,11 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:80
 msgid "username '{username}' not specified"
-msgstr " ব্যবহারকারীর নাম '{username}' নেই"
+msgstr "ব্যবহারকারীর নাম '{username}' নেই"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:88
 msgid "username '{username}' not being monitored"
-msgstr " ব্যবহারকারীর নাম '{username}' লক্ষ্য রাখা হচ্ছে না"
+msgstr "ব্যবহারকারীর নাম '{username}' নজর রাখা হচ্ছে না"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
 msgid "{days} days ago"
@@ -60,7 +60,7 @@ msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
 msgstr ""
-"{user}, আজ তোমার কম্পিউটার ব্যবহারের কোন সময় নেই।\n"
+"{user}, আজ তোমার কম্পিউটার ব্যবহারের আর কোন সময় বাকী নেই।\n"
 "তোমাকে লগ আউট করা হচ্ছে।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
@@ -68,7 +68,7 @@ msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr ""
-"{user}, কম্পিউটার ব্যবহারের এখন সময় হয়নি।\n"
+"{user}, কম্পিউটার ব্যবহারের এখনো সময় হয়নি।\n"
 "তোমাকে লগ আউট করা হচ্ছে।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:163
@@ -76,7 +76,7 @@ msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr ""
-"{user}, কম্পিউটার ব্যবহারের জন্য বেশী দেরী হয়ে গেছে।\n"
+"{user}, কম্পিউটার ব্যবহারের সময় পার হয়ে গেছে।\n"
 "তোমাকে লগ আউট করা হচ্ছে।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
@@ -85,7 +85,7 @@ msgid ""
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user}, {minutes_left_before_logout} মিনিটের মধ্যে আর"
+"{user}, {minutes_left_before_logout} মিনিটের পর আর"
 "কম্পিউটার ব্যবহার করা যাবে না।\n"
 "প্লিজ, লগ আউট করো।"
 
@@ -123,7 +123,7 @@ msgid ""
 msgstr ""
 "হ্যালো {user}, তোমার এই সেশনে খেলার জন্য {minutes_left_in_session} "
 "মিনিট\n"
-"  বাকী আছে।"
+"বাকী আছে।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:173
 msgid "Hello {user}, you have unlimited playtime in this session."
@@ -135,7 +135,7 @@ msgstr "'আজ ('EEE')'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
 msgid "'Today'"
-msgstr " 'আজ' "
+msgstr "'আজ'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1089
 msgid "'Tomorrow ('EEE')'"
@@ -147,7 +147,7 @@ msgstr "''আগামীকাল'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1095
 msgid "yyyy-MM-dd' ('EEE')'"
-msgstr "বছর-মাস-দিন' ('EEE')'"
+msgstr "'<span class=\"nonlocaletext\">'dd-MM-yyyy'</span> ('EEE')'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
 msgid "EEE"
@@ -159,31 +159,31 @@ msgstr "ছুটি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
 msgid "No activity before {hh_mm} hours"
-msgstr " {hh_mm} ঘণ্টার আগে আর কিছু করতে পারবেনা।"
+msgstr "<span class=\"nonlocaletext\">{hh_mm}</span> ঘণ্টার আগে আর কিছু করতে পারবেনা।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
 msgid "No activity after {hh_mm} hours"
-msgstr " {hh_mm} ঘণ্টার পর আর কিছু করতে পারবেনা।"
+msgstr "<span class=\"nonlocaletext\">{hh_mm}</span> ঘণ্টার পর আর কিছু করতে পারবেনা।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:348
 msgid "Day blocked: no activity permitted"
-msgstr "অননুমোদিত দিনঃ কোন কাজ করা যাবেনা"
+msgstr "নিষিদ্ধ দিনঃ কোন কাজ করা যাবেনা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:354
 msgid "Activity limited to {hh_mm} per day"
-msgstr "প্রতিদিন কাজ {hh_mm} -এ সীমাবদ্ধ"
+msgstr "প্রতিদিন কাজ <span class=\"nonlocaletext\">{hh_mm}</span> -এ সীমাবদ্ধ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:380
 msgid "No activity exceeding {hh_mm}"
-msgstr "কোন কাজ {hh_mm}-এর বেশী হতে পারবেনা"
+msgstr "কোন কাজ <span class=\"nonlocaletext\">{hh_mm}</span>-এর বেশী হতে পারবেনা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:414
 msgid "Minimum break time {hh_mm} not reached"
-msgstr "ন্যুনতম বিরতি {hh_mm} এখনও শেষ হয়নি"
+msgstr "ন্যুনতম বিরতি <span class=\"nonlocaletext\">{hh_mm}</span> এখনও শেষ হয়নি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
 msgid "default"
-msgstr "ডিফল্ট"
+msgstr "চলতি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
 msgid "weekday"
@@ -191,7 +191,7 @@ msgstr "সপ্তাহের দিন"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
 msgid "weekend"
-msgstr "সপ্তাহান্ত ছুটি"
+msgstr "সপ্তাহ শেষে ছুটি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
 msgid "weekdays"
@@ -199,31 +199,31 @@ msgstr "কাজের দিন"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
 msgid "mondays"
-msgstr "সোমবার"
+msgstr "সব সোমবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
 msgid "tuesdays"
-msgstr "মঙ্গলবার"
+msgstr "সব মঙ্গলবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
 msgid "wednesdays"
-msgstr "বুধবার"
+msgstr "সব বুধবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
 msgid "thursdays"
-msgstr "বৃহস্পতিবার"
+msgstr "সব বৃহস্পতিবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
 msgid "fridays"
-msgstr "শুক্রবার"
+msgstr "সব শুক্রবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
 msgid "saturdays"
-msgstr "শনিবার"
+msgstr "সব শনিবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
 msgid "sundays"
-msgstr "রবিবার"
+msgstr "সব রবিবার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
 msgid "On"
@@ -244,7 +244,7 @@ msgstr "সেটিং"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:52
 msgid "Value"
-msgstr "ভ্যালু"
+msgstr "মান"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:55
 msgid "Repository"
@@ -308,7 +308,7 @@ msgstr "দিন"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:81
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:43
 msgid "Context"
-msgstr "প্রসঙ্গ"
+msgstr "বিষয়"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:82
 msgid "Min Time of Day"
@@ -316,7 +316,7 @@ msgstr "দিনের সর্বনিম্ন সময়"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:83
 msgid "Max Time of Day"
-msgstr "দিনের সর্বচ্চ সময়"
+msgstr "দিনের সর্বোচ্চ সময়"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
 msgid "Time per Day"
@@ -328,7 +328,7 @@ msgstr "সর্বনিম্ন বিরতি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
 msgid "Max Duration"
-msgstr "সর্বচ্চ সময়সীমা"
+msgstr "সর্বোচ্চ সময়সীমা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:90
 msgid "Free Play"
@@ -336,11 +336,11 @@ msgstr "ফ্রী খেলা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:97
 msgid "Show overrides for day"
-msgstr "দিনের জন্য অভাররাইড দেখাও"
+msgstr "দিনের জন্য ওভাররাইড দেখাও"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
 msgid "override"
-msgstr "অভাররাইড"
+msgstr "ওভাররাইড"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:35
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
@@ -369,7 +369,7 @@ msgstr "বর্তমান"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
 msgid "Activity permitted"
-msgstr "কাজ করা যাবে"
+msgstr "অনুমোদিত কাজ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
 msgid "OK?"
@@ -381,11 +381,11 @@ msgstr "কারণ সমুহ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:64
 msgid "Show durations of most recent days"
-msgstr "সাম্প্রতিক দিনগুলোর কাজের সময়সীমা দেখাও"
+msgstr " গতদিনগুলোর কাজের সময়সীমা দেখাও"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:111
 msgid "Active Time"
-msgstr "সক্রিয় সময়"
+msgstr "সক্রিয় থাকা সময়"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:112
 msgid "Active"
@@ -409,7 +409,7 @@ msgstr "শেষ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
 msgid "Host(#procs)"
-msgstr "হস্ট"
+msgstr "হোস্ট"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:124
 msgid "Show activity times"
@@ -434,7 +434,7 @@ msgstr "এডমিন"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
 msgid "Signed in as"
-msgstr "নামে সাইন ইন করো"
+msgstr "সাইন ইন করী নাম"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
 msgid "Logout"
@@ -446,4 +446,4 @@ msgstr "এই পাতায় লগ ইন করো"
 
 #: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:135
 msgid "Wrong login or password"
-msgstr "ভুল লগ ইন অথবা পাসওয়ার্ড"
+msgstr "লগ ইন অথবা পাসওয়ার্ড ভুল হয়েছে"
