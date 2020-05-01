@@ -414,7 +414,7 @@ class RuleHandler(object):
                 p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_MIN_BREAK
                 p_rule_result_info.applying_rule_text_templates.append(
                     (_("Minimum break time {hh_mm} not reached"),
-                     {"hh_mm": tools.get_duration_as_string(p_seconds=p_rule_set.min_break)})
+                     {"hh_mm": tools.get_duration_as_string(p_seconds=min_relative_break)})
                 )
                 p_rule_result_info.break_minutes_left = int(
                     (min_relative_break - seconds_since_last_activity + 30) / 60)

@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.2.1 Revision 62 (April XXX, 2020)
+## Version 0.2.2 Revision 62 (April XXX, 2020)
 
 *   Added Finnish localization (locale "nl")
 *   Added Turkish localization (locale "tr")
@@ -17,6 +17,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Optional font scaling depending on request locale (for e.g. Bangla)
 *   Closes #79, see [here](https://github.com/marcus67/little_brother/issues/79)
 *   Add test cases for classes `RuleHandler` and `AppControl`
+*   Closes #56, see [here](https://github.com/marcus67/little_brother/issues/56)
+*   Closes #74, see [here](https://github.com/marcus67/little_brother/issues/74)
 
 ## Version 0.2.1 Revision 61 (April 18th, 2020)
 

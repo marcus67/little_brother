@@ -18,7 +18,7 @@
 settings = {
     "name": "little-brother",
     "url": "https://github.com/marcus67/little_brother",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "",
     "author": "Marcus Rickert",
     "author_email": "little-brother@web.de",

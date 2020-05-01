@@ -191,7 +191,6 @@ class ProcessStatisticsInfo(object):
 
         self.active_processes = self.active_processes - 1
 
-
         if self.active_processes == 0:
             if p_process_info.end_time is not None:
                 self.current_activity.set_end_time(p_end_time=p_end_time)
@@ -200,10 +199,10 @@ class ProcessStatisticsInfo(object):
                 login_date = self.current_activity.start_time.date()
                 lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
 
-                if lookback <= self.max_lookback_in_days:
-                    self.day_statistics[lookback].add_activity(self.current_activity)
-
                 if self.current_activity.duration > self.min_activity_duration:
+                    if lookback <= self.max_lookback_in_days:
+                        self.day_statistics[lookback].add_activity(self.current_activity)
+
                     self.last_inactivity_start_time = p_end_time
                     self.previous_activity = self.current_activity
 

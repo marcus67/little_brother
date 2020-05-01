@@ -246,7 +246,7 @@ msgstr "Réglages"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:52
 msgid "Value"
-msgstr "valeur"
+msgstr "Valeur"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:55
 msgid "Repository"
