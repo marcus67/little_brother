@@ -20,87 +20,232 @@
 
 a,
 a:visited {
-    text-decoration: underline;
-  }
-
-A:link {
-    color: black;
+  text-decoration: underline;
 }
 
-A.CVE_HYPERLINK:link { color: inherit; }
+A:link {
+  color: black;
+}
+
+a.CVE_HYPERLINK:link {
+  color: inherit;
+}
 
 /* visited link */
 
-A:visited {
-    color: black;
+a:visited {
+  color: black;
 }
 
-INPUT { width: 70px; }
+INPUT {
+  width: 70px;
+}
 
-.navbar-brand { width: 200px; }
-.form-signin {  text-align: center; }
+.navbar-brand {
+  width: 200px;
+}
 
-A.CVE_HYPERLINK:visited { color: inherit; }
+.form-signin {
+  text-align: center;
+}
 
-.col-xs-1 { padding-left: 1px; padding-right: 1px; }
-.col-xs-2 { padding-left: 2px; padding-right: 2px; }
-.col-xs-3 { padding-left: 3px; padding-right: 3px; }
-.col-xs-4 { padding-left: 4px; padding-right: 4px; }
+a.CVE_HYPERLINK:visited {
+  color: inherit;
+}
 
-.col-md-1 { padding-left: 1px; padding-right: 1px; }
-.col-md-2 { padding-left: 2px; padding-right: 2px; }
-.col-md-3 { padding-left: 3px; padding-right: 3px; }
-.col-md-4 { padding-left: 4px; padding-right: 4px; }
+.col-xs-1 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
 
-.col-xs-1 input { padding-left: 1px; padding-right: 1px; }
-.col-xs-2 input { padding-left: 2px; padding-right: 2px; }
-.col-xs-3 input { padding-left: 3px; padding-right: 3px; }
-.col-xs-4 input { padding-left: 4px; padding-right: 4px; }
+.col-xs-2 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
 
-.rule-override { font-weight: bold; color: blue; }
-.downtime { font-weight: bold; color: yellow; }
+.col-xs-3 {
+  padding-left: 3px;
+  padding-right: 3px;
+}
 
-DIV.WIDTH100 { width: 100%; }
-DIV.FIXED400 { width: 400px; table-layout: fixed;}
-DIV.FIXED1200 { width: 1200px; table-layout: fixed;}
+.col-xs-4 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 
-DIV.STANDARD_TABLE { border-style: solid; border-color: black; border-width: 1px; border-collapse: separate;  }
-DIV.STANDARD_TABLE DIV.ROW { vertical-align: top; padding: 5px; text-align: left; border: 2px solid white; }
-DIV.STANDARD_TABLE DIV.COL { vertical-align: top; padding: 5px; text-align: left; margin-top: 0px; margin-bottom:0px; border: 2px solid white; }
-DIV.STANDARD_TABLE DIV.ALIGN_RIGHT { text-align: right; }
+.col-md-1 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
 
-DIV.STANDARD_TABLE DIV.TITLE_ROW DIV.COL { font-size:24px; text-align: center; }
-DIV.STANDARD_TABLE DIV.TITLE_ROW { background-color: #E2E2E2; font-weight:bold;  }
+.col-md-2 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
 
-DIV.STANDARD_TABLE DIV.ROWLEVEL_1 { background-color: #829eb8; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_2  { background-color: #99bbda; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_3  { background-color: #a7cdef; }
-DIV.STANDARD_TABLE DIV.ROWLEVEL_4  { background-color: #d5ebff; }
+.col-md-3 {
+  padding-left: 3px;
+  padding-right: 3px;
+}
 
-DIV.STANDARD_TABLE DIV.SEPERATOR_ROW       { height:2px; }
-DIV.STANDARD_TABLE DIV.SEPERATOR_ROW_LINE  { height:2px; background-color:black; }
+.col-md-4 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 
-DIV.STANDARD_TABLE DIV.HEADER_ROW { background-color: #F2F2F2; }
-DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { border-bottom-style: solid; }
-DIV.STANDARD_TABLE DIV.HEADER_ROW DIV.COL { vertical-align: middle; text-align: center; font-weight:bold; }
+.col-xs-1 input {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+.col-xs-2 input {
+  padding-left: 2px;
+  padding-right: 2px;
+}
 
-DIV.STANDARD_TABLE DIV.FILTER_ROW { background-color: #A2A2A2; }
-DIV.STANDARD_TABLE DIV.FILTER_ROW DIV.COL { border-bottom-style: solid; }
-DIV.STANDARD_TABLE DIV.FILTER_ROW DIV.COL { vertical-align: middle;  font-weight:bold; }
+.col-xs-3 input {
+  padding-left: 3px;
+  padding-right: 3px;
+}
 
-DIV.STANDARD_TABLE DIV.STATUS_ROW { background-color: #F2F2F2; }
-DIV.STANDARD_TABLE DIV.STATUS_ROW DIV.COL { border-top-style: solid; }
+.col-xs-4 input {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 
+.rule-override {
+  font-weight: bold;
+  color: blue;
+}
+
+.downtime {
+  font-weight: bold;
+  color: yellow;
+}
+
+div.WIDTH100 {
+  width: 100%;
+}
+
+div.FIXED400 {
+  width: 400px;
+  table-layout: fixed;
+}
+
+div.FIXED1200 {
+  width: 1200px;
+  table-layout: fixed;
+}
+
+div.STANDARD_TABLE {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-collapse: separate;
+}
+
+div.STANDARD_TABLE div.ROW {
+  vertical-align: top;
+  padding: 5px;
+  text-align: left;
+  border: 2px solid white;
+}
+
+div.STANDARD_TABLE div.COL {
+  vertical-align: top;
+  padding: 5px;
+  text-align: left;
+  margin-top: 0px;
+  margin-bottom:0px;
+  border: 2px solid white;
+}
+
+div.STANDARD_TABLE div.ALIGN_RIGHT {
+  text-align: right;
+}
+
+div.STANDARD_TABLE div.TITLE_ROW div.COL {
+  font-size:24px; text-align: center;
+}
+
+div.STANDARD_TABLE div.TITLE_ROW {
+  background-color: #E2E2E2; font-weight:bold;
+}
+
+div.STANDARD_TABLE div.ROWLEVEL_1 {
+  background-color: #829eb8;
+}
+
+div.STANDARD_TABLE div.ROWLEVEL_2 {
+  background-color: #99bbda;
+}
+
+div.STANDARD_TABLE div.ROWLEVEL_3 {
+  background-color: #a7cdef;
+}
+
+div.STANDARD_TABLE div.ROWLEVEL_4 {
+  background-color: #d5ebff;
+}
+
+div.STANDARD_TABLE div.SEPERATOR_ROW {
+  height:2px;
+}
+
+div.STANDARD_TABLE div.SEPERATOR_ROW_LINE {
+  height:2px;
+  background-color:black;
+}
+
+div.STANDARD_TABLE div.HEADER_ROW {
+  background-color: #F2F2F2;
+}
+
+div.STANDARD_TABLE div.HEADER_ROW div.COL {
+  border-bottom-style: solid;
+}
+
+div.STANDARD_TABLE div.HEADER_ROW div.COL {
+  vertical-align: middle;
+  text-align: center;
+  font-weight:bold;
+}
+
+div.STANDARD_TABLE div.FILTER_ROW {
+  background-color: #A2A2A2;
+}
+
+div.STANDARD_TABLE div.FILTER_ROW div.COL {
+  border-bottom-style: solid;
+}
+
+div.STANDARD_TABLE div.FILTER_ROW div.COL {
+  vertical-align: middle;
+  font-weight:bold;
+}
+
+div.STANDARD_TABLE div.STATUS_ROW {
+  background-color: #F2F2F2;
+}
+
+div.STANDARD_TABLE div.STATUS_ROW div.COL {
+  border-top-style: solid;
+}
 
 UL {
   padding-left: 20px;
 }
 
-.CODE { font-family:monospace; }
+.CODE {
+  font-family:monospace;
+}
 
-.CONTEXT { font-style:italic; }
+.CONTEXT {
+  font-style:italic;
+}
 
-.center { text-align: center; }
+.center {
+  text-align: center;
+}
 
 /* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
 

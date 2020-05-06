@@ -336,7 +336,7 @@ msgstr "Vapaa pelaaminen"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
 msgid "Show overrides for day"
-msgstr "Show overrides for day"
+msgstr "Korvaa oletusarvot tänään"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
 msgid "override"

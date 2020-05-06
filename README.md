@@ -50,8 +50,8 @@ See [here](CHANGES.md)
 
 ## Continuous Integration Status Overview
 
-| Status              | Master | Mac OS Test | Release |
-|:------------------- |:------ |:------------------ |:------- |
+| Status              | Master                                                                                                                                                                                                                                                                                                                                                               | Mac OS Test                                                                                                                                                                                       | Release                                                                                                                                                                                 |
+|:------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | CircleCI            | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A>                                                                                                                                                                                 | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A> |
 | Test Coverage       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A>                                                                                                                                                                                               | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A>       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>        | 
 | Snyk Vulnerability  | <a href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>         | not available                                                                                                                                                                                     | not available                                                                                                                                                                           |
@@ -112,7 +112,6 @@ Linux host with a Docker deamon available.
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
 functionality of the `LittleBrother` application has been replaced by the `LittleBrotherTaskbar.` 
-
 
 ## Architecture
 
@@ -441,11 +440,11 @@ a translation. You do not necessarily have to clone this repository or be famili
 ## Credits
 
 *   Thanks to all the people maintaining the wonderful script language [Python](https://www.python.org/) 
-and the libraries on [PyPi](https://pypi.org/).
- 
+    and the libraries on [PyPi](https://pypi.org/).
+
 *   The country flags were taken from [www.countryflags.com](https://www.countryflags.com/).
 
 *   See the section about on internationalization for credits regarding the translations.
 
 *   The site [www.mehr-schulferien.de](https://www.mehr-schulferien.de) maintains the vacation metadata for
-Germany.
+    Germany.

@@ -15,11 +15,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os.path
+
 import alembic.config
 import alembic.util.messaging
 import psutil
-import os.path
-import flask_babel
 
 from little_brother import app_control
 from little_brother import client_device_handler
@@ -27,9 +27,9 @@ from little_brother import client_process_handler
 from little_brother import master_connector
 from little_brother import persistence
 from little_brother import popup_handler
+from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother import status_server
-from little_brother import prometheus
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
@@ -52,6 +52,7 @@ LANGUAGES = {
     'bn': 'বাংলা',
     'th': 'ภาษาไทย'
 }
+
 
 class AppConfigModel(base_app.BaseAppConfigModel):
 
@@ -226,7 +227,8 @@ class App(base_app.BaseApp):
         if self._client_device_handler:
             task = base_app.RecurringTask(
                 p_name="app_control.scan_processes(DeviceHandler)",
-                p_handler_method=lambda: self._app_control.scan_processes(p_process_handler=self._client_device_handler),
+                p_handler_method=lambda: self._app_control.scan_processes(
+                    p_process_handler=self._client_device_handler),
                 p_interval=self._client_device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
@@ -254,7 +256,6 @@ class App(base_app.BaseApp):
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
-
 
     def run_special_commands(self, p_arguments):
 
