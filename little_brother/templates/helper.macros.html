@@ -24,11 +24,11 @@
   {{ field(class_="form-control " + field.extra_css_classes) }}
     <label class="control-label" for="{{ field.id }}">
     {% if field.errors|length == 1 %}
-        {{ field.errors[0] }}
+        {{ field.errors[0]|_base }}
     {% else %}
     <ul>
         {% for error in field.errors %}
-        <li>{{ error }}</li>
+        <li>{{ error|_base }}</li>
         {% endfor %}
     </ul>
     {% endif %}
@@ -44,7 +44,7 @@
       {% if messages %}
         {% for message in messages %}
         <div class="alert alert-warning fade in localetext">
-            {{ _(message) }}
+            {{ message|_base }}
         </div>
         {% endfor %}
       {% endif %}

@@ -44,7 +44,7 @@ DEFAULT_PROCESS_PATTERN = "systemd|.*sh"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
-# Dummy function to trigger extraction by pybabel...F
+# Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
 
 

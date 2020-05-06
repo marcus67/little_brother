@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.2.2 Revision 62 (April XXX, 2020)
+## Version 0.2.2 Revision 62 (May 6th, 2020)
 
 *   Added Finnish localization (locale "nl")
 *   Added Turkish localization (locale "tr")
@@ -12,6 +12,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Added Japanese localization (locale "ja")
 *   Added Bangla localization (locale "bn")
 *   Added French localization (locale "fr")
+*   Added Thai localization (locale "th")
 *   Added two Prometheus metrics to provide version information and uptime
 *   Updated Grafana dashboard 
 *   Optional font scaling depending on request locale (for e.g. Bangla)
@@ -19,6 +20,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Add test cases for classes `RuleHandler` and `AppControl`
 *   Closes #56, see [here](https://github.com/marcus67/little_brother/issues/56)
 *   Closes #74, see [here](https://github.com/marcus67/little_brother/issues/74)
+*   Closes #40, see [here](https://github.com/marcus67/little_brother/issues/40)
+*   Upgrade to `python_base_app` version 0.1.9
 
 ## Version 0.2.1 Revision 61 (April 18th, 2020)
 

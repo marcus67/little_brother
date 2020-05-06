@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LittleBrother 0.2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-18 12:22+0200\n"
+"POT-Creation-Date: 2020-05-03 12:17+0200\n"
 "PO-Revision-Date: 2020-04-14 20:21+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -17,36 +17,36 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:80
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:90
 msgid "username '{username}' not specified"
 msgstr "gebruikersnaam '{username}'niet gespecificeerd"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:88
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:98
 msgid "username '{username}' not being monitored"
 msgstr "gebruikersnaam '{username}' niet gecontroleerd worden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
 msgid "{days} days ago"
 msgstr "{days} geleden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:155
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:153
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
 msgid "Today"
 msgstr "vandaag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:154
 msgid "Yesterday"
 msgstr "gisteren"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:158
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
 msgstr "{user}, je hebt vandaag geen computertijd. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:157
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -54,25 +54,25 @@ msgstr ""
 "{user}, je hebt nog maar {minutes_left_before_logout} minuten over "
 "vandaag."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
 msgstr "{user}, je hebt vandaag geen computertijd. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:160
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, het is te vroeg om de computer te gebruiken. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:163
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, het is te laat om de computer te gebruiken. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -81,13 +81,13 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} minuten zal het te laat zijn om "
 "de computer te gebruiken. Alsjeblieft, log uit."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:166
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr "{user}, je moet een pauze nemen. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:165
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -96,13 +96,13 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} minuten moet je een pauze nemen. "
 "Alsjeblieft, log uit."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -111,31 +111,31 @@ msgstr ""
 "Hallo {user}, je mag spelen voor {minutes_left_in_session} minuten in "
 "deze sessie."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:173
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Hallo {user}, je hebt onbeperkte speeltijd in deze sessie."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1083
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
 msgid "'Today ('EEE')'"
 msgstr "'Vandaag ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1085
 msgid "'Today'"
 msgstr "'Vandaag'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1089
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Morgen ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1091
 msgid "'Tomorrow'"
 msgstr "'Morgen'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1095
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd.MM.yyyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1097
 msgid "EEE"
 msgstr "EEE"
 
@@ -151,19 +151,19 @@ msgstr "Geen activiteit voor {hh_mm}ure"
 msgid "No activity after {hh_mm} hours"
 msgstr "Geen activiteit naar {hh_mm}uren"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:348
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:350
 msgid "Day blocked: no activity permitted"
 msgstr "Dag geblokkeerd: geen activiteit toegestaan"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:354
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:356
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Activiteit beperkt tot {hh_mm} per dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:380
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:382
 msgid "No activity exceeding {hh_mm}"
 msgstr "Geen enkele activiteit overschrijdt {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:414
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:416
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "Minimale rusttijd {hh_mm} niet bereikt"
 
@@ -211,206 +211,206 @@ msgstr "zaterdag"
 msgid "sundays"
 msgstr "zondag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
 msgid "On"
 msgstr "Op"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
 msgid "Off"
 msgstr "Uit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:37
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
 msgid "About"
 msgstr "Over"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:51
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:53
 msgid "Setting"
 msgstr "Instelling"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:52
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:54
 msgid "Value"
 msgstr "Waarde"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:55
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:57
 msgid "Repository"
 msgstr "Repository"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:59
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:61
 msgid "Version"
 msgstr "Versie"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:63
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:65
 msgid "Package Revision"
 msgstr "pakketrevisie"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:67
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:69
 msgid "Git Commit ID"
 msgstr "Git ID vastleggen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:71
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:73
 msgid "Git Branch Name"
 msgstr "Git naam van het filiaal"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:75
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:77
 msgid "Git Author's Name"
 msgstr "Git auteur's naam"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:79
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:81
 msgid "Git Author's Email Address"
 msgstr "Git Auteur's Email Adres"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:83
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:85
 msgid "Supported Languages"
 msgstr "Ondersteunde talen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:36
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:39
 msgid "Administration"
 msgstr "Administratie"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:47
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:42
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:50
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
 msgid "User"
 msgstr "Gebruikers"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:55
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:59
 msgid "Show configurations of upcoming days"
 msgstr "Show configuraties van de komende dagen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:66
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:70
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
 msgid "Today's Activity"
 msgstr "Activiteit van vandaag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:74
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:78
 msgid "Save"
 msgstr "Opslaan"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:80
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:110
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
 msgid "Day"
 msgstr "Dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:81
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:43
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:85
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
 msgid "Context"
 msgstr "Context"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:82
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:86
 msgid "Min Time of Day"
 msgstr "Min tijd per dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:83
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:87
 msgid "Max Time of Day"
 msgstr "Max tijd per dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
 msgid "Time per Day"
 msgstr "Tijd per dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:92
 msgid "Minimum Break"
 msgstr "Minimale pauze"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:93
 msgid "Max Duration"
 msgstr "Max duur"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:90
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:94
 msgid "Free Play"
 msgstr "Vrij spel"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:97
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
 msgid "Show overrides for day"
 msgstr "Toon overschrijdingen voor dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
 msgid "override"
 msgstr "Zet uit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:38
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
 msgid "Status"
 msgstr "Status"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:51
 msgid "Previous Activity Start Time"
 msgstr "Vorige activiteit starttijd"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
 msgid "Previous Activity End Time"
 msgstr "Vorige activiteit eindtijd"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:50
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
 msgid "Current Activity Start Time"
 msgstr "Actuele activiteit starttijd"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
 msgid "Current Activity Duration"
 msgstr "Actuele activiteit duur"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
 msgid "Current"
 msgstr "Actuel"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
 msgid "Activity permitted"
 msgstr "Activiteit toegestaan"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:59
 msgid "OK?"
 msgstr "Ok?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Reasons"
 msgstr "Redenen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:64
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:67
 msgid "Show durations of most recent days"
 msgstr "Toon duur van de laatste dagen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:111
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
 msgid "Active Time"
 msgstr "Actieve tijd"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:112
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
 msgid "Active"
 msgstr "Actief"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
 msgid "Activity Start"
 msgstr "Begin activiteit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
 msgid "Start"
 msgstr "Start"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:118
 msgid "Activity End"
 msgstr "Einde activiteit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:119
 msgid "End"
 msgstr "Einde"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:120
 msgid "Host(#procs)"
 msgstr "Host"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:124
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:127
 msgid "Show activity times"
 msgstr "Toon activiteitstijden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:19
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:39
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:21
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:41
 msgid "Login"
 msgstr "Inloggen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:32
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:34
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:33
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:35
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -425,12 +425,4 @@ msgstr "Aangemeld als"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
 msgid "Logout"
 msgstr "Uitloggen"
-
-#: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:34
-msgid "Please log in to access this page."
-msgstr "Log in om toegang tot deze pagina te krijgen."
-
-#: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:135
-msgid "Wrong login or password"
-msgstr "Verkeerde login of wachtwoord"
 

@@ -33,19 +33,6 @@ from little_brother import settings
 from python_base_app import base_web_server
 from python_base_app import tools
 
-LANGUAGES = {
-    'en': 'English',
-    'de': 'Deutsch',
-    'fr': 'Français',
-    'it': 'Italiano',
-    'nl': 'Nederlands',
-    'fi': 'Suomen kieli',
-    'tr': 'Türkçe',
-    'ru': 'Русский язык',
-    'ja': '日本語',
-    'bn': 'বাংলা'
-}
-
 LOCALE_REL_FONT_SIZES = {
     'bn': 125     # scale Bangla fonts to 125% for readability
 }
@@ -112,7 +99,10 @@ class StatusServer(base_web_server.BaseWebServer):
                  p_package_name,
                  p_app_control,
                  p_master_connector,
-                 p_is_master):
+                 p_is_master,
+                 p_locale_selector = None,
+                 p_base_gettext = None,
+                 p_languages = None):
 
         super(StatusServer, self).__init__(
             p_config=p_config,
@@ -128,6 +118,18 @@ class StatusServer(base_web_server.BaseWebServer):
         self._master_connector = p_master_connector
         self._stat_dict = {}
         self._server_exception = None
+        self._locale_selector = p_locale_selector
+        self._languages = p_languages
+        self._base_gettext = p_base_gettext
+
+        if self._languages is None:
+            self._languages = { 'en': "English" }
+
+        if self._locale_selector is None:
+            self._locale_selector = lambda : "en"
+
+        if self._base_gettext is None:
+            self._base_gettext = lambda text:text
 
         if self._is_master:
             self._blueprint = flask.Blueprint(BLUEPRINT_NAME, little_brother.__name__, static_folder="static")
@@ -148,10 +150,11 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['format'] = self.format
         self._app.jinja_env.filters['format_babel_date'] = self.format_babel_date
         self._app.jinja_env.filters['invert'] = self.invert
+        self._app.jinja_env.filters['_base'] = self._base_gettext
 
 
         self._babel = flask_babel.Babel(self._app)
-        self._babel.localeselector(self.get_request_locale)
+        self._babel.localeselector(p_locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
 
     def invert(self, rel_font_size):
@@ -163,12 +166,6 @@ class StatusServer(base_web_server.BaseWebServer):
         self._appcontrol.set_prometheus_http_requests_summary(p_hostname=p_hostname,
                                                               p_service=p_service,
                                                               p_duration=p_duration)
-
-    def get_request_locale(self):
-        locale = flask.request.accept_languages.best_match(LANGUAGES)
-        msg = "Best matching locale = {locale}"
-        self._logger.debug(msg.format(locale=locale))
-        return locale
 
     def login_view(self):
 
@@ -235,7 +232,7 @@ class StatusServer(base_web_server.BaseWebServer):
     #@staticmethod
     def format_babel_date(self, value, format_string):
 
-        return babel.dates.format_date(value, format_string, locale=self.get_request_locale())
+        return babel.dates.format_date(value, format_string, locale=self._locale_selector())
 
     @BLUEPRINT_ADAPTER.route_method("/")
     def entry_view(self):
@@ -289,7 +286,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def get_rel_font_size(self):
 
-        rel_font_size = LOCALE_REL_FONT_SIZES.get(self.get_request_locale())
+        rel_font_size = LOCALE_REL_FONT_SIZES.get(self._locale_selector())
         if not rel_font_size:
             rel_font_size = 100
         return rel_font_size
@@ -299,7 +296,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
         request = flask.request
         with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
+                                                              p_service=request.url_rule, p_duration=duration)):
 
             page = flask.render_template(
                 INDEX_HTML_TEMPLATE,
@@ -328,7 +325,7 @@ class StatusServer(base_web_server.BaseWebServer):
                 extended_settings=settings.extended_settings,
                 git_metadata=git.git_metadata,
                 authentication=self.get_authenication_info(),
-                languages=sorted([(a_locale, a_language) for a_locale, a_language in LANGUAGES.items()]),
+                languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
                 navigation={
                     'current_view': ABOUT_VIEW_NAME}
 

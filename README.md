@@ -430,8 +430,8 @@ the following languages are supported or currently in preparation (in the order 
 | ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Available      |  J. Moldawski           |
 | ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Available      |  Arik M.                |
 | ![Flag Bangladesh](doc/bangladesh-flag-icon-32.png)            | Bangla        | bn     | Available      |  Rownak Jyoti Zaman     |
+| ![Flag Thailand](doc/thailand-flag-icon-32.png)                | Thai          | th     | Available      |  Busaba Kramer          |
 | ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | In preparation |  N.N.                   |
-| ![Flag Thailand](doc/thailand-flag-icon-32.png)                | Thai          | th     | In preparation |  N.N.                   |
 | ![Flag Lithuania](doc/lithuania-flag-icon-32.png)              | Lithuanian    | lt     | In preparation |  N.N.                   |
 | ![Flag Croatia](doc/croatia-flag-icon-32.png)                  | Croatian      | hr     | In preparation |  N.N.                   |
 
@@ -445,4 +445,7 @@ and the libraries on [PyPi](https://pypi.org/).
  
 *   The country flags were taken from [www.countryflags.com](https://www.countryflags.com/).
 
-*   See the section about on internalization for credits regarding the translations.
+*   See the section about on internationalization for credits regarding the translations.
+
+*   The site [www.mehr-schulferien.de](https://www.mehr-schulferien.de) maintains the vacation metadata for
+Germany.

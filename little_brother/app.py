@@ -19,6 +19,7 @@ import alembic.config
 import alembic.util.messaging
 import psutil
 import os.path
+import flask_babel
 
 from little_brother import app_control
 from little_brother import client_device_handler
@@ -38,6 +39,19 @@ DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 DEFAULT_APPLICATION_OWNER = 'little-brother'
 
+LANGUAGES = {
+    'en': 'English',
+    'de': 'Deutsch',
+    'fr': 'Français',
+    'it': 'Italiano',
+    'nl': 'Nederlands',
+    'fi': 'Suomen kieli',
+    'tr': 'Türkçe',
+    'ru': 'Русский язык',
+    'ja': '日本語',
+    'bn': 'বাংলা',
+    'th': 'ภาษาไทย'
+}
 
 class AppConfigModel(base_app.BaseAppConfigModel):
 
@@ -70,7 +84,7 @@ class App(base_app.BaseApp):
     def __init__(self, p_pid_file, p_arguments, p_app_name):
 
         super(App, self).__init__(p_pid_file=p_pid_file, p_arguments=p_arguments, p_app_name=p_app_name,
-                                  p_dir_name=DIR_NAME)
+                                  p_dir_name=DIR_NAME, p_languages=LANGUAGES)
 
         self._notification_handlers = []
         self._status_server = None
@@ -222,7 +236,12 @@ class App(base_app.BaseApp):
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
-                p_is_master=self.is_master())
+                p_is_master=self.is_master(),
+                p_locale_selector=self.get_request_locale,
+                p_base_gettext=self.gettext,
+                p_languages=LANGUAGES)
+
+            self.init_babel(p_localeselector=self.get_request_locale)
 
         elif self.is_master():
             msg = "Master instance requires port number for web server"

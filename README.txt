@@ -1,3 +1,0 @@
-# README
-
-See README.md
