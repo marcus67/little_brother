@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  LittleBrother\n"
 "Report-Msgid-Bugs-To: little-brother@web.de\n"
-"POT-Creation-Date: 2020-05-03 12:17+0200\n"
+"POT-Creation-Date: 2020-05-11 23:49+0200\n"
 "PO-Revision-Date: 2020-04-20 10:00+0200\n"
 "Last-Translator: Rownak Jyoti Zaman <jyotizaman@yahoo.com>\n"
 "Language: bn\n"
@@ -142,7 +142,7 @@ msgstr "'আগামীকাল ('EEE')'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1091
 msgid "'Tomorrow'"
-msgstr "''আগামীকাল'"
+msgstr "'আগামীকাল'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
 msgid "yyyy-MM-dd' ('EEE')'"
@@ -182,11 +182,11 @@ msgstr "কোন কাজ <span class=\"nonlocaletext\">{hh_mm}</span>-এর 
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:416
 msgid "Minimum break time {hh_mm} not reached"
-msgstr "ন্যুনতম বিরতি <span class=\"nonlocaletext\">{hh_mm}</span> এখনও শেষ হয়নি"
+msgstr "সবচেয়ে কম বিরতি <span class=\"nonlocaletext\">{hh_mm}</span> এখনও শেষ হয়নি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
 msgid "default"
-msgstr "িফল্ট"
+msgstr "চলতি মান"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
 msgid "weekday"
@@ -198,7 +198,7 @@ msgstr "সপ্তাহ শেষে ছুটি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
 msgid "weekdays"
-msgstr "কাজের দিন"
+msgstr "সপ্তাহের দিন"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
 msgid "mondays"
@@ -251,15 +251,15 @@ msgstr "মান"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:57
 msgid "Repository"
-msgstr "সংগ্রহশালা"
+msgstr "েপোজেটরী"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:61
 msgid "Version"
-msgstr "সংস্করণ"
+msgstr "সংকলন"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:65
 msgid "Package Revision"
-msgstr "প্যাকেজ সংস্করণ"
+msgstr "প্যাকেজ সংকলন"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:69
 msgid "Git Commit ID"
@@ -315,19 +315,19 @@ msgstr "বিষয়"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:86
 msgid "Min Time of Day"
-msgstr "দিনের সর্বনিম্ন সময়সীমা"
+msgstr "দিনের সবচেয়ে কম সময়সীমা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:87
 msgid "Max Time of Day"
-msgstr "িনের সর্বোচ্চ সময়সীমা"
+msgstr "দিনের সর্বোচ্চ সময়সীমা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
 msgid "Time per Day"
-msgstr "প্রতিদিনের সময়সীমা"
+msgstr "একদিনের সময়সীমা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:92
 msgid "Minimum Break"
-msgstr "সর্বনিম্ন বিরতি"
+msgstr "সবচেয়ে কম বিরতি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:93
 msgid "Max Duration"
@@ -335,7 +335,7 @@ msgstr "সর্বোচ্চ সময়সীমা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:94
 msgid "Free Play"
-msgstr "ফ্রী খেলা"
+msgstr "সীমাহীন খেলা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
 msgid "Show overrides for day"
@@ -388,11 +388,11 @@ msgstr " গতদিনগুলোর কাজের সময়সীমা �
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
 msgid "Active Time"
-msgstr "সক্রিয় থাকা সময়"
+msgstr "কাজে থাকার"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
 msgid "Active"
-msgstr "সক্রিয় আছে"
+msgstr "কাজে আছে"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
 msgid "Activity Start"
