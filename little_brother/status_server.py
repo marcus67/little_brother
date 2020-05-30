@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import gettext
+import os
 
 import flask
 import flask_babel
@@ -30,6 +31,8 @@ from little_brother import api_view_handler
 from little_brother import git
 from little_brother import rule_override
 from little_brother import settings
+from little_brother import entity_forms
+from little_brother import persistence
 from python_base_app import base_web_server
 from python_base_app import tools
 
@@ -50,6 +53,14 @@ ADMIN_HTML_TEMPLATE = "admin.template.html"
 ADMIN_REL_URL = "admin"
 ADMIN_VIEW_NAME = "admin"
 
+USERS_HTML_TEMPLATE = "users.template.html"
+USERS_REL_URL = "users"
+USERS_VIEW_NAME = "users"
+
+DEVICES_HTML_TEMPLATE = "devices.template.html"
+DEVICES_REL_URL = "devices"
+DEVICES_VIEW_NAME = "devices"
+
 ABOUT_HTML_TEMPLATE = "about.template.html"
 ABOUT_REL_URL = "about"
 ABOUT_VIEW_NAME = "about"
@@ -69,6 +80,9 @@ ICON_OK_NAME = 'icon_check.png'
 TEMPLATE_REL_DIR = "templates"
 
 FORM_ID_CSRF = 'csrf'
+
+HTML_KEY_NEW_USER = "NewUser"
+HTML_KEY_NEW_DEVICE = "NewDevice"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
@@ -99,16 +113,18 @@ class StatusServer(base_web_server.BaseWebServer):
                  p_package_name,
                  p_app_control,
                  p_master_connector,
+                 p_persistence,
                  p_is_master,
                  p_locale_selector = None,
                  p_base_gettext = None,
-                 p_languages = None):
+                 p_languages = None,
+                 p_user_handler = None):
 
         super(StatusServer, self).__init__(
             p_config=p_config,
             p_name="Web Server",
             p_package_name=p_package_name,
-            p_use_login_manager=p_is_master,
+            p_user_handler=p_user_handler,
             p_login_view=self.login_view,
             p_logged_out_endpoint=BLUEPRINT_NAME + '.' + INDEX_VIEW_NAME)
 
@@ -116,11 +132,14 @@ class StatusServer(base_web_server.BaseWebServer):
         self._is_master = p_is_master
         self._appcontrol = p_app_control
         self._master_connector = p_master_connector
+        self._persistence = p_persistence
         self._stat_dict = {}
         self._server_exception = None
         self._locale_selector = p_locale_selector
         self._languages = p_languages
         self._base_gettext = p_base_gettext
+        self._langs = {}
+        self._localedir = os.path.join(os.path.dirname(__file__), "translations")
 
         if self._languages is None:
             self._languages = { 'en': "English" }
@@ -156,6 +175,8 @@ class StatusServer(base_web_server.BaseWebServer):
         self._babel = flask_babel.Babel(self._app)
         self._babel.localeselector(p_locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
+
+        entity_forms.RulesetForm.context_details.validators = ( lambda form, field: self._appcontrol.validate_context_rule_handler_details(p_context_name=form.context.data, p_context_details=field.data) )
 
     def invert(self, rel_font_size):
 
@@ -249,6 +270,54 @@ class StatusServer(base_web_server.BaseWebServer):
                     form.save_to_model(p_model=day_info.override)
                     self._appcontrol.update_rule_override(day_info.override)
 
+    def save_users_data(self, p_users, p_forms):
+
+        session = self._persistence.get_session()
+        changed = False
+
+        for user in p_users:
+            form = p_forms[user.html_key]
+            persistent_user = persistence.User.get_by_username(p_session=session, p_username=user.username)
+
+            if persistent_user is not None and form.differs_from_model(p_model=persistent_user):
+                form.save_to_model(p_model=persistent_user)
+                changed = True
+
+            for ruleset in user.rulesets:
+                form = p_forms[ruleset.html_key]
+                persistent_ruleset = persistence.RuleSet.get_by_id(p_session=session, p_id=ruleset.id)
+
+                if persistent_ruleset is not None and form.differs_from_model(p_model=persistent_ruleset):
+                    form.save_to_model(p_model=persistent_ruleset)
+                    changed = True
+
+        if changed:
+            self._persistence.clear_cache()
+
+        session.commit()
+
+    def save_devices_data(self, p_devices, p_forms):
+
+        session = self._persistence.get_session()
+        changed = False
+
+        for device in p_devices:
+            form = p_forms[device.device_name]
+            device = persistence.Device.get_by_device_name(p_session=session, p_device_name=device.device_name)
+
+            if device is not None and form.differs_from_model(p_model=device):
+                form.save_to_model(p_model=device)
+                changed = True
+
+        if changed:
+            self._persistence.clear_cache()
+
+        session.commit()
+
+
+
+
+
     @BLUEPRINT_ADAPTER.route_method("/admin", endpoint="admin", methods=["GET", "POST"])
     @flask_login.login_required
     def admin_view(self):
@@ -284,6 +353,111 @@ class StatusServer(base_web_server.BaseWebServer):
                     'current_view': ADMIN_VIEW_NAME},
             )
 
+    @BLUEPRINT_ADAPTER.route_method("/users", endpoint="users", methods=["GET", "POST"])
+    @flask_login.login_required
+    def users_view(self):
+
+        request = flask.request
+        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
+                                                              p_service=request.url_rule, p_duration=duration)):
+
+            users = self._appcontrol.get_sorted_users()
+            forms = self.get_users_forms(p_users=users)
+
+            valid_and_submitted = True
+
+            for form in forms.values():
+                if not form.validate_on_submit():
+                    valid_and_submitted = False
+
+            if valid_and_submitted:
+                self.save_users_data(users, forms)
+
+                if request.form['submit'] == HTML_KEY_NEW_USER:
+                    username = forms[HTML_KEY_NEW_USER].username.data
+                    self._persistence.add_new_user(p_username=username, p_locale=self._locale_selector())
+                else:
+                    for user in users:
+                        if request.form['submit'] == user.delete_html_key:
+                            self._persistence.delete_user(user.username)
+
+                        if request.form['submit'] == user.new_ruleset_html_key:
+                            self._persistence.add_ruleset(user.username)
+
+                for user in users:
+                    for ruleset in user.rulesets:
+                        if request.form['submit'] == ruleset.move_down_html_key:
+                            self._persistence.move_down_ruleset(p_ruleset_id=ruleset.id)
+
+                        if request.form['submit'] == ruleset.move_up_html_key:
+                            self._persistence.move_up_ruleset(p_ruleset_id=ruleset.id)
+
+                return flask.redirect(flask.url_for("little_brother.users"))
+
+            for user in users:
+                forms[user.html_key].load_from_model(p_model=user)
+
+                for ruleset in user.rulesets:
+                    forms[ruleset.html_key].load_from_model(p_model=ruleset)
+
+            return flask.render_template(
+                USERS_HTML_TEMPLATE,
+                rel_font_size=self.get_rel_font_size(),
+                users=users,
+                authentication=self.get_authenication_info(),
+                forms=forms,
+                new_user_html_key=HTML_KEY_NEW_USER,
+                new_user_submit_value=HTML_KEY_NEW_USER,
+                navigation={
+                    'current_view': USERS_VIEW_NAME
+                },
+            )
+
+    @BLUEPRINT_ADAPTER.route_method("/devices", endpoint="devices", methods=["GET", "POST"])
+    @flask_login.login_required
+    def devices_view(self):
+
+        request = flask.request
+        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
+                                                              p_service=request.url_rule, p_duration=duration)):
+
+            devices = self._appcontrol.get_sorted_devices()
+            forms = self.get_devices_forms(p_devices=devices)
+
+            valid_and_submitted = True
+
+            for form in forms.values():
+                if not form.validate_on_submit():
+                    valid_and_submitted = False
+
+            if valid_and_submitted:
+                self.save_devices_data(devices, forms)
+
+                if request.form['submit'] == HTML_KEY_NEW_DEVICE:
+                    self._persistence.add_new_device(p_name_pattern=self.gettext("New device {id}"))
+                else:
+                    for device in devices:
+                        if request.form['submit'] == device.delete_html_key:
+                            self._persistence.delete_device(device.id)
+
+                return flask.redirect(flask.url_for("little_brother.devices"))
+
+            for device in devices:
+                forms[device.device_name].load_from_model(p_model=device)
+
+            return flask.render_template(
+                DEVICES_HTML_TEMPLATE,
+                rel_font_size=self.get_rel_font_size(),
+                devices=devices,
+                authentication=self.get_authenication_info(),
+                forms=forms,
+                new_device_html_key=HTML_KEY_NEW_DEVICE,
+                new_device_submit_value=HTML_KEY_NEW_DEVICE,
+                navigation={
+                    'current_view': DEVICES_VIEW_NAME
+                },
+            )
+
     def get_rel_font_size(self):
 
         rel_font_size = LOCALE_REL_FONT_SIZES.get(self._locale_selector())
@@ -301,7 +475,7 @@ class StatusServer(base_web_server.BaseWebServer):
             page = flask.render_template(
                 INDEX_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
-                user_infos=self._appcontrol.get_user_infos(),
+                user_infos=self._appcontrol.get_user_status_infos(),
                 app_control_config=self._appcontrol._config,
                 authentication=self.get_authenication_info(),
                 navigation={
@@ -320,7 +494,7 @@ class StatusServer(base_web_server.BaseWebServer):
             page = flask.render_template(
                 ABOUT_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
-                user_infos=self._appcontrol.get_user_infos(),
+                user_infos=self._appcontrol.get_user_status_infos(),
                 settings=settings.settings,
                 extended_settings=settings.extended_settings,
                 git_metadata=git.git_metadata,
@@ -346,7 +520,64 @@ class StatusServer(base_web_server.BaseWebServer):
 
         return forms
 
+    def add_labels(self, p_value_list):
+
+        return [( entry, self.gettext(entry)) for entry in p_value_list]
+
+    def get_users_forms(self, p_users):
+
+        forms = {}
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
+        unmonitored_users = self._appcontrol.get_unmonitored_users()
+
+        if len(unmonitored_users) > 0:
+            new_user_form = entity_forms.NewUserForm(meta={'csrf': False})
+            new_user_form.username.choices = [ (username, username) for username in unmonitored_users ]
+            forms[HTML_KEY_NEW_USER] = new_user_form
+
+        for user in p_users:
+            form = entity_forms.UserForm(prefix='{id}_'.format(id=user.html_key), csrf_enabled=False)
+            forms[user.html_key] = form
+
+            for ruleset in user.rulesets:
+                form = entity_forms.RulesetForm(prefix='{id}_'.format(id=ruleset.html_key), csrf_enabled=False)
+                forms[ruleset.html_key] = form
+                form.context.choices = self.add_labels(self._appcontrol.get_context_rule_handler_names())
+                form.context_details.validators = [
+                        lambda form, field: self._appcontrol.validate_context_rule_handler_details(
+                        p_context_name=form.context.data, p_context_details=field.data)]
+
+        return forms
+
+    @staticmethod
+    def get_devices_forms(p_devices):
+
+        forms = {}
+
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
+
+        for device in p_devices:
+            form = entity_forms.DeviceForm(prefix='{id}_'.format(id=device.html_key), csrf_enabled=False)
+            forms[device.device_name] = form
+
+        return forms
+
+
     def destroy(self):
 
         BLUEPRINT_ADAPTER.unassign_view_handler_instances()
         super().destroy()
+
+    def gettext(self, p_text):
+
+        current_locale = self._locale_selector()
+        gettext_func = self._langs.get(current_locale)
+
+        if gettext_func is None:
+            gettext_func = gettext.translation("messages", localedir=self._localedir,
+                                               languages=[current_locale], fallback=True)
+            self._langs[current_locale] = gettext_func
+
+        return gettext_func.gettext(p_text)
+
+

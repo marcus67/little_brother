@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-03 12:17+0200\n"
+"POT-Creation-Date: 2020-05-22 01:28+0200\n"
 "PO-Revision-Date: 2020-04-20 09:49+0200\n"
 "Last-Translator: Arik Mahbub <arikmahbub@gmail.com>\n"
 "Language: ja\n"
@@ -16,30 +16,30 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:90
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:90
 msgid "username '{username}' not specified"
 msgstr "ユーザー名 '{username}' は特定していません"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:98
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:98
 msgid "username '{username}' not being monitored"
 msgstr "ユーザー名 '{username}' は監視されていません"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:158
 msgid "{days} days ago"
 msgstr "{days} 日前"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:153
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:49
 msgid "Today"
 msgstr "今日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:154
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:162
 msgid "Yesterday"
 msgstr "昨日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:164
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
@@ -47,13 +47,13 @@ msgstr ""
 "{user} さん,今日のコンピューター時間は残っていません.\n"
 "ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:157
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:165
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
 msgstr "{user} さん,今日はたった{minutes_left_before_logout}分が残ります.ログアウトして下さい."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:167
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
@@ -61,19 +61,19 @@ msgstr ""
 "{user} さん,今日のコンピューター時間が終わりました.\n"
 "ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:160
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr "{user} さん,コンピューターを使用するにはまだ早いです.ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:169
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr "{user} さん,コンピューターを使用するにはもう遅くなりました.ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:170
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -82,13 +82,13 @@ msgstr ""
 "{user} さん,{minutes_left_before_logout}\"分掛かるとコンピューターを使うには遅くなります.\n"
 "ログアウトしてください."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:172
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr "{user} さん,休まなければ行けません.ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:165
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:173
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -97,7 +97,7 @@ msgstr ""
 "{user} さん,{minutes_left_before_logout}\"分には休憩を取らければ行けません.\n"
 "ログアウトしてください."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:175
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -105,325 +105,453 @@ msgstr ""
 "{user}さん, 君の休憩はただ{break_minutes_left}分に終わります.\n"
 "ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:177
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
 "in this session."
 msgstr "こんにちは{user}さん,このセッションでは {minutes_left_in_session} 分の間プレイが許可されています.\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:179
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "こんにちは {user} さん,このセッションでは無制限にプレイできます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1106
 msgid "'Today ('EEE')'"
 msgstr "'今日('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1085
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1107
 msgid "'Today'"
 msgstr "'今日'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1112
 msgid "'Tomorrow ('EEE')'"
 msgstr "明日('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1091
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1113
 msgid "'Tomorrow'"
 msgstr "'明日'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1118
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "yyyy'年'MM'月'dd'日 ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1097
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1119
 msgid "EEE"
 msgstr "EEE"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
 msgid "vacation"
 msgstr "休日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:34
+msgid "german-vacation-calendar"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:331
 msgid "No activity before {hh_mm} hours"
 msgstr "{hh_mm} 時間前は活動なし"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:338
 msgid "No activity after {hh_mm} hours"
 msgstr "{hh_mm} 時間後は活動なし"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:350
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:361
 msgid "Day blocked: no activity permitted"
 msgstr "ブロックされた日:活動は禁止"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:356
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:367
 msgid "Activity limited to {hh_mm} per day"
 msgstr "活動は１日 {hh_mm} 時間に制限された"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:382
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:393
 msgid "No activity exceeding {hh_mm}"
 msgstr "{hh_mm} 超過活動なし"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:416
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:427
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "最小休憩時間 {hh_mm} に達していません"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:26
 msgid "default"
 msgstr "デフォルト"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
-msgid "weekday"
-msgstr "平日"
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:27
+msgid "weekplan"
+msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:33
 msgid "weekend"
 msgstr "週末"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:34
 msgid "weekdays"
 msgstr "平日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:35
 msgid "mondays"
 msgstr "月曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:36
 msgid "tuesdays"
 msgstr "火曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:37
 msgid "wednesdays"
 msgstr "水曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:38
 msgid "thursdays"
 msgstr "木曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:39
 msgid "fridays"
 msgstr "金曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:40
 msgid "saturdays"
 msgstr "土曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:41
 msgid "sundays"
 msgstr "日曜日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:242
 msgid "On"
 msgstr "オン"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:242
 msgid "Off"
 msgstr "オフ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:37
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:37
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:43
 msgid "About"
 msgstr "について"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:53
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:53
 msgid "Setting"
 msgstr "設定"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:54
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:54
 msgid "Value"
 msgstr "値"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:57
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:57
 msgid "Repository"
 msgstr "リポジトリ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:61
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:61
 msgid "Version"
 msgstr "バージョン"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:65
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:65
 msgid "Package Revision"
 msgstr "パッケージリビジョン"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:69
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:69
 msgid "Git Commit ID"
 msgstr "GitコミットのID"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:73
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:73
 msgid "Git Branch Name"
 msgstr "Gitブランチ名"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:77
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:77
 msgid "Git Author's Name"
 msgstr "Git作者の名前"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:81
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:81
 msgid "Git Author's Email Address"
 msgstr "Git作者の電子メールアドレス"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:85
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:85
 msgid "Supported Languages"
 msgstr "サポートされている言語"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:39
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:39
 msgid "Administration"
 msgstr "行政"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:50
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:50
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:45
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:53
 msgid "User"
 msgstr "ユーザー"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:59
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:59
 msgid "Show configurations of upcoming days"
 msgstr "近日の構成を見る"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:70
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:70
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:48
 msgid "Today's Activity"
 msgstr "今日の活動"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:78
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:78
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:69
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:76
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:102
 msgid "Save"
 msgstr "セーブ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:84
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:113
 msgid "Day"
 msgstr "日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:85
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:85
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:132
 msgid "Context"
 msgstr "事情"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:86
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:86
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:134
 msgid "Min Time of Day"
 msgstr "最小時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:87
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:87
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:135
 msgid "Max Time of Day"
 msgstr "最高時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:88
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:136
 msgid "Time per Day"
 msgstr "一日あたりの時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:137
 msgid "Minimum Break"
 msgstr "最小休憩"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:138
 msgid "Max Duration"
 msgstr "最高期間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:139
 msgid "Free Play"
 msgstr "自由な遊び"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:102
 msgid "Show overrides for day"
 msgstr "日のオーバーライドを見る"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:142
 msgid "override"
 msgstr "オーバーライド"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:38
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:39
+msgid "Device Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:50
+msgid "Device"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:59
+msgid "Edit device details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:65
+msgid "Number of assigned users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:66
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:76
+msgid "Host Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:75
+msgid "Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:77
+msgid "Min Activity Duration [s]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:78
+msgid "Max Active Response Delay [ms]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:79
+msgid "Sample Size"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/helper.macros.html:52
+msgid "Not set"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:38
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:39
 msgid "Status"
 msgstr "状態"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:51
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:51
 msgid "Previous Activity Start Time"
 msgstr "前回の活動始まった時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:52
 msgid "Previous Activity End Time"
 msgstr "前回の活動終わった時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:53
 msgid "Current Activity Start Time"
 msgstr "今回の活動始まった時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:55
 msgid "Current Activity Duration"
 msgstr "今回の活動期間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:56
 msgid "Current"
 msgstr "現在"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:58
 msgid "Activity permitted"
 msgstr "活動は許可されました"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:59
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:59
 msgid "OK?"
 msgstr "いいですか？"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:61
 msgid "Reasons"
 msgstr "理由"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:67
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:67
 msgid "Show durations of most recent days"
 msgstr "最近の日の期間を見る"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:114
 msgid "Active Time"
 msgstr "活動時間"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:115
 msgid "Active"
 msgstr "活動中"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:116
 msgid "Activity Start"
 msgstr "活動始まる"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:117
 msgid "Start"
 msgstr "始まる"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:118
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:118
 msgid "Activity End"
 msgstr "活動終わる"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:119
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:119
 msgid "End"
 msgstr "終わる"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:120
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:120
 msgid "Host(#procs)"
 msgstr "ホスト(#procs)"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:127
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:127
 msgid "Show activity times"
 msgstr "活動時間を見る"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:21
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:41
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:21
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:41
 msgid "Login"
 msgstr "サインイン"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:34
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:34
 msgid "Username"
 msgstr "ユーザー名"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:35
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:35
 msgid "Password"
 msgstr "パスワード"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:40
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:40
 msgid "Admin"
 msgstr "管理者"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:41
+msgid "Users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:42
+msgid "Devices"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:46
 msgid "Signed in as"
 msgstr "サインインのユーザーは"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:48
 msgid "Logout"
 msgstr "ログアウト"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:40
+msgid "User Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:61
+msgid "Edit user details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:67
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:82
+msgid "Monitored"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:73
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:85
+msgid "Locale"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:83
+msgid "First Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:84
+msgid "Last Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:86
+msgid "Process Name Pattern"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:99
+msgid "Rulesets"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:111
+msgid "Edit ruleset details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:117
+msgid "Details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:121
+msgid "Move ruleset up"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:124
+msgid "Move ruleset down"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:131
+msgid "Label"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:133
+msgid "Context Details"
+msgstr ""
+
+#~ msgid "Hostname"
+#~ msgstr ""
+
+#~ msgid "weekday"
+#~ msgstr "平日"
 

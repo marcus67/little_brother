@@ -448,3 +448,5 @@ a translation. You do not necessarily have to clone this repository or be famili
 
 *   The site [www.mehr-schulferien.de](https://www.mehr-schulferien.de) maintains the vacation metadata for
     Germany.
+    
+*   The icons are provided by [fontawesome.com  ](https://fontawesome.com). 

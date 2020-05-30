@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-04-18 12:22+0200\n"
+"POT-Creation-Date: 2020-05-22 01:28+0200\n"
 "PO-Revision-Date: 2020-04-19 23:19+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: th\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:80
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:90
 msgid "username '{username}' not specified"
 msgstr "ชื่อผู้ใช้'{username}' ไม่ระบุ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:88
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:98
 msgid "username '{username}' not being monitored"
 msgstr "ชื่อผู้ใช้'{username}'ไม่ถูกเฝ้าระวัง"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:158
 msgid "{days} days ago"
 msgstr "{days} วันที่แล้ว"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:155
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:49
 msgid "Today"
 msgstr "วันนี้"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:162
 msgid "Yesterday"
 msgstr "เมื่อวาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:158
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:164
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
@@ -47,7 +47,7 @@ msgstr ""
 "{user}, คุณไม่มีเวลาเหลือแล้วสำหรับวันนี้ \n"
 "กำลังออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:165
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -55,7 +55,7 @@ msgstr ""
 "{user}, สำหรับวันนี้ คุณมีเวลาเหลืออีก {minutes_left_before_logout} นาที\n"
 "กรุณาออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:167
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
@@ -63,7 +63,7 @@ msgstr ""
 "{user}, เวลาใช้งานคอมพิวเตอร์ของคุณหมดแล้วสำหรับวันนี้ \n"
 "กำลังออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
@@ -71,7 +71,7 @@ msgstr ""
 "{user}, ยังไม่ถึงเวลาที่จะใช้คอมพิวเตอร์ \n"
 "กำลังออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:163
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:169
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
@@ -79,16 +79,16 @@ msgstr ""
 "{user}, เลยกำหนดเวลาที่ใช้คอมพิวเตอร์แล้ว \n"
 "กำลังออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:170
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user}, ในอีก {minutes_left_before_logout} นาที จะเลยกำหนดเวลาใช้คอมพิวเตอร์แล้ว"
-"กรุณาออกจากระบบ"
+"{user}, ในอีก {minutes_left_before_logout} นาที "
+"จะเลยกำหนดเวลาใช้คอมพิวเตอร์แล้วกรุณาออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:166
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:172
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
@@ -96,18 +96,16 @@ msgstr ""
 "{user}, ได้เวลาหยุดพักแล้ว \n"
 "กำลังออกจากระบบ"
 
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:173
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
-"{user}, ในอีก {minutes_left_before_logout} นาที คุณจะต้องหยุดพัก"
-"กรุณาออกจากระบบ"
+"{user}, ในอีก {minutes_left_before_logout} นาที "
+"คุณจะต้องหยุดพักกรุณาออกจากระบบ"
 
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:175
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -115,328 +113,455 @@ msgstr ""
 "{user}, เวลาหยุดพักของคุณจะหมดลงภายใน {break_minutes_left} นาที \n"
 "กำลังออกจากระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:177
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
 "in this session."
 msgstr ""
-"สวัสดี {user}, คุณมีเวลาใช้งานเหลืออยู่ {minutes_left_in_session} "
-"นาที\n"
+"สวัสดี {user}, คุณมีเวลาใช้งานเหลืออยู่ {minutes_left_in_session} นาที\n"
 "ในช่วงนี้."
 
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:173
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:179
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "สวัสดี {user}, คุณมีเวลาใช้งานไม่จำกัดในช่วงนี้"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1083
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1106
 msgid "'Today ('EEE')'"
 msgstr "'วันนี้ ('EEE')' "
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1107
 msgid "'Today'"
 msgstr "'วันนี้'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1089
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1112
 msgid "'Tomorrow ('EEE')'"
 msgstr "'พรุ่งนี้('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1113
 msgid "'Tomorrow'"
 msgstr "'พรุ่งนี้'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1095
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1118
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "ปปปป-ดด-วว"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1119
 msgid "EEE"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
 msgid "vacation"
 msgstr "วันหยุด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:34
+msgid "german-vacation-calendar"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:331
 msgid "No activity before {hh_mm} hours"
 msgstr "ไม่มีการใช้งานก่อนเวลา{hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:338
 msgid "No activity after {hh_mm} hours"
 msgstr "ไม่มีการใช้งานหลังเวลา {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:348
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:361
 msgid "Day blocked: no activity permitted"
 msgstr "วันที่ใช้งานไม่ได้"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:354
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:367
 msgid "Activity limited to {hh_mm} per day"
 msgstr "เวลาใช้งานถูกจำกัดอยู่ที่ {hh_mm} ต่อวัน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:380
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:393
 msgid "No activity exceeding {hh_mm}"
 msgstr "เวลาใช้งานไม่เกิน {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:414
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:427
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "เวลาหยุดพัก {hh_mm} ยังไม่ครบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:26
 msgid "default"
 msgstr "ค่าเริ่มต้น"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
-msgid "weekday"
-msgstr "วันทำงาน"
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:27
+msgid "weekplan"
+msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:33
 msgid "weekend"
 msgstr "วันหยุด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:34
 msgid "weekdays"
 msgstr "ทุกวันทำงาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:35
 msgid "mondays"
 msgstr "ทุกวันจันทร์"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:36
 msgid "tuesdays"
 msgstr "ทุกวันอังคาร"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:37
 msgid "wednesdays"
 msgstr "ทุกวันพุธ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:38
 msgid "thursdays"
 msgstr "ทุกวันพฤหัส"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:39
 msgid "fridays"
 msgstr "ทุกวันศุกร์"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:40
 msgid "saturdays"
 msgstr "วันเสาร์"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:41
 msgid "sundays"
 msgstr "ทุกวันอาทิตย์"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:242
 msgid "On"
 msgstr "เปิด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:242
 msgid "Off"
 msgstr "ปิด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:35
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:37
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:43
 msgid "About"
 msgstr "เกี่ยวกับ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:51
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:53
 msgid "Setting"
 msgstr "ตั้งค่า"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:52
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:54
 msgid "Value"
 msgstr "ค่า"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:55
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:57
 msgid "Repository"
 msgstr "แหล่งที่อยู่"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:59
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:61
 msgid "Version"
 msgstr "เวอร์ชั่น"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:63
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:65
 msgid "Package Revision"
 msgstr "การแก้ไขแพ็คเกจ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:67
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:69
 msgid "Git Commit ID"
 msgstr "Git คอมมิท ไอดี"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:71
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:73
 msgid "Git Branch Name"
 msgstr "Git ชื่อสาขา"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:75
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:77
 msgid "Git Author's Name"
 msgstr "Git ชื่อผู้เขียน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:79
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:81
 msgid "Git Author's Email Address"
 msgstr "Git อีเมล์ผู้เขียน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:83
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:85
 msgid "Supported Languages"
 msgstr "ภาษาที่รองรับ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:36
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:39
 msgid "Administration"
 msgstr "ผู้ดูแลระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:47
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:42
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:50
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:45
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:53
 msgid "User"
 msgstr "ผู้ใช้"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:55
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:59
 msgid "Show configurations of upcoming days"
 msgstr "แสดงค่าที่ตั้งไว้ในอนาคต"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:66
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:70
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:48
 msgid "Today's Activity"
 msgstr "การใช้งานวันนี้"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:74
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:78
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:69
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:76
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:102
 msgid "Save"
 msgstr "บันทึก"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:80
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:110
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:84
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:113
 msgid "Day"
 msgstr "วัน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:81
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:43
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:85
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:132
 msgid "Context"
 msgstr "ข้อความ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:82
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:86
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:134
 msgid "Min Time of Day"
 msgstr "ระยะเวลาน้อยที่สุดของวัน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:83
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:87
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:135
 msgid "Max Time of Day"
 msgstr "ระยะเวลานานที่สุดของวัน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:88
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:136
 msgid "Time per Day"
 msgstr "จำนวนครั้งต่อวัน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:137
 msgid "Minimum Break"
 msgstr "เวลาพักน้อยที่สุด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:138
 msgid "Max Duration"
 msgstr "ระยะเวลานานที่สุด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:90
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:139
 msgid "Free Play"
 msgstr "เวลาอิสระ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:97
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:102
 msgid "Show overrides for day"
 msgstr "แสดงการยกเลิกในแต่ละวัน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:142
 msgid "override"
 msgstr "ยกเลิก"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:35
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:39
+msgid "Device Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:50
+msgid "Device"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:59
+msgid "Edit device details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:65
+msgid "Number of assigned users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:66
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:76
+msgid "Host Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:75
+msgid "Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:77
+msgid "Min Activity Duration [s]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:78
+msgid "Max Active Response Delay [ms]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:79
+msgid "Sample Size"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/helper.macros.html:52
+msgid "Not set"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:38
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:39
 msgid "Status"
 msgstr "สถานะ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:51
 msgid "Previous Activity Start Time"
 msgstr "เวลาเริ่มใช้งานครั้งที่ผ่านมา"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:52
 msgid "Previous Activity End Time"
 msgstr "เวลาหยุดใช้งานครั้งที่ผ่านมา"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:50
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:53
 msgid "Current Activity Start Time"
 msgstr "เวลาเริ่มใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:55
 msgid "Current Activity Duration"
 msgstr "ระยะเวลาใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:56
 msgid "Current"
 msgstr "ในขณะนี้"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:58
 msgid "Activity permitted"
 msgstr "การใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:59
 msgid "OK?"
 msgstr "OK?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:61
 msgid "Reasons"
 msgstr "เหตุผล"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:64
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:67
 msgid "Show durations of most recent days"
 msgstr "แสดงระยะเวลาใช้งานในวันที่ผ่านมา"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:111
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:114
 msgid "Active Time"
 msgstr "เวลาใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:112
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:115
 msgid "Active"
 msgstr "กำลังใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:116
 msgid "Activity Start"
 msgstr "เริ่มต้นการใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:117
 msgid "Start"
 msgstr "เริ่มต้น"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:118
 msgid "Activity End"
 msgstr "เสร็จสิ้นการใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:119
 msgid "End"
 msgstr "เสร็จสิ้น"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:120
 msgid "Host(#procs)"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:124
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:127
 msgid "Show activity times"
 msgstr "แสดงเวลาการใช้งาน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:19
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:39
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:21
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:41
 msgid "Login"
 msgstr "ล๊อกอิน"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:32
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:34
 msgid "Username"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:33
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:35
 msgid "Password"
 msgstr "พาสเวิร์ด"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:40
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:40
 msgid "Admin"
 msgstr "ผู้ดูแลระบบ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:41
+msgid "Users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:42
+msgid "Devices"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:46
 msgid "Signed in as"
 msgstr "ลงชื่อเข้าใช้ในนาม"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:48
 msgid "Logout"
 msgstr "ออกจากระบบ"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:40
+msgid "User Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:61
+msgid "Edit user details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:67
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:82
+msgid "Monitored"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:73
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:85
+msgid "Locale"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:83
+msgid "First Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:84
+msgid "Last Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:86
+msgid "Process Name Pattern"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:99
+msgid "Rulesets"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:111
+msgid "Edit ruleset details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:117
+msgid "Details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:121
+msgid "Move ruleset up"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:124
+msgid "Move ruleset down"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:131
+msgid "Label"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:133
+msgid "Context Details"
+msgstr ""
+
+#~ msgid "Hostname"
+#~ msgstr ""
+
+#~ msgid "weekday"
+#~ msgstr "วันทำงาน"
+

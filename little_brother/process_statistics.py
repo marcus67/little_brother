@@ -312,37 +312,37 @@ class ProcessStatisticsInfo(object):
 
 
 def get_empty_stat_infos(
-        p_rule_set_configs,
+        p_user_map,
         p_reference_time,
         p_max_lookback_in_days,
         p_min_activity_duration):
     stat_infos = {}
 
-    for username, rulesets in p_rule_set_configs.items():
+    for user in p_user_map.values():
         user_stat_infos = {}
 
-        for ruleset in rulesets:
+        for ruleset in user.rulesets:
             stat_info = ProcessStatisticsInfo(
-                p_username=username,
+                p_username=user.username,
                 p_reference_time=p_reference_time,
                 p_max_lookback_in_days=p_max_lookback_in_days,
                 p_min_activity_duration=p_min_activity_duration)
             user_stat_infos[ruleset.context] = stat_info
 
-        stat_infos[username] = user_stat_infos
+        stat_infos[user.username] = user_stat_infos
 
     return stat_infos
 
 
 def get_process_statistics(
-        p_rule_set_configs,
+        p_user_map,
         p_process_infos,
         p_reference_time,
         p_max_lookback_in_days,
         p_min_activity_duration):
 
     users_stat_infos = get_empty_stat_infos(
-        p_rule_set_configs=p_rule_set_configs,
+        p_user_map=p_user_map,
         p_reference_time=p_reference_time,
         p_max_lookback_in_days=p_max_lookback_in_days,
         p_min_activity_duration=p_min_activity_duration)
@@ -370,11 +370,14 @@ def get_process_statistics(
                 user_stat_infos = {}
                 users_stat_infos[pinfo.username] = user_stat_infos
 
-            if pinfo.username in p_rule_set_configs:
-                for ruleset in p_rule_set_configs[pinfo.username]:
+            if pinfo.username in p_user_map:
+                user = p_user_map[pinfo.username]
+                for ruleset in user.rulesets:
 
-                    if ((pinfo.processname is None and ruleset.scan_devices) or
-                            (pinfo.processname is not None and ruleset.regex_process_name_pattern.match(
+                    if ((pinfo.processname is None and False # TODO ruleset.scan_devices
+                    )
+                            or
+                            (pinfo.processname is not None and user.regex_process_name_pattern.match(
                                 pinfo.processname))):
                         stat_info = user_stat_infos.get(ruleset.context)
 

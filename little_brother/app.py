@@ -24,15 +24,18 @@ import psutil
 from little_brother import app_control
 from little_brother import client_device_handler
 from little_brother import client_process_handler
+from little_brother import db_migrations
 from little_brother import master_connector
 from little_brother import persistence
 from little_brother import popup_handler
 from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother import status_server
+from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
+from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
 DIR_NAME = 'little-brother'
@@ -52,6 +55,8 @@ LANGUAGES = {
     'bn': 'বাংলা',
     'th': 'ภาษาไทย'
 }
+
+DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
 
 
 class AppConfigModel(base_app.BaseAppConfigModel):
@@ -98,7 +103,7 @@ class App(base_app.BaseApp):
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
         self._prometheus_client = None
-        self.app_config = None
+        self._user_handler = None
 
     def load_configuration(self, p_configuration):
 
@@ -142,11 +147,46 @@ class App(base_app.BaseApp):
         self.app_config = AppConfigModel()
         p_configuration.add_section(self.app_config)
 
+        user_handler_section = unix_user_handler.BaseUserHandlerConfigModel()
+        p_configuration.add_section(user_handler_section)
+
         return super(App, self).load_configuration(p_configuration=p_configuration)
 
     def is_master(self):
 
         return self._config[master_connector.SECTION_NAME].host_url is None
+
+    def check_migrations(self):
+
+        db_mig = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=self._persistence)
+
+        current_version = db_mig.get_current_version()
+
+        msg = "Database is on alembic version {version}"
+        self._logger.info(msg.format(version=current_version))
+
+        if db_mig.check_if_version_is_active(p_version=alembic_version_gui.revision):
+            session = self._persistence.get_session()
+            rows = session.query(persistence.User).count()
+
+            if rows == 0:
+                # if there are no users in the database yet we assume that the migration has never run yet
+                db_mig.migrate_ruleset_configs(
+                    p_ruleset_configs=self._rule_set_section_handler.rule_set_configs)
+
+                db_mig.migrate_client_device_configs(
+                    p_client_device_configs=self._client_device_section_handler.client_device_configs)
+
+            else:
+                if len(self._rule_set_section_handler.rule_set_configs) > 0:
+                    msg = "Remove {count} migrated ruleset sections 'RuleSet*'"
+                    self._logger.warning(
+                        msg.format(count=len(self._rule_set_section_handler.rule_set_configs)))
+
+                if len(self._client_device_section_handler.client_device_configs) > 0:
+                    msg = "Remove {count} migrated device sections 'Device*'"
+                    self._logger.warning(
+                        msg.format(count=len(self._client_device_section_handler.client_device_configs)))
 
     def prepare_services(self, p_full_startup=True):
 
@@ -160,7 +200,7 @@ class App(base_app.BaseApp):
         if self.is_master():
             self._rule_handler = rule_handler.RuleHandler(
                 p_config=self._config[rule_handler.SECTION_NAME],
-                p_rule_set_configs=self._rule_set_section_handler.rule_set_configs)
+                p_persistence=self._persistence)
 
         self._master_connector = master_connector.MasterConnector(
             p_config=self._config[master_connector.SECTION_NAME])
@@ -175,31 +215,46 @@ class App(base_app.BaseApp):
         if config.is_active():
             self._notification_handlers.append(popup_handler.PopupHandler(p_config=config))
 
+        self.check_migrations()
+
         process_handler = client_process_handler.ClientProcessHandler(
             p_config=self._config[client_process_handler.SECTION_NAME],
             p_process_iterator_factory=ProcessIteratorFactory())
 
+        self._client_device_handler = client_device_handler.ClientDeviceHandler(
+            p_config=self._config[client_device_handler.SECTION_NAME],
+            p_persistence=self._persistence)
+
         self._process_handlers = {
-            process_handler.id: process_handler
+            process_handler.id: process_handler,
+            self._client_device_handler.id: self._client_device_handler
         }
-
-        client_device_configs = self._client_device_section_handler.client_device_configs
-
-        if len(client_device_configs) > 0:
-            fmt = "Found {count} client device configuration entry/ies -> activating client device handler"
-            self._logger.info(fmt.format(count=len(client_device_configs)))
-
-            self._client_device_handler = client_device_handler.ClientDeviceHandler(
-                p_config=self._config[client_device_handler.SECTION_NAME],
-                p_client_device_configs=client_device_configs)
-
-            self._process_handlers[self._client_device_handler.id] = self._client_device_handler
 
         config = self._config[prometheus.SECTION_NAME]
 
         if config.is_active():
             self._prometheus_client = prometheus.PrometheusClient(
                 p_logger=self._logger, p_config=config)
+
+        unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
+        status_server_config = self._config[status_server.SECTION_NAME]
+
+        if status_server_config.is_active():
+            if status_server_config.admin_password is not None:
+                msg = "admin_user and admin_password in section [StatusSever] " \
+                      "should be moved to section [UnixUserHandler]"
+                self._logger.warning(msg)
+
+                if not unix_user_handler_config.is_active():
+                    unix_user_handler_config.admin_username = status_server_config.admin_username
+                    unix_user_handler_config.admin_password = status_server_config.admin_password
+
+            if self.is_master() and not unix_user_handler_config.is_active():
+                msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
+                raise configuration.ConfigurationException(msg)
+
+            if unix_user_handler_config.is_active():
+                self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
 
         self._app_control = app_control.AppControl(
             p_config=self._config[app_control.SECTION_NAME],
@@ -209,9 +264,9 @@ class App(base_app.BaseApp):
             p_persistence=self._persistence,
             p_rule_handler=self._rule_handler,
             p_notification_handlers=self._notification_handlers,
-            p_rule_set_configs=self._rule_set_section_handler.rule_set_configs,
             p_master_connector=self._master_connector,
-            p_prometheus_client=self._prometheus_client)
+            p_prometheus_client=self._prometheus_client,
+            p_user_handler=self._user_handler)
 
         if self._config[app_control.SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
@@ -232,16 +287,20 @@ class App(base_app.BaseApp):
                 p_interval=self._client_device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
-        if self._config[status_server.SECTION_NAME].is_active():
+        if status_server_config.is_active():
+
             self._status_server = status_server.StatusServer(
                 p_config=self._config[status_server.SECTION_NAME],
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
+                p_persistence=self._persistence,
                 p_is_master=self.is_master(),
                 p_locale_selector=self.get_request_locale,
                 p_base_gettext=self.gettext,
-                p_languages=LANGUAGES)
+                p_languages=LANGUAGES,
+                p_user_handler=self._user_handler
+            )
 
             self.init_babel(p_localeselector=self.get_request_locale)
 

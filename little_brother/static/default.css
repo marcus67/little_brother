@@ -59,23 +59,44 @@ a.CVE_HYPERLINK:visited {
 }
 
 .col-xs-2 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-3 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-4 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-lg-1 {
   padding-left: 2px;
   padding-right: 2px;
 }
 
-.col-xs-3 {
-  padding-left: 3px;
-  padding-right: 3px;
+.col-lg-2 {
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
-.col-xs-4 {
-  padding-left: 4px;
-  padding-right: 4px;
+.col-lg-3 {
+  padding-left: 2px;
+  padding-right: 2px;
 }
+
+.col-lg-4 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
 
 .col-md-1 {
-  padding-left: 1px;
-  padding-right: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .col-md-2 {
@@ -84,13 +105,13 @@ a.CVE_HYPERLINK:visited {
 }
 
 .col-md-3 {
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .col-md-4 {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .col-xs-1 input {
@@ -98,18 +119,23 @@ a.CVE_HYPERLINK:visited {
   padding-right: 1px;
 }
 .col-xs-2 input {
-  padding-left: 2px;
-  padding-right: 2px;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 
 .col-xs-3 input {
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 
 .col-xs-4 input {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.form-control {
+  padding-left: 1px;
+  padding-right: 1px;
 }
 
 .rule-override {
@@ -187,6 +213,18 @@ div.STANDARD_TABLE div.ROWLEVEL_4 {
   background-color: #d5ebff;
 }
 
+div.STANDARD_TABLE div.ALTERNATE_ROWLEVEL_1 {
+  background-color: #8ec144;
+}
+
+div.STANDARD_TABLE div.ALTERNATE_ROWLEVEL_2 {
+  background-color: #a8c087;
+}
+
+div.STANDARD_TABLE div.ALTERNATE_ROWLEVEL_3 {
+  background-color: #b8c0ad;
+}
+
 div.STANDARD_TABLE div.SEPERATOR_ROW {
   height:2px;
 }
@@ -261,4 +299,38 @@ UL {
 .move-left {
     width: auto;
     box-shadow: none;
+}
+
+.fas {
+  width: 20px;
+}
+
+ /* Style buttons */
+.btn {
+  background-color: gray; /* Blue background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 4px 4px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: dark-grey;
+}
+
+.inline-field {
+  display: inline;
+  width: auto;
+}
+
+.active {
+  color: green;
+  font-size: 125%;
+}
+
+.inactive {
+  color: red;
+  font-size: 125%;
 }

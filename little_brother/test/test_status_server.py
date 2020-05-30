@@ -68,7 +68,7 @@ class TestStatusServer(base_test.BaseTestCase):
             p_ruleset_configs = {}
 
         _persistence = test_persistence.TestPersistence.create_dummy_persistence()
-        _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_ruleset_configs=p_ruleset_configs)
+        _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_persistence=_persistence)
 
         master_connector_config = master_connector.MasterConnectorConfigModel()
         _master_connector = master_connector.MasterConnector(p_config=master_connector_config)
@@ -83,7 +83,6 @@ class TestStatusServer(base_test.BaseTestCase):
             p_persistence=_persistence,
             p_rule_handler=_rule_handler,
             p_notification_handlers=[],
-            p_rule_set_configs=p_ruleset_configs,
             p_master_connector=_master_connector,
             p_login_mapping=test_data.LOGIN_MAPPING)
 
@@ -99,6 +98,7 @@ class TestStatusServer(base_test.BaseTestCase):
             p_package_name=app.PACKAGE_NAME,
             p_app_control=_app_control,
             p_master_connector=_master_connector,
+            p_persistence=_persistence,
             p_is_master=True)
 
         return _status_server

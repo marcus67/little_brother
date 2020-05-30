@@ -265,10 +265,10 @@ def apply_override(p_rule_set, p_rule_override):
 
 class RuleHandler(object):
 
-    def __init__(self, p_config, p_rule_set_configs):
+    def __init__(self, p_config, p_persistence):
 
         self._config = p_config
-        self._rule_set_configs = p_rule_set_configs
+        self._persistence = p_persistence
         self._context_rule_handlers = {}
         self._default_context_rule_handler_name = None
 
@@ -280,33 +280,44 @@ class RuleHandler(object):
         if p_default:
             self._default_context_rule_handler_name = p_context_rule_handler.context_name
 
-    def get_active_ruleset_config(self, p_username, p_reference_date):
+    def get_context_rule_handler_names(self):
 
-        active_ruleset_config = None
+        return self._context_rule_handlers.keys()
+
+    def validate_context_rule_handler_details(self, p_context_name, p_context_details):
+
+        context_rule_handler = self._context_rule_handlers.get(p_context_name)
+
+        if context_rule_handler is not None:
+            context_rule_handler.validate_context_details(p_context_details)
+
+    def get_active_ruleset(self, p_username, p_reference_date):
+
+        active_ruleset = None
         max_priority = None
 
-        ruleset_configs = self._rule_set_configs.get(p_username)
+        user = self._persistence.user_map.get(p_username)
 
-        if ruleset_configs is not None:
-            for c_config in ruleset_configs:
+        if user is not None:
+            for ruleset in user.rulesets:
                 active = False
 
-                context_name = c_config.context or self._default_context_rule_handler_name
+                context_name = ruleset.context or self._default_context_rule_handler_name
 
                 context_rule_handler = self._context_rule_handlers.get(context_name)
 
                 if context_rule_handler is None:
-                    raise configuration.ConfigurationException("invalid rule set context '%s'" % c_config.context)
+                    raise configuration.ConfigurationException("invalid rule set context '%s'" % ruleset.context)
 
                 active = context_rule_handler.is_active(p_reference_date=p_reference_date,
-                                                        p_details=c_config.context_details)
+                                                        p_details=ruleset.context_details)
 
                 if active:
-                    if max_priority is None or c_config.priority > max_priority:
-                        max_priority = c_config.priority
-                        active_ruleset_config = c_config
+                    if max_priority is None or ruleset.priority > max_priority:
+                        max_priority = ruleset.priority
+                        active_ruleset = ruleset
 
-        return active_ruleset_config
+        return active_ruleset
 
     def check_time_of_day(self, p_rule_set, p_stat_info, p_rule_result_info):
 
@@ -426,7 +437,7 @@ class RuleHandler(object):
 
         rule_result_info = RuleResultInfo()
 
-        rule_set = self.get_active_ruleset_config(p_username=p_stat_info.username, p_reference_date=p_reference_time)
+        rule_set = self.get_active_ruleset(p_username=p_stat_info.username, p_reference_date=p_reference_time)
         rule_result_info.default_rule_set = rule_set
         rule_result_info.effective_rule_set = apply_override(p_rule_set=rule_set, p_rule_override=p_rule_override)
 

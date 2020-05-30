@@ -51,7 +51,7 @@ class RuleOverride(object):
 
         fmt = "Rule override (user={user}, date={date}, time-of-day=[{min_time} to {max_time}], "\
               "max-time-per-day:{max_time_per_day}, min-break:{min_break}, "\
-              "max-activity-duration:{max_activity_duration} free-play:free_play)"
+              "max-activity-duration:{max_activity_duration} free-play:{free_play})"
         return fmt.format(user=self.username, date=date, min_time=min_time, max_time=max_time,
                           max_time_per_day=max_time_per_day, min_break=min_break,
                           max_activity_duration=max_activity_duration, free_play=self.free_play)

@@ -21,7 +21,9 @@
 import datetime
 
 from little_brother import client_device_handler
+from little_brother import db_migrations
 from little_brother.test import test_data
+from little_brother.test import test_persistence
 from python_base_app.test import base_test
 
 
@@ -43,8 +45,12 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence()
+        dummy_persistence.add_new_user(p_username=test_data.USER_1)
+        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+        migrator.migrate_client_device_configs(device_configs)
         process_handler = client_device_handler.ClientDeviceHandler(p_config=config,
-                                                                    p_client_device_configs=device_configs)
+                                                                    p_persistence=dummy_persistence)
 
         process_handler.scan_processes(p_server_group=None,
                                        p_login_mapping=None,
@@ -70,8 +76,11 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence()
+        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+        migrator.migrate_client_device_configs(device_configs)
         process_handler = client_device_handler.ClientDeviceHandler(p_config=config,
-                                                                    p_client_device_configs=device_configs)
+                                                                    p_persistence=dummy_persistence)
 
         process_handler.scan_processes(p_server_group=None,
                                        p_login_mapping=None,

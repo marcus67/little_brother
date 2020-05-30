@@ -34,5 +34,8 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
     def context_name(self):
         return self._context_name
 
+    def validate_context_details(self, p_detail):
+        pass
+
     def check_data(self):
         pass

@@ -94,10 +94,10 @@ class ClientDeviceSectionHandler(configuration.ConfigurationSectionHandler):
 
 class ClientDeviceHandler(process_handler.ProcessHandler):
 
-    def __init__(self, p_config, p_client_device_configs):
+    def __init__(self, p_config, p_persistence):
 
         super().__init__(p_config=p_config)
-        self._client_device_configs = p_client_device_configs
+        self._persistence = p_persistence
 
         try:
             self.ping_result_regex = re.compile(self._config.ping_result_regex)
@@ -197,26 +197,26 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_number_of_monitored_devices(self):
 
-        return len(self._client_device_configs)
+        return len(self._persistence.devices)
 
     def get_device_stats(self):
 
         device_stats = []
 
-        for device_config in self._client_device_configs.values():
+        for device in self._persistence.devices:
             response_time = None
             moving_average_response_time = None
             active = False
 
-            if device_config.hostname in self._device_infos:
-                device_info = self._device_infos[device_config.hostname]
+            if device.hostname in self._device_infos:
+                device_info = self._device_infos[device.hostname]
 
                 if device_info is not None:
                     response_time = device_info.get_latest_value()
                     moving_average_response_time = device_info.get_value()
                     active = True
 
-            stat = DeviceStat(device_config.name, active, response_time, moving_average_response_time)
+            stat = DeviceStat(device.device_name, active, response_time, moving_average_response_time)
             device_stats.append(stat)
 
         return device_stats
@@ -226,37 +226,38 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
         current_device_infos = {}
         events = []
 
-        for device_config in self._client_device_configs.values():
-            device_is_up = self.ping_device(p_client_device_config=device_config)
+        for device in self._persistence.devices:
+            device_is_up = self.ping_device(p_client_device_config=device)
 
             if device_is_up:
-                current_device_infos[device_config.hostname] = device_config
+                current_device_infos[device.hostname] = device
 
             else:
-                if device_config.hostname in self._process_info_candidates:
-                    del (self._process_info_candidates[device_config.hostname])
+                if device.hostname in self._process_info_candidates:
+                    del (self._process_info_candidates[device.hostname])
 
-        for hostname, device_config in current_device_infos.items():
+        for hostname, device in current_device_infos.items():
             current_pinfo = self.get_current_active_pinfo(hostname)
 
             if current_pinfo is None:
                 if hostname in self._process_info_candidates:
-                    event = self._process_info_candidates[hostname]
+                    process_start_time = self._process_info_candidates[hostname]
 
-                    uptime = (p_reference_time - event.process_start_time).total_seconds()
+                    uptime = (p_reference_time - process_start_time).total_seconds()
 
-                    if uptime > device_config.min_activity_duration:
+                    if uptime > device.min_activity_duration:
+                        for user2device in device.users:
+                            event = admin_event.AdminEvent(
+                                p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
+                                p_hostname=hostname,
+                                p_processhandler=self.id,
+                                p_username=user2device.user.username,
+                                p_process_start_time=p_reference_time)
                         events.append(event)
                         del (self._process_info_candidates[hostname])
 
                 else:
-                    event = admin_event.AdminEvent(
-                        p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
-                        p_hostname=hostname,
-                        p_processhandler=self.id,
-                        p_username=device_config.username,
-                        p_process_start_time=p_reference_time)
-                    self._process_info_candidates[hostname] = event
+                    self._process_info_candidates[hostname] = p_reference_time
 
         for pinfo in self._process_infos.values():
             # If the end time of a current entry is None AND the process was started on the local host AND

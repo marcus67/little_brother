@@ -18,6 +18,7 @@
 import collections
 import datetime
 import json
+import wtforms
 
 import requests
 
@@ -30,7 +31,7 @@ _ = lambda x: x
 
 _("vacation")
 
-CALENDAR_CONTEXT_RULE_HANDLER_NAME = "german-vacation-calendar"
+CALENDAR_CONTEXT_RULE_HANDLER_NAME = _("german-vacation-calendar")
 
 SECTION_NAME = "GermanVacationCalendar"
 
@@ -106,8 +107,6 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
             fmt = "downloaded index metadata for {count} vacation types"
             self._logger.info(fmt.format(count=len(self._vacation_type_map)))
-
-
 
     def check_locations(self):
 
@@ -212,3 +211,18 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
         self._cache[key] = False
         return False
+
+    def validate_context_details(self, p_context_detail):
+
+        self.check_data()
+
+        if p_context_detail not in self._vacation_data:
+
+            choices = "'" + "', '".join(sorted(self._vacation_data.keys()))
+
+            fmt = "Invalid state '{detail}'. Must be one of {choices}"
+            msg = fmt.format(detail=p_context_detail, choices=choices)
+
+            raise wtforms.validators.ValidationError(message=str(msg))
+
+

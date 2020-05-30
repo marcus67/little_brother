@@ -17,15 +17,23 @@
 
 import datetime
 import urllib.parse
+import re
 
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
-from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean, ForeignKey, Table
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.orm import relationship, contains_eager, joinedload
 
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
+
+from little_brother import constants
+from little_brother import rule_handler
+from little_brother import simple_context_rule_handlers
+
+_ = lambda x: x
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -43,7 +51,6 @@ DATABASE_DRIVERS = [
 
 #: Default value for option :class:`PersistenceConfigModel.pool_recycle`
 DEFAULT_POOL_RECYCLE = 3600
-
 
 class ProcessInfo(Base):
     __tablename__ = 'process_info'
@@ -90,10 +97,219 @@ class RuleOverride(Base):
     max_activity_duration = Column(Integer)
 
 
-def copy_attributes(p_from, p_to):
+class User(Base):
+    __tablename__ = 'user'
+
+    id = Column(Integer, primary_key=True)
+    process_name_pattern = Column(String(256))
+    username = Column(String(256))
+    first_name = Column(String(256))
+    last_name = Column(String(256))
+    locale = Column(String(5))
+    active = Column(Boolean)
+    rulesets = relationship("RuleSet", back_populates="user", lazy="joined")
+    devices = relationship("User2Device", back_populates="user", lazy="joined")
+
+    def __init__(self):
+
+        self.process_name_pattern = None
+        self.username = None
+        self.first_name = None
+        self.last_name = None
+        self.locale = None
+        self.active = False
+
+        self.init_on_load()
+
+    @staticmethod
+    def get_by_username(p_session, p_username):
+        query = p_session.query(User).filter(User.username == p_username)
+
+        if query.count() == 1:
+            return query.one()
+
+        else:
+            return None
+
+    @property
+    def html_key(self):
+        return "user_{id}".format(id=self.id)
+
+    @property
+    def delete_html_key(self):
+        return "delete_user_{id}".format(id=self.id)
+
+    @property
+    def new_ruleset_html_key(self):
+        return "new_ruleset_user_{id}".format(id=self.id)
+
+    @sqlalchemy.orm.reconstructor
+    def init_on_load(self):
+        self._regex_process_name_pattern = None
+
+    @property
+    def regex_process_name_pattern(self):
+
+        if self._regex_process_name_pattern is None:
+            self._regex_process_name_pattern = re.compile(self.process_name_pattern)
+
+        return self._regex_process_name_pattern
+
+    @property
+    def sorted_rulesets(self):
+        return sorted(self.rulesets, key=lambda ruleset:-ruleset.priority)
+
+
+class Device(Base):
+    __tablename__ = 'device'
+
+    id = Column(Integer, primary_key=True)
+    device_name = Column(String(256), nullable=False)
+    hostname = Column(String(256))
+    min_activity_duration = Column(Integer)
+    max_active_ping_delay = Column(Integer)
+    sample_size = Column(Integer)
+    users = relationship("User2Device", back_populates="device", lazy="joined")
+
+    def __init__(self):
+
+        self.device_name = None
+        self.hostname = None
+        self.min_activity_duration = None
+        self.max_active_ping_delay = None
+        self.sample_size = None
+
+    @staticmethod
+    def get_by_device_name(p_session, p_device_name):
+        query = p_session.query(Device).filter(Device.device_name == p_device_name)
+
+        if query.count() == 1:
+            return query.one()
+
+        else:
+            return None
+
+    @staticmethod
+    def get_by_id(p_session, p_id):
+        query = p_session.query(Device).filter(Device.id == p_id)
+
+        if query.count() == 1:
+            return query.one()
+
+        else:
+            return None
+
+    @property
+    def html_key(self):
+        return "device_{id}".format(id=self.id)
+
+    @property
+    def delete_html_key(self):
+        return "delete_device_{id}".format(id=self.id)
+
+
+class User2Device(Base):
+    __tablename__ = 'user2device'
+
+    id = Column(Integer, primary_key=True)
+    active = Column(Boolean)
+    percent = Column(Integer)
+
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("User", back_populates="devices", lazy="joined")
+
+    device_id = Column(Integer, ForeignKey("device.id"), nullable=False)
+    device = relationship("Device", back_populates="users", lazy="joined")
+
+class RuleSet(Base):
+    __tablename__ = 'ruleset'
+
+    id = Column(Integer, primary_key=True)
+
+    context_label = Column(String(256))
+    context = Column(String(256))
+    context_details = Column(String(256))
+    priority = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("User", back_populates="rulesets", lazy="joined")
+    min_time_of_day = Column(Time)
+    max_time_of_day = Column(Time)
+    max_time_per_day = Column(Integer)
+    max_activity_duration = Column(Integer)
+    min_break = Column(Integer)
+    free_play = Column(Boolean)
+
+    def __init__(self):
+
+        self.context = None
+        self.context_details = None
+        self.context_label = None
+        self.min_time_of_day = None
+        self.max_time_of_day = None
+        self.max_time_per_day = None
+        self.max_activity_duration = None
+        self.min_break = None
+        self.free_play = False
+        self.priority = None
+
+    @property
+    def label(self):
+        if self.context_label:
+            return self.context_label
+
+        else:
+            return self.context
+
+
+    @property
+    def html_key(self):
+        return "ruleset_{id}".format(id=self.id)
+
+    @property
+    def delete_html_key(self):
+        return "delete_ruleset_{id}".format(id=self.id)
+
+    @property
+    def move_up_html_key(self):
+        return "move_up_ruleset_{id}".format(id=self.id)
+
+    @property
+    def move_down_html_key(self):
+        return "move_down_ruleset_{id}".format(id=self.id)
+
+    @staticmethod
+    def get_by_id(p_session, p_id):
+        query = p_session.query(RuleSet).filter(RuleSet.id == p_id)
+
+        if query.count() == 1:
+            return query.one()
+
+        else:
+            return None
+
+    @property
+    def can_move_up(self):
+
+        return 1 < self.priority < len(self.user.rulesets)
+
+
+
+    @property
+    def can_move_down(self):
+
+        return self.priority > 2
+
+    @property
+    def fixed_context(self):
+
+        return self.priority == 1
+
+
+def copy_attributes(p_from, p_to, p_only_existing=False):
     for (key, value) in p_from.__dict__.items():
         if not key.startswith('_'):
-            setattr(p_to, key, value)
+            if key in p_to.__dict__ or not p_only_existing:
+                setattr(p_to, key, value)
 
 
 def create_class_instance(p_class, p_initial_values):
@@ -134,6 +350,8 @@ class Persistence(object):
         self._create_table_session = None
         self._admin_engine = None
         self._reuse_session = p_reuse_session
+        self._users = None
+        self._devices = None
 
         if self._config.database_user is not None:
             tools.check_config_value(p_config=self._config, p_config_attribute_name="database_password")
@@ -206,6 +424,9 @@ class Persistence(object):
             self._logger.info(fmt)
             self._create_table_session = sqlalchemy.orm.sessionmaker(bind=self._create_table_engine)()
         return self._create_table_session
+
+    def get_connection(self):
+        return self._engine.connect()
 
     def get_session(self):
         if not self._session_used:
@@ -405,3 +626,170 @@ class Persistence(object):
 
         if not self._reuse_session:
             session.close()
+
+    @property
+    def users(self):
+
+        if self._users is None:
+            session = self.get_session()
+            self._users = session.query(User).options(joinedload(User.rulesets), contains_eager('rulesets.user')).all()
+
+        return self._users
+
+
+    @property
+    def user_map(self):
+
+        return { user.username:user for user in self.users }
+
+    @property
+    def devices(self):
+
+        if self._devices is None:
+            session = self.get_session()
+            self._devices = session.query(Device).all()
+
+        return self._devices
+
+
+    def clear_cache(self):
+        self._users = None
+        self._devices = None
+
+    def get_default_ruleset(self, p_priority=rule_handler.DEFAULT_PRIORITY):
+
+        default_ruleset = RuleSet()
+        default_ruleset.priority = p_priority
+        default_ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
+        return default_ruleset
+
+    def add_new_user(self, p_username, p_locale=None):
+
+        if p_username in self.user_map:
+            msg =  "Cannot create new user {username}. Already in database!"
+            self._logger.warning(msg.format(username=p_username))
+            return
+
+        session = self.get_session()
+        new_user = User()
+        new_user.username = p_username
+        new_user.locale = p_locale
+        new_user.process_name_pattern = rule_handler.DEFAULT_PROCESS_PATTERN
+        session.add(new_user)
+
+        default_ruleset = self.get_default_ruleset()
+        default_ruleset.user = new_user
+        session.add(default_ruleset)
+
+        session.commit()
+        self.clear_cache()
+
+    def add_new_device(self, p_name_pattern):
+
+        session = self.get_session()
+        new_device = Device()
+        new_device.device_name = tools.get_new_object_name(
+            p_name_pattern=p_name_pattern,
+            p_existing_names=[device.device_name for device in self.devices])
+        new_device.sample_size = constants.DEFAULT_DEVICE_SAMPLE_SIZE
+        new_device.min_activity_duration = constants.DEFAULT_DEVICE_MIN_ACTIVITY_DURATION
+        new_device.max_active_ping_delay = constants.DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY
+        session.add(new_device)
+
+        session.commit()
+        self.clear_cache()
+
+
+    def delete_user(self, p_username):
+
+        session = self.get_session()
+        user = User.get_by_username(p_session=session, p_username=p_username)
+
+        if user is None:
+            msg =  "Cannot delete user {username}. Not in database!"
+            self._logger.warning(msg.format(username=p_username))
+            return
+
+        for ruleset in user.rulesets:
+            session.delete(ruleset)
+
+        session.delete(user)
+        session.commit()
+        self.clear_cache()
+
+    def delete_device(self, p_id):
+
+        session = self.get_session()
+        device = Device.get_by_id(p_session=session, p_id=p_id)
+
+        if device is None:
+            msg =  "Cannot delete device {id}. Not in database!"
+            self._logger.warning(msg.format(id=p_id))
+            return
+
+        for user2device in device.users:
+            session.delete(user2device)
+
+        session.delete(device)
+        session.commit()
+        self.clear_cache()
+
+    def add_ruleset(self, p_username):
+
+        session = self.get_session()
+        user = User.get_by_username(p_session=session, p_username=p_username)
+
+        if user is None:
+            msg =  "Cannot add ruleset to user {username}. Not in database!"
+            self._logger.warning(msg.format(username=p_username))
+            return
+
+        new_priority = max([ruleset.priority for ruleset in user.rulesets]) + 1
+
+        default_ruleset = self.get_default_ruleset(p_priority=new_priority)
+        default_ruleset.user     = user
+        session.add(default_ruleset)
+
+        session.commit()
+        self.clear_cache()
+
+    def move_ruleset(self, p_ruleset, p_sorted_rulesets):
+
+        found = False
+        index = 0
+
+        while not found:
+            if p_sorted_rulesets[index].priority == p_ruleset.priority:
+                found = True
+
+            else:
+                index += 1
+
+        other_ruleset = p_sorted_rulesets[index + 1]
+
+        tmp = p_ruleset.priority
+        p_ruleset.priority = other_ruleset.priority
+        other_ruleset.priority = tmp
+
+    def move_up_ruleset(self, p_ruleset_id):
+
+        session = self.get_session()
+
+        ruleset = RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
+        sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset:ruleset.priority)
+        self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
+
+        session.commit()
+        self.clear_cache()
+
+    def move_down_ruleset(self, p_ruleset_id):
+
+        session = self.get_session()
+
+        ruleset = RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
+        sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: -ruleset.priority)
+        self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
+
+        session.commit()
+        self.clear_cache()
+

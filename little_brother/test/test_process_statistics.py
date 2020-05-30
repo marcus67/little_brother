@@ -23,9 +23,11 @@ import unittest
 
 from little_brother import process_info
 from little_brother import process_statistics
+from little_brother import db_migrations
 from python_base_app.test import base_test
 
 from little_brother.test import test_data
+from little_brother.test import test_persistence
 
 HOSTNAME = "hostname"
 HOSTNAME2 = "hostname2"
@@ -222,8 +224,12 @@ class TestProcessStatistics(base_test.BaseTestCase):
 
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence()
+        dummy_persistence.add_new_user(p_username=test_data.USER_1)
+        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+        migrator.migrate_ruleset_configs(p_ruleset_configs=rule_set_configs)
         sis = process_statistics.get_empty_stat_infos(
-            p_rule_set_configs=rule_set_configs,
+            p_user_map=dummy_persistence.user_map,
             p_reference_time=start_time,
             p_max_lookback_in_days=5,
             p_min_activity_duration=30)
@@ -235,9 +241,13 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence()
+        dummy_persistence.add_new_user(p_username=test_data.USER_1)
+        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+        migrator.migrate_ruleset_configs(p_ruleset_configs=rule_set_configs)
 
         pss = process_statistics.get_process_statistics(
-            p_rule_set_configs=rule_set_configs,
+            p_user_map=dummy_persistence.user_map,
             p_process_infos=test_data.get_process_dict(p_processes=test_data.PROCESSES_3),
             p_reference_time=start_time,
             p_max_lookback_in_days=5,

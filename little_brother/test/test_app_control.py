@@ -24,6 +24,7 @@ from little_brother import app_control
 from little_brother import master_connector
 from little_brother import prometheus
 from little_brother.test import test_rule_handler
+from little_brother.test import test_persistence
 from python_base_app.test import base_test
 
 HOSTNAME = "hostname"
@@ -38,7 +39,7 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         self.assertIsNotNone(ac)
 
@@ -49,10 +50,12 @@ class TestAppControl(base_test.BaseTestCase):
 
         rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
 
+        dummy_persistence = p_persistence=test_persistence.TestPersistence.create_dummy_persistence()
+
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_rule_handler=test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
-                                        p_ruleset_configs=rule_set_configs),
-                                    p_rule_set_configs=rule_set_configs)
+                                        p_persistence=dummy_persistence),
+                                    p_persistence=dummy_persistence)
 
         self.assertIsNotNone(ac)
 
@@ -68,7 +71,7 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         func = ac.get_number_of_monitored_users_function()
         self.assertIsNotNone(func)
@@ -79,7 +82,7 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         ac.retrieve_user_mappings()
 
@@ -92,7 +95,7 @@ class TestAppControl(base_test.BaseTestCase):
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_master_connector=mc,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         self.assertFalse(ac.is_master())
 
@@ -104,7 +107,7 @@ class TestAppControl(base_test.BaseTestCase):
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_master_connector=mc,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         self.assertTrue(ac.is_master())
 
@@ -117,7 +120,7 @@ class TestAppControl(base_test.BaseTestCase):
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_prometheus_client=pc,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         ac.set_prometheus_http_requests_summary(p_duration=1.0, p_hostname=HOSTNAME, p_service="/app")
         ac.set_metrics()
@@ -129,7 +132,7 @@ class TestAppControl(base_test.BaseTestCase):
         config.check_interval = 123
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_rule_set_configs=test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs())
+                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence())
 
         self.assertIsNotNone(ac)
 

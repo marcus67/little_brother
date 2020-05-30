@@ -21,7 +21,11 @@
 {% macro render_field(field) %}
   {% if field.errors %}
   <div class="form-group has-error">
-  {{ field(class_="form-control " + field.extra_css_classes) }}
+  {% if field.extra_css_classes is defined %}
+    {{ field(class_="form-control " + field.extra_css_classes) }}
+  {% else %}
+    {{ field(class_="form-control") }}
+  {% endif %}
     <label class="control-label" for="{{ field.id }}">
     {% if field.errors|length == 1 %}
         {{ field.errors[0]|_base }}
@@ -35,7 +39,19 @@
     </label>
   </div>
   {% else %}
-  {{ field(class_="form-control " + field.extra_css_classes) }}
+      {% if field.extra_css_classes is defined %}
+        {{ field(class_="form-control " + field.extra_css_classes) }}
+      {% else %}
+        {{ field(class_="form-control") }}
+      {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro value_or_not_set(value) %}
+  {% if value == '' %}
+  {{ _('Not set') }}
+  {% else %}
+  {{ value }}
   {% endif %}
 {% endmacro %}
 
@@ -57,3 +73,36 @@
    .nonlocaletext { font-size: {{ rel_font_size|invert }}%; }
 </style>
 {% endmacro %}
+
+<!-- https://www.it-swarm.dev/de/jquery/bestaetigen-sie-den-loeschvorgang-mit-der-modifizierten-box-von-bootstrap-3/1044781339/ -->
+<!-- https://getbootstrap.com/docs/3.4/javascript/#modals -->
+{% macro modal_confirm( id, message, action_text, cancel_text ) %}
+<div id="{{ id }}-modal-dialog" class="modal fade" tabindex="-1"  role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            {{ message }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-primary" id="{{ id }}-modal-confirm">{{ action_text }}</button>
+            <button type="button" data-dismiss="modal" class="btn">{{ cancel_text }}</button>
+          </div>
+        </div>
+    </div>
+</div>
+<BUTTON type="submit" name="submit" value="{{ id }}" style="visibility: hidden;"></BUTTON>
+<SCRIPT type="text/javascript">
+$('button[id="{{ id }}"]').on('click', function(e) {
+  e.preventDefault();
+  $('#{{ id }}-modal-dialog').modal("show")
+  .on('click', '#{{ id }}-modal-confirm', function(e) {
+      $('button[value="{{ id }}"]').trigger("click")
+    });
+});
+</SCRIPT>
+{% endmacro %}
+
+{% macro fontawesome_script() %}
+<SCRIPT src="https://kit.fontawesome.com/037bf0dee9.js" crossorigin="anonymous"></SCRIPT>
+{% endmacro %}
+
