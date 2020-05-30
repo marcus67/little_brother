@@ -35,6 +35,7 @@ from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
+from python_base_app import unix_user_handler
 from python_base_app.test import base_test
 
 ADMIN_USERNAME = "admin"
@@ -93,13 +94,20 @@ class TestStatusServer(base_test.BaseTestCase):
 
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
+        user_handler_config = unix_user_handler.BaseUserHandlerConfigModel()
+        user_handler_config.admin_username = ADMIN_USERNAME
+        user_handler_config.admin_password = ADMIN_PASSWORD
+
+        user_handler = unix_user_handler.UnixUserHandler(p_config=user_handler_config)
+
         _status_server = status_server.StatusServer(
             p_config=status_server_config,
             p_package_name=app.PACKAGE_NAME,
             p_app_control=_app_control,
             p_master_connector=_master_connector,
             p_persistence=_persistence,
-            p_is_master=True)
+            p_is_master=True,
+            p_user_handler=user_handler)
 
         return _status_server
 
