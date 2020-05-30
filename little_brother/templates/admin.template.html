@@ -67,12 +67,14 @@
 			        		{{ accordion.toggle_end() }}
 		        		</DIV>		        
 			    		<DIV CLASS="col-xs-7  col-sm-7  col-md-8  col-lg-8 localetext">
+							{% if admin_info.user_info.active_stat_info is defined %}
 							{{_("Today's Activity")}}: <SPAN CLASS="nonlocaletext">{{ admin_info.user_info.active_stat_info.todays_activity_duration|seconds_to_string }}/{{ admin_info.day_infos[0].effective_rule_set.max_time_per_day|seconds_to_string }}</SPAN>
 							<UL>
 							{% for rule_template in admin_info.user_info.active_rule_result_info.applying_rule_text_templates %}
 								<LI>{{ _(rule_template[0])|format(rule_template[1])|safe }}</LI>
 							{% endfor %}
 							</UL>
+							{% endif %}
 						</DIV>
 		        		<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
 		        			<button type="submit">{{_('Save')}}</button>
