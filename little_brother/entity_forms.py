@@ -33,6 +33,10 @@ class NewUserForm(custom_form.ModelForm):
 
     username = wtforms.SelectField("NewUsername")
 
+class NewUser2DeviceForm(custom_form.ModelForm):
+
+    device_id = wtforms.SelectField("NewDeviceId")
+
 class DeviceForm(custom_form.ModelForm):
 
     device_name = wtforms.StringField("FirstName")
@@ -52,3 +56,8 @@ class RulesetForm(custom_form.ModelForm):
     min_break = custom_fields.DurationField("MinBreak")
     free_play = custom_fields.BooleanField("FreePlay")
     max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
+
+class User2DeviceForm(custom_form.ModelForm):
+
+    percent = wtforms.IntegerField("Percent")
+    active = custom_fields.BooleanField("Active")

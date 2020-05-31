@@ -291,6 +291,14 @@ class StatusServer(base_web_server.BaseWebServer):
                     form.save_to_model(p_model=persistent_ruleset)
                     changed = True
 
+            for user2device in user.devices:
+                form = p_forms[user2device.html_key]
+                persistent_user2device = persistence.User2Device.get_by_id(p_session=session, p_id=user2device.id)
+
+                if persistent_user2device is not None and form.differs_from_model(p_model=persistent_user2device):
+                    form.save_to_model(p_model=persistent_user2device)
+                    changed = True
+
         if changed:
             self._persistence.clear_cache()
 
@@ -381,16 +389,27 @@ class StatusServer(base_web_server.BaseWebServer):
                         if request.form['submit'] == user.delete_html_key:
                             self._persistence.delete_user(user.username)
 
-                        if request.form['submit'] == user.new_ruleset_html_key:
+                        elif request.form['submit'] == user.new_ruleset_html_key:
                             self._persistence.add_ruleset(user.username)
 
-                for user in users:
-                    for ruleset in user.rulesets:
-                        if request.form['submit'] == ruleset.move_down_html_key:
-                            self._persistence.move_down_ruleset(p_ruleset_id=ruleset.id)
+                        elif request.form['submit'] == user.new_device_html_key:
+                            device_id = int(forms[user.new_device_html_key].device_id.data)
+                            self._persistence.add_device(p_device_id=device_id, p_username=user.username)
 
-                        if request.form['submit'] == ruleset.move_up_html_key:
-                            self._persistence.move_up_ruleset(p_ruleset_id=ruleset.id)
+                        else:
+                            for ruleset in user.rulesets:
+                                if request.form['submit'] == ruleset.delete_html_key:
+                                    self._persistence.delete_ruleset(p_ruleset_id=ruleset.id)
+
+                                elif request.form['submit'] == ruleset.move_down_html_key:
+                                    self._persistence.move_down_ruleset(p_ruleset_id=ruleset.id)
+
+                                elif request.form['submit'] == ruleset.move_up_html_key:
+                                    self._persistence.move_up_ruleset(p_ruleset_id=ruleset.id)
+
+                            for user2device in user.devices:
+                                if request.form['submit'] == user2device.delete_html_key:
+                                    self._persistence.delete_user2device(p_user2device_id=user2device.id)
 
                 return flask.redirect(flask.url_for("little_brother.users"))
 
@@ -399,6 +418,9 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for ruleset in user.rulesets:
                     forms[ruleset.html_key].load_from_model(p_model=ruleset)
+
+                for user2device in user.devices:
+                    forms[user2device.html_key].load_from_model(p_model=user2device)
 
             return flask.render_template(
                 USERS_HTML_TEMPLATE,
@@ -528,6 +550,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
         forms = {}
         forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
+
         unmonitored_users = self._appcontrol.get_unmonitored_users()
 
         if len(unmonitored_users) > 0:
@@ -546,6 +569,19 @@ class StatusServer(base_web_server.BaseWebServer):
                 form.context_details.validators = [
                         lambda form, field: self._appcontrol.validate_context_rule_handler_details(
                         p_context_name=form.context.data, p_context_details=field.data)]
+
+            unmonitored_devices = self._appcontrol.get_unmonitored_devices(p_user=user)
+
+            if len(unmonitored_devices) > 0:
+                new_device_form = entity_forms.NewUser2DeviceForm(prefix='{id}_'.format(id=user.html_key),
+                                                                  meta={'csrf': False})
+                new_device_form.device_id.choices = [(str(device.id), device.device_name) for device in unmonitored_devices]
+                forms[user.new_device_html_key] = new_device_form
+
+            for user2device in user.devices:
+                form = entity_forms.User2DeviceForm(prefix='{id}_'.format(id=user2device.html_key),
+                                                    meta={'csrf': False})
+                forms[user2device.html_key] = form
 
         return forms
 

@@ -143,6 +143,10 @@ class User(Base):
     def new_ruleset_html_key(self):
         return "new_ruleset_user_{id}".format(id=self.id)
 
+    @property
+    def new_device_html_key(self):
+        return "new_device_user_{id}".format(id=self.id)
+
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):
         self._regex_process_name_pattern = None
@@ -158,6 +162,10 @@ class User(Base):
     @property
     def sorted_rulesets(self):
         return sorted(self.rulesets, key=lambda ruleset:-ruleset.priority)
+
+    @property
+    def sorted_user2devices(self):
+        return sorted(self.devices, key=lambda user2device:(-user2device.percent, user2device.device.device_name))
 
 
 class Device(Base):
@@ -220,6 +228,28 @@ class User2Device(Base):
 
     device_id = Column(Integer, ForeignKey("device.id"), nullable=False)
     device = relationship("Device", back_populates="users", lazy="joined")
+
+    @staticmethod
+    def get_by_id(p_session, p_id):
+        query = p_session.query(User2Device).filter(User2Device.id == p_id)
+
+        if query.count() == 1:
+            return query.one()
+
+        else:
+            return None
+
+    @property
+    def html_key(self):
+        return "user2device_{id}".format(id=self.id)
+
+    @property
+    def delete_html_key(self):
+        return "delete_user2device_{id}".format(id=self.id)
+
+    @property
+    def details(self):
+        return "TODO"
 
 class RuleSet(Base):
     __tablename__ = 'ruleset'
@@ -713,7 +743,38 @@ class Persistence(object):
         for ruleset in user.rulesets:
             session.delete(ruleset)
 
+        for user2device in user.devices:
+            session.delete(user2device)
+
         session.delete(user)
+        session.commit()
+        self.clear_cache()
+
+    def delete_ruleset(self, p_ruleset_id):
+
+        session = self.get_session()
+        ruleset = RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
+
+        if ruleset is None:
+            msg =  "Cannot delete ruleset {id}. Not in database!"
+            self._logger.warning(msg.format(id=p_ruleset_id))
+            return
+
+        session.delete(ruleset)
+        session.commit()
+        self.clear_cache()
+
+    def delete_user2device(self, p_user2device_id):
+
+        session = self.get_session()
+        user2device = User2Device.get_by_id(p_session=session, p_id=p_user2device_id)
+
+        if user2device is None:
+            msg =  "Cannot delete user2device {id}. Not in database!"
+            self._logger.warning(msg.format(id=p_user2device_id))
+            return
+
+        session.delete(user2device)
         session.commit()
         self.clear_cache()
 
@@ -749,6 +810,34 @@ class Persistence(object):
         default_ruleset = self.get_default_ruleset(p_priority=new_priority)
         default_ruleset.user     = user
         session.add(default_ruleset)
+
+        session.commit()
+        self.clear_cache()
+
+    def add_device(self, p_username, p_device_id):
+
+        session = self.get_session()
+        user = User.get_by_username(p_session=session, p_username=p_username)
+
+        if user is None:
+            msg =  "Cannot add device to user {username}. Not in database!"
+            self._logger.warning(msg.format(username=p_username))
+            return
+
+        device = Device.get_by_id(p_session=session,    p_id=p_device_id)
+
+        if device is None:
+            msg =  "Cannot add device id {id} to user {username}. Not in database!"
+            self._logger.warning(msg.format(id=p_device_id, username=p_username))
+            return
+
+        user2device = User2Device()
+        user2device.user = user
+        user2device.device = device
+        user2device.active = False
+        user2device.percent = 100
+
+        session.add(user2device)
 
         session.commit()
         self.clear_cache()

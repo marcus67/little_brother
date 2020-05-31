@@ -1017,6 +1017,11 @@ class AppControl(object):
 
         return [ username for username in self._user_handler.list_users() if username not in self._persistence.user_map ]
 
+    def get_unmonitored_devices(self, p_user):
+
+        monitored_devices = [user2device.device.device_name for user2device in p_user.devices]
+        return [ device for device in self._persistence.devices if device.device_name not in monitored_devices ]
+
     def get_context_rule_handler_names(self):
 
         return self._rule_handler.get_context_rule_handler_names()

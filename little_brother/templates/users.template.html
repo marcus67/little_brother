@@ -52,6 +52,7 @@
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
 	<FORM ACTION="{{ url_for('little_brother.users') }}" METHOD="POST" CLASS="form-horizontal">
+		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">
 	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
@@ -59,9 +60,8 @@
 				<DIV CLASS="col-lg-7"></DIV>
 				<DIV CLASS="col-lg-3 text-right">
 					<SPAN>
-						<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 					{% if forms[new_user_html_key] is defined %}
-	    				{{ _("Add") }}
+	    				{{ _("Add to monitoring:") }}
 					    {{ forms[new_user_html_key].username(class_="form-control inline-field") }}
 			 			<BUTTON type="submit" name="submit" class="btn" title="{{_('Add User')}}" value="{{ new_user_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
 					{% endif %}
@@ -90,7 +90,7 @@
 							{{_("Locale")}}: {{ helper.value_or_not_set(user.locale) }}
 						</DIV>
 		        		<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
-								<BUTTON id="{{ user.delete_html_key }}" class="btn" title="{{_('Remove user from monitoring')}}"><I class="fas fa-user-slash"></I></BUTTON>
+							<BUTTON id="{{ user.delete_html_key }}" class="btn" title="{{_('Remove user from monitoring')}}"><I class="fas fa-user-slash"></I></BUTTON>
 		        		</DIV>
 			    	</DIV>			    			        
 			    {% call accordion.details() %}{{user.html_key}}{% endcall %}
@@ -99,7 +99,7 @@
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Monitored')}}</DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('First Name')}}</DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Last Name')}}</DIV>
-				    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Locale')}}</DIV>
+						<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Locale')}}</DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-6 localetext">{{_('Process Name Pattern')}}</DIV>
 		        		<DIV class="col-xs-3  col-sm-3  col-md-1  col-lg-1 text-right localetext">
 							<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
@@ -114,79 +114,135 @@
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-7 localetext">{{ forms[user.html_key].process_name_pattern(class_="form-control") }}</DIV>
 			    	</DIV>
 
-				    	<DIV CLASS="row ALTERNATE_ROWLEVEL_1">
-							<DIV CLASS="col-md-1 localetext">{{_('Rulesets')}}</DIV>
-							<DIV CLASS="col-md-9"></DIV>
-							<DIV class="col-md-2 text-right">
-					 			<BUTTON type="submit" name="submit" class="btn" title="{{_('Add Ruleset')}}" value="{{ user.new_ruleset_html_key }}"><I class="fas fa-plus"></I></BUTTON>
-								<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
-							</DIV>
+					<DIV CLASS="row ALTERNATE_ROWLEVEL_1">
+						<DIV CLASS="col-md-1 localetext">{{_('Rulesets')}}</DIV>
+						<DIV CLASS="col-md-9"></DIV>
+						<DIV class="col-md-2 text-right">
+							<BUTTON type="submit" name="submit" class="btn" title="{{_('Add Ruleset')}}" value="{{ user.new_ruleset_html_key }}"><I class="fas fa-plus"></I></BUTTON>
 						</DIV>
-						{% for ruleset in user.sorted_rulesets %}
-							{% call accordion.begin() %}{{ruleset.html_key}}{% endcall %}
-								<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
-									<DIV CLASS="col-lg-2">
-										<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
-										<!-- {{ _('Edit ruleset details') }} -->
-										{% call accordion.toggle_begin(tooltip="Edit ruleset details") %}{{ruleset.html_key}}{% endcall %}
-											{{ _(ruleset.label) }}
-										{{ accordion.toggle_end() }}
-									</DIV>		        
-									<DIV CLASS="col-lg-9 localetext">
-										{{_("Details")}}: {{ ruleset.context_details }}
-									</DIV>
-									<DIV CLASS="col-lg-1 text-right">
-										{% if ruleset.can_move_up %}
-										<BUTTON type="submit" name="submit" class="btn" value="{{ ruleset.move_up_html_key }}" title="{{ _('Move ruleset up')}}"><I class="fas fa-arrow-up"></I></BUTTON>
-										{% endif %}
-										{% if ruleset.can_move_down %}
-										<BUTTON type="submit" name="submit" class="btn" value="{{ ruleset.move_down_html_key }}" title="{{ _('Move ruleset down')}}"><I class="fas fa-arrow-down"></I></BUTTON>
-										{% endif %}
-									</DIV>
+					</DIV>
+					{% for ruleset in user.sorted_rulesets %}
+						{% call accordion.begin() %}{{ruleset.html_key}}{% endcall %}
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
+								<DIV CLASS="col-lg-2">
+									<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+									<!-- {{ _('Edit ruleset details') }} -->
+									{% call accordion.toggle_begin(tooltip="Edit ruleset details") %}{{ruleset.html_key}}{% endcall %}
+										{{ _(ruleset.label) }}
+									{{ accordion.toggle_end() }}
 								</DIV>
-							{% call accordion.details() %}{{ruleset.html_key}}{% endcall %}
-								<DIV CLASS="row ALTERNATE_ROWLEVEL_3 TITLE_ROW">
-									<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Label')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Context')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Context Details')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Min Time of Day')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Max Time of Day')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Time per Day')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Minimum Break')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Max Duration')}}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Free Play')}}</DIV>
+								<DIV CLASS="col-lg-9 localetext">
+									{{_("Details")}}: {{ ruleset.context_details }}
 								</DIV>
-								<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
-									<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].context_label) }}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">
+								<DIV CLASS="col-lg-1 text-right">
+									{% if not ruleset.fixed_context %}
+									<BUTTON id="{{ ruleset.delete_html_key }}" class="btn" title="{{_('Remove ruleset')}}"><I class="fas fa-trash"></I></BUTTON>
+									{% endif %}
+									{% if ruleset.can_move_up %}
+									<BUTTON type="submit" name="submit" class="btn" value="{{ ruleset.move_up_html_key }}" title="{{ _('Move ruleset up')}}"><I class="fas fa-arrow-up"></I></BUTTON>
+									{% endif %}
+									{% if ruleset.can_move_down %}
+									<BUTTON type="submit" name="submit" class="btn" value="{{ ruleset.move_down_html_key }}" title="{{ _('Move ruleset down')}}"><I class="fas fa-arrow-down"></I></BUTTON>
+									{% endif %}
+								</DIV>
+							</DIV>
+						{% call accordion.details() %}{{ruleset.html_key}}{% endcall %}
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_3 TITLE_ROW">
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Label')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Context')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Context Details')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Min Time of Day')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Max Time of Day')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Time per Day')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Minimum Break')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Max Duration')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Free Play')}}</DIV>
+								<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+							</DIV>
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].context_label) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">
 <!--										{ % if not ruleset.fixed_context %}-->
-										{{ helper.render_field(forms[ruleset.html_key].context) }}
+									{{ helper.render_field(forms[ruleset.html_key].context) }}
 <!--										{ % endif %}-->
-									</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">
-<!--										{ % if not ruleset.fixed_context %}-->
-										{{ helper.render_field(forms[ruleset.html_key].context_details) }}
-<!--										{ % endif %}-->
-									</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].min_time_of_day) }}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_time_of_day) }}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_time_per_day) }}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].min_break) }}</DIV>
-									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_activity_duration) }}</DIV>
-						    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].free_play) }}</DIV>
 								</DIV>
-							{{ accordion.end() }}
-				    	{% endfor %}
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">
+<!--										{ % if not ruleset.fixed_context %}-->
+									{{ helper.render_field(forms[ruleset.html_key].context_details) }}
+<!--										{ % endif %}-->
+								</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].min_time_of_day) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_time_of_day) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_time_per_day) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].min_break) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_activity_duration) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ forms[ruleset.html_key].free_play(class_="form-control inline-field") }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  text-right">
+									<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
+								</DIV>
+							</DIV>
+						{{ accordion.end() }}
+					{% endfor %}
+
+					<DIV CLASS="row ALTERNATE_ROWLEVEL_1">
+						<DIV CLASS="col-md-1 localetext">{{_('Devices')}}</DIV>
+						<DIV CLASS="col-md-8"></DIV>
+						<DIV class="col-md-3 text-right">
+							{% if forms[user.new_device_html_key] is defined %}
+								{{ _("Add") }}
+								{{ forms[user.new_device_html_key].device_id(class_="form-control inline-field") }}
+								<BUTTON type="submit" name="submit" class="btn" title="{{_('Add device')}}" value="{{ user.new_device_html_key }}"><I class="fas fa-plus"></I></BUTTON>
+							{% endif %}
+						</DIV>
+					</DIV>
+					{% for user2device in user.sorted_user2devices %}
+						{% call accordion.begin() %}{{user2device.html_key}}{% endcall %}
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
+								<DIV CLASS="col-lg-2">
+									<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+									<!-- {{ _('Edit ruleset details') }} -->
+									{% call accordion.toggle_begin(tooltip="Edit device assignment details") %}{{user2device.html_key}}{% endcall %}
+										{{ user2device.device.device_name }}
+									{{ accordion.toggle_end() }}
+								</DIV>
+								<DIV CLASS="col-lg-9 localetext">
+									{{_("Details")}}: {{ user2device.details }}
+								</DIV>
+								<DIV CLASS="col-lg-1 text-right">
+									<BUTTON id="{{ user2device.delete_html_key }}" class="btn" title="{{_('Remove monitoring of this device for the user')}}"><I class="fas fa-trash"></I></BUTTON>
+								</DIV>
+							</DIV>
+						{% call accordion.details() %}{{user2device.html_key}}{% endcall %}
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_3 TITLE_ROW">
+								<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Active')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Percent')}}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-9 localetext text-right">
+								</DIV>
+							</DIV>
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
+								<DIV CLASS="hidden-xs hidden-sm col-md-1 col-lg-1"></DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 col-lg-1  ">{{ helper.render_field(forms[user2device.html_key].active) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 col-lg-1  ">{{ helper.render_field(forms[user2device.html_key].percent) }}</DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-9 col-lg-9 text-right ">
+									<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
+								</DIV>
+							</DIV>
+						{{ accordion.end() }}
+					{% endfor %}
 				{{ accordion.end() }}
 	    	{% endfor %}
 	    </DIV>
 	{% for user in users %}
-		{{ helper.modal_confirm(user.delete_html_key, _("Do you really want to permanently remove the user from monitoring?"), _("Remove from Monitoring"), _("Cancel")) }}
+		{{ helper.modal_confirm(user.delete_html_key, _("Do you really want to permanently remove the user from monitoring?"), _("Remove from monitoring"), _("Cancel")) }}
     	{% call accordion.script() %}{{user.html_key}}{% endcall %}
 		{% for ruleset in user.rulesets %}
+			{{ helper.modal_confirm(ruleset.delete_html_key, _("Do you really want to permanently remove the ruleset?"), _("Remove ruleset"), _("Cancel")) }}
 	    	{% call accordion.script() %}{{ruleset.html_key}}{% endcall %}
+		{% endfor %}
+		{% for user2device in user.devices %}
+			{{ helper.modal_confirm(user2device.delete_html_key, _("Do you really want to permanently remove monitoring of the device for this user?"), _("Remove from monitoring"), _("Cancel")) }}
+	    	{% call accordion.script() %}{{user2device.html_key}}{% endcall %}
 		{% endfor %}
 	{% endfor %}
     </FORM>
