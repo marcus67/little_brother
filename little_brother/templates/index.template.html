@@ -39,6 +39,7 @@
   </HEAD>
 
   <BODY>
+    {{ helper.fontawesome_script() }}
 	{% include 'navbar.include.html' %}
     <DIV CLASS="container STANDARD_TABLE container">
     	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
@@ -92,12 +93,8 @@
 					</DIV>
 
 		    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  col-lg-1  center ">
-		    		    {% if user_info.activity_permitted %}
-		    				<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_check.png') }}" WIDTH="16">
-		    			{% else %}
-		    				<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_denied.png') }}" WIDTH="16">
-		    			{% endif %}
-		    		</DIV>
+						{{ helper.check_or_cross(user_info.activity_permitted) }}
+					</DIV>
 		    		<DIV CLASS="col-xs-12 col-sm-5  col-md-3  col-lg-4 localetext">
 						<UL>
 			    		{% for rule_template in user_info.active_rule_result_info.applying_rule_text_templates %}

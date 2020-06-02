@@ -25,7 +25,7 @@ class UserForm(custom_form.ModelForm):
 
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
-    locale = wtforms.StringField("Locale")
+    locale = wtforms.StringField("Locale") # TODO: Locale as SelectField
     process_name_pattern = wtforms.StringField("ProcessNamePattern")
     active = custom_fields.BooleanField("Active")
 

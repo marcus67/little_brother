@@ -383,7 +383,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 if request.form['submit'] == HTML_KEY_NEW_USER:
                     username = forms[HTML_KEY_NEW_USER].username.data
-                    self._persistence.add_new_user(p_username=username, p_locale=self._locale_selector())
+                    self._appcontrol.add_new_user(p_username=username, p_locale=self._locale_selector())
+
                 else:
                     for user in users:
                         if request.form['submit'] == user.delete_html_key:

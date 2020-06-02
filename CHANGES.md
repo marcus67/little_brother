@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3 Revision 63 (May/June 2020)
+
+*   New Prometheus gauge `little_brother_configured_users`
+
 ## Version 0.2.2 Revision 62 (May 6th, 2020)
 
 *   Added Finnish localization (locale "nl")

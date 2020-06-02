@@ -247,13 +247,14 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
                     if uptime > device.min_activity_duration:
                         for user2device in device.users:
-                            event = admin_event.AdminEvent(
-                                p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
-                                p_hostname=hostname,
-                                p_processhandler=self.id,
-                                p_username=user2device.user.username,
-                                p_process_start_time=p_reference_time)
-                        events.append(event)
+                            if user2device.active:
+                                event = admin_event.AdminEvent(
+                                    p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
+                                    p_hostname=hostname,
+                                    p_processhandler=self.id,
+                                    p_username=user2device.user.username,
+                                    p_process_start_time=p_reference_time)
+                                events.append(event)
                         del (self._process_info_candidates[hostname])
 
                 else:
@@ -263,7 +264,9 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
             # If the end time of a current entry is None AND the process was started on the local host AND
             # the process is no longer running THEN send an EVENT_TYPE_PROCESS_END event!
             if pinfo.end_time is None and pinfo.hostname not in current_device_infos:
-                event = self.create_admin_event_process_end_from_pinfo(p_pinfo=pinfo, p_reference_time=p_reference_time)
+                event = self.create_admin_event_process_end_from_pinfo(
+                    p_pinfo=pinfo,
+                    p_reference_time=p_reference_time)
                 events.append(event)
 
         return events

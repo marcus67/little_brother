@@ -136,6 +136,14 @@ class User(Base):
         return "user_{id}".format(id=self.id)
 
     @property
+    def rulesets_html_key(self):
+        return "rulesets_user_{id}".format(id=self.id)
+
+    @property
+    def devices_html_key(self):
+        return "devices_user_{id}".format(id=self.id)
+
+    @property
     def delete_html_key(self):
         return "delete_user_{id}".format(id=self.id)
 

@@ -225,6 +225,19 @@ div.STANDARD_TABLE div.ALTERNATE_ROWLEVEL_3 {
   background-color: #b8c0ad;
 }
 
+
+div.STANDARD_TABLE div.ALTERNATE2_ROWLEVEL_1 {
+  background-color: #e38901;
+}
+
+div.STANDARD_TABLE div.ALTERNATE2_ROWLEVEL_2 {
+  background-color: #e3ad5c;
+}
+
+div.STANDARD_TABLE div.ALTERNATE2_ROWLEVEL_3 {
+  background-color: #e3bf87;
+}
+
 div.STANDARD_TABLE div.SEPERATOR_ROW {
   height:2px;
 }

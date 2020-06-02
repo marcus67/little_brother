@@ -39,6 +39,7 @@
 
 
   <BODY>
+    {{ helper.fontawesome_script() }}
     {{ helper.locale_font(rel_font_size) }}
     {{ helper.fontawesome_script() }}
 
@@ -48,7 +49,7 @@
 		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">
-	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+	    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_1 TITLE_ROW">
 	    		<DIV CLASS="col-xs-2 localetext">{{_('Device')}}</DIV>
 				<DIV CLASS="col-xs-9 hidden-xs"></DIV>
 				<DIV CLASS="col-xs-1 hidden-xs text-right">
@@ -58,7 +59,7 @@
 	    	{% for device in devices %}
 	    	   	{% call accordion.begin() %}{{device.html_key}}{% endcall %}
 	    	
-			    	<DIV CLASS="row ROWLEVEL_2">
+			    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_2">
 			    		<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
 							<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
 							<!-- {{ _('Edit device details') }} -->
@@ -75,7 +76,7 @@
 		        		</DIV>
 			    	</DIV>			    			        
 			    {% call accordion.details() %}{{device.html_key}}{% endcall %}
-			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
+			    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
 			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-3 localetext">{{_('Name')}}</DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-4 localetext">{{_('Host Name')}}</DIV>
@@ -86,7 +87,7 @@
 							<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
 						</DIV>
 			    	</DIV>
-			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
+			    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
 			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-3 localetext">{{ helper.render_field(forms[device.device_name].device_name) }}</DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-4 localetext">{{ helper.render_field(forms[device.device_name].hostname) }}</DIV>

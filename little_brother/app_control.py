@@ -146,7 +146,7 @@ class AppControl(object):
         self._logger.info(fmt)
 
     def get_number_of_monitored_users_function(self):
-        return lambda: len(self._usernames)
+        return lambda: self.get_number_of_monitored_users()
 
     @property
     def check_interval(self):
@@ -254,10 +254,21 @@ class AppControl(object):
                                                               p_service=p_service,
                                                               p_duration=p_duration)
 
+    def get_number_of_monitored_users(self):
+
+        count = 0
+
+        for user in self._persistence.users:
+            if user.active and user.username in self._usernames:
+                count += 1
+
+        return count
+
     def set_metrics(self):
 
         if self._prometheus_client is not None:
-            self._prometheus_client.set_number_of_monitored_users(len(self._usernames))
+            self._prometheus_client.set_number_of_monitored_users(self.get_number_of_monitored_users())
+            self._prometheus_client.set_number_of_configured_users(len(self._persistence.user_map))
 
             if self._config.scan_active:
                 self._prometheus_client.set_monitored_host(self._host_name, True)
@@ -811,7 +822,7 @@ class AppControl(object):
             p_min_activity_duration=self._config.min_activity_duration)
 
         for user in self._persistence.users:
-            if user.username in self._usernames:
+            if user.active and user.username in self._usernames:
 
                 user_active = False
 
@@ -1195,4 +1206,19 @@ class AppControl(object):
 
     def get_user_status(self, p_username):
 
-        return self._user_status.get(p_username)
+        user = self._persistence.user_map.get(p_username)
+
+        if user is not None and user.active:
+            return  self._user_status.get(p_username)
+
+        else:
+            return None
+
+    def add_new_user(self, p_username, p_locale=None):
+
+        self._persistence.add_new_user(p_username=p_username, p_locale=p_locale)
+
+        if not p_username in self._usernames:
+            self._usernames_not_found.append(p_username)
+
+

@@ -41,6 +41,7 @@
   </HEAD>
 
   <BODY>
+	{{ helper.fontawesome_script() }}
 	{% include 'navbar.include.html' %}
 
 	<FORM ACTION="{{ url_for('little_brother.admin') }}" METHOD="POST" CLASS="form-horizontal">
@@ -59,11 +60,7 @@
 							<!-- {{ _('Show configurations of upcoming days') }} -->
 		    				{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days") %}{{admin_info.html_key}}{% endcall %}
 		        				{{ admin_info.username }}
-								{% if admin_info.user_info.activity_permitted %}
-									<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_check.png') }}" WIDTH="16">
-								{% else %}
-									<IMG SRC="{{ url_for('little_brother.static', filename='icons/icon_denied.png') }}" WIDTH="16">
-								{% endif %}
+								{{ helper.check_or_cross(admin_info.user_info.activity_permitted) }}
 			        		{{ accordion.toggle_end() }}
 		        		</DIV>		        
 			    		<DIV CLASS="col-xs-7  col-sm-7  col-md-8  col-lg-8 localetext">
@@ -81,7 +78,7 @@
 		        		</DIV>		
 			    	</DIV>			    			        
 			    {% call accordion.details() %}{{admin_info.html_key}}{% endcall %}
-			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
+			    	<DIV CLASS="row ALTERNATE_ROWLEVEL_1 TITLE_ROW">
 			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Day')}}</DIV>
 			    		<DIV CLASS="hidden-xs hidden-sm col-md-2 localetext">{{_('Context')}}</DIV>
@@ -97,7 +94,7 @@
 			    	</DIV>
 			    	{% for day_info in admin_info.day_infos %}
 			    	   	{% call accordion.begin() %}{{day_info.html_key}}{% endcall %}
-				    		<DIV CLASS="row ROWLEVEL_3">
+				    		<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
 				    			<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 "></DIV>
 				    			<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg localetext">
 									<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
@@ -125,7 +122,7 @@
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  {{ day_info.effective_rule_set.free_play_class }} localetext">{{ _(day_info.effective_rule_set.free_play|boolean_to_string) }}</DIV>
 					    	</DIV>
 					    {% call accordion.details() %}{{day_info.html_key}}{% endcall %}
-				    		<DIV CLASS="row ROWLEVEL_4">
+				    		<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
 				    			<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
 				    			<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT localetext">{{ _(day_info.rule_set.label) }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  hidden-md hidden-lg CONTEXT localetext">{{ _(day_info.rule_set.label) }}</DIV>
@@ -139,7 +136,7 @@
 					    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{ _(day_info.rule_set.max_activity_duration|seconds_to_string) }}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  localetext ">{{ _(day_info.rule_set.free_play|boolean_to_string) }}</DIV>
 					    	</DIV>
-				    		<DIV CLASS="row ROWLEVEL_4">
+				    		<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
 				    			<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  CONTEXT localetext">{{_('override')}}</DIV>
 					    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[day_info.html_key].min_time_of_day) }}</DIV>
@@ -154,9 +151,7 @@
 					    	</DIV>
 						{{ accordion.end() }}    	
 			    	{% endfor %}
-					    	
-				{{ accordion.end() }}    	
-					    		    	 
+				{{ accordion.end() }}
 	    	{% endfor %}
 	    </DIV>
     </FORM>    		

@@ -106,3 +106,10 @@ $('button[id="{{ id }}"]').on('click', function(e) {
 <SCRIPT src="https://kit.fontawesome.com/037bf0dee9.js" crossorigin="anonymous"></SCRIPT>
 {% endmacro %}
 
+{% macro check_or_cross(flag) %}
+{% if flag %}
+    <I class="fas fa-check active"></I>
+{% else %}
+    <I class="fas fa-times inactive"></I>
+{% endif %}
+{% endmacro %}
