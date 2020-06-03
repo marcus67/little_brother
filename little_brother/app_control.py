@@ -281,7 +281,7 @@ class AppControl(object):
                 self._prometheus_client.set_monitored_host(hostname, active)
 
             if self._device_handler is not None:
-                device_stats = self._device_handler.get_device_stats()
+                device_stats = self._device_handler.get_device_stats().values()
                 self._prometheus_client.set_number_of_monitored_devices(
                     self._device_handler.get_number_of_monitored_devices())
 

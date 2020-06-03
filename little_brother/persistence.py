@@ -689,6 +689,16 @@ class Persistence(object):
 
         return self._devices
 
+    @property
+    def device_map(self):
+
+        return { device.device_name:device for device in self.devices }
+
+    @property
+    def hostname_device_map(self):
+
+        return { device.hostname:device for device in self.devices }
+
 
     def clear_cache(self):
         self._users = None

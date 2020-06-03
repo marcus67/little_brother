@@ -153,7 +153,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                 uid = uids.effective
                 username = p_login_mapping.get_login_by_uid(p_server_group=p_server_group, p_uid=uid)
 
-                if username is not None:
+                if username is not None and username in p_process_regex_map:
                     proc_name = proc.name()
 
                     if p_process_regex_map[username].match(proc_name):

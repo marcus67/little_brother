@@ -109,8 +109,10 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
+
         self._process_infos = {}
         self._device_infos = {}
+        self._device_stats = {}
         self._process_info_candidates = {}
 
     # https://stackoverflow.com/questions/2953462/pinging-servers-in-python
@@ -147,19 +149,19 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         return delay
 
-    def ping_device(self, p_client_device_config):
+    def ping_device(self, p_device):
 
         fmt = "Pinging {device}..."
-        self._logger.debug(fmt.format(device=str(p_client_device_config)))
-        delay = self.ping(p_client_device_config.hostname)
+        self._logger.debug(fmt.format(device=p_device.hostname))
+        delay = self.ping(p_device.hostname)
 
         if delay is not None:
 
-            moving_average = self._device_infos.get(p_client_device_config.hostname)
+            moving_average = self._device_infos.get(p_device.device_name)
 
             if moving_average is None:
-                moving_average = stats.MovingAverage(p_sample_size=p_client_device_config.sample_size)
-                self._device_infos[p_client_device_config.hostname] = moving_average
+                moving_average = stats.MovingAverage(p_sample_size=p_device.sample_size)
+                self._device_infos[p_device.device_name] = moving_average
 
             moving_average.add_value(delay)
 
@@ -167,14 +169,14 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
             fmt = "Moving average={delay:.0f}"
             self._logger.debug(fmt.format(delay=average))
 
-            device_is_up = average < p_client_device_config.max_active_ping_delay
+            device_is_up = average < p_device.max_active_ping_delay
 
         else:
-            self._device_infos[p_client_device_config.hostname] = None
+            self._device_infos[p_device.device_name] = None
             device_is_up = False
 
         fmt = "{device} is {status}"
-        self._logger.debug(fmt.format(device=str(p_client_device_config), status="up" if device_is_up else "down"))
+        self._logger.debug(fmt.format(device=p_device.device_name, status="up" if device_is_up else "down"))
 
         return device_is_up
 
@@ -201,15 +203,13 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_device_stats(self):
 
-        device_stats = []
-
         for device in self._persistence.devices:
             response_time = None
             moving_average_response_time = None
             active = False
 
-            if device.hostname in self._device_infos:
-                device_info = self._device_infos[device.hostname]
+            if device.device_name in self._device_infos:
+                device_info = self._device_infos[device.device_name]
 
                 if device_info is not None:
                     response_time = device_info.get_latest_value()
@@ -217,9 +217,9 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
                     active = True
 
             stat = DeviceStat(device.device_name, active, response_time, moving_average_response_time)
-            device_stats.append(stat)
+            self._device_stats[device.device_name] = stat
 
-        return device_stats
+        return self._device_stats
 
     def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map):
 
@@ -227,7 +227,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
         events = []
 
         for device in self._persistence.devices:
-            device_is_up = self.ping_device(p_client_device_config=device)
+            device_is_up = self.ping_device(p_device=device)
 
             if device_is_up:
                 current_device_infos[device.hostname] = device
@@ -235,6 +235,16 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
             else:
                 if device.hostname in self._process_info_candidates:
                     del (self._process_info_candidates[device.hostname])
+
+        # See https://stackoverflow.com/questions/5384914/how-to-delete-items-from-a-dictionary-while-iterating-over-it
+        for hostname in list(self._process_info_candidates.keys()):
+            if hostname not in self._persistence.hostname_device_map:
+                del(self._process_info_candidates[hostname])
+
+        for device_name in list(self._device_stats.keys()):
+            if device_name not in self._persistence.device_map:
+                stat = DeviceStat(device_name, False, None, None)
+                self._device_stats[device_name] = stat
 
         for hostname, device in current_device_infos.items():
             current_pinfo = self.get_current_active_pinfo(hostname)

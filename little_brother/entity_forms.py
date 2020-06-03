@@ -19,7 +19,9 @@ import wtforms
 
 from python_base_app import custom_fields
 from python_base_app import custom_form
+from python_base_app import tools
 
+_ = lambda x:x
 
 class UserForm(custom_form.ModelForm):
 
@@ -37,10 +39,14 @@ class NewUser2DeviceForm(custom_form.ModelForm):
 
     device_id = wtforms.SelectField("NewDeviceId")
 
+def dns_validator(_form, field):
+    if not tools.is_valid_dns_name(field.data):
+        raise wtforms.validators.ValidationError(_("'{name}' is not a valid host address"))
+
 class DeviceForm(custom_form.ModelForm):
 
     device_name = wtforms.StringField("FirstName")
-    hostname = wtforms.StringField("FirstName")
+    hostname = wtforms.StringField("FirstName", validators=[dns_validator]) # TODO: validation for unique hostname
     min_activity_duration = wtforms.IntegerField("MinActivityDuration")
     max_active_ping_delay = wtforms.IntegerField("MaxActivePingDelay")
     sample_size = wtforms.IntegerField("SampleSize")
@@ -59,5 +65,5 @@ class RulesetForm(custom_form.ModelForm):
 
 class User2DeviceForm(custom_form.ModelForm):
 
-    percent = wtforms.IntegerField("Percent")
+    percent = wtforms.IntegerField("Percent") # TODO: validate value
     active = custom_fields.BooleanField("Active")
