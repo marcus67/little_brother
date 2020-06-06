@@ -1039,6 +1039,10 @@ class AppControl(object):
 
         return self._rule_handler.get_context_rule_handler_names()
 
+    def get_context_rule_handler(self, p_context_name):
+
+        return self._rule_handler.get_context_rule_handler(p_context_name)
+
     def get_user_status_infos(self, p_include_history=True):
 
         user_infos = {}

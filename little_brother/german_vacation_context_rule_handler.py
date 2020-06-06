@@ -212,6 +212,10 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
         self._cache[key] = False
         return False
 
+    def summary(self, p_context_detail):
+
+        return ["Federal State:", " ", p_context_detail]
+
     def validate_context_details(self, p_context_detail):
 
         self.check_data()

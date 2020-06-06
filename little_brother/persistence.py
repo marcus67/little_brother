@@ -175,6 +175,16 @@ class User(Base):
     def sorted_user2devices(self):
         return sorted(self.devices, key=lambda user2device:(-user2device.percent, user2device.device.device_name))
 
+    @property
+    def summary(self):
+
+        texts =  [_("Monitored"), ": ", tools.format_boolean(p_value=self.active)]
+
+        if self.locale is not None:
+            texts.extend([constants.TEXT_SEPERATOR, _("Locale"), ": ", self.locale])
+
+        return texts
+
 
 class Device(Base):
     __tablename__ = 'device'
@@ -237,6 +247,10 @@ class User2Device(Base):
     device_id = Column(Integer, ForeignKey("device.id"), nullable=False)
     device = relationship("Device", back_populates="users", lazy="joined")
 
+    @property
+    def summary(self):
+        return ["Summary", ": ", "TODO"]
+
     @staticmethod
     def get_by_id(p_session, p_id):
         query = p_session.query(User2Device).filter(User2Device.id == p_id)
@@ -255,9 +269,6 @@ class User2Device(Base):
     def delete_html_key(self):
         return "delete_user2device_{id}".format(id=self.id)
 
-    @property
-    def details(self):
-        return "TODO"
 
 class RuleSet(Base):
     __tablename__ = 'ruleset'
@@ -289,6 +300,7 @@ class RuleSet(Base):
         self.min_break = None
         self.free_play = False
         self.priority = None
+        self.get_context_rule_handler = None
 
     @property
     def label(self):
@@ -297,6 +309,22 @@ class RuleSet(Base):
 
         else:
             return self.context
+
+    @property
+    def summary(self):
+        context_handler = self.get_context_rule_handler(p_context_name=self.context)
+
+        texts = []
+
+        if context_handler is not None:
+            texts.extend(context_handler.summary(p_context_detail=self.context_details))
+
+        if self.max_time_per_day is not None:
+            texts.append(constants.TEXT_SEPERATOR)
+            texts.append("Time per Day")
+            texts.append(": " + tools.get_duration_as_string(p_seconds=self.max_time_per_day, p_include_seconds=False))
+
+        return texts
 
 
     @property

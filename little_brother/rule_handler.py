@@ -284,6 +284,10 @@ class RuleHandler(object):
 
         return self._context_rule_handlers.keys()
 
+    def get_context_rule_handler(self, p_context_name):
+
+        return self._context_rule_handlers.get(p_context_name)
+
     def validate_context_rule_handler_details(self, p_context_name, p_context_details):
 
         context_rule_handler = self._context_rule_handlers.get(p_context_name)

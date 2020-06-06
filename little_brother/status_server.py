@@ -33,6 +33,7 @@ from little_brother import rule_override
 from little_brother import settings
 from little_brother import entity_forms
 from little_brother import persistence
+from little_brother import constants
 from python_base_app import base_web_server
 from python_base_app import tools
 
@@ -168,6 +169,7 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['boolean_to_string'] = self.format_boolean
         self._app.jinja_env.filters['format'] = self.format
         self._app.jinja_env.filters['format_babel_date'] = self.format_babel_date
+        self._app.jinja_env.filters['format_text_array'] = self.format_text_array
         self._app.jinja_env.filters['invert'] = self.invert
         self._app.jinja_env.filters['_base'] = self._base_gettext
 
@@ -243,14 +245,28 @@ class StatusServer(base_web_server.BaseWebServer):
     @staticmethod
     def format_boolean(value):
 
-        return _("On") if value else _("Off")
+        return tools.format_boolean(p_value=value)
 
     @staticmethod
     def format(value, param_dict):
 
         return value.format(**param_dict)
 
-    #@staticmethod
+    def format_text_array(self, value):
+
+        text = ""
+
+        for part in value:
+            if part == constants.TEXT_SEPERATOR:
+                if text != "":
+                    text += constants.TEXT_SEPERATOR
+            else:
+                text += self.gettext(part)
+
+        return text
+
+
+
     def format_babel_date(self, value, format_string):
 
         return babel.dates.format_date(value, format_string, locale=self._locale_selector())
@@ -419,6 +435,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for ruleset in user.rulesets:
                     forms[ruleset.html_key].load_from_model(p_model=ruleset)
+                    # provide a callback function so that the RuleSet can retrieve context summaries
+                    ruleset.get_context_rule_handler = self._appcontrol.get_context_rule_handler
 
                 for user2device in user.devices:
                     forms[user2device.html_key].load_from_model(p_model=user2device)

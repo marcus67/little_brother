@@ -17,6 +17,8 @@
 
 import abc
 
+_ = lambda x:x
+
 class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
 
     def __init__(self, p_context_name):
@@ -34,8 +36,15 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
     def context_name(self):
         return self._context_name
 
-    def validate_context_details(self, p_detail):
+    def validate_context_details(self, p_context_detail):
         pass
+
+    def summary(self, p_context_detail):
+        if p_context_detail is not None and p_context_detail != "":
+            return ["Summary", ": ", p_context_detail]
+
+        else:
+            return []
 
     def check_data(self):
         pass

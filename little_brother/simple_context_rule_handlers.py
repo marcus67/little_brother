@@ -80,6 +80,7 @@ class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler
 
         return weekday_string[time_tuple.tm_wday] in VALID_ACTIVE_DAY_CHARACTERS
 
+
     def validate_context_details(self, p_context_detail):
 
         if p_context_detail in WEEKPLAN_PREDEFINED_DETAILS:
