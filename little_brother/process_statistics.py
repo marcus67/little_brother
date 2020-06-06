@@ -38,17 +38,14 @@ class Activity(object):
         process_count = process_count + 1
         self.host_process_counts[p_hostname] = process_count
 
-
     def set_end_time(self, p_end_time):
 
         self.end_time = p_end_time
-
 
     def set_downtime(self, p_downtime):
 
         if p_downtime > self.downtime:
             self.downtime = p_downtime
-
 
     @property
     def duration(self):
@@ -66,10 +63,10 @@ class Activity(object):
     def __str__(self):
 
         fmt = "Activity([{start_time}, {end_time}], {duration}, downtime={downtime})"
-        return  fmt.format(start_time=tools.get_timestamp_as_string(self.start_time),
-                           end_time=tools.get_timestamp_as_string(self.end_time),
-                           duration=tools.get_duration_as_string(self.duration),
-                           downtime=tools.get_duration_as_string(self.downtime))
+        return fmt.format(start_time=tools.get_timestamp_as_string(self.start_time),
+                          end_time=tools.get_timestamp_as_string(self.end_time),
+                          duration=tools.get_duration_as_string(self.duration),
+                          downtime=tools.get_duration_as_string(self.downtime))
 
     @property
     def host_infos(self):
@@ -185,7 +182,7 @@ class ProcessStatisticsInfo(object):
             process_list.append((p_process_info.processhandler, p_process_info.pid, p_process_info.start_time))
 
         if self.active_processes == 0:
-            fmt = "Active processes smaller than zero"
+            fmt = "Active processes less than zero"
             self._logger.warning(fmt)
             return
 
@@ -266,6 +263,7 @@ class ProcessStatisticsInfo(object):
         if active_downtime is not None:
             downtime = downtime + active_downtime
 
+        # TODO: downtime counted twice!
         return downtime
 
     @property
@@ -299,16 +297,16 @@ class ProcessStatisticsInfo(object):
 
     def __str__(self):
 
-        return "StatInfo (user=%s, today:%d[s], yesterday:%d[s], ref-time:%s, previous %s, "\
+        return "StatInfo (user=%s, today:%d[s], yesterday:%d[s], ref-time:%s, previous %s, " \
                "current %s, secs-since-last-activity:%s)" % (
-                    self.username,
-                    self.day_statistics[0].duration,
-                    self.day_statistics[1].duration,
-                    tools.get_timestamp_as_string(p_timestamp=self.reference_time),
-                    str(self.previous_activity) if self.previous_activity is not None else "---",
-                    str(self.current_activity) if self.current_activity is not None else "---",
-                    tools.get_duration_as_string(p_seconds=self.seconds_since_last_activity)
-                )
+                   self.username,
+                   self.day_statistics[0].duration,
+                   self.day_statistics[1].duration,
+                   tools.get_timestamp_as_string(p_timestamp=self.reference_time),
+                   str(self.previous_activity) if self.previous_activity is not None else "---",
+                   str(self.current_activity) if self.current_activity is not None else "---",
+                   tools.get_duration_as_string(p_seconds=self.seconds_since_last_activity)
+               )
 
 
 def get_empty_stat_infos(
@@ -340,7 +338,6 @@ def get_process_statistics(
         p_reference_time,
         p_max_lookback_in_days,
         p_min_activity_duration):
-
     users_stat_infos = get_empty_stat_infos(
         p_user_map=p_user_map,
         p_reference_time=p_reference_time,
@@ -374,11 +371,8 @@ def get_process_statistics(
                 user = p_user_map[pinfo.username]
                 for ruleset in user.rulesets:
 
-                    if ((pinfo.processname is None and False # TODO ruleset.scan_devices
-                    )
-                            or
-                            (pinfo.processname is not None and user.regex_process_name_pattern.match(
-                                pinfo.processname))):
+                    if (pinfo.processname is None or
+                        (pinfo.processname is not None and user.regex_process_name_pattern.match(pinfo.processname))):
                         stat_info = user_stat_infos.get(ruleset.context)
 
                         if boundary_type == "START":

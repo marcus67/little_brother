@@ -18,6 +18,7 @@
 import time
 import prometheus_client
 
+from python_base_app import configuration
 from little_brother import settings
 
 SECTION_NAME = "PrometheusClient"
@@ -36,6 +37,7 @@ class PrometheusClientConfigModel(configuration.ConfigModel):
         self.prefix = DEFAULT_METRIC_PREFIX
 
     def is_active(self):
+
         return self.port is not None
 
 
@@ -87,10 +89,15 @@ class PrometheusClient(object):
 
         def start(self):
 
-            fmt = "Starting Prometheus server on port {port}..."
-            self._logger.info(fmt.format(port=self._config.port))
+            try:
+                fmt = "Starting Prometheus server on port {port}..."
+                self._logger.info(fmt.format(port=self._config.port))
 
-            prometheus_client.start_http_server(self._config.port)
+                prometheus_client.start_http_server(self._config.port)
+
+            except OSError as e:
+                fmt = "Exception {msg} while starting Prometheus server on port {port}"
+                raise configuration.ConfigurationException(fmt.format(msg=str(e), port=self._config.port))
 
         def stop(self):
 

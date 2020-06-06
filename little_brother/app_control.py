@@ -281,15 +281,16 @@ class AppControl(object):
                 self._prometheus_client.set_monitored_host(hostname, active)
 
             if self._device_handler is not None:
-                device_stats = self._device_handler.get_device_stats().values()
                 self._prometheus_client.set_number_of_monitored_devices(
                     self._device_handler.get_number_of_monitored_devices())
 
-                for stat in device_stats:
-                    self._prometheus_client.set_device_active(stat.devicename, stat.active)
-                    self._prometheus_client.set_device_response_time(stat.devicename, stat.response_time)
-                    self._prometheus_client.set_device_moving_average_response_time(stat.devicename,
-                                                                                    stat.moving_average_response_time)
+                for device_info in self._device_handler.device_infos.values():
+                    self._prometheus_client.set_device_active(
+                        device_info.device_name, 1 if device_info.is_up else 0)
+                    self._prometheus_client.set_device_response_time(
+                        device_info.device_name, device_info.response_time)
+                    self._prometheus_client.set_device_moving_average_response_time(
+                        device_info.device_name, device_info.moving_average_response_time)
 
             else:
                 self._prometheus_client.set_number_of_monitored_devices(0)
@@ -904,6 +905,7 @@ class AppControl(object):
                                                           p_rule_result_info=rule_result_info)
 
                 if self._prometheus_client is not None:
+                    # TODO: user state not updated for device activity
                     self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
 
         fmt = "Processing rules END..."

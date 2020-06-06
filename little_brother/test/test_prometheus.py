@@ -18,7 +18,9 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
 import unittest
+
 import prometheus_client
 
 from little_brother import prometheus
@@ -28,7 +30,6 @@ from python_base_app.test import base_test
 class TestPrometheus(base_test.BaseTestCase):
 
     def test_create(self):
-
         # Reset Prometheus
         prometheus_client.registry.REGISTRY = prometheus_client.CollectorRegistry(auto_describe=True)
 
@@ -40,12 +41,11 @@ class TestPrometheus(base_test.BaseTestCase):
         client.stop()
 
     def test_start(self):
-
         # Reset Prometheus
         prometheus_client.registry.REGISTRY = prometheus_client.CollectorRegistry(auto_describe=True)
 
         config = prometheus.PrometheusClientConfigModel()
-        config.port = 8889
+        config.port = int(os.getenv("PROMETHEUS_SERVER_PORT", "8889"))
         client = prometheus.PrometheusClient(p_logger=self._logger, p_config=config)
 
         self.assertIsNotNone(client)
