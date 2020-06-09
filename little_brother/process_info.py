@@ -29,7 +29,7 @@ def get_key(p_hostname, p_pid, p_start_time):
 class ProcessInfo(object):
 
     def __init__(self, p_hostname=None, p_username=None, p_processhandler=None, p_processname=None, p_pid=None,
-                 p_start_time=None, p_end_time=None, p_downtime=0):
+                 p_start_time=None, p_end_time=None, p_downtime=0, p_percent=100):
         self.id = None
         self.hostname = p_hostname
         self.username = p_username
@@ -39,6 +39,7 @@ class ProcessInfo(object):
         self.start_time = p_start_time
         self.end_time = p_end_time
         self.downtime = p_downtime
+        self.percent = p_percent
 
     def is_active(self):
         return self.end_time is None

@@ -16,22 +16,21 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
-import urllib.parse
 import re
+import urllib.parse
 
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
-from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean, ForeignKey
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import relationship, contains_eager, joinedload
-
-from python_base_app import configuration
-from python_base_app import log_handling
-from python_base_app import tools
 
 from little_brother import constants
 from little_brother import rule_handler
 from little_brother import simple_context_rule_handlers
+from python_base_app import configuration
+from python_base_app import log_handling
+from python_base_app import tools
 
 _ = lambda x: x
 
@@ -65,6 +64,7 @@ class ProcessInfo(Base):
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     downtime = Column(Integer, server_default="0")
+    percent = Column(Integer, server_default="100")
 
 
 class AdminEvent(Base):
@@ -249,7 +249,7 @@ class User2Device(Base):
 
     @property
     def summary(self):
-        return ["Summary", ": ", "TODO"]
+        return [_("Summary"), ": ", "TODO"]
 
     @staticmethod
     def get_by_id(p_session, p_id):

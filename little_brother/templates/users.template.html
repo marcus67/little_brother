@@ -56,18 +56,19 @@
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">
 	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-	    		<DIV CLASS="col-lg-2 localetext">{{_('User')}}</DIV>
-				<DIV CLASS="col-lg-7"></DIV>
-				<DIV CLASS="col-lg-3 text-right">
+				<DIV CLASS="col-lg-2 localetext">{{_('User')}}</DIV>
+				<DIV CLASS="col-lg-6"></DIV>
+				<DIV CLASS="col-lg-4 text-right">
 					<SPAN>
 					{% if forms[new_user_html_key] is defined %}
-	    				{{ _("Add to monitoring:") }}
+	    				{{ _("Add to monitoring") }}:
 					    {{ forms[new_user_html_key].username(class_="form-control inline-field") }}
-			 			<BUTTON type="submit" name="submit" class="btn" title="{{_('Add User')}}" value="{{ new_user_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
+			 			<BUTTON type="submit" name="submit" class="btn" title="{{_('Add User')}}"
+								value="{{ new_user_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
 					{% endif %}
 					</SPAN>
 				</DIV>
-	    	</DIV>
+			</DIV>
 	    	{% for user in users %}
 	    	   	{% call accordion.begin() %}{{ user.html_key }}{% endcall %}
 			    	<DIV CLASS="row ROWLEVEL_2">
@@ -109,9 +110,10 @@
 	    	   	   {% call accordion.begin() %}{{ user.rulesets_html_key }}{% endcall %}
 					<DIV CLASS="row ALTERNATE_ROWLEVEL_1">
 						<DIV CLASS="col-md-2 localetext">
-		    				{% call accordion.toggle_begin(tooltip="Edit rulesets") %}{{ user.rulesets_html_key }}{% endcall %}
-							{{_('Rulesets')}} ({{_('Count: ')}}{{ user.sorted_rulesets|length }})
-			        		{{ accordion.toggle_end() }}
+							{% call accordion.toggle_begin(tooltip="Edit rulesets") %}{{ user.rulesets_html_key }}{%
+							endcall %}
+							{{_('Rulesets')}} ({{_('Count')}}: {{ user.sorted_rulesets|length }})
+							{{ accordion.toggle_end() }}
 						</DIV>
 						<DIV CLASS="col-md-8"></DIV>
 						<DIV class="col-md-2 text-right">
@@ -184,21 +186,22 @@
 					{{ accordion.end() }}
 
 	    	   	   {% call accordion.begin() %}{{ user.devices_html_key }}{% endcall %}
-					<DIV CLASS="row ALTERNATE2_ROWLEVEL_1">
-						<DIV CLASS="col-md-2 localetext">
-		    				{% call accordion.toggle_begin(tooltip="Edit devices") %}{{ user.devices_html_key }}{% endcall %}
-							{{_('Devices')}} ({{_('Count: ')}}{{ user.sorted_user2devices|length }})
-			        		{{ accordion.toggle_end() }}
-						</DIV>
-						<DIV CLASS="col-md-7"></DIV>
-						<DIV class="col-md-3 text-right">
-							{% if forms[user.new_device_html_key] is defined %}
-								{{ _("Add to monitoring:") }}
-								{{ forms[user.new_device_html_key].device_id(class_="form-control inline-field") }}
-								<BUTTON type="submit" name="submit" class="btn" title="{{_('Add device')}}" value="{{ user.new_device_html_key }}"><I class="fas fa-plus"></I></BUTTON>
-							{% endif %}
-						</DIV>
-					</DIV>
+			<DIV CLASS="row ALTERNATE2_ROWLEVEL_1">
+				<DIV CLASS="col-md-2 localetext">
+					{% call accordion.toggle_begin(tooltip="Edit devices") %}{{ user.devices_html_key }}{% endcall %}
+					{{_('Devices')}} ({{_('Count')}}: {{ user.sorted_user2devices|length }})
+					{{ accordion.toggle_end() }}
+				</DIV>
+				<DIV CLASS="col-md-6"></DIV>
+				<DIV class="col-md-4 text-right">
+					{% if forms[user.new_device_html_key] is defined %}
+					{{ _("Add to monitoring") }}:
+					{{ forms[user.new_device_html_key].device_id(class_="form-control inline-field") }}
+					<BUTTON type="submit" name="submit" class="btn" title="{{_('Add device')}}"
+							value="{{ user.new_device_html_key }}"><I class="fas fa-plus"></I></BUTTON>
+					{% endif %}
+				</DIV>
+			</DIV>
     			    {% call accordion.details() %}{{user.devices_html_key}}{% endcall %}
 					{% for user2device in user.sorted_user2devices %}
 						{% call accordion.begin() %}{{user2device.html_key}}{% endcall %}
@@ -218,13 +221,13 @@
 								</DIV>
 							</DIV>
 						{% call accordion.details() %}{{user2device.html_key}}{% endcall %}
-							<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-								<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Active')}}</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Percent')}}</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-9 localetext text-right">
-								</DIV>
-							</DIV>
+			<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+				<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Monitored')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Percent')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-9 localetext text-right">
+				</DIV>
+			</DIV>
 							<DIV CLASS="row ALTERNATE2_ROWLEVEL_3">
 								<DIV CLASS="hidden-xs hidden-sm col-md-1 col-lg-1"></DIV>
 								<DIV CLASS="col-xs-3  col-sm-2  col-md-1 col-lg-1  ">{{ helper.render_field(forms[user2device.html_key].active) }}</DIV>

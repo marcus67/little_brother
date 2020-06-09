@@ -329,29 +329,37 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
             if device_info.requires_process_start_event(p_reference_time=p_reference_time):
                 # Send process start event for monitored users (if required)
                 for user2device in device.users:
-                    if user2device.active:
-                        current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
+                    current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
 
+                    if user2device.active:
                         if current_pinfo is None:
                             event = admin_event.AdminEvent(
                                 p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
                                 p_hostname=device_info.hostname,
                                 p_processhandler=self.id,
                                 p_username=user2device.user.username,
+                                p_percent=user2device.percent,
                                 p_process_start_time=p_reference_time)
                             events.append(event)
 
-            else:
-                # Send process stop event for non monitored users (if required)
-                for user2device in device.users:
-                    if not user2device.active:
-                        current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
-
+                    else:
                         if current_pinfo is not None:
                             event = self.create_admin_event_process_end_from_pinfo(
                                 p_pinfo=current_pinfo,
                                 p_reference_time=p_reference_time)
                             events.append(event)
+
+
+            else:
+                # Send process stop event for non monitored users (if required)
+                for user2device in device.users:
+                    current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
+
+                    if current_pinfo is not None:
+                        event = self.create_admin_event_process_end_from_pinfo(
+                            p_pinfo=current_pinfo,
+                            p_reference_time=p_reference_time)
+                        events.append(event)
 
         active_hostnames = [device_info.hostname for device_info in self._device_infos.values() if device_info.is_up]
 

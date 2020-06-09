@@ -19,24 +19,74 @@ from python_base_app import log_handling
 from python_base_app import tools
 
 
+class HostStat(object):
+
+    def __init__(self, p_hostname, p_percent, p_count=1):
+
+        self._hostname = p_hostname
+        self._count = p_count
+        self._percent = p_percent
+
+    def add_occurence(self, p_percent, p_count=1):
+
+        self._count += p_count
+
+        if p_percent > self._percent:
+            self._percent = p_percent
+
+    @property
+    def hostname(self):
+
+        return self._hostname
+
+    @property
+    def percent(self):
+
+        return self._percent
+
+    @property
+    def count(self):
+
+        return self._count
+
+    @property
+    def summary(self):
+
+        if self._percent == 100:
+            return "{name}({count})".format(name=self._hostname, count=self._count)
+
+        else:
+            return "{name}({count}, {percent}%)".format(name=self._hostname, count=self._count, percent=self._percent)
+
+
 class Activity(object):
 
     def __init__(self, p_start_time=None):
 
-        self.host_process_counts = {}
+        self.host_stats = {}
         self.start_time = p_start_time
         self.end_time = None
         self.downtime = 0
 
-    def add_host_process(self, p_hostname):
+    @property
+    def percent(self):
 
-        process_count = self.host_process_counts.get(p_hostname)
+        if len(self.host_stats) == 0:
+            return 100
 
-        if process_count is None:
-            process_count = 0
+        max_host_stat = max(self.host_stats.values(), key=lambda host_stat: host_stat.percent)
+        return max_host_stat.percent
 
-        process_count = process_count + 1
-        self.host_process_counts[p_hostname] = process_count
+    def add_host_process(self, p_hostname, p_percent=100):
+
+        host_stat = self.host_stats.get(p_hostname)
+
+        if host_stat is None:
+            host_stat = HostStat(p_hostname=p_hostname, p_percent=p_percent)
+            self.host_stats[p_hostname] = host_stat
+
+        else:
+            host_stat.add_occurence(p_percent=p_percent)
 
     def set_end_time(self, p_end_time):
 
@@ -51,14 +101,14 @@ class Activity(object):
     def duration(self):
 
         if self.end_time is not None and self.start_time is not None:
-            return max((self.end_time - self.start_time).total_seconds() - self.downtime, 0)
+            return max((self.end_time - self.start_time).total_seconds() * self.percent / 100 - self.downtime, 0)
 
         else:
             return None
 
     def current_duration(self, p_reference_time):
 
-        return max((p_reference_time - self.start_time).total_seconds() - self.downtime, 0)
+        return max((p_reference_time - self.start_time).total_seconds() * self.percent / 100 - self.downtime, 0)
 
     def __str__(self):
 
@@ -71,8 +121,7 @@ class Activity(object):
     @property
     def host_infos(self):
 
-        return ", ".join(
-            "%s(%d)" % (hostname, process_count) for hostname, process_count in self.host_process_counts.items())
+        return ", ".join(host_stat.summary for host_stat in self.host_stats.values())
 
 
 class DayStatistics(object):
@@ -82,20 +131,23 @@ class DayStatistics(object):
         self.activities = []
         self.min_time = None
         self.max_time = None
-        self.host_process_counts = {}
+        self.host_stats = {}
 
     def add_activity(self, p_activity):
 
         self.activities.append(p_activity)
 
-        for hostname, new_count in p_activity.host_process_counts.items():
-            count = self.host_process_counts.get(hostname)
+        for host_stat in p_activity.host_stats.values():
+            day_host_stat = self.host_stats.get(host_stat.hostname)
 
-            if count is None:
-                count = 0
+            if day_host_stat is None:
+                day_host_stat = HostStat(p_hostname=host_stat.hostname, p_count=host_stat.count,
+                                         p_percent=host_stat.percent)
+                self.host_stats[host_stat.hostname] = day_host_stat
 
-            count = count + new_count
-            self.host_process_counts[hostname] = count
+            else:
+                day_host_stat.add_occurence(p_count=host_stat.count,
+                                            p_percent=host_stat.percent)
 
         if self.min_time is None or p_activity.start_time < self.min_time:
             self.min_time = p_activity.start_time
@@ -133,8 +185,7 @@ class DayStatistics(object):
     @property
     def host_infos(self):
 
-        return ", ".join(
-            "%s(%d)" % (hostname, process_count) for hostname, process_count in self.host_process_counts.items())
+        return ", ".join(host_stat.summary for host_stat in self.host_stats.values())
 
 
 class ProcessStatisticsInfo(object):
@@ -165,7 +216,7 @@ class ProcessStatisticsInfo(object):
         if self.active_processes == 0:
             self.current_activity = Activity(p_start_time=p_start_time)
 
-        self.current_activity.add_host_process(p_process_info.hostname)
+        self.current_activity.add_host_process(p_process_info.hostname, p_percent=p_process_info.percent)
         self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
         self.active_processes = self.active_processes + 1
 
@@ -372,7 +423,8 @@ def get_process_statistics(
                 for ruleset in user.rulesets:
 
                     if (pinfo.processname is None or
-                        (pinfo.processname is not None and user.regex_process_name_pattern.match(pinfo.processname))):
+                            (pinfo.processname is not None and user.regex_process_name_pattern.match(
+                                pinfo.processname))):
                         stat_info = user_stat_infos.get(ruleset.context)
 
                         if boundary_type == "START":

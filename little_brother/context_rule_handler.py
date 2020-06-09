@@ -41,7 +41,7 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
 
     def summary(self, p_context_detail):
         if p_context_detail is not None and p_context_detail != "":
-            return ["Summary", ": ", p_context_detail]
+            return [_("Summary"), ": ", p_context_detail]
 
         else:
             return []

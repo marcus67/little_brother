@@ -2,11 +2,11 @@
 
 Revision ID: version_0_3
 Revises: 96ff8f93ef32
-Create Date: 2020-05-31 00:02:02.240773
+Create Date: 2020-06-08 23:04:34.555492
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
@@ -64,13 +64,14 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.alter_column('admin_event', 'downtime',
-               existing_type=mysql.INTEGER(display_width=11),
-               nullable=True,
-               existing_server_default=sa.text("'0'"))
+                    existing_type=mysql.INTEGER(display_width=11),
+                    nullable=True,
+                    existing_server_default=sa.text("'0'"))
+    op.add_column('process_info', sa.Column('percent', sa.Integer(), server_default='100', nullable=True))
     op.alter_column('process_info', 'downtime',
-               existing_type=mysql.INTEGER(display_width=11),
-               nullable=True,
-               existing_server_default=sa.text("'0'"))
+                    existing_type=mysql.INTEGER(display_width=11),
+                    nullable=True,
+                    existing_server_default=sa.text("'0'"))
     op.alter_column('rule_override', 'key',
                existing_type=mysql.VARCHAR(length=256),
                nullable=True)
@@ -83,13 +84,14 @@ def downgrade():
                existing_type=mysql.VARCHAR(length=256),
                nullable=False)
     op.alter_column('process_info', 'downtime',
-               existing_type=mysql.INTEGER(display_width=11),
-               nullable=False,
-               existing_server_default=sa.text("'0'"))
+                    existing_type=mysql.INTEGER(display_width=11),
+                    nullable=False,
+                    existing_server_default=sa.text("'0'"))
+    op.drop_column('process_info', 'percent')
     op.alter_column('admin_event', 'downtime',
-               existing_type=mysql.INTEGER(display_width=11),
-               nullable=False,
-               existing_server_default=sa.text("'0'"))
+                    existing_type=mysql.INTEGER(display_width=11),
+                    nullable=False,
+                    existing_server_default=sa.text("'0'"))
     op.drop_table('user2device')
     op.drop_table('ruleset')
     op.drop_table('user')

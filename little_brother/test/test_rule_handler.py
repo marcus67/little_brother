@@ -21,16 +21,14 @@
 import datetime
 import os.path
 
+from little_brother import db_migrations
 from little_brother import german_vacation_context_rule_handler
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
-from little_brother import db_migrations
-
 from little_brother.test import test_persistence
-
 from python_base_app import configuration
 from python_base_app.test import base_test
 
@@ -467,7 +465,7 @@ class TestRuleHandler(base_test.BaseTestCase):
                                           p_rule_result_info=rule_result_info)
 
         self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
-                         rule_handler.RULE_TIME_PER_DAY)
+                         rule_handler.RULE_TIME_PER_DAY)  # TODO: test error on CircleCI
 
         rule_set.max_time_per_day = 651
 

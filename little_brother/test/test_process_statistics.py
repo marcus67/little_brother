@@ -21,13 +21,12 @@
 import datetime
 import unittest
 
+from little_brother import db_migrations
 from little_brother import process_info
 from little_brother import process_statistics
-from little_brother import db_migrations
-from python_base_app.test import base_test
-
 from little_brother.test import test_data
 from little_brother.test import test_persistence
+from python_base_app.test import base_test
 
 HOSTNAME = "hostname"
 HOSTNAME2 = "hostname2"
@@ -45,8 +44,8 @@ class TestProcessStatistics(base_test.BaseTestCase):
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
 
-        self.assertIsNotNone(a.host_process_counts)
-        self.assertEqual(len(a.host_process_counts), 0)
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 0)
         self.assertEqual(a.start_time, reference_time)
         self.assertIsNone(a.end_time)
 
@@ -54,29 +53,52 @@ class TestProcessStatistics(base_test.BaseTestCase):
         reference_time = datetime.datetime.utcnow()
         a = process_statistics.Activity(p_start_time=reference_time)
 
-        self.assertIsNotNone(a.host_process_counts)
-        self.assertEqual(len(a.host_process_counts), 0)
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 0)
 
-        a.add_host_process(p_hostname=HOSTNAME)
+        a.add_host_process(p_hostname=HOSTNAME, p_percent=25)
 
-        self.assertIsNotNone(a.host_process_counts)
-        self.assertEqual(len(a.host_process_counts), 1)
-        self.assertIn(HOSTNAME, a.host_process_counts)
-        self.assertEqual(a.host_process_counts[HOSTNAME], 1)
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 1)
+        self.assertIn(HOSTNAME, a.host_stats)
+        host_stat = a.host_stats[HOSTNAME]
+        self.assertEqual(host_stat.count, 1)
+        self.assertEqual(host_stat.percent, 25)
 
-        a.add_host_process(p_hostname=HOSTNAME)
+        a.add_host_process(p_hostname=HOSTNAME, p_percent=50)
 
-        self.assertIsNotNone(a.host_process_counts)
-        self.assertEqual(len(a.host_process_counts), 1)
-        self.assertIn(HOSTNAME, a.host_process_counts)
-        self.assertEqual(a.host_process_counts[HOSTNAME], 2)
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 1)
+        self.assertIn(HOSTNAME, a.host_stats)
+        host_stat = a.host_stats[HOSTNAME]
+        self.assertEqual(host_stat.count, 2)
+        self.assertEqual(host_stat.percent, 50)
+
+        a.add_host_process(p_hostname=HOSTNAME, p_percent=100)
+
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 1)
+        self.assertIn(HOSTNAME, a.host_stats)
+        host_stat = a.host_stats[HOSTNAME]
+        self.assertEqual(host_stat.count, 3)
+        self.assertEqual(host_stat.percent, 100)
+
+        a.add_host_process(p_hostname=HOSTNAME, p_percent=75)
+
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 1)
+        self.assertIn(HOSTNAME, a.host_stats)
+        host_stat = a.host_stats[HOSTNAME]
+        self.assertEqual(host_stat.count, 4)
+        self.assertEqual(host_stat.percent, 100)
 
         a.add_host_process(p_hostname=HOSTNAME2)
 
-        self.assertIsNotNone(a.host_process_counts)
-        self.assertEqual(len(a.host_process_counts), 2)
-        self.assertIn(HOSTNAME2, a.host_process_counts)
-        self.assertEqual(a.host_process_counts[HOSTNAME2], 1)
+        self.assertIsNotNone(a.host_stats)
+        self.assertEqual(len(a.host_stats), 2)
+        self.assertIn(HOSTNAME2, a.host_stats)
+        host_stat = a.host_stats[HOSTNAME2]
+        self.assertEqual(host_stat.count, 1)
 
     def test_activity_duration(self):
         reference_time = datetime.datetime.utcnow()
@@ -144,8 +166,8 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(ds.activities), 0)
         self.assertIsNone(ds.min_time)
         self.assertIsNone(ds.max_time)
-        self.assertIsNotNone(ds.host_process_counts)
-        self.assertEqual(len(ds.host_process_counts), 0)
+        self.assertIsNotNone(ds.host_stats)
+        self.assertEqual(len(ds.host_stats), 0)
 
     def test_day_statistics_add_activity(self):
         ds = process_statistics.DayStatistics()
@@ -162,10 +184,11 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertIsNotNone(ds.activities)
         self.assertEqual(len(ds.activities), 1)
 
-        self.assertIsNotNone(ds.host_process_counts)
-        self.assertEqual(len(ds.host_process_counts), 1)
-        self.assertIn(HOSTNAME, ds.host_process_counts)
-        self.assertEqual(ds.host_process_counts[HOSTNAME], 1)
+        self.assertIsNotNone(ds.host_stats)
+        self.assertEqual(len(ds.host_stats), 1)
+        self.assertIn(HOSTNAME, ds.host_stats)
+        host_stat = ds.host_stats[HOSTNAME]
+        self.assertEqual(host_stat.count, 1)
 
     def test_process_statistics_info_add_process_with_end_time(self):
 

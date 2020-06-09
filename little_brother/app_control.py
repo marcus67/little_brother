@@ -652,6 +652,7 @@ class AppControl(object):
                 p_processname=pinfo.processname,
                 p_start_time=pinfo.start_time,
                 p_downtime=pinfo.downtime,
+                p_percent=pinfo.percent,
                 p_end_time=end_time)
 
             if not new_pinfo.is_valid():

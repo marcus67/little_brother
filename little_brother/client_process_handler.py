@@ -16,18 +16,17 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
+import shlex
 import subprocess
 
 import psutil
-import shlex
-
-from python_base_app import log_handling
-from python_base_app import tools
-from python_base_app import configuration
 
 from little_brother import admin_event
 from little_brother import process_handler
 from little_brother import process_info
+from python_base_app import configuration
+from python_base_app import log_handling
+from python_base_app import tools
 
 SECTION_NAME = "ClientProcessHandler"
 
@@ -112,7 +111,6 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
         cmd_array = shlex.split(kill_command)
         subprocess.run(cmd_array)
-
 
         _gone, alive = psutil.wait_procs([proc], timeout=self._config.kill_delay)
 

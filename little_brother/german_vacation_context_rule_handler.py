@@ -18,9 +18,9 @@
 import collections
 import datetime
 import json
-import wtforms
 
 import requests
+import wtforms
 
 from little_brother import context_rule_handler
 from python_base_app import configuration
@@ -214,7 +214,7 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
     def summary(self, p_context_detail):
 
-        return ["Federal State:", " ", p_context_detail]
+        return [_("Federal State"), ": ", p_context_detail]
 
     def validate_context_details(self, p_context_detail):
 
