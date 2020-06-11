@@ -18,27 +18,27 @@
 import gettext
 import os
 
+import babel.dates
 import flask
 import flask_babel
 import flask_login
 import flask_wtf
 
-import babel.dates
-
 import little_brother
 from flask_helpers import blueprint_adapter
 from little_brother import api_view_handler
+from little_brother import constants
+from little_brother import entity_forms
 from little_brother import git
+from little_brother import persistence
 from little_brother import rule_override
 from little_brother import settings
-from little_brother import entity_forms
-from little_brother import persistence
-from little_brother import constants
 from python_base_app import base_web_server
+from python_base_app import custom_fields
 from python_base_app import tools
 
 LOCALE_REL_FONT_SIZES = {
-    'bn': 125     # scale Bangla fonts to 125% for readability
+    'bn': 125  # scale Bangla fonts to 125% for readability
 }
 
 SECTION_NAME = "StatusServer"
@@ -260,8 +260,9 @@ class StatusServer(base_web_server.BaseWebServer):
             if part == constants.TEXT_SEPERATOR:
                 if text != "":
                     text += constants.TEXT_SEPERATOR
+
             else:
-                text += self.gettext(part)
+                text += self._base_gettext(self.gettext(part))
 
         return text
 
@@ -337,10 +338,6 @@ class StatusServer(base_web_server.BaseWebServer):
             self._persistence.clear_cache()
 
         session.commit()
-
-
-
-
 
     @BLUEPRINT_ADAPTER.route_method("/admin", endpoint="admin", methods=["GET", "POST"])
     @flask_login.login_required
@@ -579,6 +576,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
         for user in p_users:
             form = entity_forms.UserForm(prefix='{id}_'.format(id=user.html_key), csrf_enabled=False)
+            form.locale.choices = sorted([(locale, language) for locale, language in self._languages.items()])
             forms[user.html_key] = form
 
             for ruleset in user.rulesets:
@@ -611,8 +609,12 @@ class StatusServer(base_web_server.BaseWebServer):
 
         forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
 
+        uniqueness = custom_fields.Uniqueness(
+            p_field_selectors=[lambda form: form.device_name, lambda form: form.hostname])
+
         for device in p_devices:
             form = entity_forms.DeviceForm(prefix='{id}_'.format(id=device.html_key), csrf_enabled=False)
+            uniqueness.add_form(p_form=form)
             forms[device.device_name] = form
 
         return forms

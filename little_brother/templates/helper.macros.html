@@ -20,23 +20,23 @@
 
 {% macro render_field(field) %}
   {% if field.errors %}
-  <div class="form-group has-error">
-  {% if field.extra_css_classes is defined %}
-    {{ field(class_="form-control " + field.extra_css_classes) }}
-  {% else %}
-    {{ field(class_="form-control") }}
-  {% endif %}
-    <label class="control-label" for="{{ field.id }}">
-    {% if field.errors|length == 1 %}
-        {{ field.errors[0]|_base }}
-    {% else %}
-    <ul>
-        {% for error in field.errors %}
-        <li>{{ error|_base }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    </label>
+  <div class="has-error">
+      {% if field.extra_css_classes is defined %}
+      {{ field(class_="form-control " + field.extra_css_classes) }}
+      {% else %}
+      {{ field(class_="form-control") }}
+      {% endif %}
+      <label class="error-label" for="{{ field.id }}">
+          {% if field.errors|length == 1 %}
+          {{ field.errors[0]|_base }}
+          {% else %}
+          <ul>
+              {% for error in field.errors %}
+              <li>{{ error|_base }}</li>
+              {% endfor %}
+          </ul>
+          {% endif %}
+      </label>
   </div>
   {% else %}
       {% if field.extra_css_classes is defined %}

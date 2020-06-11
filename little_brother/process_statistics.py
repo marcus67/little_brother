@@ -190,11 +190,14 @@ class DayStatistics(object):
 
 class ProcessStatisticsInfo(object):
 
-    def __init__(self, p_username, p_reference_time, p_max_lookback_in_days, p_min_activity_duration):
+    def __init__(self, p_username, p_reference_time, p_max_lookback_in_days, p_min_activity_duration,
+                 p_notification_name=None, p_full_name=None):
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self.username = p_username
+        self.notification_name = p_notification_name if p_notification_name is not None else self.username
+        self.full_name = p_full_name if p_full_name is not None else self.username
         self.reference_time = p_reference_time
         self.reference_date = p_reference_time.date()
         self.max_lookback_in_days = p_max_lookback_in_days
@@ -373,6 +376,8 @@ def get_empty_stat_infos(
         for ruleset in user.rulesets:
             stat_info = ProcessStatisticsInfo(
                 p_username=user.username,
+                p_notification_name=user.notification_name,
+                p_full_name=user.full_name,
                 p_reference_time=p_reference_time,
                 p_max_lookback_in_days=p_max_lookback_in_days,
                 p_min_activity_duration=p_min_activity_duration)

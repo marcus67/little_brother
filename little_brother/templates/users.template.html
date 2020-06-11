@@ -41,7 +41,6 @@
     
   </HEAD>
 
-
   <BODY>
 	{{ helper.fontawesome_script() }}
 	{% include 'navbar.include.html' %}
@@ -75,10 +74,11 @@
 			    		<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
 							<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
 							<!-- {{ _('Edit user details') }} -->
-		    				{% call accordion.toggle_begin(tooltip="Edit user details") %}{{ user.html_key }}{% endcall %}
-		        				{{ user.username }}
-			        		{{ accordion.toggle_end() }}
-		        		</DIV>		        
+							{% call accordion.toggle_begin(tooltip="Edit user details") %}{{ user.html_key }}{% endcall
+							%}
+							{{ user.full_name }}
+							{{ accordion.toggle_end() }}
+						</DIV>
 			    		<DIV CLASS="col-xs-7  col-sm-7  col-md-8  col-lg-8 localetext">
 							{{ user.summary|format_text_array }}
 						</DIV>
@@ -187,12 +187,12 @@
 
 	    	   	   {% call accordion.begin() %}{{ user.devices_html_key }}{% endcall %}
 			<DIV CLASS="row ALTERNATE2_ROWLEVEL_1">
-				<DIV CLASS="col-md-2 localetext">
+				<DIV CLASS="col-md-6 localetext">
 					{% call accordion.toggle_begin(tooltip="Edit devices") %}{{ user.devices_html_key }}{% endcall %}
-					{{_('Devices')}} ({{_('Count')}}: {{ user.sorted_user2devices|length }})
+					{{_('Devices')}} ({{_(user.device_list)}})
 					{{ accordion.toggle_end() }}
 				</DIV>
-				<DIV CLASS="col-md-6"></DIV>
+				<DIV CLASS="col-md-2"></DIV>
 				<DIV class="col-md-4 text-right">
 					{% if forms[user.new_device_html_key] is defined %}
 					{{ _("Add to monitoring") }}:

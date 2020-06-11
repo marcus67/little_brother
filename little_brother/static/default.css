@@ -93,6 +93,15 @@ a.CVE_HYPERLINK:visited {
   padding-right: 2px;
 }
 
+.col-lg-5 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-lg-6 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
 
 .col-md-1 {
   padding-left: 2px;
@@ -110,6 +119,16 @@ a.CVE_HYPERLINK:visited {
 }
 
 .col-md-4 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-5 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-6 {
   padding-left: 2px;
   padding-right: 2px;
 }
@@ -346,4 +365,8 @@ UL {
 .inactive {
   color: red;
   font-size: 125%;
+}
+
+.error-label {
+  color: #a94442;
 }

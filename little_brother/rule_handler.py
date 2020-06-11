@@ -19,6 +19,7 @@ import copy
 import datetime
 import re
 
+from little_brother import constants
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -40,7 +41,6 @@ RULE_ACTIVITY_DURATION = 16
 RULE_MIN_BREAK = 32
 
 DEFAULT_RULESET_LABEL = "default"
-DEFAULT_PROCESS_PATTERN = "systemd|.*sh"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
@@ -66,7 +66,7 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.context_label = configuration.NONE_STRING
         self.priority = DEFAULT_PRIORITY
         self.username = None
-        self.process_name_pattern = DEFAULT_PROCESS_PATTERN
+        self.process_name_pattern = constants.DEFAULT_PROCESS_NAME_PATTERN
         self.min_time_of_day = configuration.NONE_STRING
         self.max_time_of_day = configuration.NONE_STRING
         self.max_time_per_day = configuration.NONE_STRING
@@ -304,10 +304,7 @@ class RuleHandler(object):
 
         if user is not None:
             for ruleset in user.rulesets:
-                active = False
-
                 context_name = ruleset.context or self._default_context_rule_handler_name
-
                 context_rule_handler = self._context_rule_handlers.get(context_name)
 
                 if context_rule_handler is None:
@@ -445,7 +442,7 @@ class RuleHandler(object):
         rule_result_info.default_rule_set = rule_set
         rule_result_info.effective_rule_set = apply_override(p_rule_set=rule_set, p_rule_override=p_rule_override)
 
-        rule_result_info.args["user"] = p_stat_info.username
+        rule_result_info.args["user"] = p_stat_info.notification_name
         rule_result_info.locale = p_locale
 
         if rule_set is not None:

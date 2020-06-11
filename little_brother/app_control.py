@@ -906,7 +906,6 @@ class AppControl(object):
                                                           p_rule_result_info=rule_result_info)
 
                 if self._prometheus_client is not None:
-                    # TODO: user state not updated for device activity
                     self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
 
         fmt = "Processing rules END..."
@@ -1025,7 +1024,7 @@ class AppControl(object):
 
     def get_sorted_users(self):
 
-        return sorted(self._persistence.users, key=lambda user: user.username)
+        return sorted(self._persistence.users, key=lambda user: user.full_name)
 
     def get_unmonitored_users(self):
 
@@ -1103,9 +1102,15 @@ class AppControl(object):
             if not override.reference_date in days and override.reference_date >= datetime.date.today():
                 days.append(override.reference_date)
 
-        for username in sorted(self._usernames):
+        for username in self._usernames:
             admin_info = view_info.ViewInfo(p_html_key=username)
             admin_info.username = username
+            admin_info.full_name = username
+
+            user = self._persistence.user_map.get(username)
+
+            if user is not None:
+                admin_info.full_name = user.full_name
 
             admin_info.user_info = user_infos.get(username)
             admin_info.day_infos = []
@@ -1154,7 +1159,7 @@ class AppControl(object):
 
             admin_infos.append(admin_info)
 
-        return admin_infos
+        return sorted(admin_infos, key=lambda info: info.full_name)
 
     def send_events(self):
 

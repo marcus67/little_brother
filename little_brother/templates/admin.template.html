@@ -58,13 +58,15 @@
 			    		<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
 							<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
 							<!-- {{ _('Show configurations of upcoming days') }} -->
-		    				{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days") %}{{admin_info.html_key}}{% endcall %}
-		        				{{ admin_info.username }}
-								{{ helper.check_or_cross(admin_info.user_info.activity_permitted) }}
-			        		{{ accordion.toggle_end() }}
-		        		</DIV>		        
+							{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days")
+							%}{{admin_info.html_key}}{% endcall %}
+							{{ admin_info.full_name }}
+							{{ helper.check_or_cross(admin_info.user_info.activity_permitted) }}
+							{{ accordion.toggle_end() }}
+						</DIV>
 			    		<DIV CLASS="col-xs-7  col-sm-7  col-md-8  col-lg-8 localetext">
 							{% if admin_info.user_info.active_stat_info is defined %}
+							<!-- TODO: Show "/Unlimited" if free-play is active -->
 							{{_("Today's Activity")}}: <SPAN CLASS="nonlocaletext">{{ admin_info.user_info.active_stat_info.todays_activity_duration|seconds_to_string }}/{{ admin_info.day_infos[0].effective_rule_set.max_time_per_day|seconds_to_string }}</SPAN>
 							<UL>
 							{% for rule_template in admin_info.user_info.active_rule_result_info.applying_rule_text_templates %}

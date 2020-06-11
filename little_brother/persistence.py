@@ -132,6 +132,34 @@ class User(Base):
             return None
 
     @property
+    def notification_name(self):
+        if self.first_name is not None and self.first_name != '':
+            return self.first_name
+
+        else:
+            return self.username.capitalize()
+
+    @property
+    def full_name(self):
+        if self.first_name is not None and self.first_name != '':
+            if self.last_name is not None and self.last_name != '':
+                return self.first_name + " " + self.last_name
+
+            else:
+                return self.first_name
+
+        else:
+            return self.username.capitalize()
+
+    @property
+    def device_list(self):
+        if len(self.devices) == 0:
+            return _("Not set")
+
+        else:
+            return ", ".join([user2device.device.device_name for user2device in self.devices])
+
+    @property
     def html_key(self):
         return "user_{id}".format(id=self.id)
 
@@ -750,7 +778,7 @@ class Persistence(object):
         new_user = User()
         new_user.username = p_username
         new_user.locale = p_locale
-        new_user.process_name_pattern = rule_handler.DEFAULT_PROCESS_PATTERN
+        new_user.process_name_pattern = constants.DEFAULT_PROCESS_NAME_PATTERN
         session.add(new_user)
 
         default_ruleset = self.get_default_ruleset()

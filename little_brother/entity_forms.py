@@ -27,7 +27,7 @@ class UserForm(custom_form.ModelForm):
 
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
-    locale = wtforms.StringField("Locale") # TODO: Locale as SelectField
+    locale = wtforms.SelectField("Locale")
     process_name_pattern = wtforms.StringField("ProcessNamePattern")
     active = custom_fields.BooleanField("Active")
 
@@ -43,13 +43,20 @@ def dns_validator(_form, field):
     if not tools.is_valid_dns_name(field.data):
         raise wtforms.validators.ValidationError(_("'{name}' is not a valid host address"))
 
-class DeviceForm(custom_form.ModelForm):
 
-    device_name = wtforms.StringField("FirstName")
-    hostname = wtforms.StringField("FirstName", validators=[dns_validator]) # TODO: validation for unique hostname
-    min_activity_duration = wtforms.IntegerField("MinActivityDuration")
-    max_active_ping_delay = wtforms.IntegerField("MaxActivePingDelay")
-    sample_size = wtforms.IntegerField("SampleSize")
+class DeviceForm(custom_form.ModelForm):
+    device_name = wtforms.StringField("DeviceName",
+                                      validators=[wtforms.validators.DataRequired(),
+                                                  custom_fields.Uniqueness()])
+    hostname = wtforms.StringField("Hostname",
+                                   validators=[wtforms.validators.DataRequired(),
+                                               dns_validator,
+                                               custom_fields.Uniqueness()])  # TODO: validation for unique hostname
+    min_activity_duration = wtforms.IntegerField("MinActivityDuration",
+                                                 validators=[wtforms.validators.NumberRange(min=1, max=1000)])
+    max_active_ping_delay = wtforms.IntegerField("MaxActivePingDelay",
+                                                 validators=[wtforms.validators.NumberRange(min=1, max=1000)])
+    sample_size = wtforms.IntegerField("SampleSize", validators=[wtforms.validators.NumberRange(min=5, max=100)])
 
 class RulesetForm(custom_form.ModelForm):
 
@@ -64,6 +71,5 @@ class RulesetForm(custom_form.ModelForm):
     max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
 
 class User2DeviceForm(custom_form.ModelForm):
-
-    percent = wtforms.IntegerField("Percent") # TODO: validate value
+    percent = wtforms.IntegerField("Percent", validators=[wtforms.validators.NumberRange(min=1, max=100)])
     active = custom_fields.BooleanField("Active")
