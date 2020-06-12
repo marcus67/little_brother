@@ -23,7 +23,7 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Boolean, ForeignKey
 from sqlalchemy.exc import ProgrammingError
-from sqlalchemy.orm import relationship, contains_eager, joinedload
+from sqlalchemy.orm import relationship
 
 from little_brother import constants
 from little_brother import rule_handler
@@ -154,7 +154,7 @@ class User(Base):
     @property
     def device_list(self):
         if len(self.devices) == 0:
-            return _("Not set")
+            return tools.value_or_not_set(None)
 
         else:
             return ", ".join([user2device.device.device_name for user2device in self.devices])
@@ -206,10 +206,20 @@ class User(Base):
     @property
     def summary(self):
 
-        texts =  [_("Monitored"), ": ", tools.format_boolean(p_value=self.active)]
+        texts = []
+
+        if self.username.upper() != self.full_name.upper():
+            texts.extend([_("Username"), ":", self.username])
+
+        texts.extend([constants.TEXT_SEPERATOR, _("Monitored"), ": ", tools.format_boolean(p_value=self.active)])
 
         if self.locale is not None:
-            texts.extend([constants.TEXT_SEPERATOR, _("Locale"), ": ", self.locale])
+            lang = constants.LANGUAGES.get(self.locale)
+
+            if lang is None:
+                lang = _("Unknown")
+
+            texts.extend([constants.TEXT_SEPERATOR, _("Locale"), ": ", lang])
 
         return texts
 
@@ -261,6 +271,23 @@ class Device(Base):
     def delete_html_key(self):
         return "delete_device_{id}".format(id=self.id)
 
+    def list_of_users(self, p_exclude=None):
+
+        return ", ".join(["{name} ({percent}%)".format(name=user2device.user.full_name, percent=user2device.percent)
+                          for user2device in self.users
+                          if p_exclude is None or not user2device.user is p_exclude])
+
+    @property
+    def summary(self):
+        texts = []
+
+        if len(self.users) > 0:
+            texts.extend([_("Assigned users"), ": ", self.list_of_users()])
+
+        texts.extend([constants.TEXT_SEPERATOR, _("Host Name"), ": ", tools.value_or_not_set(self.hostname)])
+
+        return texts
+
 
 class User2Device(Base):
     __tablename__ = 'user2device'
@@ -277,7 +304,15 @@ class User2Device(Base):
 
     @property
     def summary(self):
-        return [_("Summary"), ": ", "TODO"]
+
+        texts = [constants.TEXT_SEPERATOR, _("Monitored"), ": ", tools.format_boolean(p_value=self.active),
+                 constants.TEXT_SEPERATOR, "{percent}%".format(percent=self.percent)]
+
+        if len(self.device.users) > 1:
+            texts.extend([constants.TEXT_SEPERATOR, _("Shared with"), ": ",
+                          self.device.list_of_users(p_exclude=self.user)])
+
+        return texts
 
     @staticmethod
     def get_by_id(p_session, p_id):
@@ -446,6 +481,8 @@ class Persistence(object):
         self._reuse_session = p_reuse_session
         self._users = None
         self._devices = None
+        self._users_session = None
+        self._devices_session = None
 
         if self._config.database_user is not None:
             tools.check_config_value(p_config=self._config, p_config_attribute_name="database_password")
@@ -725,8 +762,17 @@ class Persistence(object):
     def users(self):
 
         if self._users is None:
-            session = self.get_session()
-            self._users = session.query(User).options(joinedload(User.rulesets), contains_eager('rulesets.user')).all()
+            self._users_session = self.get_session()
+
+            # .options(joinedload(User.rulesets), contains_eager('rulesets.user'),
+            #          joinedload(User.devices), contains_eager('devices.user'),
+            #          contains_eager('devices.device'))
+
+            self._users = self._users_session.query(User).all()
+
+        #            session.query(Device).options(joinedload(Device.users), contains_eager('users.user')).all()
+
+        # session.query(User2Device).all()
 
         return self._users
 
@@ -740,8 +786,8 @@ class Persistence(object):
     def devices(self):
 
         if self._devices is None:
-            session = self.get_session()
-            self._devices = session.query(Device).all()
+            self._devices_session = self.get_session()
+            self._devices = self._devices_session.query(Device).options().all()
 
         return self._devices
 

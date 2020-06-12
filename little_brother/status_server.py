@@ -116,10 +116,10 @@ class StatusServer(base_web_server.BaseWebServer):
                  p_master_connector,
                  p_persistence,
                  p_is_master,
-                 p_locale_selector = None,
-                 p_base_gettext = None,
-                 p_languages = None,
-                 p_user_handler = None):
+                 p_locale_selector=None,
+                 p_base_gettext=None,
+                 p_languages=None,
+                 p_user_handler=None):
 
         super(StatusServer, self).__init__(
             p_config=p_config,
@@ -143,13 +143,13 @@ class StatusServer(base_web_server.BaseWebServer):
         self._localedir = os.path.join(os.path.dirname(__file__), "translations")
 
         if self._languages is None:
-            self._languages = { 'en': "English" }
+            self._languages = {'en': "English"}
 
         if self._locale_selector is None:
-            self._locale_selector = lambda : "en"
+            self._locale_selector = lambda: "en"
 
         if self._base_gettext is None:
-            self._base_gettext = lambda text:text
+            self._base_gettext = lambda text: text
 
         if self._is_master:
             self._blueprint = flask.Blueprint(BLUEPRINT_NAME, little_brother.__name__, static_folder="static")
@@ -173,16 +173,17 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['invert'] = self.invert
         self._app.jinja_env.filters['_base'] = self._base_gettext
 
-
         self._babel = flask_babel.Babel(self._app)
         self._babel.localeselector(p_locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
 
-        entity_forms.RulesetForm.context_details.validators = ( lambda form, field: self._appcontrol.validate_context_rule_handler_details(p_context_name=form.context.data, p_context_details=field.data) )
+        entity_forms.RulesetForm.context_details.validators = (
+            lambda form, field: self._appcontrol.validate_context_rule_handler_details(p_context_name=form.context.data,
+                                                                                       p_context_details=field.data))
 
     def invert(self, rel_font_size):
 
-        return str(int(1.0/float(rel_font_size)*10000.0))
+        return str(int(1.0 / float(rel_font_size) * 10000.0))
 
     def measure(self, p_hostname, p_service, p_duration):
 
@@ -193,9 +194,8 @@ class StatusServer(base_web_server.BaseWebServer):
     def login_view(self):
 
         request = flask.request
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
-
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
             page = flask.render_template(
                 LOGIN_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
@@ -265,8 +265,6 @@ class StatusServer(base_web_server.BaseWebServer):
                 text += self._base_gettext(self.gettext(part))
 
         return text
-
-
 
     def format_babel_date(self, value, format_string):
 
@@ -344,8 +342,8 @@ class StatusServer(base_web_server.BaseWebServer):
     def admin_view(self):
 
         request = flask.request
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
 
             admin_infos = self._appcontrol.get_admin_infos()
             forms = self.get_admin_forms(p_admin_infos=admin_infos)
@@ -379,8 +377,8 @@ class StatusServer(base_web_server.BaseWebServer):
     def users_view(self):
 
         request = flask.request
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                              p_service=request.url_rule, p_duration=duration)):
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
 
             users = self._appcontrol.get_sorted_users()
             forms = self.get_users_forms(p_users=users)
@@ -397,6 +395,7 @@ class StatusServer(base_web_server.BaseWebServer):
                 if request.form['submit'] == HTML_KEY_NEW_USER:
                     username = forms[HTML_KEY_NEW_USER].username.data
                     self._appcontrol.add_new_user(p_username=username, p_locale=self._locale_selector())
+                    # TODO: after adding new user Users window should be opended for new user
 
                 else:
                     for user in users:
@@ -456,8 +455,8 @@ class StatusServer(base_web_server.BaseWebServer):
     def devices_view(self):
 
         request = flask.request
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                              p_service=request.url_rule, p_duration=duration)):
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
 
             devices = self._appcontrol.get_sorted_devices()
             forms = self.get_devices_forms(p_devices=devices)
@@ -473,6 +472,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 if request.form['submit'] == HTML_KEY_NEW_DEVICE:
                     self._persistence.add_new_device(p_name_pattern=self.gettext("New device {id}"))
+                    # TODO: after adding new device Devices window should be opended for new device
                 else:
                     for device in devices:
                         if request.form['submit'] == device.delete_html_key:
@@ -507,9 +507,8 @@ class StatusServer(base_web_server.BaseWebServer):
     def index_view(self):
 
         request = flask.request
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                              p_service=request.url_rule, p_duration=duration)):
-
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
             page = flask.render_template(
                 INDEX_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
@@ -526,9 +525,8 @@ class StatusServer(base_web_server.BaseWebServer):
     def about_view(self):
 
         request = flask.request
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
-
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
             page = flask.render_template(
                 ABOUT_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
@@ -560,7 +558,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def add_labels(self, p_value_list):
 
-        return [( entry, self.gettext(entry)) for entry in p_value_list]
+        return [(entry, self.gettext(entry)) for entry in p_value_list]
 
     def get_users_forms(self, p_users):
 
@@ -571,7 +569,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
         if len(unmonitored_users) > 0:
             new_user_form = entity_forms.NewUserForm(meta={'csrf': False})
-            new_user_form.username.choices = [ (username, username) for username in unmonitored_users ]
+            new_user_form.username.choices = [(username, username) for username in unmonitored_users]
             forms[HTML_KEY_NEW_USER] = new_user_form
 
         for user in p_users:
@@ -582,9 +580,15 @@ class StatusServer(base_web_server.BaseWebServer):
             for ruleset in user.rulesets:
                 form = entity_forms.RulesetForm(prefix='{id}_'.format(id=ruleset.html_key), csrf_enabled=False)
                 forms[ruleset.html_key] = form
-                form.context.choices = self.add_labels(self._appcontrol.get_context_rule_handler_names())
+
+                if ruleset.fixed_context:
+                    form.context.choices = self.add_labels([ruleset.context])
+
+                else:
+                    form.context.choices = self.add_labels(self._appcontrol.get_context_rule_handler_names())
+
                 form.context_details.validators = [
-                        lambda form, field: self._appcontrol.validate_context_rule_handler_details(
+                    lambda form, field: self._appcontrol.validate_context_rule_handler_details(
                         p_context_name=form.context.data, p_context_details=field.data)]
 
             unmonitored_devices = self._appcontrol.get_unmonitored_devices(p_user=user)
@@ -592,7 +596,8 @@ class StatusServer(base_web_server.BaseWebServer):
             if len(unmonitored_devices) > 0:
                 new_device_form = entity_forms.NewUser2DeviceForm(prefix='{id}_'.format(id=user.html_key),
                                                                   meta={'csrf': False})
-                new_device_form.device_id.choices = [(str(device.id), device.device_name) for device in unmonitored_devices]
+                new_device_form.device_id.choices = [(str(device.id), device.device_name) for device in
+                                                     unmonitored_devices]
                 forms[user.new_device_html_key] = new_device_form
 
             for user2device in user.devices:
@@ -606,9 +611,7 @@ class StatusServer(base_web_server.BaseWebServer):
     def get_devices_forms(p_devices):
 
         forms = {}
-
         forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
-
         uniqueness = custom_fields.Uniqueness(
             p_field_selectors=[lambda form: form.device_name, lambda form: form.hostname])
 
@@ -618,7 +621,6 @@ class StatusServer(base_web_server.BaseWebServer):
             forms[device.device_name] = form
 
         return forms
-
 
     def destroy(self):
 
@@ -636,5 +638,3 @@ class StatusServer(base_web_server.BaseWebServer):
             self._langs[current_locale] = gettext_func
 
         return gettext_func.gettext(p_text)
-
-

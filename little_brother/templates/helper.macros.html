@@ -18,49 +18,41 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -->
 
-{% macro render_field(field) %}
-  {% if field.errors %}
-  <div class="has-error">
-      {% if field.extra_css_classes is defined %}
-      {{ field(class_="form-control " + field.extra_css_classes) }}
-      {% else %}
-      {{ field(class_="form-control") }}
-      {% endif %}
-      <label class="error-label" for="{{ field.id }}">
-          {% if field.errors|length == 1 %}
-          {{ field.errors[0]|_base }}
+{% macro render_field(field, read_only=False) %}
+{% if field.errors %}
+<div class="has-error">
+    {% if field.extra_css_classes is defined %}
+    {{ field(class_="form-control " + field.extra_css_classes, readonly=read_only) }}
+    {% else %}
+    {{ field(class_="form-control", readonly=read_only) }}
+    {% endif %}
+    <label class="error-label" for="{{ field.id }}">
+        {% if field.errors|length == 1 %}
+        {{ field.errors[0]|_base }}
           {% else %}
-          <ul>
-              {% for error in field.errors %}
-              <li>{{ error|_base }}</li>
-              {% endfor %}
-          </ul>
-          {% endif %}
-      </label>
-  </div>
-  {% else %}
-      {% if field.extra_css_classes is defined %}
-        {{ field(class_="form-control " + field.extra_css_classes) }}
-      {% else %}
-        {{ field(class_="form-control") }}
-      {% endif %}
-  {% endif %}
-{% endmacro %}
-
-{% macro value_or_not_set(value) %}
-  {% if value == '' %}
-  {{ _('Not set') }}
-  {% else %}
-  {{ value }}
-  {% endif %}
+        <ul>
+            {% for error in field.errors %}
+            <li>{{ error|_base }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </label>
+</div>
+{% else %}
+{% if field.extra_css_classes is defined %}
+{{ field(class_="form-control " + field.extra_css_classes, readonly=read_only) }}
+{% else %}
+{{ field(class_="form-control", readonly=read_only) }}
+{% endif %}
+{% endif %}
 {% endmacro %}
 
 {% macro render_flashed_messages() %}
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-warning fade in localetext">
-            {{ message|_base }}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning fade in localetext">
+    {{ message|_base }}
         </div>
         {% endfor %}
       {% endif %}

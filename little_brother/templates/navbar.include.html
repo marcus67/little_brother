@@ -45,8 +45,9 @@
 	      {% if authentication.is_authenticated %}
     	  <p class="navbar-text localetext">{{_('Signed in as')}} <SPAN CLASS="nonlocaletext"><CODE>{{ authentication.username }}</CODE></SPAN></p>
 	      <form class="navbar-form navbar-right" ACTION="{{ url_for('auth.logout') }}" METHOD="POST">
-	        <button type="submit" class="btn btn-default localetext">{{_('Logout')}}</button>
-	      </form>
+			  <button type="submit" class="btn btn-default localetext" title="{{_('Logout')}}"><I
+					  class="fas fa-sign-out-alt"></I></button>
+		  </form>
 	      {% endif %}
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->

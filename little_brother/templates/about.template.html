@@ -39,8 +39,9 @@
   </HEAD>
 
   <BODY>
-	{% include 'navbar.include.html' %}
-	<CENTER>
+  {{ helper.fontawesome_script() }}
+  {% include 'navbar.include.html' %}
+  <CENTER>
 		<img alt="Brand" src="{{ url_for('.static', filename='icons/icon_baby-panda_128x128.png') }}">
 		<BR>
 		<H2>Little&nbsp;Brother</H2>

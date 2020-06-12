@@ -24,7 +24,21 @@ DEFAULT_DEVICE_SAMPLE_SIZE = 10
 DEFAULT_DEVICE_MIN_ACTIVITY_DURATION = 120
 DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY = 50
 
-TEXT_SEPERATOR = ", "
+LANGUAGES = {
+    'en': 'English',
+    'de': 'Deutsch',
+    'fr': 'Français',
+    'it': 'Italiano',
+    'nl': 'Nederlands',
+    'fi': 'Suomen kieli',
+    'tr': 'Türkçe',
+    'ru': 'Русский язык',
+    'ja': '日本語',
+    'bn': 'বাংলা',
+    'th': 'ภาษาไทย'
+}
+
+TEXT_SEPERATOR = " 🞄 "
 
 API_URL = "/api"
 API_REL_URL_EVENTS = "events"

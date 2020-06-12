@@ -21,15 +21,18 @@ from python_base_app import custom_fields
 from python_base_app import custom_form
 from python_base_app import tools
 
-_ = lambda x:x
+_ = lambda x: x
+
+
+# TODO: edit fields should be marked by special color when containing modified (and not yet saved ) value
 
 class UserForm(custom_form.ModelForm):
-
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
     locale = wtforms.SelectField("Locale")
     process_name_pattern = wtforms.StringField("ProcessNamePattern")
     active = custom_fields.BooleanField("Active")
+
 
 class NewUserForm(custom_form.ModelForm):
 
@@ -45,13 +48,15 @@ def dns_validator(_form, field):
 
 
 class DeviceForm(custom_form.ModelForm):
+    # TODO: trim device_name during validation
     device_name = wtforms.StringField("DeviceName",
                                       validators=[wtforms.validators.DataRequired(),
                                                   custom_fields.Uniqueness()])
+    # TODO: trim hostname during validation
     hostname = wtforms.StringField("Hostname",
                                    validators=[wtforms.validators.DataRequired(),
                                                dns_validator,
-                                               custom_fields.Uniqueness()])  # TODO: validation for unique hostname
+                                               custom_fields.Uniqueness()])
     min_activity_duration = wtforms.IntegerField("MinActivityDuration",
                                                  validators=[wtforms.validators.NumberRange(min=1, max=1000)])
     max_active_ping_delay = wtforms.IntegerField("MaxActivePingDelay",

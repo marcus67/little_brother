@@ -21,7 +21,9 @@
 {% import 'bootstrap_accordion.macros.html' as accordion %}
 {% import 'helper.macros.html' as helper %}
 
-  <HEAD>
+{{ helper.locale_font(rel_font_size) }}
+
+<HEAD>
 	<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
@@ -40,9 +42,6 @@
 
   <BODY>
     {{ helper.fontawesome_script() }}
-    {{ helper.locale_font(rel_font_size) }}
-    {{ helper.fontawesome_script() }}
-
 	{% include 'navbar.include.html' %}
 
 	<FORM ACTION="{{ url_for('little_brother.devices') }}" METHOD="POST" CLASS="form-horizontal">
@@ -66,36 +65,46 @@
 		    				{% call accordion.toggle_begin(tooltip="Edit device details") %}{{device.html_key}}{% endcall %}
 							{{ device.device_name }}
 			        		{{ accordion.toggle_end() }}
-		        		</DIV>		        
-			    		<DIV CLASS="col-xs-7  col-sm-7  col-md-8  col-lg-8 localetext">
-							{{_("Number of assigned users") }}: {{ device.users | length }},
-							{{_("Host Name")}}: <SPAN CLASS="CODE">{{ helper.value_or_not_set(device.hostname) }}</SPAN>
+		        		</DIV>
+						<DIV CLASS="col-xs-7  col-sm-7  col-md-8  col-lg-8 localetext">
+							{{ device.summary|format_text_array }}</SPAN>
 						</DIV>
 		        		<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
 							<BUTTON id="{{ device.delete_html_key }}" class="btn" title="{{_('Remove device from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>
 		        		</DIV>
 			    	</DIV>			    			        
 			    {% call accordion.details() %}{{device.html_key}}{% endcall %}
-			    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-3 localetext">{{_('Name')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-4 localetext">{{_('Host Name')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Min Activity Duration [s]')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Max Active Response Delay [ms]')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Sample Size')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 text-right">
-							<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
-						</DIV>
-			    	</DIV>
-			    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-3 localetext">{{ helper.render_field(forms[device.device_name].device_name) }}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-4 localetext">{{ helper.render_field(forms[device.device_name].hostname) }}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{ helper.render_field(forms[device.device_name].min_activity_duration) }}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{ helper.render_field(forms[device.device_name].max_active_ping_delay) }}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{ helper.render_field(forms[device.device_name].sample_size) }}</DIV>
-			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-			    	</DIV>
+			<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+				<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-3 localetext">{{_('Name')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-4 localetext">{{_('Host Name')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Min Activity Duration [s]')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Max Active Response Delay [ms]')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Sample Size')}}</DIV>
+				<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+			</DIV>
+			<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+				<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-3 localetext">{{
+					helper.render_field(forms[device.device_name].device_name) }}
+				</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-4 localetext">{{
+					helper.render_field(forms[device.device_name].hostname) }}
+				</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{
+					helper.render_field(forms[device.device_name].min_activity_duration) }}
+				</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{
+					helper.render_field(forms[device.device_name].max_active_ping_delay) }}
+				</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{
+					helper.render_field(forms[device.device_name].sample_size) }}
+				</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-1 text-right">
+					<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I>
+					</BUTTON>
+				</DIV>
+			</DIV>
 				{{ accordion.end() }}
 	    	{% endfor %}
 	    </DIV>

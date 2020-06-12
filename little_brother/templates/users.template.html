@@ -162,14 +162,11 @@
 							<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
 								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].context_label) }}</DIV>
 								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">
-<!--										{ % if not ruleset.fixed_context %}-->
-									{{ helper.render_field(forms[ruleset.html_key].context) }}
-<!--										{ % endif %}-->
+									{{ helper.render_field(forms[ruleset.html_key].context, ruleset.fixed_context) }}
 								</DIV>
 								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  ">
-<!--										{ % if not ruleset.fixed_context %}-->
-									{{ helper.render_field(forms[ruleset.html_key].context_details) }}
-<!--										{ % endif %}-->
+									{{ helper.render_field(forms[ruleset.html_key].context_details,
+									ruleset.fixed_context) }}
 								</DIV>
 								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].min_time_of_day) }}</DIV>
 								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_time_of_day) }}</DIV>
@@ -189,7 +186,7 @@
 			<DIV CLASS="row ALTERNATE2_ROWLEVEL_1">
 				<DIV CLASS="col-md-6 localetext">
 					{% call accordion.toggle_begin(tooltip="Edit devices") %}{{ user.devices_html_key }}{% endcall %}
-					{{_('Devices')}} ({{_(user.device_list)}})
+					{{_('Devices')}} ({{user.device_list|_base}})
 					{{ accordion.toggle_end() }}
 				</DIV>
 				<DIV CLASS="col-md-2"></DIV>

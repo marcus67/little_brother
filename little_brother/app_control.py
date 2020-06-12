@@ -1132,20 +1132,14 @@ class AppControl(object):
                                                   p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
 
                     if reference_date == datetime.date.today():
-                        #                        day_info.label = (_('Today ({day:%%a})', 'long'), {"day": reference_date})
-                        #                        day_info.short_label = (_('Today', 'short'), {"day": reference_date})
                         day_info.long_format = _("'Today ('EEE')'", 'long')
                         day_info.short_format = _("'Today'", 'short')
 
                     elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-                        #                        day_info.label = (_('Tomorrow ({day:%%a})', 'long'), {"day": reference_date})
-                        #                        day_info.short_label = (_('Tomorrow', 'short'), {"day": reference_date})
                         day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
                         day_info.short_format = _("'Tomorrow'", 'short')
 
                     else:
-                        #                        day_info.label = (_("{day:%%Y-%%m-%%d (%%a)}"), {"day": reference_date})
-                        #                        day_info.short_label = (_("{day:%%A}"), {"day": reference_date})
                         day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
                         day_info.short_format = _("EEE")
 

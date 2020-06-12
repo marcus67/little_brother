@@ -24,6 +24,7 @@ import psutil
 from little_brother import app_control
 from little_brother import client_device_handler
 from little_brother import client_process_handler
+from little_brother import constants
 from little_brother import db_migrations
 from little_brother import master_connector
 from little_brother import persistence
@@ -41,20 +42,6 @@ APP_NAME = 'LittleBrother'
 DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 DEFAULT_APPLICATION_OWNER = 'little-brother'
-
-LANGUAGES = {
-    'en': 'English',
-    'de': 'Deutsch',
-    'fr': 'Français',
-    'it': 'Italiano',
-    'nl': 'Nederlands',
-    'fi': 'Suomen kieli',
-    'tr': 'Türkçe',
-    'ru': 'Русский язык',
-    'ja': '日本語',
-    'bn': 'বাংলা',
-    'th': 'ภาษาไทย'
-}
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
 
@@ -90,7 +77,7 @@ class App(base_app.BaseApp):
     def __init__(self, p_pid_file, p_arguments, p_app_name):
 
         super(App, self).__init__(p_pid_file=p_pid_file, p_arguments=p_arguments, p_app_name=p_app_name,
-                                  p_dir_name=DIR_NAME, p_languages=LANGUAGES)
+                                  p_dir_name=DIR_NAME, p_languages=constants.LANGUAGES)
 
         self._notification_handlers = []
         self._status_server = None
@@ -298,7 +285,7 @@ class App(base_app.BaseApp):
                 p_is_master=self.is_master(),
                 p_locale_selector=self.get_request_locale,
                 p_base_gettext=self.gettext,
-                p_languages=LANGUAGES,
+                p_languages=constants.LANGUAGES,
                 p_user_handler=self._user_handler
             )
 
