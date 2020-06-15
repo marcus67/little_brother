@@ -63,17 +63,22 @@ class DeviceForm(custom_form.ModelForm):
                                                  validators=[wtforms.validators.NumberRange(min=1, max=1000)])
     sample_size = wtforms.IntegerField("SampleSize", validators=[wtforms.validators.NumberRange(min=5, max=100)])
 
-class RulesetForm(custom_form.ModelForm):
 
-    context_label = wtforms.StringField("ContextLabel")
-    context = wtforms.SelectField("Context")
-    context_details = wtforms.StringField("ContextDetails")
-    min_time_of_day = custom_fields.TimeField("MinTimeOfDay")
-    max_time_of_day = custom_fields.TimeField("MaxTimeOfDay")
-    max_time_per_day = custom_fields.DurationField("MaxTimePerDay")
-    min_break = custom_fields.DurationField("MinBreak")
-    free_play = custom_fields.BooleanField("FreePlay")
-    max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
+def create_rulesets_form(prefix, p_localized_context_details, p_context_choices, p_context_details_filters):
+    class RulesetForm(custom_form.ModelForm):
+        context_label = wtforms.StringField("ContextLabel")
+        context = wtforms.SelectField("Context", choices=p_context_choices)
+        context_details = custom_fields.LocalizedField("ContextDetails", p_values=p_localized_context_details,
+                                                       filters=p_context_details_filters)
+        min_time_of_day = custom_fields.TimeField("MinTimeOfDay")
+        max_time_of_day = custom_fields.TimeField("MaxTimeOfDay")
+        max_time_per_day = custom_fields.DurationField("MaxTimePerDay")
+        min_break = custom_fields.DurationField("MinBreak")
+        free_play = custom_fields.BooleanField("FreePlay")
+        max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
+
+    return RulesetForm(prefix=prefix, csrf_enabled=False)
+
 
 class User2DeviceForm(custom_form.ModelForm):
     percent = wtforms.IntegerField("Percent", validators=[wtforms.validators.NumberRange(min=1, max=100)])

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-06-13 01:19+0200\n"
+"POT-Creation-Date: 2020-06-15 23:48+0200\n"
 "PO-Revision-Date: 2020-04-19 23:19+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -26,20 +26,20 @@ msgstr "kullanıcı adı '{username}' belirtilmemiştir"
 msgid "username '{username}' not being monitored"
 msgstr "kullanıcı adı '{username}' gözetlenmiyor"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:157
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:159
 msgid "{days} days ago"
 msgstr "{days} gün önce"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:160
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:162
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:50
 msgid "Today"
 msgstr "Bugün"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:163
 msgid "Yesterday"
 msgstr "Dün"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:163
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:165
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
@@ -47,7 +47,7 @@ msgstr ""
 "{user}, bugün bilgisayar zamanın kalmadı.\n"
 "Oturumun kapatılacaktır"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:164
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:166
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -55,7 +55,7 @@ msgstr ""
 "{user}, bugün sadece {minutes_left_before_logout} dakikan kaldı.\n"
 "Lütfen oturumunu kapat."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:166
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
@@ -63,7 +63,7 @@ msgstr ""
 "{user}, bugün hiç bilgisayar zamanın yok.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:167
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:169
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
@@ -71,7 +71,7 @@ msgstr ""
 "{user}, bilgisayarı kullanmak için daha erken.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:170
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
@@ -79,7 +79,7 @@ msgstr ""
 "{user}, bilgisayarı kullanmak için geç oldu.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:169
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:171
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -89,7 +89,7 @@ msgstr ""
 "için geç olacaktır.\n"
 "Lütfen oturumunu kapat."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:171
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:173
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
@@ -97,7 +97,7 @@ msgstr ""
 "{user}, mola vermen gerekmektedir.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:172
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:174
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -107,7 +107,7 @@ msgstr ""
 "gerekmektedir.\n"
 "Lütfen oturumunu kapat."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:174
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:176
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -115,7 +115,7 @@ msgstr ""
 "{user}, molan {break_minutes_left} dakika sonra sona erecektir.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:176
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:178
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -124,39 +124,39 @@ msgstr ""
 "Merhaba {user}, bu oturumda {minutes_left_in_session} dakika oynamak için"
 " iznin var."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:178
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:180
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Merhaba {user}, bu oturumda sınırsız oyun zamanın var."
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1135
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1143
 msgid "'Today ('EEE')'"
 msgstr "'Bugün ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1136
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1144
 msgid "'Today'"
 msgstr "'Bugün'"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1139
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1147
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Yarın ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1140
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1148
 msgid "'Tomorrow'"
 msgstr "'yarın'"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1143
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1151
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd.MM.yyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1144
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1152
 msgid "EEE"
 msgstr "EEE"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/context_rule_handler.py:44
-msgid "Summary"
+#: /home/mr/projects/LittleBrotherFeature/little_brother/context_rule_handler.py:48
+msgid "Details"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:47
 msgid "'{name}' is not a valid host address"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr "Kullanıcı adı"
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:214
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:308
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:92
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:222
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:223
 msgid "Monitored"
 msgstr ""
 
@@ -206,27 +206,27 @@ msgstr ""
 msgid "Shared with"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:332
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:339
 msgid "No activity before {hh_mm} hours"
 msgstr "{hh_mm} saatinden önce etkinlik yok"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:339
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:346
 msgid "No activity after {hh_mm} hours"
 msgstr "{hh_mm} saatinden sonra etkinlik yok"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:362
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:369
 msgid "Day blocked: no activity permitted"
 msgstr "Gün engellendi: etkinlik için izin yok"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:368
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:375
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Etkinlik günlük {hh_mm} için sınırlandırılmıştır"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:394
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:401
 msgid "No activity exceeding {hh_mm}"
 msgstr "{hh_mm}yı aşan etkinlik yok"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:428
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:435
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "Minimum mola zamanına {hh_mm} ulaşılmamıştır"
 
@@ -274,7 +274,19 @@ msgstr "her cumartesi"
 msgid "sundays"
 msgstr "her pazar"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:474
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:104
+msgid ""
+"Invalid detail '{detail}'. Must be one of {choices} or have length seven "
+"characters denoting the days of the week (starting with Monday) and "
+"consist of active letters '{valid_active_characters}' and inactive "
+"letters '{valid_inactive_characters}'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:117
+msgid "Selected Days"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:471
 msgid "New device {id}"
 msgstr ""
 
@@ -346,60 +358,60 @@ msgstr "Bugünün Etkinliği"
 msgid "unlimited"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:89
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:90
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:111
 msgid "Day"
 msgstr "Gün"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:90
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:91
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:47
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:152
 msgid "Context"
 msgstr "Bağlam"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:91
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:92
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:154
 msgid "Min Time of Day"
 msgstr "Günün minimum zamanı"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:155
 msgid "Max Time of Day"
 msgstr "Günün maximum zamanı"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:156
 msgid "Time per Day"
 msgstr "Günlük Sınır"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:97
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:98
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:157
 msgid "Minimum Break"
 msgstr "Minimum Mola"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:98
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:99
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:158
 msgid "Max Duration"
 msgstr "Maximum Süre"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:99
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:100
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:159
 msgid "Free Play"
 msgstr "Serbest Oyun"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:107
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:108
 msgid "Show overrides for day"
 msgstr "Günün geçersiz kılınanlarını göster"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:147
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:179
 msgid "override"
 msgstr "Geçersiz kıl"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:158
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:203
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:104
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:98
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:177
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:232
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:178
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:233
 msgid "Save"
 msgstr "Kaydet"
 
@@ -412,7 +424,7 @@ msgid "Device"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:55
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:196
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:197
 msgid "Add device"
 msgstr ""
 
@@ -440,18 +452,18 @@ msgstr ""
 msgid "Sample Size"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:107
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
 msgid "Do you really want to permanently remove the device from monitoring?"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:107
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
 msgid "Remove from Monitoring"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:107
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:242
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:246
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:251
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
 msgid "Cancel"
 msgstr ""
 
@@ -546,7 +558,7 @@ msgid "Users"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:42
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:188
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:189
 msgid "Devices"
 msgstr ""
 
@@ -563,7 +575,7 @@ msgid "User Configuration"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:63
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:194
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:195
 msgid "Add to monitoring"
 msgstr ""
 
@@ -604,12 +616,12 @@ msgid "Add ruleset"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:129
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:207
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:208
 msgid "Edit ruleset details"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:139
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:246
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
 msgid "Remove ruleset"
 msgstr ""
 
@@ -629,28 +641,28 @@ msgstr ""
 msgid "Context Details"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:216
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:217
 msgid "Remove monitoring of this device for the user"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:223
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:224
 msgid "Percent"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:242
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
 msgid "Do you really want to permanently remove the user from monitoring?"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:242
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:251
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
 msgid "Remove from monitoring"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:246
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
 msgid "Do you really want to permanently remove the ruleset?"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:251
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
 msgid ""
 "Do you really want to permanently remove monitoring of the device for "
 "this user?"
@@ -672,5 +684,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Shared with: "
+#~ msgstr ""
+
+#~ msgid "Summary"
 #~ msgstr ""
 

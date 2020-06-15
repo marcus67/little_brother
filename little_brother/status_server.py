@@ -116,7 +116,7 @@ class StatusServer(base_web_server.BaseWebServer):
                  p_master_connector,
                  p_persistence,
                  p_is_master,
-                 p_locale_selector=None,
+                 p_locale_helper,
                  p_base_gettext=None,
                  p_languages=None,
                  p_user_handler=None):
@@ -136,7 +136,7 @@ class StatusServer(base_web_server.BaseWebServer):
         self._persistence = p_persistence
         self._stat_dict = {}
         self._server_exception = None
-        self._locale_selector = p_locale_selector
+        self._locale_helper = p_locale_helper
         self._languages = p_languages
         self._base_gettext = p_base_gettext
         self._langs = {}
@@ -144,9 +144,6 @@ class StatusServer(base_web_server.BaseWebServer):
 
         if self._languages is None:
             self._languages = {'en': "English"}
-
-        if self._locale_selector is None:
-            self._locale_selector = lambda: "en"
 
         if self._base_gettext is None:
             self._base_gettext = lambda text: text
@@ -174,12 +171,12 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['_base'] = self._base_gettext
 
         self._babel = flask_babel.Babel(self._app)
-        self._babel.localeselector(p_locale_selector)
+        self._babel.localeselector(self._locale_helper.locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
 
-        entity_forms.RulesetForm.context_details.validators = (
-            lambda form, field: self._appcontrol.validate_context_rule_handler_details(p_context_name=form.context.data,
-                                                                                       p_context_details=field.data))
+        # entity_forms.RulesetForm.context_details.validators = (
+        #     lambda form, field: self._appcontrol.validate_context_rule_handler_details(p_context_name=form.context.data,
+        #                                                                                p_context_details=field.data))
 
     def invert(self, rel_font_size):
 
@@ -268,7 +265,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def format_babel_date(self, value, format_string):
 
-        return babel.dates.format_date(value, format_string, locale=self._locale_selector())
+        return babel.dates.format_date(value, format_string, locale=self._locale_helper.locale)
 
     @BLUEPRINT_ADAPTER.route_method("/")
     def entry_view(self):
@@ -394,7 +391,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 if request.form['submit'] == HTML_KEY_NEW_USER:
                     username = forms[HTML_KEY_NEW_USER].username.data
-                    self._appcontrol.add_new_user(p_username=username, p_locale=self._locale_selector())
+                    self._appcontrol.add_new_user(p_username=username, p_locale=self._locale_helper.locale)
                     # TODO: after adding new user Users window should be opended for new user
 
                 else:
@@ -498,7 +495,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def get_rel_font_size(self):
 
-        rel_font_size = LOCALE_REL_FONT_SIZES.get(self._locale_selector())
+        rel_font_size = LOCALE_REL_FONT_SIZES.get(self._locale_helper.locale)
         if not rel_font_size:
             rel_font_size = 100
         return rel_font_size
@@ -578,14 +575,24 @@ class StatusServer(base_web_server.BaseWebServer):
             forms[user.html_key] = form
 
             for ruleset in user.rulesets:
-                form = entity_forms.RulesetForm(prefix='{id}_'.format(id=ruleset.html_key), csrf_enabled=False)
-                forms[ruleset.html_key] = form
+                # form = entity_forms.RulesetForm(prefix='{id}_'.format(id=ruleset.html_key), csrf_enabled=False)
+                localized_values = [(value, self.gettext(value))
+                                    for value in self._appcontrol.get_context_rule_handler_choices()]
 
                 if ruleset.fixed_context:
-                    form.context.choices = self.add_labels([ruleset.context])
+                    choices = self.add_labels([ruleset.context])
 
                 else:
-                    form.context.choices = self.add_labels(self._appcontrol.get_context_rule_handler_names())
+                    choices = self.add_labels(self._appcontrol.get_context_rule_handler_names())
+
+                context_details_filters = [
+                    lambda x: custom_fields.unlocalize(p_localized_values=localized_values, p_value=x)]
+
+                form = entity_forms.create_rulesets_form(p_context_choices=choices,
+                                                         p_localized_context_details=localized_values,
+                                                         p_context_details_filters=context_details_filters,
+                                                         prefix='{id}_'.format(id=ruleset.html_key))
+                forms[ruleset.html_key] = form
 
                 form.context_details.validators = [
                     lambda form, field: self._appcontrol.validate_context_rule_handler_details(
@@ -629,12 +636,4 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def gettext(self, p_text):
 
-        current_locale = self._locale_selector()
-        gettext_func = self._langs.get(current_locale)
-
-        if gettext_func is None:
-            gettext_func = gettext.translation("messages", localedir=self._localedir,
-                                               languages=[current_locale], fallback=True)
-            self._langs[current_locale] = gettext_func
-
-        return gettext_func.gettext(p_text)
+        return self._locale_helper.gettext(p_text=p_text)

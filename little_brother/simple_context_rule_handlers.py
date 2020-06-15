@@ -41,13 +41,11 @@ WEEKPLAN_PREDEFINED_DETAILS = {
     _("sundays"): "------1",
 }
 
-CHOICES = "'" + "', '".join(WEEKPLAN_PREDEFINED_DETAILS) + "'"
-
 
 class DefaultContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
 
-    def __init__(self):
-        super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME)
+    def __init__(self, p_locale_helper=None):
+        super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
 
     def is_active(self, p_reference_date, p_details):
         return True
@@ -55,9 +53,9 @@ class DefaultContextRuleHandler(context_rule_handler.AbstractContextRuleHandler)
 
 class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
 
-    def __init__(self):
+    def __init__(self, p_locale_helper=None):
 
-        super().__init__(p_context_name=WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
+        super().__init__(p_context_name=WEEKPLAN_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
 
     def is_active(self, p_reference_date, p_details):
 
@@ -80,6 +78,9 @@ class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler
 
         return weekday_string[time_tuple.tm_wday] in VALID_ACTIVE_DAY_CHARACTERS
 
+    def get_choices(self):
+
+        return WEEKPLAN_PREDEFINED_DETAILS.keys()
 
     def validate_context_details(self, p_context_detail):
 
@@ -97,14 +98,19 @@ class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler
                     invalid = True
 
         if invalid:
-            fmt = "Invalid detail '{detail}'. Must be one of {choices} or "\
-                  "have length seven characters denoting the days of the week (starting with Monday) and "\
-                  "consist of active letters '{valid_active_characters}' "\
-                  "and inactive letters '{valid_inactive_characters}'"
-            msg = fmt.format(detail=p_context_detail, choices=CHOICES,
+            localized_choices = "'" + "', '".join(
+                [self._locale_helper.gettext(p_text=choice) for choice in WEEKPLAN_PREDEFINED_DETAILS.keys()]) + "'"
+
+            fmt = _("Invalid detail '{detail}'. Must be one of {choices} or " \
+                    "have length seven characters denoting the days of the week (starting with Monday) and " \
+                    "consist of active letters '{valid_active_characters}' " \
+                    "and inactive letters '{valid_inactive_characters}'")
+            msg = fmt.format(detail=p_context_detail, choices=localized_choices,
                              valid_active_characters=VALID_ACTIVE_DAY_CHARACTERS,
                              valid_inactive_characters=VALID_INACTIVE_DAY_CHARACTERS)
 
             raise wtforms.validators.ValidationError(message=str(msg))
 
+    def summary(self, p_context_detail):
 
+        return [_("Selected Days"), ": ", p_context_detail]

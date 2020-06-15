@@ -141,7 +141,6 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.min_break = tools.get_string_as_duration(p_string=self.min_break)
 
 
-
 class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
 
     def __init__(self):
@@ -165,7 +164,6 @@ class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
             self.rule_set_configs[rule_set_section.username] = configs
 
         configs.append(rule_set_section)
-
 
     @staticmethod
     def read_time_of_day(p_time_of_day):
@@ -294,6 +292,15 @@ class RuleHandler(object):
 
         if context_rule_handler is not None:
             context_rule_handler.validate_context_details(p_context_details)
+
+    def get_context_rule_handler_choices(self):
+
+        choices = []
+
+        for handler in self._context_rule_handlers.values():
+            choices.extend(handler.get_choices())
+
+        return choices
 
     def get_active_ruleset(self, p_username, p_reference_date):
 
@@ -457,7 +464,7 @@ class RuleHandler(object):
 
         if not rule_result_info.activity_allowed():
             fmt = "Activity prohibited for user %s: applying rules(s) %d" % (
-            p_stat_info.username, rule_result_info.applying_rules)
+                p_stat_info.username, rule_result_info.applying_rules)
             self._logger.debug(fmt)
 
         return rule_result_info

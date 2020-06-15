@@ -69,9 +69,9 @@ class GermanVacationContextRuleHandlerConfig(configuration.ConfigModel):
 
 class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
 
-    def __init__(self):
+    def __init__(self, p_locale_helper=None):
 
-        super().__init__(p_context_name=CALENDAR_CONTEXT_RULE_HANDLER_NAME)
+        super().__init__(p_context_name=CALENDAR_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 

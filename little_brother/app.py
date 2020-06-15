@@ -36,6 +36,7 @@ from little_brother.alembic.versions import version_0_3_added_tables_for_configu
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
+from python_base_app import locale_helper
 from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
@@ -91,6 +92,7 @@ class App(base_app.BaseApp):
         self._client_device_section_handler = None
         self._prometheus_client = None
         self._user_handler = None
+        self._locale_helper = None
 
     def load_configuration(self, p_configuration):
 
@@ -226,6 +228,10 @@ class App(base_app.BaseApp):
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
         status_server_config = self._config[status_server.SECTION_NAME]
 
+        self._localedir = os.path.join(os.path.dirname(__file__), "translations")
+        self._locale_helper = locale_helper.LocaleHelper(p_locale_selector=self.get_request_locale,
+                                                         p_locale_dir=self._localedir)
+
         if status_server_config.is_active():
             if status_server_config.admin_password is not None:
                 msg = "admin_user and admin_password in section [StatusSever] " \
@@ -253,7 +259,8 @@ class App(base_app.BaseApp):
             p_notification_handlers=self._notification_handlers,
             p_master_connector=self._master_connector,
             p_prometheus_client=self._prometheus_client,
-            p_user_handler=self._user_handler)
+            p_user_handler=self._user_handler,
+            p_locale_helper=self._locale_helper)
 
         if self._config[app_control.SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
@@ -275,7 +282,6 @@ class App(base_app.BaseApp):
             self.add_recurring_task(p_recurring_task=task)
 
         if status_server_config.is_active():
-
             self._status_server = status_server.StatusServer(
                 p_config=self._config[status_server.SECTION_NAME],
                 p_package_name=PACKAGE_NAME,
@@ -283,12 +289,11 @@ class App(base_app.BaseApp):
                 p_master_connector=self._master_connector,
                 p_persistence=self._persistence,
                 p_is_master=self.is_master(),
-                p_locale_selector=self.get_request_locale,
+                p_locale_helper=self._locale_helper,
                 p_base_gettext=self.gettext,
                 p_languages=constants.LANGUAGES,
                 p_user_handler=self._user_handler
             )
-
             self.init_babel(p_localeselector=self.get_request_locale)
 
         elif self.is_master():

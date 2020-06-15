@@ -90,7 +90,8 @@ class AppControl(object):
                  p_master_connector=None,
                  p_prometheus_client=None,
                  p_user_handler=None,
-                 p_login_mapping=None):
+                 p_login_mapping=None,
+                 p_locale_helper=None):
 
         if p_login_mapping is None:
             p_login_mapping = login_mapping.LoginMapping()
@@ -105,6 +106,7 @@ class AppControl(object):
         self._master_connector = p_master_connector
         self._prometheus_client = p_prometheus_client
         self._user_handler = p_user_handler
+        self._locale_helper = p_locale_helper
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -179,11 +181,13 @@ class AppControl(object):
 
     def register_rule_context_handlers(self):
 
-        self._rule_handler.register_context_rule_handler(simple_context_rule_handlers.DefaultContextRuleHandler(),
-                                                         p_default=True)
-        self._rule_handler.register_context_rule_handler(simple_context_rule_handlers.WeekplanContextRuleHandler())
         self._rule_handler.register_context_rule_handler(
-            german_vacation_context_rule_handler.GermanVacationContextRuleHandler())
+            simple_context_rule_handlers.DefaultContextRuleHandler(p_locale_helper=self._locale_helper),
+            p_default=True)
+        self._rule_handler.register_context_rule_handler(
+            simple_context_rule_handlers.WeekplanContextRuleHandler(p_locale_helper=self._locale_helper))
+        self._rule_handler.register_context_rule_handler(
+            german_vacation_context_rule_handler.GermanVacationContextRuleHandler(p_locale_helper=self._locale_helper))
 
     def validate_context_rule_handler_details(self, p_context_name, p_context_details):
 
@@ -194,6 +198,10 @@ class AppControl(object):
     #     self._rule_set_configs = p_rule_set_configs
     #     self._process_regex_map = None
     #     self._usernames_not_found.extend(p_rule_set_configs.keys())
+
+    def get_context_rule_handler_choices(self):
+
+        return self._rule_handler.get_context_rule_handler_choices()
 
     @property
     def process_regex_map(self):
