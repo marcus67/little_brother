@@ -35,6 +35,7 @@ from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
+from python_base_app import locale_helper
 from python_base_app import unix_user_handler
 from python_base_app.test import base_test
 
@@ -85,7 +86,8 @@ class TestStatusServer(base_test.BaseTestCase):
             p_rule_handler=_rule_handler,
             p_notification_handlers=[],
             p_master_connector=_master_connector,
-            p_login_mapping=test_data.LOGIN_MAPPING)
+            p_login_mapping=test_data.LOGIN_MAPPING,
+            p_locale_helper=locale_helper.LocaleHelper())
 
         status_server_config = status_server.StatusServerConfigModel()
         status_server_config.admin_username = ADMIN_USERNAME
@@ -107,7 +109,8 @@ class TestStatusServer(base_test.BaseTestCase):
             p_master_connector=_master_connector,
             p_persistence=_persistence,
             p_is_master=True,
-            p_user_handler=user_handler)
+            p_user_handler=user_handler,
+            p_locale_helper=locale_helper.LocaleHelper())
 
         return _status_server
 
