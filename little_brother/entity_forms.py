@@ -44,7 +44,7 @@ class NewUser2DeviceForm(custom_form.ModelForm):
 
 def dns_validator(_form, field):
     if not tools.is_valid_dns_name(field.data):
-        raise wtforms.validators.ValidationError(_("'{name}' is not a valid host address"))
+        raise wtforms.validators.ValidationError(_("Not a valid host address"))
 
 
 class DeviceForm(custom_form.ModelForm):

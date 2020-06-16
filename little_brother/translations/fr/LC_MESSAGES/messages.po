@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  LittleBrother\n"
 "Report-Msgid-Bugs-To: little-brother@web.de\n"
-"POT-Creation-Date: 2020-06-15 23:48+0200\n"
+"POT-Creation-Date: 2020-06-17 00:07+0200\n"
 "PO-Revision-Date: 2020-04-26 12:11+0200\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: fr\n"
@@ -159,7 +159,7 @@ msgid "Details"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:47
-msgid "'{name}' is not a valid host address"
+msgid "Not a valid host address"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
@@ -172,6 +172,10 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:217
 msgid "Federal State"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:227
+msgid "Invalid state '{detail}'. Must be one of {choices}"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:212
@@ -288,7 +292,7 @@ msgstr ""
 msgid "Selected Days"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:471
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:485
 msgid "New device {id}"
 msgstr ""
 
@@ -689,5 +693,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Summary"
+#~ msgstr ""
+
+#~ msgid "'{name}' is not a valid host address"
 #~ msgstr ""
 

@@ -105,6 +105,7 @@ class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler
                     "have length seven characters denoting the days of the week (starting with Monday) and " \
                     "consist of active letters '{valid_active_characters}' " \
                     "and inactive letters '{valid_inactive_characters}'")
+            fmt = self._locale_helper.gettext(fmt)
             msg = fmt.format(detail=p_context_detail, choices=localized_choices,
                              valid_active_characters=VALID_ACTIVE_DAY_CHARACTERS,
                              valid_inactive_characters=VALID_INACTIVE_DAY_CHARACTERS)

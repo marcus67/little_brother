@@ -346,18 +346,23 @@ class StatusServer(base_web_server.BaseWebServer):
             forms = self.get_admin_forms(p_admin_infos=admin_infos)
 
             valid_and_submitted = True
+            submitted = False
 
             for form in forms.values():
                 if not form.validate_on_submit():
                     valid_and_submitted = False
 
+                if form.is_submitted():
+                    submitted = True
+
             if valid_and_submitted:
                 self.save_admin_data(admin_infos, forms)
                 return flask.redirect(flask.url_for("little_brother.admin"))
 
-            for admin_info in admin_infos:
-                for day_info in admin_info.day_infos:
-                    forms[day_info.html_key].load_from_model(p_model=day_info.override)
+            if not submitted:
+                for admin_info in admin_infos:
+                    for day_info in admin_info.day_infos:
+                        forms[day_info.html_key].load_from_model(p_model=day_info.override)
 
             return flask.render_template(
                 ADMIN_HTML_TEMPLATE,
@@ -381,10 +386,14 @@ class StatusServer(base_web_server.BaseWebServer):
             forms = self.get_users_forms(p_users=users)
 
             valid_and_submitted = True
+            submitted = False
 
             for form in forms.values():
                 if not form.validate_on_submit():
                     valid_and_submitted = False
+
+                if form.is_submitted():
+                    submitted = True
 
             if valid_and_submitted:
                 self.save_users_data(users, forms)
@@ -423,16 +432,17 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 return flask.redirect(flask.url_for("little_brother.users"))
 
-            for user in users:
-                forms[user.html_key].load_from_model(p_model=user)
+            if not submitted:
+                for user in users:
+                    forms[user.html_key].load_from_model(p_model=user)
 
-                for ruleset in user.rulesets:
-                    forms[ruleset.html_key].load_from_model(p_model=ruleset)
-                    # provide a callback function so that the RuleSet can retrieve context summaries
-                    ruleset.get_context_rule_handler = self._appcontrol.get_context_rule_handler
+                    for ruleset in user.rulesets:
+                        forms[ruleset.html_key].load_from_model(p_model=ruleset)
+                        # provide a callback function so that the RuleSet can retrieve context summaries
+                        ruleset.get_context_rule_handler = self._appcontrol.get_context_rule_handler
 
-                for user2device in user.devices:
-                    forms[user2device.html_key].load_from_model(p_model=user2device)
+                    for user2device in user.devices:
+                        forms[user2device.html_key].load_from_model(p_model=user2device)
 
             return flask.render_template(
                 USERS_HTML_TEMPLATE,
@@ -459,10 +469,14 @@ class StatusServer(base_web_server.BaseWebServer):
             forms = self.get_devices_forms(p_devices=devices)
 
             valid_and_submitted = True
+            submitted = False
 
             for form in forms.values():
                 if not form.validate_on_submit():
                     valid_and_submitted = False
+
+                if form.is_submitted():
+                    submitted = True
 
             if valid_and_submitted:
                 self.save_devices_data(devices, forms)
@@ -477,8 +491,9 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 return flask.redirect(flask.url_for("little_brother.devices"))
 
-            for device in devices:
-                forms[device.device_name].load_from_model(p_model=device)
+            if not submitted:
+                for device in devices:
+                    forms[device.device_name].load_from_model(p_model=device)
 
             return flask.render_template(
                 DEVICES_HTML_TEMPLATE,

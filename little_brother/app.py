@@ -228,9 +228,12 @@ class App(base_app.BaseApp):
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
         status_server_config = self._config[status_server.SECTION_NAME]
 
-        self._localedir = os.path.join(os.path.dirname(__file__), "translations")
-        self._locale_helper = locale_helper.LocaleHelper(p_locale_selector=self.get_request_locale,
-                                                         p_locale_dir=self._localedir)
+        self.init_babel(p_localeselector=self.get_request_locale)
+
+        localedir = os.path.join(os.path.dirname(__file__), "translations")
+        a_locale_helper = locale_helper.LocaleHelper(p_locale_selector=self.get_request_locale,
+                                                     p_locale_dir=localedir)
+        self.add_locale_helper(a_locale_helper)
 
         if status_server_config.is_active():
             if status_server_config.admin_password is not None:
@@ -260,7 +263,7 @@ class App(base_app.BaseApp):
             p_master_connector=self._master_connector,
             p_prometheus_client=self._prometheus_client,
             p_user_handler=self._user_handler,
-            p_locale_helper=self._locale_helper)
+            p_locale_helper=self.locale_helper)
 
         if self._config[app_control.SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
@@ -294,7 +297,6 @@ class App(base_app.BaseApp):
                 p_languages=constants.LANGUAGES,
                 p_user_handler=self._user_handler
             )
-            self.init_babel(p_localeselector=self.get_request_locale)
 
         elif self.is_master():
             msg = "Master instance requires port number for web server"

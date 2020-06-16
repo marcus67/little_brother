@@ -224,9 +224,8 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
             choices = "'" + "', '".join(sorted(self._vacation_data.keys()))
 
-            fmt = "Invalid state '{detail}'. Must be one of {choices}"
+            fmt = _("Invalid state '{detail}'. Must be one of {choices}")
+            fmt = self._locale_helper.gettext(fmt)
             msg = fmt.format(detail=p_context_detail, choices=choices)
 
             raise wtforms.validators.ValidationError(message=str(msg))
-
-

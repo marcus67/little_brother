@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  little-brother\n"
 "Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
-"POT-Creation-Date: 2020-06-15 23:48+0200\n"
+"POT-Creation-Date: 2020-06-17 00:07+0200\n"
 "PO-Revision-Date: 2019-02-27 23:25+0100\n"
 "Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
 "Language: de\n"
@@ -154,8 +154,8 @@ msgid "Details"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:47
-msgid "'{name}' is not a valid host address"
-msgstr "'{name}' ist keine gültige Computer-Adresse"
+msgid "Not a valid host address"
+msgstr "Keine gültige Computer-Adresse"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
 msgid "vacation"
@@ -168,6 +168,12 @@ msgstr "Deutscher Ferienkalender"
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:217
 msgid "Federal State"
 msgstr "Bundesland"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:227
+msgid "Invalid state '{detail}'. Must be one of {choices}"
+msgstr ""
+"Ungültiges Bundesland '{detail}'. Muss eines der folgenden sein: "
+"{choices}."
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:212
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:34
@@ -277,16 +283,18 @@ msgid ""
 "characters denoting the days of the week (starting with Monday) and "
 "consist of active letters '{valid_active_characters}' and inactive "
 "letters '{valid_inactive_characters}'"
-msgstr "Ungültiger Detail '{detail}'. Muss entweder einer der folgenden Werte sein, {choices}, oder sieben Zeichen "
-"lang sein, die die Tage der Woche repräsentieren (beginnend mit Montag) und "
-"aus den Zeichen '{valid_active_characters}' für aktive Tage und den Zeichen "
+msgstr ""
+"Ungültiges Detail '{detail}'. Muss entweder einer der folgenden Werte "
+"sein ({choices}) oder sieben Zeichen lang sein und die Tage der Woche "
+"repräsentieren (beginnend mit Montag) und aus den Zeichen "
+"'{valid_active_characters}' für aktive Tage und den Zeichen "
 "'{valid_inactive_characters}' für inaktive Tage bestehen"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:117
 msgid "Selected Days"
 msgstr "Ausgesuchte Tage"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:471
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:485
 msgid "New device {id}"
 msgstr "Neues Gerät {id}"
 
