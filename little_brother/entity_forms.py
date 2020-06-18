@@ -77,7 +77,7 @@ def create_rulesets_form(prefix, p_localized_context_details, p_context_choices,
         free_play = custom_fields.BooleanField("FreePlay")
         max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
 
-    return RulesetForm(prefix=prefix, csrf_enabled=False)
+    return RulesetForm(prefix=prefix, meta={'csrf': False})
 
 
 class User2DeviceForm(custom_form.ModelForm):

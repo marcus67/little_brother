@@ -515,16 +515,26 @@ class StatusServer(base_web_server.BaseWebServer):
             rel_font_size = 100
         return rel_font_size
 
+    def has_downtime_today(self, p_user_infos):
+
+        for user_info in p_user_infos.values():
+            if user_info['active_stat_info'].todays_downtime:
+                return True
+
+        return False
+
     @BLUEPRINT_ADAPTER.route_method("/status", endpoint="index")
     def index_view(self):
 
         request = flask.request
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=request.url_rule, p_duration=duration)):
+            user_infos = self._appcontrol.get_user_status_infos()
             page = flask.render_template(
                 INDEX_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
-                user_infos=self._appcontrol.get_user_status_infos(),
+                user_infos=user_infos,
+                has_downtime_today=self.has_downtime_today(p_user_infos=user_infos),
                 app_control_config=self._appcontrol._config,
                 authentication=self.get_authenication_info(),
                 navigation={
@@ -559,11 +569,11 @@ class StatusServer(base_web_server.BaseWebServer):
 
         forms = {}
 
-        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(meta={'csrf': False})
 
         for admin_info in p_admin_infos:
             for day_info in admin_info.day_infos:
-                form = rule_override.RuleOverrideForm(prefix=day_info.html_key + '_', csrf_enabled=False)
+                form = rule_override.RuleOverrideForm(prefix=day_info.html_key + '_', meta={'csrf': False})
                 forms[day_info.html_key] = form
 
         return forms
@@ -575,7 +585,7 @@ class StatusServer(base_web_server.BaseWebServer):
     def get_users_forms(self, p_users):
 
         forms = {}
-        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(meta={'csrf': False})
 
         unmonitored_users = self._appcontrol.get_unmonitored_users()
 
@@ -585,12 +595,11 @@ class StatusServer(base_web_server.BaseWebServer):
             forms[HTML_KEY_NEW_USER] = new_user_form
 
         for user in p_users:
-            form = entity_forms.UserForm(prefix='{id}_'.format(id=user.html_key), csrf_enabled=False)
+            form = entity_forms.UserForm(prefix='{id}_'.format(id=user.html_key), cmeta={'csrf': False})
             form.locale.choices = sorted([(locale, language) for locale, language in self._languages.items()])
             forms[user.html_key] = form
 
             for ruleset in user.rulesets:
-                # form = entity_forms.RulesetForm(prefix='{id}_'.format(id=ruleset.html_key), csrf_enabled=False)
                 localized_values = [(value, self.gettext(value))
                                     for value in self._appcontrol.get_context_rule_handler_choices()]
 
@@ -633,12 +642,12 @@ class StatusServer(base_web_server.BaseWebServer):
     def get_devices_forms(p_devices):
 
         forms = {}
-        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(csrf_enabled=True)
+        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(meta={'csrf': False})
         uniqueness = custom_fields.Uniqueness(
             p_field_selectors=[lambda form: form.device_name, lambda form: form.hostname])
 
         for device in p_devices:
-            form = entity_forms.DeviceForm(prefix='{id}_'.format(id=device.html_key), csrf_enabled=False)
+            form = entity_forms.DeviceForm(prefix='{id}_'.format(id=device.html_key), meta={'csrf': False})
             uniqueness.add_form(p_form=form)
             forms[device.device_name] = form
 

@@ -210,6 +210,7 @@ class ProcessStatisticsInfo(object):
         self.previous_activity = None
 
         self.accumulated_break_time = 0
+        self.has_downtime = False
 
         self.day_statistics = [DayStatistics() for _i in range(0, p_max_lookback_in_days + 1)]
         self.currently_active_host_processes = {}
@@ -451,5 +452,12 @@ def get_process_statistics(
                         user_stat_info.day_statistics.append(DayStatistics())
 
                 user_stat_info.day_statistics[lookback].add_activity(user_stat_info.current_activity)
+
+            user_stat_info.has_downtime = False
+
+            for i in range(p_max_lookback_in_days):
+                if user_stat_info.day_statistics[i].downtime:
+                    user_stat_info.has_downtime = True
+                    break
 
     return users_stat_infos

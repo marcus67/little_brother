@@ -10,6 +10,11 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Configuration for Prometheus port in test cases
 *   Completely revised status handling in class `ClientDeviceHandler`
 *   Use `percent` in `User2Device` to compute fractional playtime on devices
+*   Closes #78, see [here](https://github.com/marcus67/little_brother/issues/78)
+*   Closes #90, see [here](https://github.com/marcus67/little_brother/issues/90)
+*   Closes #38, see [here](https://github.com/marcus67/little_brother/issues/38)
+*   Closes #39, see [here](https://github.com/marcus67/little_brother/issues/39)
+*   Closes #88, see [here](https://github.com/marcus67/little_brother/issues/88)
 
 ## Version 0.2.2 Revision 62 (May 6th, 2020)
 
