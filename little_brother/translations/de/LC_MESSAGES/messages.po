@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  little-brother\n"
 "Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
-"POT-Creation-Date: 2020-06-17 00:07+0200\n"
+"POT-Creation-Date: 2020-06-19 09:31+0200\n"
 "PO-Revision-Date: 2019-02-27 23:25+0100\n"
 "Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
 "Language: de\n"
@@ -40,7 +40,7 @@ msgid "{days} days ago"
 msgstr "Vor {days} Tagen"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:162
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:50
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:55
 msgid "Today"
 msgstr "Heute"
 
@@ -209,27 +209,41 @@ msgstr "Computername"
 msgid "Shared with"
 msgstr "Geteilt mit"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:339
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:353
 msgid "No activity before {hh_mm} hours"
 msgstr "Keine Aktivität vor {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:346
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:360
 msgid "No activity after {hh_mm} hours"
 msgstr "Keine Aktivität nach {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:369
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:385
 msgid "Day blocked: no activity permitted"
 msgstr "Keine Aktivität an diesem Tag"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:375
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:391
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Aktivität auf {hh_mm} pro Tag beschränkt"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:401
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:418
 msgid "No activity exceeding {hh_mm}"
 msgstr "Nicht mehr als {hh_mm} Aktivität am Stück"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:435
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:437
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:103
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:159
+msgid "Free Play"
+msgstr "Freies Spiel"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:444
+msgid "Remaining play time today: {hh_mm}"
+msgstr "Verbleibende Spielzeit heute: {hh_mm}"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:454
+msgid "Remaining play time in current session: {hh_mm}"
+msgstr "Verbleibende Spielzeit in der aktuellen Sitzung: {hh_mm}"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:479
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "Minimale Pause von {hh_mm} nicht erreicht"
 
@@ -358,64 +372,60 @@ msgid "Show configurations of upcoming days"
 msgstr "Zeige Konfigurationen für kommende Tage"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:69
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:49
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:50
 msgid "Today's Activity"
 msgstr "Heutige Aktivität"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:73
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:84
 msgid "unlimited"
 msgstr "unbegrenzt"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:90
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:111
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:121
 msgid "Day"
 msgstr "Tag"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:91
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:47
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:152
 msgid "Context"
 msgstr "Kontext"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:95
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:154
 msgid "Min Time of Day"
 msgstr "Von"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:96
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:155
 msgid "Max Time of Day"
 msgstr "Bis"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:97
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:156
 msgid "Time per Day"
 msgstr "Tageslimit"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:98
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:101
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:157
 msgid "Minimum Break"
 msgstr "Pause"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:99
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:102
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:158
 msgid "Max Duration"
 msgstr "Max. Dauer"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:100
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:159
-msgid "Free Play"
-msgstr "Freies Spiel"
-
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:108
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:111
 msgid "Show overrides for day"
 msgstr "Zeige Ersetzungen für Tag"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:179
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:182
 msgid "override"
 msgstr "ersetzt"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:203
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:206
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:104
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:98
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:178
@@ -481,70 +491,75 @@ msgid "Status"
 msgstr "Status"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:125
+msgid "Downtime"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:57
 msgid "Previous Activity Start Time"
 msgstr "Letzte Startzeit"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:53
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:58
 msgid "Previous Activity End Time"
 msgstr "Letzte Endzeit"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:54
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:59
 msgid "Current Activity Start Time"
 msgstr "Aktuelle Startzeit"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:56
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:61
 msgid "Current Activity Duration"
 msgstr "Aktuelle Dauer"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:57
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:62
 msgid "Current"
 msgstr "Aktuell"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:59
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:64
 msgid "Activity permitted"
 msgstr "Aktivität erlaubt"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:60
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:65
 msgid "OK?"
 msgstr "OK?"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:62
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:67
 msgid "Reasons"
 msgstr "Gründe"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:68
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:73
 msgid "Show durations of most recent days"
 msgstr "Zeige Dauern für letzte Tage"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:112
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:123
 msgid "Active Time"
 msgstr "Aktiv für"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:113
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:128
 msgid "Active"
 msgstr "Aktiv"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:114
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:129
 msgid "Activity Start"
 msgstr "Aktiv von"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:115
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:130
 msgid "Start"
 msgstr "Von"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:116
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:131
 msgid "Activity End"
 msgstr "Aktiv bis"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:117
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:132
 msgid "End"
 msgstr "Bis"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:118
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:133
 msgid "Host(#procs)"
 msgstr "Host(#Proz)"
 
-#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:125
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:140
 msgid "Show activity times"
 msgstr "Zeige Aktivitätszeiten"
 

@@ -873,7 +873,7 @@ class AppControl(object):
                         user_active = stat_info.current_activity is not None
                         current_user_status.logged_in = user_active
 
-                        if rule_result_info.applying_rules > 0:
+                        if not rule_result_info.activity_allowed():
                             fmt = "Process %s" % str(rule_result_info.effective_rule_set)
                             self._logger.debug(fmt)
 
@@ -1084,7 +1084,7 @@ class AppControl(object):
                                                                           p_rule_override=override,
                                                                           p_locale=user_locale)
 
-                    activity_permitted = rule_result_info.applying_rules == 0
+                    activity_permitted = rule_result_info.activity_allowed()
 
                     user_infos[username] = {
                         'active_rule_set': rule_set,
