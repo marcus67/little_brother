@@ -62,6 +62,8 @@ class TestStatusServer(base_test.BaseTestCase):
 
     def create_dummy_status_server(self, p_process_handlers=None):
 
+        # TODO: Add rule set configs as parameters again and migrate them into the datamodel
+
         if p_process_handlers is None:
             p_process_handlers = {}
 
@@ -193,8 +195,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
         process_handlers = self.get_dummy_process_handlers()
 
-        _status_server = self.create_dummy_status_server(
-            p_process_handlers=process_handlers, p_ruleset_configs=p_ruleset_configs)
+        _status_server = self.create_dummy_status_server(p_process_handlers=process_handlers)
         _status_server.start_server()
 
         _appcontrol = _status_server._appcontrol
