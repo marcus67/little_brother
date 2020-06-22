@@ -355,14 +355,14 @@ for form in forms.values():
         valid_and_submitted = False
 
     if form.is_submitted():
-                    submitted = True
+        submitted = True
 
-            if valid_and_submitted:
-                self.save_admin_data(admin_infos, forms)
-                return flask.redirect(flask.url_for("little_brother.admin"))
+if valid_and_submitted:
+    self.save_admin_data(admin_infos, forms)
+    return flask.redirect(flask.url_for("little_brother.admin"))
 
-            if not submitted:
-                for admin_info in admin_infos:
+if not submitted:
+    for admin_info in admin_infos:
                     for day_info in admin_info.day_infos:
                         forms[day_info.html_key].load_from_model(p_model=day_info.override)
 
