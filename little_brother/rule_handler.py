@@ -316,12 +316,12 @@ class RuleHandler(object):
 
         return choices
 
-    def get_active_ruleset(self, p_username, p_reference_date):
+    def get_active_ruleset(self, p_session_context, p_username, p_reference_date):
 
         active_ruleset = None
         max_priority = None
 
-        user = self._persistence.user_map.get(p_username)
+        user = self._persistence.user_map(p_session_context).get(p_username)
 
         if user is not None:
             for ruleset in user.rulesets:
@@ -485,11 +485,12 @@ class RuleHandler(object):
 
         return
 
-    def process_ruleset(self, p_stat_info, p_reference_time, p_rule_override, p_locale):
+    def process_ruleset(self, p_session_context, p_stat_info, p_reference_time, p_rule_override, p_locale):
 
         rule_result_info = RuleResultInfo()
 
-        rule_set = self.get_active_ruleset(p_username=p_stat_info.username, p_reference_date=p_reference_time)
+        rule_set = self.get_active_ruleset(p_session_context=p_session_context,
+                                           p_username=p_stat_info.username, p_reference_date=p_reference_time)
         rule_result_info.default_rule_set = rule_set
         rule_result_info.effective_rule_set = apply_override(p_rule_set=rule_set, p_rule_override=p_rule_override)
 

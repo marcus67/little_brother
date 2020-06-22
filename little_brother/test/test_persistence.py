@@ -18,37 +18,50 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import unittest
 import datetime
+import os.path
+import unittest
 
-from python_base_app.test import base_test
-
-from little_brother import persistence
 from little_brother import admin_event
+from little_brother import db_migrations
+from little_brother import persistence
 from little_brother import process_info
 from little_brother import rule_override
-
 from little_brother.test import test_data
+from python_base_app.test import base_test
+
+SQLITE_FILE = "test.db"
+SQLITE_DIR = "/tmp"
 
 
 class TestPersistence(base_test.BaseTestCase):
 
     @staticmethod
-    def create_dummy_persistence():
+    def create_dummy_persistence(p_logger):
+
+        sqlite_file = os.path.join(SQLITE_DIR, SQLITE_FILE)
+
+        if os.path.exists(sqlite_file):
+            os.unlink(sqlite_file)
 
         config = persistence.PersistenceConfigModel()
+        config.sqlite_filename = SQLITE_FILE
+        config.sqlite_dir = SQLITE_DIR
         config.database_driver = persistence.DATABASE_DRIVER_SQLITE
         config.database_user = None
         config.database_admin = None
 
         a_persistence = persistence.Persistence(p_config=config, p_reuse_session=False)
-        a_persistence.check_schema()
+        a_persistence.check_schema(p_create_tables=False)
+
+        db_mig = db_migrations.DatabaseMigrations(p_logger, p_persistence=a_persistence)
+        db_mig.upgrade_databases()
 
         return a_persistence
 
     def test_create_database(self):
 
-        a_persistence = self.create_dummy_persistence()
+        a_persistence = self.create_dummy_persistence(self._logger)
 
         self.assertIsNotNone(a_persistence)
 
@@ -91,7 +104,7 @@ class TestPersistence(base_test.BaseTestCase):
 
     def test_write_and_update_process_info(self):
 
-        a_persistence = self.create_dummy_persistence()
+        a_persistence = self.create_dummy_persistence(self._logger)
 
         self.assertIsNotNone(a_persistence)
 
@@ -132,7 +145,7 @@ class TestPersistence(base_test.BaseTestCase):
 
     def test_update_rule_override(self):
 
-        a_persistence = self.create_dummy_persistence()
+        a_persistence = self.create_dummy_persistence(self._logger)
 
         self.assertIsNotNone(a_persistence)
 
@@ -177,7 +190,7 @@ class TestPersistence(base_test.BaseTestCase):
 
     def test_log_admin_event(self):
 
-        a_persistence = self.create_dummy_persistence()
+        a_persistence = self.create_dummy_persistence(self._logger)
 
         self.assertIsNotNone(a_persistence)
 
@@ -199,7 +212,7 @@ class TestPersistence(base_test.BaseTestCase):
 
     def test_truncate_table(self):
 
-        a_persistence = self.create_dummy_persistence()
+        a_persistence = self.create_dummy_persistence(self._logger)
 
         self.assertIsNotNone(a_persistence)
 

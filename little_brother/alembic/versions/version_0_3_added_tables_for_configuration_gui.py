@@ -54,27 +54,27 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user2device',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('active', sa.Boolean(), nullable=True),
-    sa.Column('percent', sa.Integer(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('device_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['device_id'], ['device.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.alter_column('admin_event', 'downtime',
-                    existing_type=mysql.INTEGER(display_width=11),
-                    nullable=True,
-                    existing_server_default=sa.text("'0'"))
+                    sa.Column('id', sa.Integer(), nullable=False),
+                    sa.Column('active', sa.Boolean(), nullable=True),
+                    sa.Column('percent', sa.Integer(), nullable=True),
+                    sa.Column('user_id', sa.Integer(), nullable=False),
+                    sa.Column('device_id', sa.Integer(), nullable=False),
+                    sa.ForeignKeyConstraint(['device_id'], ['device.id'], ),
+                    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+                    sa.PrimaryKeyConstraint('id')
+                    )
+    # op.alter_column('admin_event', 'downtime',
+    #                 existing_type=mysql.INTEGER(display_width=11),
+    #                 nullable=True,
+    #                 existing_server_default=sa.text("'0'"))
     op.add_column('process_info', sa.Column('percent', sa.Integer(), server_default='100', nullable=True))
-    op.alter_column('process_info', 'downtime',
-                    existing_type=mysql.INTEGER(display_width=11),
-                    nullable=True,
-                    existing_server_default=sa.text("'0'"))
-    op.alter_column('rule_override', 'key',
-               existing_type=mysql.VARCHAR(length=256),
-               nullable=True)
+    # op.alter_column('process_info', 'downtime',
+    #                 existing_type=mysql.INTEGER(display_width=11),
+    #                 nullable=True,
+    #                 existing_server_default=sa.text("'0'"))
+    # op.alter_column('rule_override', 'key',
+    #            existing_type=mysql.VARCHAR(length=256),
+    #            nullable=True)
     # ### end Alembic commands ###
 
 

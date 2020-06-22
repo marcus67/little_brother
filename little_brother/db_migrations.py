@@ -15,12 +15,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os.path
+
 import alembic
+import alembic.config
 
 from little_brother import constants
 from little_brother import persistence
 from little_brother import rule_handler
 from little_brother import simple_context_rule_handlers
+
 
 class DatabaseMigrations(object):
 
@@ -28,6 +32,20 @@ class DatabaseMigrations(object):
 
         self._logger = p_logger
         self._persistence = p_persistence
+
+    def upgrade_databases(self, p_alembic_version="head"):
+
+        url = self._persistence.build_url()
+        alembic_working_dir = os.path.dirname(__file__)
+
+        fmt = "Upgrading database to revision '{revision}' using alembic with working directory {working_dir}..."
+        self._logger.info(fmt.format(revision=p_alembic_version,
+                                     working_dir=alembic_working_dir))
+
+        alembic_argv = ["-x", url,
+                        "upgrade", p_alembic_version]
+        os.chdir(alembic_working_dir)
+        alembic.config.main(alembic_argv, prog="alembic.config.main")
 
     def get_current_version(self):
 
@@ -76,7 +94,10 @@ class DatabaseMigrations(object):
                 if locale is None and old_ruleset.locale is not None:
                     locale = old_ruleset.locale
 
-                if ruleset.context == 'weekday':
+                if ruleset.context is None:
+                    ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
+
+                elif ruleset.context == 'weekday':
                     ruleset.context = simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME
 
             if process_name_pattern is None:

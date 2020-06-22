@@ -15,6 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import abc
 import datetime
 
 from little_brother import admin_event  #
@@ -22,7 +23,6 @@ from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import log_handling
 
-import abc
 
 class ProcessHandlerConfigModel(configuration.ConfigModel):
 
@@ -187,7 +187,8 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
             p_pid=p_pinfo.pid)
 
     @abc.abstractmethod
-    def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map): # pragma: no cover
+    def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
+                       p_process_regex_map):  # pragma: no cover
         pass
 
     def get_downtime_corrected_admin_events(self, p_downtime):

@@ -107,6 +107,7 @@ class AppControl(object):
         self._prometheus_client = p_prometheus_client
         self._user_handler = p_user_handler
         self._locale_helper = p_locale_helper
+        self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -142,7 +143,7 @@ class AppControl(object):
 
     def reset_users(self):
         self._process_regex_map = None
-        self._usernames_not_found.extend(self._persistence.user_map.keys())
+        self._usernames_not_found.extend(self._persistence.user_map(p_session_context=self._session_context).keys())
 
         fmt = "Watching usernames: %s" % ",".join(self._usernames_not_found)
         self._logger.info(fmt)
@@ -209,7 +210,7 @@ class AppControl(object):
         if self._process_regex_map is None:
             self._process_regex_map = {}
 
-            for user in self._persistence.users:
+            for user in self._persistence.users(self._session_context):
                 self._process_regex_map[user.username] = re.compile(user.process_name_pattern)
 
         return self._process_regex_map
@@ -266,7 +267,7 @@ class AppControl(object):
 
         count = 0
 
-        for user in self._persistence.users:
+        for user in self._persistence.users(self._session_context):
             if user.active and user.username in self._usernames:
                 count += 1
 
@@ -276,7 +277,8 @@ class AppControl(object):
 
         if self._prometheus_client is not None:
             self._prometheus_client.set_number_of_monitored_users(self.get_number_of_monitored_users())
-            self._prometheus_client.set_number_of_configured_users(len(self._persistence.user_map))
+            self._prometheus_client.set_number_of_configured_users(
+                len(self._persistence.user_map(self._session_context)))
 
             if self._config.scan_active:
                 self._prometheus_client.set_monitored_host(self._host_name, True)
@@ -471,7 +473,7 @@ class AppControl(object):
     def handle_event_speak(self, p_event):
 
         if p_event.locale is None:
-            user_locale = self.get_user_locale(p_username=p_event.username)
+            user_locale = self.get_user_locale(p_session_context=self._session_context, p_username=p_event.username)
 
         else:
             user_locale = p_event.locale
@@ -479,9 +481,9 @@ class AppControl(object):
         for notification_handler in self._notification_handlers:
             notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
 
-    def get_user_locale(self, p_username):
+    def get_user_locale(self, p_session_context, p_username):
 
-        user = self._persistence.user_map.get(p_username)
+        user = self._persistence.user_map(p_session_context).get(p_username)
 
         if user is not None and user.locale is not None:
             return user.locale
@@ -618,6 +620,7 @@ class AppControl(object):
             p_reference_time = datetime.datetime.now()
 
         events = p_process_handler.scan_processes(
+            p_session_context=self._session_context,
             p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
             p_host_name=self._host_name,
             p_process_regex_map=self.process_regex_map,
@@ -780,12 +783,13 @@ class AppControl(object):
             p_process_infos=self.get_process_infos(),
             p_reference_time=p_reference_time,
             p_max_lookback_in_days=1,
-            p_user_map=self._persistence.user_map,
+            p_user_map=self._persistence.user_map(self._session_context),
             p_min_activity_duration=self._config.min_activity_duration)
 
         rule_result_info = None
-        user_locale = self.get_user_locale(p_username=p_username)
-        rule_set = self._rule_handler.get_active_ruleset(p_username=p_username,
+        user_locale = self.get_user_locale(p_session_context=self._session_context, p_username=p_username)
+        rule_set = self._rule_handler.get_active_ruleset(p_session_context=self._session_context,
+                                                         p_username=p_username,
                                                          p_reference_date=p_reference_time.date())
 
         stat_infos = users_stat_infos.get(p_username)
@@ -801,6 +805,7 @@ class AppControl(object):
                 override = self._rule_overrides.get(key_rule_override)
 
                 rule_result_info = self._rule_handler.process_ruleset(
+                    p_session_context=self._session_context,
                     p_stat_info=stat_info,
                     p_reference_time=p_reference_time,
                     p_rule_override=override,
@@ -816,7 +821,8 @@ class AppControl(object):
             current_user_status = user_status.UserStatus(p_username=p_username)
             self._user_status[p_username] = current_user_status
 
-        current_user_status.locale = self.get_user_locale(p_username=p_username)
+        current_user_status.locale = self.get_user_locale(p_session_context=self._session_context,
+                                                          p_username=p_username)
         return current_user_status
 
     def process_rules(self, p_reference_time):
@@ -828,16 +834,17 @@ class AppControl(object):
             p_process_infos=self.get_process_infos(),
             p_reference_time=p_reference_time,
             p_max_lookback_in_days=self._config.process_lookback_in_days,
-            p_user_map=self._persistence.user_map,
+            p_user_map=self._persistence.user_map(self._session_context),
             p_min_activity_duration=self._config.min_activity_duration)
 
-        for user in self._persistence.users:
+        for user in self._persistence.users(self._session_context):
             if user.active and user.username in self._usernames:
 
                 user_active = False
 
-                user_locale = self.get_user_locale(p_username=user.username)
-                rule_set = self._rule_handler.get_active_ruleset(p_username=user.username,
+                user_locale = self.get_user_locale(p_username=user.username, p_session_context=self._session_context)
+                rule_set = self._rule_handler.get_active_ruleset(p_session_context=self._session_context,
+                                                                 p_username=user.username,
                                                                  p_reference_date=p_reference_time.date())
 
                 stat_infos = users_stat_infos.get(user.username)
@@ -856,6 +863,7 @@ class AppControl(object):
                             self._logger.debug(str(override))
 
                         rule_result_info = self._rule_handler.process_ruleset(
+                            p_session_context=self._session_context,
                             p_stat_info=stat_info,
                             p_reference_time=p_reference_time,
                             p_rule_override=override,
@@ -954,7 +962,7 @@ class AppControl(object):
 
         current_user_status.notification = p_text
 
-        locale = self.get_user_locale(p_username=p_username)
+        locale = self.get_user_locale(p_username=p_username, p_session_context=self._session_context)
 
         event = admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_SPEAK,
@@ -1026,22 +1034,24 @@ class AppControl(object):
 
             self.queue_events(p_events=events, p_to_master=True)
 
-    def get_sorted_devices(self):
+    def get_sorted_devices(self, p_session_context):
 
-        return sorted(self._persistence.devices, key=lambda device: device.device_name)
+        return sorted(self._persistence.devices(p_session_context), key=lambda device: device.device_name)
 
-    def get_sorted_users(self):
+    def get_sorted_users(self, p_session_context):
 
-        return sorted(self._persistence.users, key=lambda user: user.full_name)
+        return sorted(self._persistence.users(p_session_context), key=lambda user: user.full_name)
 
-    def get_unmonitored_users(self):
+    def get_unmonitored_users(self, p_session_context):
 
-        return [ username for username in self._user_handler.list_users() if username not in self._persistence.user_map ]
+        return [username for username in self._user_handler.list_users() if
+                username not in self._persistence.user_map(p_session_context)]
 
-    def get_unmonitored_devices(self, p_user):
+    def get_unmonitored_devices(self, p_user, p_session_context):
 
         monitored_devices = [user2device.device.device_name for user2device in p_user.devices]
-        return [ device for device in self._persistence.devices if device.device_name not in monitored_devices ]
+        return [device for device in self._persistence.devices(p_session_context)
+                if device.device_name not in monitored_devices]
 
     def get_context_rule_handler_names(self):
 
@@ -1051,7 +1061,7 @@ class AppControl(object):
 
         return self._rule_handler.get_context_rule_handler(p_context_name)
 
-    def get_user_status_infos(self, p_include_history=True):
+    def get_user_status_infos(self, p_session_context, p_include_history=True, ):
 
         user_infos = {}
 
@@ -1060,15 +1070,16 @@ class AppControl(object):
         users_stat_infos = process_statistics.get_process_statistics(
             p_process_infos=self.get_process_infos(),
             p_reference_time=reference_time,
-            p_user_map=self._persistence.user_map,
+            p_user_map=self._persistence.user_map(p_session_context),
             p_max_lookback_in_days=self._config.process_lookback_in_days if p_include_history else 1,
             p_min_activity_duration=self._config.min_activity_duration)
 
-        for username in self._persistence.user_map.keys():
-            rule_set = self._rule_handler.get_active_ruleset(p_username=username,
+        for username in self._persistence.user_map(p_session_context).keys():
+            rule_set = self._rule_handler.get_active_ruleset(p_session_context=p_session_context,
+                                                             p_username=username,
                                                              p_reference_date=reference_time.date())
             stat_infos = users_stat_infos.get(username)
-            user_locale = self.get_user_locale(p_username=username)
+            user_locale = self.get_user_locale(p_session_context=p_session_context, p_username=username)
 
             if stat_infos is not None:
                 stat_info = stat_infos.get(rule_set.context)
@@ -1079,7 +1090,8 @@ class AppControl(object):
                     key_rule_override = rule_override.get_key(p_username=username,
                                                               p_reference_date=reference_time.date())
                     override = self._rule_overrides.get(key_rule_override)
-                    rule_result_info = self._rule_handler.process_ruleset(p_stat_info=stat_info,
+                    rule_result_info = self._rule_handler.process_ruleset(p_session_context=p_session_context,
+                                                                          p_stat_info=stat_info,
                                                                           p_reference_time=reference_time,
                                                                           p_rule_override=override,
                                                                           p_locale=user_locale)
@@ -1097,11 +1109,11 @@ class AppControl(object):
 
         return user_infos
 
-    def get_admin_infos(self):
+    def get_admin_infos(self, p_session_context):
 
         admin_infos = []
 
-        user_infos = self.get_user_status_infos(p_include_history=False)
+        user_infos = self.get_user_status_infos(p_session_context=p_session_context, p_include_history=False)
 
         days = [datetime.date.today() + datetime.timedelta(days=i) for i in
                 range(0, self._config.admin_lookahead_in_days + 1)]
@@ -1115,7 +1127,7 @@ class AppControl(object):
             admin_info.username = username
             admin_info.full_name = username
 
-            user = self._persistence.user_map.get(username)
+            user = self._persistence.user_map(p_session_context).get(username)
 
             if user is not None:
                 admin_info.full_name = user.full_name
@@ -1124,7 +1136,8 @@ class AppControl(object):
             admin_info.day_infos = []
 
             for reference_date in sorted(days):
-                rule_set = self._rule_handler.get_active_ruleset(p_username=username,
+                rule_set = self._rule_handler.get_active_ruleset(p_session_context=p_session_context,
+                                                                 p_username=username,
                                                                  p_reference_date=reference_date)
 
                 if rule_set is not None:
@@ -1220,7 +1233,7 @@ class AppControl(object):
 
     def get_user_status(self, p_username):
 
-        user = self._persistence.user_map.get(p_username)
+        user = self._persistence.user_map().get(p_username)
 
         if user is not None and user.active:
             return  self._user_status.get(p_username)
@@ -1228,11 +1241,9 @@ class AppControl(object):
         else:
             return None
 
-    def add_new_user(self, p_username, p_locale=None):
+    def add_new_user(self, p_session_context, p_username, p_locale=None):
 
-        self._persistence.add_new_user(p_username=p_username, p_locale=p_locale)
+        self._persistence.add_new_user(p_session_context=p_session_context, p_username=p_username, p_locale=p_locale)
 
         if not p_username in self._usernames:
             self._usernames_not_found.append(p_username)
-
-

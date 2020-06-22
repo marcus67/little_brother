@@ -40,7 +40,6 @@ from python_base_app import locale_helper
 from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
-DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 DEFAULT_APPLICATION_OWNER = 'little-brother'
 
@@ -60,7 +59,7 @@ def get_argument_parser(p_app_name):
     parser.add_argument('--create-databases', dest='create_databases', action='store_const', const=True, default=False,
                         help='Creates database and database tables')
     parser.add_argument('--upgrade-databases', action="store", dest='upgrade_databases',
-                        help='Upgrades database to specific alembic version')
+                        help='Upgrades database to specific alembic version', default="head")
     parser.add_argument('--stamp-databases', action="store", dest='stamp_databases',
                         help='Sets alembic database version to a specific value')
     return parser
@@ -78,7 +77,7 @@ class App(base_app.BaseApp):
     def __init__(self, p_pid_file, p_arguments, p_app_name):
 
         super(App, self).__init__(p_pid_file=p_pid_file, p_arguments=p_arguments, p_app_name=p_app_name,
-                                  p_dir_name=DIR_NAME, p_languages=constants.LANGUAGES)
+                                  p_dir_name=constants.DIR_NAME, p_languages=constants.LANGUAGES)
 
         self._notification_handlers = []
         self._status_server = None
@@ -94,19 +93,20 @@ class App(base_app.BaseApp):
         self._user_handler = None
         self._locale_helper = None
 
-    def load_configuration(self, p_configuration):
+    def prepare_configuration(self, p_configuration):
 
         app_control_section = app_control.AppControlConfigModel()
         p_configuration.add_section(app_control_section)
 
         audio_handler_section = audio_handler.AudioHandlerConfigModel()
-        audio_handler_section.spool_dir = os.path.join("/var/spool", DIR_NAME)
+        audio_handler_section.spool_dir = os.path.join("/var/spool", constants.DIR_NAME)
         p_configuration.add_section(audio_handler_section)
 
         popup_handler_section = popup_handler.PopupHandlerConfigModel()
         p_configuration.add_section(popup_handler_section)
 
         persistence_section = persistence.PersistenceConfigModel()
+        persistence_section.sqlite_dir = os.path.join("/var/spool", constants.DIR_NAME)
         p_configuration.add_section(persistence_section)
 
         rule_handler_section = rule_handler.RuleHandlerConfigModel()
@@ -139,7 +139,7 @@ class App(base_app.BaseApp):
         user_handler_section = unix_user_handler.BaseUserHandlerConfigModel()
         p_configuration.add_section(user_handler_section)
 
-        return super(App, self).load_configuration(p_configuration=p_configuration)
+        return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
     def is_master(self):
 
@@ -178,6 +178,8 @@ class App(base_app.BaseApp):
                         msg.format(count=len(self._client_device_section_handler.client_device_configs)))
 
     def prepare_services(self, p_full_startup=True):
+
+        super().prepare_services(p_full_startup=p_full_startup)
 
         if self.is_master():
             self._persistence = persistence.Persistence(
@@ -312,45 +314,21 @@ class App(base_app.BaseApp):
 
     def run_special_commands(self, p_arguments):
 
-        command_executed = False
-        basic_init_executed = False
+        if p_arguments.stamp_databases:
+            self.basic_init(p_full_startup=False)
+            self.stamp_databases(p_alembic_version=p_arguments.stamp_databases)
+            return True
 
         if p_arguments.create_databases:
             self.basic_init(p_full_startup=False)
-            basic_init_executed = True
             self._persistence.check_schema(p_create_tables=False)
-            self.upgrade_databases(p_alembic_version="head")
-            command_executed = True
-
-        if p_arguments.stamp_databases:
-            if not basic_init_executed:
-                self.basic_init(p_full_startup=False)
-
-            self.stamp_databases(p_alembic_version=p_arguments.stamp_databases)
-            command_executed = True
 
         if p_arguments.upgrade_databases:
-            if not basic_init_executed:
-                self.basic_init(p_full_startup=False)
+            self.basic_init(p_full_startup=False)
+            db_mig = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=self._persistence)
+            db_mig.upgrade_databases(p_alembic_version=p_arguments.upgrade_databases)
 
-            self.upgrade_databases(p_alembic_version=p_arguments.upgrade_databases)
-            command_executed = True
-
-        return command_executed
-
-    def upgrade_databases(self, p_alembic_version):
-
-        url = self._persistence.build_url()
-        alembic_working_dir = os.path.dirname(__file__)
-
-        fmt = "Upgrading database to revision '{revision}' using alembic with working directory {working_dir}..."
-        self._logger.info(fmt.format(revision=p_alembic_version,
-                                     working_dir=alembic_working_dir))
-
-        alembic_argv = ["-x", url,
-                        "upgrade", p_alembic_version]
-        os.chdir(alembic_working_dir)
-        alembic.config.main(alembic_argv, prog="alembic.config.main")
+        return False
 
     def stamp_databases(self, p_alembic_version):
 

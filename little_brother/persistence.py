@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
+import os.path
 import re
 import urllib.parse
 
@@ -421,8 +422,6 @@ class RuleSet(Base):
 
         return 1 < self.priority < len(self.user.rulesets)
 
-
-
     @property
     def can_move_down(self):
 
@@ -455,10 +454,13 @@ class PersistenceConfigModel(configuration.ConfigModel):
         self.database_host = 'localhost'
         self.database_port = 3306
         self.database_name = 'little_brother'
-        self.database_user = 'little_brother'
+        self.database_user = None
         self.database_password = None
-        self.database_admin = 'postgres'
+        self.database_admin = None
         self.database_admin_password = None
+
+        self.sqlite_dir = None
+        self.sqlite_filename = "little-brother.sqlite.db"
 
         #: Number of seconds that a database connection will be kept in the pool before it is discarded.
         #: It has to be shorter than the maximum time that a database server will keep a connection alive.
@@ -467,6 +469,44 @@ class PersistenceConfigModel(configuration.ConfigModel):
         #: Default value: :data:``
         self.pool_recycle = 3600
 
+
+class SessionContext(object):
+    _session_registry = []
+
+    def __init__(self, p_persistence, p_register=False):
+
+        self._persistence = p_persistence
+        self._session = None
+        self._caches = {}
+
+        if p_register:
+            SessionContext._session_registry.append(self)
+
+    def get_cache(self, p_name):
+
+        return self._caches.get(p_name)
+
+    def clear_cache(self):
+
+        self._caches = {}
+
+    def get_session(self):
+
+        if self._session is None:
+            self._session = self._persistence.get_session()
+
+        return self._session
+
+    def set_cache(self, p_name, p_object):
+
+        if self._persistence.enable_caching():
+            self._caches[p_name] = p_object
+
+    @classmethod
+    def clear_caches(cls):
+
+        for context in cls._session_registry:
+            context.clear_cache()
 
 class Persistence(object):
 
@@ -483,6 +523,7 @@ class Persistence(object):
         self._devices = None
         self._users_session = None
         self._devices_session = None
+        self._cache_entities = True
 
         if self._config.database_user is not None:
             tools.check_config_value(p_config=self._config, p_config_attribute_name="database_password")
@@ -538,7 +579,12 @@ class Persistence(object):
                     None
                 ))
         else:
-            url = "{driver}://".format(driver=self._config.database_driver)
+            if self._config.sqlite_dir is None:
+                url = "{driver}://".format(driver=self._config.database_driver)
+
+            else:
+                sqlite_filename = os.path.join(self._config.sqlite_dir, self._config.sqlite_filename)
+                url = "{driver}:///{filename}".format(driver=self._config.database_driver, filename=sqlite_filename)
 
         return url
 
@@ -558,6 +604,11 @@ class Persistence(object):
 
     def get_connection(self):
         return self._engine.connect()
+
+    def enable_caching(self):
+        # SQLite has some restrictions with persistent entities used in threads other that the one they
+        # were created in so we turn out caching.
+        return DATABASE_DRIVER_SQLITE not in self._config.database_driver
 
     def get_session(self):
         if not self._session_used:
@@ -649,6 +700,9 @@ class Persistence(object):
             raise configuration.ConfigurationException(
                 "check_schema () called without [Persistence].database_admin "
                 "and [Persistence].database_admin_password set")
+
+        msg = "Creating database {name}"
+        self._logger.info(msg.format(name=self._config.database_name))
 
         if DATABASE_DRIVER_POSTGRESQL in self._config.database_driver:
             self.create_postgresql(p_create_tables=p_create_tables)
@@ -758,53 +812,43 @@ class Persistence(object):
         if not self._reuse_session:
             session.close()
 
-    @property
-    def users(self):
+    def users(self, p_session_context):
 
-        if self._users is None:
-            self._users_session = self.get_session()
+        current_users = p_session_context.get_cache("users")
 
-            # .options(joinedload(User.rulesets), contains_eager('rulesets.user'),
-            #          joinedload(User.devices), contains_eager('devices.user'),
-            #          contains_eager('devices.device'))
+        if current_users is None:
+            session = p_session_context.get_session()
+            current_users = session.query(User).all()
+            p_session_context.set_cache(p_name="users", p_object=current_users)
 
-            self._users = self._users_session.query(User).all()
+        return current_users
 
-        #            session.query(Device).options(joinedload(Device.users), contains_eager('users.user')).all()
+    def user_map(self, p_session_context):
 
-        # session.query(User2Device).all()
+        return {user.username: user for user in self.users(p_session_context=p_session_context)}
 
-        return self._users
+    def devices(self, p_session_context):
 
+        current_devices = p_session_context.get_cache("devices")
 
-    @property
-    def user_map(self):
+        if current_devices is None:
+            session = p_session_context.get_session()
+            current_devices = session.query(Device).options().all()
+            p_session_context.set_cache(p_name="devices", p_object=current_devices)
 
-        return { user.username:user for user in self.users }
+        return current_devices
 
-    @property
-    def devices(self):
+    def device_map(self, p_session_context):
 
-        if self._devices is None:
-            self._devices_session = self.get_session()
-            self._devices = self._devices_session.query(Device).options().all()
+        return {device.device_name: device for device in self.devices(p_session_context=p_session_context)}
 
-        return self._devices
+    def hostname_device_map(self, p_session_context):
 
-    @property
-    def device_map(self):
-
-        return { device.device_name:device for device in self.devices }
-
-    @property
-    def hostname_device_map(self):
-
-        return { device.hostname:device for device in self.devices }
+        return {device.hostname: device for device in self.devices(p_session_context=p_session_context)}
 
 
     def clear_cache(self):
-        self._users = None
-        self._devices = None
+        SessionContext.clear_caches()
 
     def get_default_ruleset(self, p_priority=rule_handler.DEFAULT_PRIORITY):
 
@@ -813,10 +857,10 @@ class Persistence(object):
         default_ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
         return default_ruleset
 
-    def add_new_user(self, p_username, p_locale=None):
+    def add_new_user(self, p_session_context, p_username, p_locale=None):
 
-        if p_username in self.user_map:
-            msg =  "Cannot create new user {username}. Already in database!"
+        if p_username in self.user_map(p_session_context):
+            msg = "Cannot create new user {username}. Already in database!"
             self._logger.warning(msg.format(username=p_username))
             return
 
@@ -834,13 +878,13 @@ class Persistence(object):
         session.commit()
         self.clear_cache()
 
-    def add_new_device(self, p_name_pattern):
+    def add_new_device(self, p_session_context, p_name_pattern):
 
         session = self.get_session()
         new_device = Device()
         new_device.device_name = tools.get_new_object_name(
             p_name_pattern=p_name_pattern,
-            p_existing_names=[device.device_name for device in self.devices])
+            p_existing_names=[device.device_name for device in self.devices(p_session_context)])
         new_device.sample_size = constants.DEFAULT_DEVICE_SAMPLE_SIZE
         new_device.min_activity_duration = constants.DEFAULT_DEVICE_MIN_ACTIVITY_DURATION
         new_device.max_active_ping_delay = constants.DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY

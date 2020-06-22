@@ -60,16 +60,12 @@ class TestStatusServer(base_test.BaseTestCase):
 
         return process_handlers
 
-    @staticmethod
-    def create_dummy_status_server(p_process_handlers=None, p_ruleset_configs=None):
+    def create_dummy_status_server(self, p_process_handlers=None):
 
         if p_process_handlers is None:
             p_process_handlers = {}
 
-        if p_ruleset_configs is None:
-            p_ruleset_configs = {}
-
-        _persistence = test_persistence.TestPersistence.create_dummy_persistence()
+        _persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
         _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_persistence=_persistence)
 
         master_connector_config = master_connector.MasterConnectorConfigModel()

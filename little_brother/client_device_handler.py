@@ -20,6 +20,7 @@ import shlex
 import subprocess
 
 from little_brother import admin_event
+from little_brother import persistence
 from little_brother import process_handler
 from python_base_app import configuration
 from python_base_app import log_handling
@@ -196,6 +197,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         super().__init__(p_config=p_config)
         self._persistence = p_persistence
+        self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
 
         try:
             self.ping_result_regex = re.compile(self._config.ping_result_regex)
@@ -209,8 +211,6 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         self._process_infos = {}
         self._device_infos = {}
-        # self._device_stats = {}
-        # self._process_info_candidates = {}
 
     @property
     def device_infos(self):
@@ -219,7 +219,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
     def get_device_info(self, p_device_name):
 
         device_info = self._device_infos.get(p_device_name)
-        device = self._persistence.device_map.get(p_device_name)
+        device = self._persistence.device_map(self._session_context).get(p_device_name)
 
         if device is not None:
             if device_info is None:
@@ -309,21 +309,24 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_number_of_monitored_devices(self):
 
-        return len(self._persistence.devices)
+        return len(self._persistence.devices(self._session_context))
 
-    def scan_processes(self, p_reference_time, p_server_group, p_login_mapping, p_host_name, p_process_regex_map):
+    def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
+                       p_process_regex_map):
 
         events = []
 
-        for device in self._persistence.devices:
+        session_context = object()
+
+        for device in self._persistence.devices(p_session_context):
             self.ping_device(p_reference_time=p_reference_time, p_device=device)
 
         for device_info in self._device_infos.values():
-            if device_info.device_name not in self._persistence.device_map:
+            if device_info.device_name not in self._persistence.device_map(self._session_context):
                 # Clear statistics for old device names so that they are correctly reported in Prometheus 
                 device_info.clear_moving_average()
 
-        for device in self._persistence.devices:
+        for device in self._persistence.devices(self._session_context):
             device_info = self.get_device_info(p_device_name=device.device_name)
 
             if device_info.requires_process_start_event(p_reference_time=p_reference_time):
