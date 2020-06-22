@@ -342,27 +342,26 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=request.url_rule, p_duration=duration)):
 
-#            admin_infos = self._appcontrol.get_admin_infos(p_session_context=self._session_context)
-admin_infos = self._appcontrol.get_admin_infos(
-    p_session_context=persistence.SessionContext(self._persistence))
-forms = self.get_admin_forms(p_admin_infos=admin_infos)
+            admin_infos = self._appcontrol.get_admin_infos(
+                p_session_context=persistence.SessionContext(self._persistence))
+            forms = self.get_admin_forms(p_admin_infos=admin_infos)
 
-valid_and_submitted = True
-submitted = False
+            valid_and_submitted = True
+            submitted = False
 
-for form in forms.values():
-    if not form.validate_on_submit():
-        valid_and_submitted = False
+            for form in forms.values():
+                if not form.validate_on_submit():
+                    valid_and_submitted = False
 
-    if form.is_submitted():
-        submitted = True
+                if form.is_submitted():
+                    submitted = True
 
-if valid_and_submitted:
-    self.save_admin_data(admin_infos, forms)
-    return flask.redirect(flask.url_for("little_brother.admin"))
+            if valid_and_submitted:
+                self.save_admin_data(admin_infos, forms)
+                return flask.redirect(flask.url_for("little_brother.admin"))
 
-if not submitted:
-    for admin_info in admin_infos:
+            if not submitted:
+                for admin_info in admin_infos:
                     for day_info in admin_info.day_infos:
                         forms[day_info.html_key].load_from_model(p_model=day_info.override)
 
