@@ -1133,46 +1133,48 @@ class AppControl(object):
                 admin_info.full_name = user.full_name
 
             admin_info.user_info = user_infos.get(username)
-            admin_info.day_infos = []
 
-            for reference_date in sorted(days):
-                rule_set = self._rule_handler.get_active_ruleset(p_session_context=p_session_context,
-                                                                 p_username=username,
-                                                                 p_reference_date=reference_date)
+            if admin_info.user_info is not None:
+                admin_info.day_infos = []
 
-                if rule_set is not None:
-                    key_rule_override = rule_override.get_key(p_username=username, p_reference_date=reference_date)
-                    override = self._rule_overrides.get(key_rule_override)
+                for reference_date in sorted(days):
+                    rule_set = self._rule_handler.get_active_ruleset(p_session_context=p_session_context,
+                                                                     p_username=username,
+                                                                     p_reference_date=reference_date)
 
-                    if override is None:
-                        override = rule_override.RuleOverride(p_reference_date=reference_date, p_username=username)
+                    if rule_set is not None:
+                        key_rule_override = rule_override.get_key(p_username=username, p_reference_date=reference_date)
+                        override = self._rule_overrides.get(key_rule_override)
 
-                    effective_ruleset = rule_handler.apply_override(p_rule_set=rule_set, p_rule_override=override)
+                        if override is None:
+                            override = rule_override.RuleOverride(p_reference_date=reference_date, p_username=username)
 
-                    day_info = view_info.ViewInfo(p_parent=admin_info,
-                                                  p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
+                        effective_ruleset = rule_handler.apply_override(p_rule_set=rule_set, p_rule_override=override)
 
-                    if reference_date == datetime.date.today():
-                        day_info.long_format = _("'Today ('EEE')'", 'long')
-                        day_info.short_format = _("'Today'", 'short')
+                        day_info = view_info.ViewInfo(p_parent=admin_info,
+                                                      p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
 
-                    elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-                        day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
-                        day_info.short_format = _("'Tomorrow'", 'short')
+                        if reference_date == datetime.date.today():
+                            day_info.long_format = _("'Today ('EEE')'", 'long')
+                            day_info.short_format = _("'Today'", 'short')
 
-                    else:
-                        day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
-                        day_info.short_format = _("EEE")
+                        elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
+                            day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
+                            day_info.short_format = _("'Tomorrow'", 'short')
 
-                    admin_info.day_infos.append(day_info)
+                        else:
+                            day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
+                            day_info.short_format = _("EEE")
 
-                    day_info.reference_date = reference_date
-                    day_info.rule_set = rule_set
-                    day_info.override = override
-                    day_info.effective_rule_set = effective_ruleset
-                    day_info.max_lookahead_in_days = self._config.admin_lookahead_in_days
+                        admin_info.day_infos.append(day_info)
 
-            admin_infos.append(admin_info)
+                        day_info.reference_date = reference_date
+                        day_info.rule_set = rule_set
+                        day_info.override = override
+                        day_info.effective_rule_set = effective_ruleset
+                        day_info.max_lookahead_in_days = self._config.admin_lookahead_in_days
+
+                admin_infos.append(admin_info)
 
         return sorted(admin_infos, key=lambda info: info.full_name)
 

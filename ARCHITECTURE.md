@@ -1,6 +1,6 @@
 ![Under Construction Logo](doc/logo_under_construction_sign_wide.png)
 
-This project is still under construction. Please, bear with me. Thanks!
+This page is still under construction. Please, bear with me. Thanks!
 
 ![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
 
