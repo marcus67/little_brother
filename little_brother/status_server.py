@@ -73,10 +73,8 @@ API_RELOAD_REL_URL = 'reload'
 DEFAULT_CSS_NAME = 'default.css'
 LOGIN_CSS_NAME = "login.css"
 
-LOGO_LITTLE_BROTHER_NAME = 'icon_baby-panda_128x128.png'
-ICON_FAVICON_NAME = 'baby-panda_32x32.ico'
-ICON_DENIED_NAME = 'icon_denied.png'
-ICON_OK_NAME = 'icon_check.png'
+LOGO_LITTLE_BROTHER_NAME = 'icon-baby-panda-128x128.png'
+ICON_FAVICON_NAME = 'baby-panda-32x32.ico'
 
 TEMPLATE_REL_DIR = "templates"
 

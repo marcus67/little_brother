@@ -23,7 +23,7 @@ a:visited {
   text-decoration: underline;
 }
 
-A:link {
+a:link {
   color: black;
 }
 
@@ -37,7 +37,7 @@ a:visited {
   color: black;
 }
 
-INPUT {
+input {
   width: 70px;
 }
 
@@ -137,6 +137,7 @@ a.CVE_HYPERLINK:visited {
   padding-left: 1px;
   padding-right: 1px;
 }
+
 .col-xs-2 input {
   padding-left: 1px;
   padding-right: 1px;
@@ -200,7 +201,7 @@ div.STANDARD_TABLE div.COL {
   padding: 5px;
   text-align: left;
   margin-top: 0px;
-  margin-bottom:0px;
+  margin-bottom: 0px;
   border: 2px solid white;
 }
 
@@ -209,11 +210,13 @@ div.STANDARD_TABLE div.ALIGN_RIGHT {
 }
 
 div.STANDARD_TABLE div.TITLE_ROW div.COL {
-  font-size:24px; text-align: center;
+  font-size:24px;
+  text-align: center;
 }
 
 div.STANDARD_TABLE div.TITLE_ROW {
-  background-color: #E2E2E2; font-weight:bold;
+  background-color: #e2e2e2;
+  font-weight:bold;
 }
 
 div.STANDARD_TABLE div.ROWLEVEL_1 {
@@ -244,7 +247,6 @@ div.STANDARD_TABLE div.ALTERNATE_ROWLEVEL_3 {
   background-color: #b8c0ad;
 }
 
-
 div.STANDARD_TABLE div.ALTERNATE2_ROWLEVEL_1 {
   background-color: #e38901;
 }
@@ -258,43 +260,37 @@ div.STANDARD_TABLE div.ALTERNATE2_ROWLEVEL_3 {
 }
 
 div.STANDARD_TABLE div.SEPERATOR_ROW {
-  height:2px;
+  height: 2px;
 }
 
 div.STANDARD_TABLE div.SEPERATOR_ROW_LINE {
-  height:2px;
+  height: 2px;
   background-color:black;
 }
 
 div.STANDARD_TABLE div.HEADER_ROW {
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
 }
 
 div.STANDARD_TABLE div.HEADER_ROW div.COL {
   border-bottom-style: solid;
-}
-
-div.STANDARD_TABLE div.HEADER_ROW div.COL {
   vertical-align: middle;
   text-align: center;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 div.STANDARD_TABLE div.FILTER_ROW {
-  background-color: #A2A2A2;
+  background-color: #a2a2a2;
 }
 
 div.STANDARD_TABLE div.FILTER_ROW div.COL {
   border-bottom-style: solid;
-}
-
-div.STANDARD_TABLE div.FILTER_ROW div.COL {
   vertical-align: middle;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 div.STANDARD_TABLE div.STATUS_ROW {
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
 }
 
 div.STANDARD_TABLE div.STATUS_ROW div.COL {
@@ -306,11 +302,11 @@ UL {
 }
 
 .CODE {
-  font-family:monospace;
+  font-family: monospace;
 }
 
 .CONTEXT {
-  font-style:italic;
+  font-style: italic;
 }
 
 .center {
@@ -329,8 +325,8 @@ UL {
 
 /* https://stackoverflow.com/questions/41081275/bootstrap-left-align-checkbox-in-horizontal-form */
 .move-left {
-    width: auto;
-    box-shadow: none;
+  width: auto;
+  box-shadow: none;
 }
 
 .fas {

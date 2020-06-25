@@ -469,8 +469,8 @@ class PersistenceConfigModel(configuration.ConfigModel):
         #: Default value: :data:``
         self.pool_recycle = 3600
 
-
 class SessionContext(object):
+
     _session_registry = []
 
     def __init__(self, p_persistence, p_register=False):

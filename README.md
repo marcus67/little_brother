@@ -1,4 +1,4 @@
-![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
+![LittleBrother-Logo](little_brother/static/icons/icon-baby-panda-128x128.png)
 
 # Parental Control Application `LittleBrother`
 
@@ -160,19 +160,19 @@ to log into the [web frontend](http://localhost:5555/).
 The default setup will fit most first-time users (except for the password). The following table contains 
 various additional aspects that may require additional configuration.
 
-| Aspect | Default Setting | Alternatives | Reference |
-| ------ | --------------- | ------------ | --------- |
-| Admin Password   | User `admin` with password `test123` | | See "Setting Admin Password" below | 
-| Database backend | File oriented database [sqlite](https://www.sqlite.org/index.html) | Full fledge database such as MySQL dor MariaDB | See [Advanced Configuration](ADVANCED_TOPICS.md) |
-| Web frontend port | `5555` | Any other available port | See [Advanced Configuration](ADVANCED_TOPICS.md)   |
-| Web frontend base URL | `/` | Any other path  | See [Advanced Configuration](ADVANCED_TOPICS.md)   |
-| User registry | `/etc/passwd` | LDAP server | See [Advanced Configuration](ADVANCED_TOPICS.md)   |
-| Master slave setup  | Use only a master host | Use any number of slave hosts | See [Advanced Configuration](ADVANCED_TOPICS.md)  |
-| Mapping UIDs | UIDs are synchronized across all hosts | Each host (group) can have different UIDs | See [Advanced Configuration](ADVANCED_TOPICS.md)  |
-| Scanning Interval | Every 5 seconds | Any other interval |  See [Advanced Configuration](ADVANCED_TOPICS.md)  |
-| Reverse proxy setup | No reverse proxy | Run little-brother behind a reverse proxy (e.g. `nginx`) | See [Advanced Configuration](ADVANCED_TOPICS.md)  |
-| Docker Sopport | Slave is installed as Debian package | Slave is run as Docker container | See [Docker](DOCKER.md).
-| Prometheus Support | Not activated | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md). |
+| Aspect                | Default Setting                                                    | Alternatives                                                    | Reference                                               |
+| --------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------- |
+| Admin Password        | User `admin` with password `test123`                               |                                                                 | See "Setting Admin Password" below                      | 
+| Database backend      | File oriented database [sqlite](https://www.sqlite.org/index.html) | Full fledge database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Web frontend port     | `5555`                                                             | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Web frontend base URL | `/`                                                                | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| User registry         | `/etc/passwd`                                                      | Predfined users and UIDs                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Master slave setup    | Use only a master host                                             | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Mapping UIDs          | UIDs are synchronized across all hosts                             | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Scanning Interval     | Every 5 seconds                                                    | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Reverse proxy setup   | No reverse proxy                                                   | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Docker Support        | Slave is installed as Debian package                               | Slave is run as Docker container                                | See [Docker](DOCKER.md).                                |
+| Prometheus Support    | Not activated                                                      | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
 
 ### Setting the Admin Password
 
@@ -181,9 +181,13 @@ See this [issue](https://github.com/marcus67/little_brother/issues/92).
 You have to be `root` to follow these steps (e.g. use `sudo`):
  
 *   Use your favorite editor to edit the file `/etc/little-brother/little-brother.conf`.
+
 *   Find the setting `admin_password` in the section `[UnixUserHandler]`.
+
 *   Change the password.
+
 *   Save the file.
+
 *   Restart the application by issueing: 
 
         systemctl restart little-brother 
