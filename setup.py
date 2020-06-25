@@ -18,8 +18,9 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from setuptools import setup
 from os import path
+
+from setuptools import setup
 
 import little_brother.settings
 
@@ -27,7 +28,6 @@ this_directory = path.abspath(path.dirname(__file__))
 
 with open(path.join(this_directory, 'requirements.txt')) as f:
     install_requires = f.read().splitlines()
-
 
 setup_params = {
     # standard setup configuration
@@ -72,9 +72,8 @@ extended_setup_params = {
     "publish_docker_images": ["master", "release"],
     "publish_latest_docker_image": "release",
     "debian_extra_files": [
-        ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
-        ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
-        ("etc/multi-rule-master.config", "etc/little-brother/multi-rule-master.config"),
+        ("etc/slave.config", "etc/little-brother/slave.config"),
+        ("etc/master.config", "etc/little-brother/master.config"),
     ]
 
 }
