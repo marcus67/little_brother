@@ -151,7 +151,11 @@ directory. Install it as you would install any other Debian package with
 Note that the second command is required to install missing dependencies since `dpkg` does not run a dependency check.
 Instead, it will return with an error which will then be "fixed" by `apt-get`. 
 
-After installation the system (`systemctl`) will try to start the application right away. The application will 
+After installation use
+
+    systemctl start little-brother
+
+to start the application right away. The application will 
 successfully start up provided that the default port 5555 is available on the host. You can check the success by trying 
 to log into the [web frontend](http://localhost:5555/).
 

@@ -518,6 +518,7 @@ class Persistence(object):
         self._admin_session = None
         self._create_table_session = None
         self._admin_engine = None
+        self._create_table_engine = None
         self._reuse_session = p_reuse_session
         self._users = None
         self._devices = None
@@ -619,6 +620,10 @@ class Persistence(object):
         return sqlalchemy.orm.sessionmaker(bind=self._engine)()
 
     def create_mysql(self, p_create_tables):
+
+        if not self.check_create_table_engine():
+            return
+
         fmt = "Creating database '%s'" % self._config.database_name
         self._logger.info(fmt)
 
@@ -664,6 +669,9 @@ class Persistence(object):
 
     def create_postgresql(self, p_create_tables):
 
+        if not self.check_create_table_engine():
+            return
+
         fmt = "Creating user %s" % self._config.database_user
         self._logger.info(fmt)
 
@@ -695,13 +703,18 @@ class Persistence(object):
         if p_create_tables:
             Base.metadata.create_all(self._engine)
 
-    def check_schema(self, p_create_tables=True):
-        if self._admin_engine is None and self._config.database_admin is not None:
-            raise configuration.ConfigurationException(
-                "check_schema () called without [Persistence].database_admin "
-                "and [Persistence].database_admin_password set")
+    def check_create_table_engine(self):
 
-        msg = "Creating database {name}"
+        if self._create_table_engine is None:
+            msg = "Admin credentials for database not supplied -> skipping --create-databases!"
+            self._logger.info(msg)
+            return False
+
+        return True
+
+    def check_schema(self, p_create_tables=True):
+
+        msg = "Checking whether to create database {name}..."
         self._logger.info(msg.format(name=self._config.database_name))
 
         if DATABASE_DRIVER_POSTGRESQL in self._config.database_driver:

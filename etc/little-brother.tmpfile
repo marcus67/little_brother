@@ -16,22 +16,4 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-[Unit]
-Description=Tool for monitoring processes
-After=network.target
-
-[Service]
-Type=forking
-ExecStart=/usr/local/bin/run_little_brother.py --daemonize --pidfile=/run/little-brother/little-brother.pid --config=/etc/little-brother/little-brother.config --logdir=/var/log/little-brother --create-databases --upgrade-databases=head
-ExecStop=/usr/local/bin/run_little_brother.py  --pidfile=/run/little-brother/little-brother.pid --kill
-IgnoreSIGPIPE=false
-PIDFile=/run/little-brother/little-brother.pid
-RuntimeDirectory=little-brother
-KillMode=process
-PermissionsStartOnly=true
-User=little-brother
-Group=little-brother
-TimeoutStopSec=10
-
-[Install]
-WantedBy=multi-user.target
+d /run/little-brother 0700 little-brother little-brother

@@ -41,9 +41,8 @@ setup_params = {
     "scripts": [
         "run_little_brother.py",
         "run_little_brother_test_suite.py",
-        "bin/little-brother-grant-x-access.sh"
     ],
-    "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
+    "long_description": "Tool to monitor login time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
 }
 
@@ -66,14 +65,16 @@ extended_setup_params = {
     "create_group": True,
     "user_group_mappings": [("little-brother", "audio")],
     "deploy_systemd_service": True,
+    # "deploy_tmpfile_conf": True,
     "deploy_sudoers_file": True,
+    "deploy_apparmor_file": True,
     "contributing_setups": ["python_base_app", "flask_helpers"],
     "publish_debian_package": ["master", "release"],
     "publish_docker_images": ["master", "release"],
     "publish_latest_docker_image": "release",
     "debian_extra_files": [
         ("etc/slave.config", "etc/little-brother/slave.config"),
-        ("etc/master.config", "etc/little-brother/master.config"),
+        ("etc/master.config", "etc/little-brother/little-brother.config"),
     ]
 
 }

@@ -30,7 +30,8 @@
     <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
     <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('.static', filename='default.css') }}">
 
-    <LINK REL="shortcut icon" TYPE="image/x-icon" HREF="{{ url_for('.static', filename='icons/baby-panda_32x32.ico') }}">
+    <LINK REL="shortcut icon" TYPE="image/x-icon"
+		  HREF="{{ url_for('.static', filename='icons/baby-panda-32x32.ico') }}">
 	
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -42,11 +43,11 @@
   {{ helper.fontawesome_script() }}
   {% include 'navbar.include.html' %}
   <CENTER>
-		<img alt="Brand" src="{{ url_for('.static', filename='icons/icon_baby-panda_128x128.png') }}">
-		<BR>
-		<H2>Little&nbsp;Brother</H2>
-		<BR>
-	</CENTER>
+	  <img alt="Brand" src="{{ url_for('.static', filename='icons/icon-baby-panda-128x128.png') }}">
+	  <BR>
+	  <H2>Little&nbsp;Brother</H2>
+	  <BR>
+  </CENTER>
 
     <DIV CLASS="container STANDARD_TABLE condensed-container">
 

@@ -6,7 +6,45 @@ This page is still under construction. Please, bear with me. Thanks!
 
 # Web-Frontend Manual
 
+This page describes the web frontend of `LittleBrother` which usually can be reached at 
+[http://localhost:5555](http://localhost:5555) on your local machine. It offers access to status information (without
+login() and a configuration interface (with login). 
+
 ## Listing the Status
+
+![Menubar-Status](doc/menubar-status.png)
+
+The menu entry "Status" list the play times of all monitored users. The top level shows the summary of the play times
+of the current monitored users.
+
+![Status-Level-1](doc/status-level-1.png)
+
+A blinking entry denotes an active login. In case the user is currently allowed to play (see green check mark) the 
+column "reasons" shows the estimated remaining play times for the current session (if logged in) and for the day.
+If the user is currently blocked (see red cross) the same column shows the reasons why the user is not permitted to 
+play and the estimated remaining play time for the day.
+   
+![Status-Reasons](doc/status-reasons.png)
+     
+The second level can be opened by clicking on the name of a user. It will show the daily play time, the number 
+of logins and the hosts of the the last seven days of the selected user.
+
+![Status-Level-2](doc/status-level-2.png)
+
+The third level can be opened by clicking on a day summary of a user. It will show the individual play times and
+hosts of the selected user on the selected day. The entries are sorted by the start time in descending order with
+the most recent entry at the top.   
+
+![Status-Level-3](doc/status-level-3.png)
+
+## About Page
+
+![Menubar-About](doc/menubar-about.png)
+
+The page shows some status information of the installed version of `LittleBrother` and a list of supported languages.
+
+![Menubar-About](doc/about.png)  
+
 
 ## Logging In
 
@@ -117,6 +155,4 @@ the access times on the Linux hosts so that the remaining access time is still i
 break time will apply the point of time when the last other device became inactive.      
   
 ## Administration
-
-## About Page
 

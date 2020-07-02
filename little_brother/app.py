@@ -41,7 +41,6 @@ from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
 PACKAGE_NAME = 'little_brother'
-DEFAULT_APPLICATION_OWNER = 'little-brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
 
@@ -252,7 +251,8 @@ class App(base_app.BaseApp):
                 raise configuration.ConfigurationException(msg)
 
             if unix_user_handler_config.is_active():
-                self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
+                self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
+                                                                       p_exclude_user_list=[constants.APPLICATION_USER])
 
         self._app_control = app_control.AppControl(
             p_config=self._config[app_control.SECTION_NAME],
