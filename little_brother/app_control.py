@@ -657,6 +657,7 @@ class AppControl(object):
 
             new_pinfo = process_info.ProcessInfo(
                 p_hostname=pinfo.hostname,
+                p_hostlabel=pinfo.hostlabel,
                 p_pid=pinfo.pid,
                 p_processhandler=pinfo.processhandler,
                 p_username=pinfo.username,

@@ -196,7 +196,14 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
         if cached_result is not None:
             return cached_result
 
-        self.check_data()
+        try:
+            self.check_data()
+
+        except Exception as e:
+            msg = "Exception '{msg}' while retrieving calender information. Assuming that {date} is not a vacation day."
+            self._logger.error(msg.format(msg=str(e), date=datetime.datetime.strftime(p_reference_date, "%d.%m.%Y")))
+            self._cache[key] = False
+            return False
 
         vacation_entries = self._vacation_data.get(p_details)
 
@@ -218,10 +225,15 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
     def validate_context_details(self, p_context_detail):
 
-        self.check_data()
+        try:
+            self.check_data()
+
+        except Exception as e:
+            fmt = "Exception '{msg}' while retrieving federal states. Cannot validate!"
+            msg = self._logger.error(fmt.format(msg=str(e)))
+            return wtforms.validators.ValidationError(message=msg)
 
         if p_context_detail not in self._vacation_data:
-
             choices = "'" + "', '".join(sorted(self._vacation_data.keys()))
 
             fmt = _("Invalid state '{detail}'. Must be one of {choices}")

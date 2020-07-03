@@ -220,7 +220,7 @@ class ProcessStatisticsInfo(object):
         if self.active_processes == 0:
             self.current_activity = Activity(p_start_time=p_start_time)
 
-        self.current_activity.add_host_process(p_process_info.hostname, p_percent=p_process_info.percent)
+        self.current_activity.add_host_process(p_process_info.hostlabel, p_percent=p_process_info.percent)
         self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
         self.active_processes = self.active_processes + 1
 

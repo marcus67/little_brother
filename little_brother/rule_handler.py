@@ -219,11 +219,15 @@ class RuleResultInfo(object):
 
     def set_minutes_left_in_session(self, p_minutes_left):
 
+        p_minutes_left = max(p_minutes_left, 0)
+
         if self.minutes_left_in_session is None or p_minutes_left < self.minutes_left_in_session:
             self.minutes_left_in_session = p_minutes_left
             self.args['minutes_left_in_session'] = p_minutes_left
 
     def set_minutes_left_today(self, p_minutes_left):
+
+        p_minutes_left = max(p_minutes_left, 0)
 
         if self.minutes_left_today is None or p_minutes_left < self.minutes_left_today:
             self.minutes_left_today = p_minutes_left

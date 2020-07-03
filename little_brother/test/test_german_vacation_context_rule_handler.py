@@ -18,10 +18,9 @@
 
 import datetime
 
+from little_brother import german_vacation_context_rule_handler
 from python_base_app import configuration
 from python_base_app.test import base_test
-
-from little_brother import german_vacation_context_rule_handler
 
 INVALID_STATE_NAME = "INVALID_STATE_NAME"
 
@@ -29,6 +28,7 @@ VALID_STATE_NAME = "Nordrhein-Westfalen"
 
 class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_import_federal_states(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
@@ -39,7 +39,7 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
         self.assertEqual(len(rule_handler._federal_state_map), 16)
         self.assertIn(VALID_STATE_NAME, rule_handler._federal_state_map)
 
-
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_invalid_state_name(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
@@ -53,12 +53,14 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
 
         self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("11.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_is_active_first_day_of_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
 
         self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("12.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_is_active_last_day_of_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()

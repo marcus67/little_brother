@@ -794,10 +794,20 @@ class Persistence(object):
 
     def load_process_infos(self, p_lookback_in_days):
 
-        session = self.get_session()
+        session_context = SessionContext(self)
+        session = session_context.get_session()
         reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
 
         result = session.query(ProcessInfo).filter(ProcessInfo.start_time > reference_time).all()
+
+        for pinfo in result:
+            device = self.hostname_device_map(session_context).get(pinfo.hostname)
+
+            if device is not None:
+                pinfo.hostlabel = device.device_name
+
+            else:
+                pinfo.hostlabel = None
 
         if not self._reuse_session:
             session.close()

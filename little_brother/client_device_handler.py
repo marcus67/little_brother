@@ -89,7 +89,8 @@ class ClientDeviceSectionHandler(configuration.ConfigurationSectionHandler):
 
 class DeviceInfo(object):
 
-    def __init__(self, p_device_name, p_max_active_ping_delay, p_min_activity_duration, p_sample_size, p_hostname):
+    def __init__(self, p_device_name, p_max_active_ping_delay, p_min_activity_duration, p_sample_size,
+                 p_hostname):
 
         self._device_name = p_device_name
         self._max_active_ping_delay = p_max_active_ping_delay
@@ -339,6 +340,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
                             event = admin_event.AdminEvent(
                                 p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
                                 p_hostname=device_info.hostname,
+                                p_hostlabel=device_info.device_name,
                                 p_processhandler=self.id,
                                 p_username=user2device.user.username,
                                 p_percent=user2device.percent,

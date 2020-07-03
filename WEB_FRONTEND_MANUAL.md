@@ -27,7 +27,7 @@ play and the estimated remaining play time for the day.
 ![Status-Reasons](doc/status-reasons.png)
      
 The second level can be opened by clicking on the name of a user. It will show the daily play time, the number 
-of logins and the hosts of the the last seven days of the selected user.
+of logins and the hosts of the last seven days of the selected user.
 
 ![Status-Level-2](doc/status-level-2.png)
 
@@ -45,8 +45,58 @@ The page shows some status information of the installed version of `LittleBrothe
 
 ![Menubar-About](doc/about.png)  
 
-
 ## Logging In
+
+The status page and the about page are accessible without login. All other pages require the login credentials of
+an administration user. Currently, the name of the administration user defaults to `admin`. The password needs to
+be set in the configuration file (see the main [README](../README.md)).
+
+![Login](doc/login.png)  
+
+After successful login the user will be display in the menu bar.
+
+![Login](doc/login-status.png)  
+
+## Administration
+
+![Menubar-Admin](doc/menubar-admin.png)
+
+The administration page enables the user to override the default restrictions for the monitored users. This is possible 
+for the current day and up to 7 days into the future.
+
+The top level shows the names and today's activity of the current monitored users.
+In case the user is currently allowed to play (see green check mark) the 
+row shows the estimated remaining play times for the current session (if logged in) and for the day.
+If the user is currently blocked (see red cross) the row shows the reasons why the user is not permitted to 
+play and the estimated remaining play time for the day.
+
+![Admin-Level-1](doc/admin-level-1.png)
+   
+The second level can be opened by clicking on the name of a user. It will show the active restrictions of
+the current day and the next seven days of the selected user. The column "Context" denotes which ruleset is active
+on the respective day. The entries are sorted by the start time in ascending order with
+the current day at the top.
+
+![Admin-Level-2](doc/admin-level-2.png)
+
+The third level can be opened by clicking on a day row. It will show input fields to override the default
+restrictions of the active ruleset of the selected day.    
+
+![Admin-Level-3](doc/admin-level-3.png)
+
+To override settings enter the desired values and click the save button.
+
+![Admin-Level-3](doc/admin-save-button.png)
+
+Most of the input fields require a certain input format. If the values violate the format, 
+a validation message will be displayed. All errors have to be taken care of before the settings will be saved.
+
+![Admin-Level-3](doc/admin-validation-message.png)
+
+When default values are overridden the day row shows the values in blue color. Removing the overriding values 
+removes the color again. 
+
+![Admin-Override](doc/admin-override.png)
 
 ## Configuring Users
 
@@ -154,5 +204,3 @@ may easily exceed their permitted access times there. However, any login times o
 the access times on the Linux hosts so that the remaining access time is still influenced. Also, the minimum
 break time will apply the point of time when the last other device became inactive.      
   
-## Administration
-

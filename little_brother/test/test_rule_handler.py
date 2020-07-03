@@ -58,6 +58,7 @@ DURATION = 55  # seconds
 
 class TestRuleHandler(base_test.BaseTestCase):
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_priority(self):
         dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
         session_context = persistence.SessionContext(p_persistence=dummy_persistence)

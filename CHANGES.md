@@ -19,6 +19,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Provide configuration file for apparmor
 *   Move creation of `/var/run/little-brother` from service configuration to tmpfiles.d configuration
 *   Completely revised documentation
+*   Catch exception while retrieving data on the German vacation schedules.
  
 ## Version 0.2.2 Revision 62 (May 6th, 2020)
 
