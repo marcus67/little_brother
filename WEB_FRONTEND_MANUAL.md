@@ -86,7 +86,7 @@ restrictions of the active ruleset of the selected day.
 
 To override settings enter the desired values and click the save button.
 
-![Admin-Level-3](doc/admin-save-button.png)
+![Save-Button](doc/save-button.png)
 
 Most of the input fields require a certain input format. If the values violate the format, 
 a validation message will be displayed. All errors have to be taken care of before the settings will be saved.
@@ -100,45 +100,94 @@ removes the color again.
 
 ## Configuring Users
 
-### Adding Users
+![Menubar-Status](doc/menubar-users.png)
 
+Before a user can be monitored she has to be added to the users list of `LittleBrother`. After installation the
+users list is empty. The application will try to retrieve the users on the master host by querying the 
+`/etc/passwd` file using standard Python libraries. See [Users and UIDs in README](README.md) for details. 
+
+All users found that are not being monitored yet will be offered in the drop down menu following "Add to monitoring":
+
+![Menubar-Status](doc/users-add-user-list.png)
+
+To add the user choose the user name from the drop down list and click the add button:
+
+![Add-Button](doc/add-button.png)
+
+After the user has been added her top level entry will be shown:
+
+![Menubar-Status](doc/users-new-user-added.png)
+
+Click on the username to change to second level of the user entry:
+
+![Menubar-Status](doc/users-level-1.png)
+
+The details will show the following items:
+
+*   *Monitored*: denotes if the user will actually be monitored. This will be un-ticked for all new users and should 
+only be ticked off after the user has been configured completely using rulesets and optionally devices.
+
+*   *First Name*: sets the first name of the user. When set the first name will be used in notifications instead of the
+username which may be unpronounceable. 
+
+*   *Last Name*: sets the last name of the user. This is only used as label in lists.
+
+*   *Locale*: sets the language in which notifications are spoken to the user. The locale will be passed on to the
+tool [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) to this purpose. For a new user
+the locale always defaults to the locale which is detected from the browser.
+
+*   *Process Name Pattern*: sets a regular expression defining the processes which represents a "login" by the user. 
+The default value comprises all standard shells and `systemd` which is started by login process using X11. Only change
+this setting if you absolutely know what you are doing.
+ 
 ### Adding Rulesets
 
-For the time being all configuration regarding rules on who and what to monitor must be done in the configuration file. 
-A graphical user interface for administrative may be a central extension of one the future releases. 
+When a new user is created, there is always one default rule created for her which will act as a fallback if no other
+rule applies. However, the new rule does not contain any restrictions yet:
 
-A minimum rule set for a single user consists of a single rule defining:
+![Menubar-Status](doc/users-rulesets-level-2.png)
 
-*   the login name of the user,
-*   the process pattern that is to be monitored,
-*   the minimum time of day (optional),
-*   the maximum time of day (optional),
-*   the maximum time per day (optional),
-*   the maximum duration of one session (optional), and
-*   the minimum break time between two sessions.
+Use the entry fields to optionally change the default settings:
 
-See example below.
+![Menubar-Status](doc/users-rulesets-level-2-filled-in.png)
 
-    [RuleSetUser1]
-    username=user1
-    process_name_pattern=.*sh|systemd
-    min_time_of_day=16:00
-    max_time_of_day=23:00
-    max_time_per_day=1h30m
-    max_activity_duration=20m
-    min_break=10m
+The fields represent the following restrictions/meaning:
 
-The `username` corresponds to the Linux username. It is expected in all small letters. The process name pattern 
-is a regular expression to match the processes of the user. The pattern is implicitly prefixed by `^` and 
-suffixed by `$` to exactly match the raw process name in the process table. Command line options 
-and/or path information is not taken into consideration.
+*    *LabeL*: changes the default label of the rule in lists and messages.
 
-For most purposes in which general login should be prevented or the current login should be terminated 
-a simple `.*sh|systemd` should suffice with `.*sh` taking of all console logins and `systemd` 
-taking care of all graphical logins.
- 
-Timestamps must be given in the format `HH:MM` in military time. Time durations must given in the format `HHh:MMm`. 
-Either part may be omitted and the minutes may exceed 60.
+*    *Context*: sets the context (type) of rule. Currently, there are three contexts available. See below.
+
+*    *Context details*: sets the specific details of the chosen context. See below.
+
+*    *Min Time of Day*: optionally sets the earliest time of the day when login is allowed. Timestamps must be given 
+in the format `HH:MM` in military time. Time durations must given in the format `HHh:MMm`.  Either part may be omitted 
+and the minutes may exceed 60.
+   
+*    *Max Time of Day*: optionally sets the latest time of the day when login is allowed. The format is same as above.  
+
+*    *Time per Day*: optionally sets the duration that the user is allowed to be logged in (for the whole day). 
+The format mus be `HHh:MMm` for `HH` hours and `MM` minutes. Either part can be omitted.  
+
+*    *Minimum Break*: optionally sets a mandatory break time between sessions. The format is the same as above.
+
+*    *Max Duration*: optionally sets the maximum length of a session. The format is the same as above.
+
+*    *Free Play*: If ticked, the user is allowed to play without any restrictions. Any other restriction in the same
+rule will be suppressed.
+
+### Computing the Break Time
+
+When there is a maximum session time and a minimum break time configured for a rule `LittleBrother` tries to compute
+a *fair* break duration as follows:
+
+*    If a user has played her full maximum session time the whole configured break time will apply.
+*    If a user has played less than her maximum session time the break time will be enforced proportionally that is
+the effective break time compared to the configured break time will have the same ratio as the actual session time
+to the maximum session time. Example: the maximum session time is set to 1 hour and the break time to 30 minutes. The
+user decides to play for 40 minutes in her session which accounts for two thirds of the maximum session time. Hence
+the break time will be `2/3*30=20` minutes.    
+
+### Rule Contexts
 
 Each rule can be seen as a day selector. If all days are to be treated equally one rule should do the job. 
 

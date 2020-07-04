@@ -39,10 +39,26 @@ to be monitored have login permission to all those hosts and that the user names
 case access times on all hosts are communicated to the master host and accumulated there. The master will
 apply the rule sets and determine which users have exceeded their access times. 
 
-## Using Predefined Users and UIDs
+## Users and UIDs
 
 The default behavior of little brother is to retrieve user names and UIDs from the file `/etc/passwd` using standard
-Python libraries. This may be a problem in two cases:
+Python libraries. All users in `/etc/passwd` are eligible to be monitored which match these additional criteria:
+
+*   the UID is between 500 and 65000,
+*   the username is not `little-brother`,
+*   the user has a valid password, and
+*   the user's shell is neither `/usr/sbin/nologin` nor `/bin/false`.    
+
+These restrictions should filter out all system and technical users. If you have valid users outside the UID range
+above you can use the settings
+
+    [UnixUserHandler]
+    min_uid=...
+    max_uid=...
+    
+to override the defaults.
+
+Using `/etc/passwd`, however, may be a problem in two cases:
 
 *   The master host does not have the users defined which will be monitored on the slaves.
 *   The master host is using an LDAP server to store the users and their credentials.
@@ -59,6 +75,8 @@ The `USERNAME*` and `UID*` must match those on the slave hosts.
 When using a master-slave setup the assumption is that UIDs on the master host and the slave hosts match. In this
 case no further configuration will be necessary. If however, there are differences between master and slave, it is
 possible to provide a mapping of the UIDs for the user names.
+
+TODO
 
 ## Installation on a Slave Host
 
