@@ -23,11 +23,31 @@ A blinking entry denotes an active login. In case the user is currently allowed 
 column "reasons" shows the estimated remaining play times for the current session (if logged in) and for the day.
 If the user is currently blocked (see red cross) the same column shows the reasons why the user is not permitted to 
 play and the estimated remaining play time for the day.
+
+The columns contain the following details:
+
+*   *Context*: Shows the active ruleset context for the day.
+*   *Today's Activity*: Shows the overall active time and the maximum activity duration for today. If one of the hosts
+has a downtime, this column will also show the detected downtime (in yellow) which will be subtracted from the play 
+time.  
+*   *Previous Activity Start Time*: the time of day when the most recent (except for the current) activity started.
+*   *Previous Activity End Time*: the time of day when the most recent (except for the current) activity ended.
+*   *Current Activity Start Time*: the time of day when the current activity started. If the user is not currently 
+logged in this column will be empty. If there is a current activity, this value will be blinking.
+*   *Current Activity Duration*: the time duration of the current activity. If the user is not currently 
+logged in this column will be empty. If there is a current activity, this value will be blinking.
    
 ![Status-Reasons](doc/status-reasons.png)
      
 The second level can be opened by clicking on the name of a user. It will show the daily play time, the number 
 of logins and the hosts of the last seven days of the selected user.
+
+The columns contain the following details:
+
+*   *Active Time*: The overall play time on that day.
+*   *Activity Start*: The earliest login of the user on that day. 
+*   *Activity Start*: The latest logout of the user on that day.
+*   *Host(#procs)*: A list of hosts that the user logged into on that day including the number of logins on each host. 
 
 ![Status-Level-2](doc/status-level-2.png)
 
@@ -100,7 +120,7 @@ removes the color again.
 
 ## Configuring Users
 
-![Menubar-Status](doc/menubar-users.png)
+![Menubar-Users](doc/menubar-users.png)
 
 Before a user can be monitored she has to be added to the users list of `LittleBrother`. After installation the
 users list is empty. The application will try to retrieve the users on the master host by querying the 
@@ -108,7 +128,7 @@ users list is empty. The application will try to retrieve the users on the maste
 
 All users found that are not being monitored yet will be offered in the drop down menu following "Add to monitoring":
 
-![Menubar-Status](doc/users-add-user-list.png)
+![Users-Add-User-From-List](doc/users-add-user-list.png)
 
 To add the user choose the user name from the drop down list and click the add button:
 
@@ -116,11 +136,11 @@ To add the user choose the user name from the drop down list and click the add b
 
 After the user has been added her top level entry will be shown:
 
-![Menubar-Status](doc/users-new-user-added.png)
+![Users-New-User-Addes](doc/users-new-user-added.png)
 
 Click on the username to change to second level of the user entry:
 
-![Menubar-Status](doc/users-level-1.png)
+![Users-Level-1](doc/users-level-1.png)
 
 The details will show the following items:
 
@@ -145,34 +165,34 @@ this setting if you absolutely know what you are doing.
 When a new user is created, there is always one default rule created for her which will act as a fallback if no other
 rule applies. However, the new rule does not contain any restrictions yet:
 
-![Menubar-Status](doc/users-rulesets-level-2.png)
+![User-Level-2](doc/users-rulesets-level-2.png)
 
 Use the entry fields to optionally change the default settings:
 
-![Menubar-Status](doc/users-rulesets-level-2-filled-in.png)
+![User-Level-3](doc/users-rulesets-level-2-filled-in.png)
 
 The fields represent the following restrictions/meaning:
 
-*    *LabeL*: changes the default label of the rule in lists and messages.
+*   *Label*: changes the default label of the rule in lists and messages.
 
-*    *Context*: sets the context (type) of rule. Currently, there are three contexts available. See below.
+*   *Context*: sets the context (type) of rule. Currently, there are three contexts available. See below.
 
-*    *Context details*: sets the specific details of the chosen context. See below.
+*   *Context details*: sets the specific details of the chosen context. See below.
 
-*    *Min Time of Day*: optionally sets the earliest time of the day when login is allowed. Timestamps must be given 
+*   *Min Time of Day*: optionally sets the earliest time of the day when login is allowed. Timestamps must be given 
 in the format `HH:MM` in military time. Time durations must given in the format `HHh:MMm`.  Either part may be omitted 
 and the minutes may exceed 60.
    
-*    *Max Time of Day*: optionally sets the latest time of the day when login is allowed. The format is same as above.  
+*   *Max Time of Day*: optionally sets the latest time of the day when login is allowed. The format is same as above.  
 
-*    *Time per Day*: optionally sets the duration that the user is allowed to be logged in (for the whole day). 
+*   *Time per Day*: optionally sets the duration that the user is allowed to be logged in (for the whole day). 
 The format mus be `HHh:MMm` for `HH` hours and `MM` minutes. Either part can be omitted.  
 
-*    *Minimum Break*: optionally sets a mandatory break time between sessions. The format is the same as above.
+*   *Minimum Break*: optionally sets a mandatory break time between sessions. The format is the same as above.
 
-*    *Max Duration*: optionally sets the maximum length of a session. The format is the same as above.
+*   *Max Duration*: optionally sets the maximum length of a session. The format is the same as above.
 
-*    *Free Play*: If ticked, the user is allowed to play without any restrictions. Any other restriction in the same
+*   *Free Play*: If ticked, the user is allowed to play without any restrictions. Any other restriction in the same
 rule will be suppressed.
 
 ### Computing the Break Time
@@ -180,8 +200,8 @@ rule will be suppressed.
 When there is a maximum session time and a minimum break time configured for a rule `LittleBrother` tries to compute
 a *fair* break duration as follows:
 
-*    If a user has played her full maximum session time the whole configured break time will apply.
-*    If a user has played less than her maximum session time the break time will be enforced proportionally that is
+*   If a user has played her full maximum session time the whole configured break time will apply.
+*   If a user has played less than her maximum session time the break time will be enforced proportionally that is
 the effective break time compared to the configured break time will have the same ratio as the actual session time
 to the maximum session time. Example: the maximum session time is set to 1 hour and the break time to 30 minutes. The
 user decides to play for 40 minutes in her session which accounts for two thirds of the maximum session time. Hence
@@ -192,8 +212,8 @@ the break time will be `2/3*30=20` minutes.
 Each rule can be seen as a day selector. If all days are to be treated equally one rule should do the job. 
 
 If different days are to be treated differently more rules are required besides the default *catch all* rule. 
-To this purpose the setting `context` can be used. If its value is `weekday` the setting
-`context_details` will contain either:
+To this purpose the setting *Context* can be used. If its value is `weekplan` the setting
+*Context Details* will contain either:
 
 *   the concrete name of the day of the week,
 
@@ -201,7 +221,7 @@ To this purpose the setting `context` can be used. If its value is `weekday` the
 denotes an active day and any other character denotes an inactive day. For example: the string "X-X-X--" would denote 
 a rule which is active on Mondays, Wednesdays, and Fridays. 
 
-If the value of `context` is `german-vacation-calendar` the rule is active for all vacation days of a specific 
+If the value of *Context* is `german-vacation-calendar` the rule is active for all vacation days of a specific 
 federal state in Germany. In this case the value of `context_details` denotes the name of the federal state:
 
 *   `Baden-Württemberg`,
@@ -221,8 +241,69 @@ federal state in Germany. In this case the value of `context_details` denotes th
 *   `Schleswig-Holstein`, or
 *   `Thüringen`.
 
-### Assigning Devices to Users
+Note that the vacation schedules are retrieved from the web site 
+[www.mehr-schulferien.de](https://www.mehr-schulferien.de). The author cannot be held responsible for incorrect 
+schedules.
+ 
+### Associating Devices with Users
 
+In addition to the hosts which are scanned for logins of the monitored users `LittleBrother` can be configured to
+also scan the activity on other devices, e.g. game consoles or smart phones. The assumption is that there is activity 
+on one of these
+devices when they respond to a [ping](https://en.wikipedia.org/wiki/Ping_(networking_utility). Of course, this is a
+simplification but it may work in some cases. Please, consider the inherent restrictions:
+
+*   The fact that a ping is received just means that the device is "on". However, there may not be any activity on it.
+In this case the play time will be overestimated. Also some devices may automatically turn on to check for updates.
+This will result in phantom play time (sometimes at very odd hours of a day).
+
+*   The ping cannot differentiate between users. So this setup only works well, if the devices can clearly be
+associated with monitored users and are not shared too often.
+
+*   Devices which can be played offline will not respond to a ping if disconnected from the local network. In this 
+case the play time will be underestimated.
+
+*   The ping returned by smart phones is sometimes hard to interpret. The correlation between successful pings and
+actual usage is small. The monitoring has to be improved by actually measuring the delay of the ping which requires
+some fine tuning.
+
+**Note**: The following steps are only available if devices have already been set up. See section 
+*Configuring Devices* below. 
+
+To associate a device with a user select the device from the popdown menu
+
+![Users-Add-Device-From-List](doc/users-add-device-list.png)
+
+and click the add button
+
+![Add-Button](doc/add-button.png)
+
+The top level device overview will show a comma seperated list of all devices.
+
+![User-Devices-Level-1](doc/users-devices-level-1.png)
+ 
+Clicking on *Devices* will open the second level with a list of all device association and some details
+
+![User-Devices-Level-2](doc/users-devices-level-2.png)
+
+In order to change the settings of a device associaton clicking on the device name. This will open the third level:
+
+![User-Devices-Level-3](doc/users-devices-level-3.png)
+
+The columns contain the following details:
+
+*   *Monitored*: denotes if the device is scanned for the user. Use this switch to temporarily deactivate the scanning.
+The flag is off by default. It needs to be activated for a new association.
+
+*   *Percent*: denotes the percentage with which the active time of this device will added as play time to the 
+associated user. The default is 100%. Choosing a value below 100% can be interpreted as e.g. a "social" bonus for a 
+console which allows multi player games or e.g. a typical fraction of time that the user spends on the device 
+compared to the overall use of the device (by other users).
+
+To save the settings click on the save button:    
+
+![Save-Button](doc/save-button.png)
+ 
 ## Configuring Devices
 
 ### Adding Devices
