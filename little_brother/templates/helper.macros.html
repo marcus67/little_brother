@@ -95,7 +95,8 @@ $('button[id="{{ id }}"]').on('click', function(e) {
 {% endmacro %}
 
 {% macro fontawesome_script() %}
-<SCRIPT src="https://kit.fontawesome.com/037bf0dee9.js" crossorigin="anonymous"></SCRIPT>
+<SCRIPT src="{{ url_for('little_brother.static', filename='contrib/fontawesome/js/all.min.js') }}"
+        crossorigin="anonymous"></SCRIPT>
 {% endmacro %}
 
 {% macro check_or_cross(flag) %}

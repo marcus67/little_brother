@@ -74,7 +74,10 @@ extended_setup_params = {
     "publish_latest_docker_image": "release",
     "debian_extra_files": [
         ("etc/slave.config", "etc/little-brother/slave.config"),
-        ("etc/master.config", "etc/little-brother/little-brother.config"),
+        ("etc/master.config", "etc/little-brother/master.config"),
+    ],
+    "debian_templates": [
+        ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ]
 
 }

@@ -309,10 +309,12 @@ class StatusServer(base_web_server.BaseWebServer):
                     form.save_to_model(p_model=persistent_user2device)
                     changed = True
 
+        session.commit()
+        session.close()
+
         if changed:
             self._persistence.clear_cache()
-
-        session.commit()
+            self._appcontrol.send_config_to_all_slaves()
 
     def save_devices_data(self, p_devices, p_forms):
 
@@ -327,10 +329,12 @@ class StatusServer(base_web_server.BaseWebServer):
                 form.save_to_model(p_model=device)
                 changed = True
 
+        session.commit()
+        session.close()
+
         if changed:
             self._persistence.clear_cache()
 
-        session.commit()
 
     @BLUEPRINT_ADAPTER.route_method("/admin", endpoint="admin", methods=["GET", "POST"])
     @flask_login.login_required
@@ -408,6 +412,7 @@ class StatusServer(base_web_server.BaseWebServer):
                     for user in users:
                         if request.form['submit'] == user.delete_html_key:
                             self._persistence.delete_user(user.username)
+                            self._appcontrol.send_config_to_all_slaves()
 
                         elif request.form['submit'] == user.new_ruleset_html_key:
                             self._persistence.add_ruleset(user.username)

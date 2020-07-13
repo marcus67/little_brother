@@ -194,11 +194,33 @@ class AppControl(object):
 
         self._rule_handler.validate_context_rule_handler_details(p_context_name, p_context_details)
 
-    # def set_rule_set_configs(self, p_rule_set_configs):
-    #
-    #     self._rule_set_configs = p_rule_set_configs
-    #     self._process_regex_map = None
-    #     self._usernames_not_found.extend(p_rule_set_configs.keys())
+    def set_user_configs(self, p_user_configs):
+
+        session = self._session_context.get_session()
+
+        # Delete all locally known users since the message from the master will not contain users
+        # that have been deleted on the master. These might otherwise remain active on the client.
+        for user in self._persistence.users(p_session_context=self._session_context):
+            session.delete(user)
+
+        session.commit()
+
+        for username, user_config in p_user_configs.items():
+            user = persistence.User.get_by_username(p_session=session, p_username=username)
+
+            if user is None:
+                user = persistence.User()
+                user.username = username
+                session.add(user)
+
+            user.process_name_pattern = user_config[constants.JSON_PROCESS_NAME_PATTERN]
+            user.active = user_config[constants.JSON_ACTIVE]
+
+            fmt = "Set config for {user}"
+            self._logger.info(fmt.format(user=str(user)))
+
+        session.commit()
+        self.reset_users()
 
     def get_context_rule_handler_choices(self):
 
@@ -499,18 +521,12 @@ class AppControl(object):
 
     def handle_event_update_config(self, p_event):
 
-        rule_set_configs = {}
+        user_configs = {}
 
-        for username, json_rulesets in p_event.payload.items():
-            rulesets = [tools.objectify_dict(p_dict=json_ruleset, p_class=persistence.RuleSet)
-                        for json_ruleset in json_rulesets]
+        for username, user_config in p_event.payload.items():
+            user_configs[username] = user_config
 
-            rule_set_configs[username] = rulesets
-
-            fmt = "Received rule set config for user {username}"
-            self._logger.info(fmt.format(username=username))
-
-        self.set_rule_set_configs(p_rule_set_configs=rule_set_configs)
+        self.set_user_configs(p_user_configs=user_configs)
 
     def handle_event_update_login_mapping(self, p_event):
 
@@ -544,15 +560,17 @@ class AppControl(object):
     def send_config_to_slave(self, p_hostname):
 
         config = {
-            username: [{constants.JSON_USERNAME: ruleset.username,
-                        constants.JSON_PROCESS_NAME_PATTERN: ruleset.process_name_pattern
-                        }
-                       for ruleset in rulesets
-                       ]
-            for username, rulesets in self._rule_set_configs.items()
+            user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
+                            constants.JSON_ACTIVE: user.active}
+            for user in self._persistence.users(p_session_context=self._session_context)
         }
 
         self.queue_event_update_config(p_hostname=p_hostname, p_config=config)
+
+    def send_config_to_all_slaves(self):
+
+        for client in self._client_infos.values():
+            self.send_config_to_slave(p_hostname=client.host_name)
 
     def send_login_mapping_to_slave(self, p_hostname):
 
@@ -1236,17 +1254,24 @@ class AppControl(object):
 
     def get_user_status(self, p_username):
 
-        user = self._persistence.user_map().get(p_username)
+        user = self._persistence.user_map(p_session_context=persistence.SessionContext(self._persistence)).get(
+            p_username)
 
         if user is not None and user.active:
-            return  self._user_status.get(p_username)
+            return self._user_status.get(p_username)
 
         else:
             return None
 
-    def add_new_user(self, p_session_context, p_username, p_locale=None):
-
-        self._persistence.add_new_user(p_session_context=p_session_context, p_username=p_username, p_locale=p_locale)
+    def add_monitored_user(self, p_username):
 
         if not p_username in self._usernames:
             self._usernames_not_found.append(p_username)
+            fmt = "Adding new monitored user '{username}'"
+            self._logger.info(fmt.format(username=p_username))
+
+    def add_new_user(self, p_session_context, p_username, p_locale=None):
+
+        self._persistence.add_new_user(p_session_context=p_session_context, p_username=p_username, p_locale=p_locale)
+        self.add_monitored_user(p_username=p_username)
+        self.send_config_to_all_slaves()

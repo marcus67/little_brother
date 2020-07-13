@@ -20,6 +20,13 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Move creation of `/var/run/little-brother` from service configuration to tmpfiles.d configuration
 *   Completely revised documentation
 *   Catch exception while retrieving data on the German vacation schedules.
+*   Include local installation of fontawesome
+*   Decativate settings changes to log handling by alembic
+*   Support broadcasting of user settings, activate on all relevant changes
+*   Increase connection pool size
+*   Activate mandatory sqlite backend for slaves
+*   Make sure database session are always closed
+*   Deploy etc/master.config as a template
  
 ## Version 0.2.2 Revision 62 (May 6th, 2020)
 

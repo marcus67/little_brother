@@ -176,13 +176,15 @@ class App(base_app.BaseApp):
                     self._logger.warning(
                         msg.format(count=len(self._client_device_section_handler.client_device_configs)))
 
+            session.close()
+
     def prepare_services(self, p_full_startup=True):
 
         super().prepare_services(p_full_startup=p_full_startup)
 
-        if self.is_master():
-            self._persistence = persistence.Persistence(
-                p_config=self._config[persistence.SECTION_NAME])
+        # TODO: Activate in memory sqlite backend for slaves
+        self._persistence = persistence.Persistence(
+            p_config=self._config[persistence.SECTION_NAME])
 
         if not p_full_startup:
             return
@@ -236,23 +238,28 @@ class App(base_app.BaseApp):
                                                      p_locale_dir=localedir)
         self.add_locale_helper(a_locale_helper)
 
-        if status_server_config.is_active():
-            if status_server_config.admin_password is not None:
-                msg = "admin_user and admin_password in section [StatusSever] " \
-                      "should be moved to section [UnixUserHandler]"
-                self._logger.warning(msg)
+        if self.is_master():
+            if status_server_config.is_active():
+                if status_server_config.admin_password is not None:
+                    msg = "admin_user and admin_password in section [StatusSever] " \
+                          "should be moved to section [UnixUserHandler]"
+                    self._logger.warning(msg)
 
-                if not unix_user_handler_config.is_active():
-                    unix_user_handler_config.admin_username = status_server_config.admin_username
-                    unix_user_handler_config.admin_password = status_server_config.admin_password
+                    if not unix_user_handler_config.is_active():
+                        unix_user_handler_config.admin_username = status_server_config.admin_username
+                        unix_user_handler_config.admin_password = status_server_config.admin_password
 
-            if self.is_master() and not unix_user_handler_config.is_active():
-                msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
-                raise configuration.ConfigurationException(msg)
+                if self.is_master() and not unix_user_handler_config.is_active():
+                    msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
+                    raise configuration.ConfigurationException(msg)
 
-            if unix_user_handler_config.is_active():
-                self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
-                                                                       p_exclude_user_list=[constants.APPLICATION_USER])
+                if unix_user_handler_config.is_active():
+                    self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
+                                                                           p_exclude_user_list=[
+                                                                               constants.APPLICATION_USER])
+
+        else:
+            self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
 
         self._app_control = app_control.AppControl(
             p_config=self._config[app_control.SECTION_NAME],

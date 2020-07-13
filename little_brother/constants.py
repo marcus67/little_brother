@@ -57,6 +57,7 @@ JSON_EVENTS = "events"
 JSON_RULESETS = "rulesets"
 JSON_USERNAME = "username"
 JSON_PROCESS_NAME_PATTERN = "process_name_pattern"
+JSON_ACTIVE = "active"
 JSON_ACCESS_TOKEN = "secret"
 JSON_ERROR = "error"
 

@@ -107,6 +107,7 @@ class DatabaseMigrations(object):
             user.locale = locale
 
         session.commit()
+        session.close()
 
     def migrate_client_device_configs(self, p_client_device_configs):
 
@@ -137,3 +138,4 @@ class DatabaseMigrations(object):
                     self._logger.warning(msg.format(username=old_device.username, device_name=device_name))
 
         session.commit()
+        session.close()

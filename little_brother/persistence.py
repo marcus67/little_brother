@@ -224,6 +224,10 @@ class User(Base):
 
         return texts
 
+    def __str__(self):
+        fmt = "User (username='{username}, active={active}, process_name_pattern='{process_name_pattern}')"
+        return fmt.format(username=self.username, active=self.active, process_name_pattern=self.process_name_pattern)
+
 
 class Device(Base):
     __tablename__ = 'device'
@@ -469,6 +473,9 @@ class PersistenceConfigModel(configuration.ConfigModel):
         #: Default value: :data:``
         self.pool_recycle = 3600
 
+        self.pool_size = 10
+        self.max_overflow = 20
+
 class SessionContext(object):
 
     _session_registry = []
@@ -484,9 +491,17 @@ class SessionContext(object):
 
     def get_cache(self, p_name):
 
+        # result =
+        # print(str(self) + " get_cache " + p_name + " " + str(result if result is not None else "NONE"))
         return self._caches.get(p_name)
 
     def clear_cache(self):
+
+        # print(str(self) + "clear_cache " + str(self._caches))
+
+        if self._session is not None:
+            self._session.close()
+            self._session = None
 
         self._caches = {}
 
@@ -498,6 +513,8 @@ class SessionContext(object):
         return self._session
 
     def set_cache(self, p_name, p_object):
+
+        # print(str(self) + " set_cache " + p_name + " " + str(p_object))
 
         if self._persistence.enable_caching():
             self._caches[p_name] = p_object
@@ -564,7 +581,14 @@ class Persistence(object):
         fmt = "Database URL for normal access: '%s'" % tools.anonymize_url(url)
         self._logger.info(fmt)
 
-        self._engine = sqlalchemy.create_engine(url, pool_recycle=self._config.pool_recycle)
+        options = {'pool_recycle': self._config.pool_recycle}
+
+        if (DATABASE_DRIVER_POSTGRESQL in self._config.database_driver or
+                DATABASE_DRIVER_MYSQL in self._config.database_driver):
+            options['pool_size'] = self._config.pool_size
+            options['max_overflow'] = self._config.max_overflow
+
+        self._engine = sqlalchemy.create_engine(url, **options)
 
     def build_url(self):
 
@@ -738,9 +762,7 @@ class Persistence(object):
         event = create_class_instance(AdminEvent, p_initial_values=p_admin_event)
         session.add(event)
         session.commit()
-
-        if not self._reuse_session:
-            session.close()
+        session.close()
 
     def write_process_info(self, p_process_info):
 
@@ -753,9 +775,7 @@ class Persistence(object):
             session.add(pinfo)
 
         session.commit()
-
-        if not self._reuse_session:
-            session.close()
+        session.close()
 
     def update_process_info(self, p_process_info):
 
@@ -764,9 +784,7 @@ class Persistence(object):
         pinfo.end_time = p_process_info.end_time
         pinfo.downtime = p_process_info.downtime
         session.commit()
-
-        if not self._reuse_session:
-            session.close()
+        session.close()
 
     def update_rule_override(self, p_rule_override):
 
@@ -788,9 +806,7 @@ class Persistence(object):
             session.add(override)
 
         session.commit()
-
-        if not self._reuse_session:
-            session.close()
+        session.close()
 
     def load_process_infos(self, p_lookback_in_days):
 
@@ -809,21 +825,15 @@ class Persistence(object):
             else:
                 pinfo.hostlabel = None
 
-        if not self._reuse_session:
-            session.close()
-
+        session.close()
         return result
 
     def load_rule_overrides(self, p_lookback_in_days):
 
         session = self.get_session()
         reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
-
         result = session.query(RuleOverride).filter(RuleOverride.reference_date > reference_time).all()
-
-        if not self._reuse_session:
-            session.close()
-
+        session.close()
         return result
 
     def truncate_table(self, p_entity):
@@ -831,9 +841,7 @@ class Persistence(object):
         session = self.get_session()
         session.query(p_entity).delete()
         session.commit()
-
-        if not self._reuse_session:
-            session.close()
+        session.close()
 
     def users(self, p_session_context):
 
@@ -899,6 +907,7 @@ class Persistence(object):
         session.add(default_ruleset)
 
         session.commit()
+        session.close()
         self.clear_cache()
 
     def add_new_device(self, p_session_context, p_name_pattern):
@@ -914,6 +923,7 @@ class Persistence(object):
         session.add(new_device)
 
         session.commit()
+        session.close()
         self.clear_cache()
 
 
@@ -935,6 +945,7 @@ class Persistence(object):
 
         session.delete(user)
         session.commit()
+        session.close()
         self.clear_cache()
 
     def delete_ruleset(self, p_ruleset_id):
@@ -945,10 +956,12 @@ class Persistence(object):
         if ruleset is None:
             msg =  "Cannot delete ruleset {id}. Not in database!"
             self._logger.warning(msg.format(id=p_ruleset_id))
+            session.close()
             return
 
         session.delete(ruleset)
         session.commit()
+        session.close()
         self.clear_cache()
 
     def delete_user2device(self, p_user2device_id):
@@ -959,10 +972,12 @@ class Persistence(object):
         if user2device is None:
             msg =  "Cannot delete user2device {id}. Not in database!"
             self._logger.warning(msg.format(id=p_user2device_id))
+            session.close()
             return
 
         session.delete(user2device)
         session.commit()
+        session.close()
         self.clear_cache()
 
     def delete_device(self, p_id):
@@ -973,6 +988,7 @@ class Persistence(object):
         if device is None:
             msg =  "Cannot delete device {id}. Not in database!"
             self._logger.warning(msg.format(id=p_id))
+            session.close()
             return
 
         for user2device in device.users:
@@ -980,6 +996,7 @@ class Persistence(object):
 
         session.delete(device)
         session.commit()
+        session.close()
         self.clear_cache()
 
     def add_ruleset(self, p_username):
@@ -990,15 +1007,17 @@ class Persistence(object):
         if user is None:
             msg =  "Cannot add ruleset to user {username}. Not in database!"
             self._logger.warning(msg.format(username=p_username))
+            session.close()
             return
 
         new_priority = max([ruleset.priority for ruleset in user.rulesets]) + 1
 
         default_ruleset = self.get_default_ruleset(p_priority=new_priority)
-        default_ruleset.user     = user
+        default_ruleset.user = user
         session.add(default_ruleset)
 
         session.commit()
+        session.close()
         self.clear_cache()
 
     def add_device(self, p_username, p_device_id):
@@ -1009,6 +1028,7 @@ class Persistence(object):
         if user is None:
             msg =  "Cannot add device to user {username}. Not in database!"
             self._logger.warning(msg.format(username=p_username))
+            session.close()
             return
 
         device = Device.get_by_id(p_session=session,    p_id=p_device_id)
@@ -1016,6 +1036,7 @@ class Persistence(object):
         if device is None:
             msg =  "Cannot add device id {id} to user {username}. Not in database!"
             self._logger.warning(msg.format(id=p_device_id, username=p_username))
+            session.close()
             return
 
         user2device = User2Device()
@@ -1027,6 +1048,7 @@ class Persistence(object):
         session.add(user2device)
 
         session.commit()
+        session.close()
         self.clear_cache()
 
     def move_ruleset(self, p_ruleset, p_sorted_rulesets):
@@ -1056,6 +1078,7 @@ class Persistence(object):
         self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
 
         session.commit()
+        session.close()
         self.clear_cache()
 
     def move_down_ruleset(self, p_ruleset_id):
@@ -1067,5 +1090,5 @@ class Persistence(object):
         self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
 
         session.commit()
+        session.close()
         self.clear_cache()
-
