@@ -210,13 +210,13 @@ div.STANDARD_TABLE div.ALIGN_RIGHT {
 }
 
 div.STANDARD_TABLE div.TITLE_ROW div.COL {
-  font-size:24px;
+  font-size: 24px;
   text-align: center;
 }
 
 div.STANDARD_TABLE div.TITLE_ROW {
   background-color: #e2e2e2;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 div.STANDARD_TABLE div.ROWLEVEL_1 {
@@ -265,7 +265,7 @@ div.STANDARD_TABLE div.SEPERATOR_ROW {
 
 div.STANDARD_TABLE div.SEPERATOR_ROW_LINE {
   height: 2px;
-  background-color:black;
+  background-color: black;
 }
 
 div.STANDARD_TABLE div.HEADER_ROW {
@@ -297,7 +297,7 @@ div.STANDARD_TABLE div.STATUS_ROW div.COL {
   border-top-style: solid;
 }
 
-UL {
+ul {
   padding-left: 20px;
 }
 
@@ -333,7 +333,7 @@ UL {
   width: 20px;
 }
 
- /* Style buttons */
+/* Style buttons */
 .btn {
   background-color: gray; /* Blue background */
   border: none; /* Remove borders */

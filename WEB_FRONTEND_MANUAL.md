@@ -1,21 +1,16 @@
-![Under Construction Logo](doc/logo_under_construction_sign_wide.png)
-
-This page is still under construction. Please, bear with me. Thanks!
-
 ![LittleBrother-Logo](little_brother/static/icons/icon-baby-panda-128x128.png)
 
 # Web-Frontend Manual
 
 This page describes the web frontend of `LittleBrother` which usually can be reached at 
 [http://localhost:5555](http://localhost:5555) on your local machine. It offers access to status information (without
-login() and a configuration interface (with login). 
+login) and a configuration interface (with login). 
 
 ## Listing the Status
 
 ![Menubar-Status](doc/menubar-status.png)
 
-The menu entry "Status" list the play times of all monitored users. The top level shows the summary of the play times
-of the current monitored users.
+The menu entry "Status" lists the monitored users. The top level shows the summary of the play times.
 
 ![Status-Level-1](doc/status-level-1.png)
 
@@ -24,20 +19,26 @@ column "reasons" shows the estimated remaining play times for the current sessio
 If the user is currently blocked (see red cross) the same column shows the reasons why the user is not permitted to 
 play and the estimated remaining play time for the day.
 
+![Status-Reasons](doc/status-reasons.png)
+
 The columns contain the following details:
 
 *   *Context*: Shows the active ruleset context for the day.
-*   *Today's Activity*: Shows the overall active time and the maximum activity duration for today. If one of the hosts
-has a downtime, this column will also show the detected downtime (in yellow) which will be subtracted from the play 
-time.  
+
+*   *Today's Activity*: Shows the overall active time and the maximum activity duration for the current day. If one of 
+the hosts had a downtime, this column will also show the detected downtime (in yellow) which will be subtracted from 
+the play time.
+  
 *   *Previous Activity Start Time*: the time of day when the most recent (except for the current) activity started.
+
 *   *Previous Activity End Time*: the time of day when the most recent (except for the current) activity ended.
-*   *Current Activity Start Time*: the time of day when the current activity started. If the user is not currently 
+
+*   *Current Activity Start Time*: the time of day when the current activity started. If the user is not currently
 logged in this column will be empty. If there is a current activity, this value will be blinking.
+
 *   *Current Activity Duration*: the time duration of the current activity. If the user is not currently 
 logged in this column will be empty. If there is a current activity, this value will be blinking.
    
-![Status-Reasons](doc/status-reasons.png)
      
 The second level can be opened by clicking on the name of a user. It will show the daily play time, the number 
 of logins and the hosts of the last seven days of the selected user.
@@ -62,14 +63,16 @@ the most recent entry at the top.
 ![Menubar-About](doc/menubar-about.png)
 
 The page shows some status information of the installed version of `LittleBrother` and a list of supported languages.
-
+When reporting issues on GitHub it is usually very helpful for the developers if you include the *Git Commit ID*
+into your issue text.
+ 
 ![Menubar-About](doc/about.png)  
 
 ## Logging In
 
 The status page and the about page are accessible without login. All other pages require the login credentials of
 an administration user. Currently, the name of the administration user defaults to `admin`. The password needs to
-be set in the configuration file (see the main [README](../README.md)).
+be set in the configuration file (see the main [README](README.md)).
 
 ![Login](doc/login.png)  
 
@@ -81,8 +84,8 @@ After successful login the user will be display in the menu bar.
 
 ![Menubar-Admin](doc/menubar-admin.png)
 
-The administration page enables the user to override the default restrictions for the monitored users. This is possible 
-for the current day and up to 7 days into the future.
+The administration page enables the administrator to override the default restrictions for the monitored users. 
+This is possible for the current day and up to 7 days into the future.
 
 The top level shows the names and today's activity of the current monitored users.
 In case the user is currently allowed to play (see green check mark) the 
@@ -180,13 +183,14 @@ The fields represent the following restrictions/meaning:
 *   *Context details*: sets the specific details of the chosen context. See below.
 
 *   *Min Time of Day*: optionally sets the earliest time of the day when login is allowed. Timestamps must be given 
-in the format `HH:MM` in military time. Time durations must given in the format `HHh:MMm`.  Either part may be omitted 
-and the minutes may exceed 60.
+in the format `HH:MM` in military time. Time durations must be given in the format `HHh:MMm`.  Either part may be 
+omitted and the minutes may exceed 60.
    
-*   *Max Time of Day*: optionally sets the latest time of the day when login is allowed. The format is same as above.  
+*   *Max Time of Day*: optionally sets the latest time of the day when login is allowed. The format is the same 
+as above.  
 
 *   *Time per Day*: optionally sets the duration that the user is allowed to be logged in (for the whole day). 
-The format mus be `HHh:MMm` for `HH` hours and `MM` minutes. Either part can be omitted.  
+The format must be `HHh:MMm` for `HH` hours and `MM` minutes. Either part can be omitted.  
 
 *   *Minimum Break*: optionally sets a mandatory break time between sessions. The format is the same as above.
 
@@ -201,6 +205,7 @@ When there is a maximum session time and a minimum break time configured for a r
 a *fair* break duration as follows:
 
 *   If a user has played her full maximum session time the whole configured break time will apply.
+
 *   If a user has played less than her maximum session time the break time will be enforced proportionally that is
 the effective break time compared to the configured break time will have the same ratio as the actual session time
 to the maximum session time. Example: the maximum session time is set to 1 hour and the break time to 30 minutes. The
@@ -242,15 +247,15 @@ federal state in Germany. In this case the value of `context_details` denotes th
 *   `Thüringen`.
 
 Note that the vacation schedules are retrieved from the web site 
-[www.mehr-schulferien.de](https://www.mehr-schulferien.de). The author cannot be held responsible for incorrect 
-schedules.
+[www.mehr-schulferien.de](https://www.mehr-schulferien.de). The author of `LittleBrother` cannot be held responsible 
+for incorrect schedules.
  
 ### Associating Devices with Users
 
 In addition to the hosts which are scanned for logins of the monitored users `LittleBrother` can be configured to
 also scan the activity on other devices, e.g. game consoles or smart phones. The assumption is that there is activity 
 on one of these
-devices when they respond to a [ping](https://en.wikipedia.org/wiki/Ping_(networking_utility). Of course, this is a
+devices when they respond to a [ping](https://searchnetworking.techtarget.com/definition/ping). Of course, this is a
 simplification but it may work in some cases. Please, consider the inherent restrictions:
 
 *   The fact that a ping is received just means that the device is "on". However, there may not be any activity on it.
@@ -286,7 +291,7 @@ Clicking on *Devices* will open the second level with a list of all device assoc
 
 ![User-Devices-Level-2](doc/users-devices-level-2.png)
 
-In order to change the settings of a device associaton clicking on the device name. This will open the third level:
+In order to change the settings of a device association clicking on the device name. This will open the third level:
 
 ![User-Devices-Level-3](doc/users-devices-level-3.png)
 
@@ -306,31 +311,61 @@ To save the settings click on the save button:
  
 ## Configuring Devices
 
-### Adding Devices
-
+![Menubar-Devices](doc/menubar-devices.png)
+        
 In addition to the processes of the Linux host the application `LittleBrother` can be configured to monitor 
 activity on other devices by using the ICMP protocol (`ping`). The assumption is that when a device returns a 
 quick response to ping it is currently active (or rather has an active user logged in). If, on the other hand,
 the response is slow or if there is no response at all the device is regarded as inactive.
 
-Using a `[ClientDevice*]` section it is possible to configure the scanning of device by giving its DNS name or 
-IP address in the field `hostname` as in the example below.
-
-    [ClientDeviceIPhoneUser2]
-    name= iphone_user2
-    username = user2
-    hostname = iphone-user2.my-domain
-    sample_size = 10
-    min_activity_duration = 60
-    max_active_ping_delay = 90
-
-The entry is linked to the `username` on the Linux host. The field `min_activity_duration` denotes how many 
-seconds a ping has to be responsive before the host is regarded as active. The field `max_active_ping_delay` 
-denotes the maximum response time (measured in milliseconds) a ping may have to still be regarded as 
-responsive. The effective delay is computed as moving average over the past `sample_size` response times.
-
 Note that `LittleBrother` is not able terminate any processes on the monitored devices so that the users
 may easily exceed their permitted access times there. However, any login times on these devices are added to
 the access times on the Linux hosts so that the remaining access time is still influenced. Also, the minimum
 break time will apply the point of time when the last other device became inactive.      
-  
+
+The top level of the devices page shows a list of all configured devices. If the devices are associated with users
+their names are shown and also their respective usage percentages.
+
+![Devices-Level-1](doc/devices-level-1.png)
+
+Clicking on a device name opens the second level showing details on the specific device.
+
+![Devices-Level-1](doc/devices-level-2.png)
+
+The fields have the following meaning:
+
+*   *Name*: The logical name of the device which will show up in lists. The logical name has to be unique across all
+devices.
+
+*   *Host Name*: The DNS name or IP address of the device. This address will be used for *pinging* the device. It has to
+be a valid address which can be resolved by the name server. Otherwise the entry will be rejected. Also, the hostname
+has to be unique across all devices. If you want to monitor devices in your local WIFI you have to see to it 
+that your WIFI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
+router accordingly. Look out for *persistent IP addresses* in the manual.
+
+*   *Min Activity Duration [s]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
+as active. Durations shorter than this period will be ignored completely.
+
+*   *Max Active Response Delay [ms]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
+still be regarded as 'active'. For game consoles (often using the local area network) a low value of 10 [ms] is usually
+OK. For smart phone using WIFI the value needs to be higher since these devices have a more sluggish response. For 
+iPhones over WIFI values between 50 [ms] and 80 [ms] have been tested to work pretty well. You will have to monitor
+the value a little bit during the initial phase. If `LittleBrother` often detects activity where there is none, decrease
+the value. If, on the other had, activity often goes undetected, increase the value.
+
+*   *Sample Size*: Denotes the number of delay samples used to compute the effective delay as moving average. This value
+can probably be left as it is.   
+
+To make changes enter the desired values and click the save button.
+
+![Save-Button](doc/save-button.png)
+
+### Adding devices
+
+To add a new device click the add button in the top row:
+
+![Add-Button](doc/add-button.png)
+
+A new device is added with the generic name "New Device N". Open the entry, edit the settings, and save them. 
+
+![New-Added-Device](doc/devices-new-device.png)

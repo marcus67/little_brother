@@ -91,6 +91,7 @@ Then follow these steps:
 
 *   Copy the slave configuration template <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A> to 
 `/etc/little-brother/little-brother.conf` on each slave host.
+
 *   Choose a secret access token and set this token in the configuration on the master host:   
 
         [MasterConnector]
@@ -166,7 +167,6 @@ successful creation of the database, start the application again by issuing as r
 Note that you can also configure the credentials in the configuration file although this is not recommended since the
 admin credentials are ONLY required during the creation of the database should be exposed a little as possible.
 
-
 ## Running Behind a Reverse Proxy
 
 If `LittleBrother` is to be run behind a reverse proxy additional care needs to be taken if the proxy is configured
@@ -191,4 +191,3 @@ The `[StatusServer]` configuration section of the master host should contain the
 ## Monitoring the Application
 
 `LittleBrother` offers two options for operational monitoring. See [here](OPERATIONAL_MONITORING.md) for details.
-  
