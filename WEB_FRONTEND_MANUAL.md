@@ -343,15 +343,15 @@ has to be unique across all devices. If you want to monitor devices in your loca
 that your WIFI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
 router accordingly. Look out for *persistent IP addresses* in the manual.
 
-*   *Min Activity Duration [s]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
+*   *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
 as active. Durations shorter than this period will be ignored completely.
 
-*   *Max Active Response Delay [ms]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
-still be regarded as 'active'. For game consoles (often using the local area network) a low value of 10 [ms] is usually
-OK. For smart phone using WIFI the value needs to be higher since these devices have a more sluggish response. For 
-iPhones over WIFI values between 50 [ms] and 80 [ms] have been tested to work pretty well. You will have to monitor
-the value a little bit during the initial phase. If `LittleBrother` often detects activity where there is none, decrease
-the value. If, on the other had, activity often goes undetected, increase the value.
+*   *Max Active Response Delay \[ms\]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
+still be regarded as 'active'. For game consoles (often using the local area network) a low value of 10 \[ms\] is 
+usually OK. For smart phone using WIFI the value needs to be higher since these devices have a more sluggish response. 
+For iPhones over WIFI values between 50 \[ms\] and 80 \[ms\] have been tested to work pretty well. You will have to 
+monitor the value a little bit during the initial phase. If `LittleBrother` often detects activity where there is none, 
+decrease the value. If, on the other had, activity often goes undetected, increase the value.
 
 *   *Sample Size*: Denotes the number of delay samples used to compute the effective delay as moving average. This value
 can probably be left as it is.   

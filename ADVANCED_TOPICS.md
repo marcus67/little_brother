@@ -76,20 +76,42 @@ When using a master-slave setup the assumption is that UIDs on the master host a
 case no further configuration will be necessary. If however, there are differences between master and slave, it is
 possible to provide a mapping of the UIDs for the user names.
 
-TODO
+<!--
+TODO: Describe UID mapping feature
+--> 
+
+## Migrating From Older Revisions 
+
+### Migrating Revisions < 41
+
+Unfortunately, there is no support for migrating `LittleBrother` for revisions prior to 41. Please, uninstall
+the software, remove the database schema, and reinstall.
+
+### Migrating Revisions >= 41
+
+With the introduction of `alembic` in revision 41 it has become possible to migrate the database model automatically.
+The startup script of the system service has been modified in such a way that it always calls the option
+`--upgrade-databases head`. 
+
+When upgrading to a new version, after the installation of the new Debian package, you will just have to issue
+
+    systemctl daemon-reload
+    systemctl restart little-brother
+
+### Migrating to Revision 63 (Version 0.3.x)
+
+Between revisions 62 and 63 there have been substantial changes to the DB data model and the configuration file. 
+Since the definition of the rule sets and the implicit definition of the users were moved from the 
+configuration file to the database, `LittleBrother` will start an automatic migration of the data in the 
+configuration file upon startup. For every subsequent run the user and rule set data in the file will be ignored.
+These settings can be removed. If they are still found a warning will be issued.  
 
 ## Installation on a Slave Host
 
 The basic installation of `LittleBrother` on a slave host is basically the same as on the master host. See the 
-main README on how to install the Debian package.  
+main [README](README.md) on how to install the Debian package. Then follow these steps:
 
-After the installation stop the application on the slave by issuing
-
-    systemctl stop little-brother
-    
-Then follow these steps:
-
-*   Copy the slave configuration template <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A> to 
+*   Copy the slave configuration template <A HREF="etc/slave.config">`slave.config`</A> to 
 `/etc/little-brother/little-brother.conf` on each slave host.
 
 *   Choose a secret access token and set this token in the configuration on the master host:   
@@ -128,7 +150,7 @@ First the SQLite backend has to be deactivated by commenting out the SQLite rela
 the settings starting with `database_`.
 
     [Persistence]
-    #sqlite_dir = /tmp
+    #sqlite_dir = /var/spool/little-brother
     #sqlite_filename = little-brother-feature.sqlite.db
     
     database_driver = SET_ME
