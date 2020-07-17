@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.3 Revision 64 (May/June 2020)
+## Version 0.3.0 Revision 64 (July 18th, 2020)
 
 *   New Prometheus gauge `little_brother_configured_users`
 *   Configuration for Prometheus port in test cases
@@ -30,6 +30,12 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #93, see [here](https://github.com/marcus67/little_brother/issues/93)
 *   Do not schedule tasks too far into the future
  
+## Version 0.2.3 Revision 63 (May 23rd, 2020)
+
+*   Add Danish localization (locale "da")
+*   Minor corrections to Bangla translation
+*   Closes #89, see [here](https://github.com/marcus67/little_brother/issues/89)
+
 ## Version 0.2.2 Revision 62 (May 6th, 2020)
 
 *   Added Finnish localization (locale "nl")

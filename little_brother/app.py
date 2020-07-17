@@ -40,6 +40,7 @@ from python_base_app import locale_helper
 from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
+DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
