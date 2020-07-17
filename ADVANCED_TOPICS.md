@@ -8,10 +8,10 @@ Some settings of `LittleBrother`, such as the interval between checking the proc
 can only be set in the configuration file. The settings are described in the comments
 of the configuration files. See here for templates: 
 
-*   <A HREF="etc/master.config">`master.config`</A>: A minimal configuration file to run the 
+*   <A HREF="etc/master.config">`master.config`</A>: A configuration file to run the 
     application on a single host.
 
-*   <A HREF="etc/slave.config">`slave.config`</A>: A minimal configuration file to run the 
+*   <A HREF="etc/slave.config">`slave.config`</A>: A configuration file to run the 
     application on a client. This file is relatively simple since it only contains the details to connect 
     to the master host.
 
@@ -31,13 +31,6 @@ the relative path can be changed. Edit the appropriate settings in the configura
 
 After restarting the server (see above) the web frontend can be reached at 
 http://localhost:PORT/PREFIX.
-
-## Client Server Mode
-
-In addition to the master host any number of slave hosts may be configured. The assumption is that the users
-to be monitored have login permission to all those hosts and that the user names on all hosts match. In this
-case access times on all hosts are communicated to the master host and accumulated there. The master will
-apply the rule sets and determine which users have exceeded their access times. 
 
 ## Users and UIDs
 
@@ -98,15 +91,21 @@ When upgrading to a new version, after the installation of the new Debian packag
     systemctl daemon-reload
     systemctl restart little-brother
 
-### Migrating to Revision 63 (Version 0.3.x)
+### Migrating to Revision 64 (Version 0.3.x)
 
-Between revisions 62 and 63 there have been substantial changes to the DB data model and the configuration file. 
+Between revisions 63 and 64 there have been substantial changes to the DB data model and the configuration file. 
 Since the definition of the rule sets and the implicit definition of the users were moved from the 
 configuration file to the database, `LittleBrother` will start an automatic migration of the data in the 
 configuration file upon startup. For every subsequent run the user and rule set data in the file will be ignored.
 These settings can be removed. If they are still found a warning will be issued.  
 
-## Installation on a Slave Host
+## Installation on a Slave Host (Client Server Mode)
+
+In addition to the master host any number of slave hosts may be configured. The assumption is that the users
+to be monitored have login permission to all those hosts and that the user names on all hosts match. In this
+case access times on all hosts are communicated to the master host and accumulated there. The master will
+apply the rule sets and determine which users have exceeded their access times. 
+
 
 The basic installation of `LittleBrother` on a slave host is basically the same as on the master host. See the 
 main [README](README.md) on how to install the Debian package. Then follow these steps:
