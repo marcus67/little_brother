@@ -35,6 +35,8 @@ from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
+from python_base_app import locale_helper
+from python_base_app import unix_user_handler
 from python_base_app.test import base_test
 
 ADMIN_USERNAME = "admin"
@@ -58,17 +60,15 @@ class TestStatusServer(base_test.BaseTestCase):
 
         return process_handlers
 
-    @staticmethod
-    def create_dummy_status_server(p_process_handlers=None, p_ruleset_configs=None):
+    def create_dummy_status_server(self, p_process_handlers=None):
+
+        # TODO: Add rule set configs as parameters again and migrate them into the datamodel
 
         if p_process_handlers is None:
             p_process_handlers = {}
 
-        if p_ruleset_configs is None:
-            p_ruleset_configs = {}
-
-        _persistence = test_persistence.TestPersistence.create_dummy_persistence()
-        _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_ruleset_configs=p_ruleset_configs)
+        _persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        _rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_persistence=_persistence)
 
         master_connector_config = master_connector.MasterConnectorConfigModel()
         _master_connector = master_connector.MasterConnector(p_config=master_connector_config)
@@ -83,9 +83,9 @@ class TestStatusServer(base_test.BaseTestCase):
             p_persistence=_persistence,
             p_rule_handler=_rule_handler,
             p_notification_handlers=[],
-            p_rule_set_configs=p_ruleset_configs,
             p_master_connector=_master_connector,
-            p_login_mapping=test_data.LOGIN_MAPPING)
+            p_login_mapping=test_data.LOGIN_MAPPING,
+            p_locale_helper=locale_helper.LocaleHelper())
 
         status_server_config = status_server.StatusServerConfigModel()
         status_server_config.admin_username = ADMIN_USERNAME
@@ -94,12 +94,21 @@ class TestStatusServer(base_test.BaseTestCase):
 
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
+        user_handler_config = unix_user_handler.BaseUserHandlerConfigModel()
+        user_handler_config.admin_username = ADMIN_USERNAME
+        user_handler_config.admin_password = ADMIN_PASSWORD
+
+        user_handler = unix_user_handler.UnixUserHandler(p_config=user_handler_config)
+
         _status_server = status_server.StatusServer(
             p_config=status_server_config,
             p_package_name=app.PACKAGE_NAME,
             p_app_control=_app_control,
             p_master_connector=_master_connector,
-            p_is_master=True)
+            p_persistence=_persistence,
+            p_is_master=True,
+            p_user_handler=user_handler,
+            p_locale_helper=locale_helper.LocaleHelper())
 
         return _status_server
 
@@ -186,8 +195,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
         process_handlers = self.get_dummy_process_handlers()
 
-        _status_server = self.create_dummy_status_server(
-            p_process_handlers=process_handlers, p_ruleset_configs=p_ruleset_configs)
+        _status_server = self.create_dummy_status_server(p_process_handlers=process_handlers)
         _status_server.start_server()
 
         _appcontrol = _status_server._appcontrol

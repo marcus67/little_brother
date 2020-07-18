@@ -18,6 +18,7 @@
 import time
 import prometheus_client
 
+from python_base_app import configuration
 from little_brother import settings
 
 SECTION_NAME = "PrometheusClient"
@@ -36,6 +37,7 @@ class PrometheusClientConfigModel(configuration.ConfigModel):
         self.prefix = DEFAULT_METRIC_PREFIX
 
     def is_active(self):
+
         return self.port is not None
 
 
@@ -50,6 +52,8 @@ class PrometheusClient(object):
             self._gauge_active_users = prometheus_client.Gauge(self._config.prefix + "active_users",
                                                                "number of active users",
                                                                ['username'])
+            self._gauge_configured_users = prometheus_client.Gauge(self._config.prefix + "configured_users",
+                                                               "number of configured users")
             self._gauge_monitored_hosts = prometheus_client.Gauge(self._config.prefix + "monitored_hosts",
                                                                   "number of monitored hosts",
                                                                   ['hostname'])
@@ -85,18 +89,25 @@ class PrometheusClient(object):
 
         def start(self):
 
-            fmt = "Starting Prometheus server on port {port}..."
-            self._logger.info(fmt.format(port=self._config.port))
+            try:
+                fmt = "Starting Prometheus server on port {port}..."
+                self._logger.info(fmt.format(port=self._config.port))
 
-            prometheus_client.start_http_server(self._config.port)
+                prometheus_client.start_http_server(self._config.port)
+
+            except OSError as e:
+                fmt = "Exception {msg} while starting Prometheus server on port {port}"
+                raise configuration.ConfigurationException(fmt.format(msg=str(e), port=self._config.port))
 
         def stop(self):
 
+            # testing requires gauges to be removed again
             prometheus_client.REGISTRY.unregister(self._summary_http_requests)
             prometheus_client.REGISTRY.unregister(self._gauge_active_devices)
             prometheus_client.REGISTRY.unregister(self._gauge_device_response_time)
             prometheus_client.REGISTRY.unregister(self._gauge_monitored_devices)
             prometheus_client.REGISTRY.unregister(self._gauge_monitored_hosts)
+            prometheus_client.REGISTRY.unregister(self._gauge_configured_users)
             prometheus_client.REGISTRY.unregister(self._gauge_monitored_users)
             prometheus_client.REGISTRY.unregister(self._counter_forced_logouts)
             prometheus_client.REGISTRY.unregister(self._gauge_active_users)
@@ -107,6 +118,10 @@ class PrometheusClient(object):
         def set_user_active(self, p_username, p_is_active):
 
             self._gauge_active_users.labels(username=p_username).set(1 if p_is_active else 0)
+
+        def set_number_of_configured_users(self, p_count):
+
+            self._gauge_configured_users.set(p_count)
 
         def set_number_of_monitored_users(self, p_count):
 

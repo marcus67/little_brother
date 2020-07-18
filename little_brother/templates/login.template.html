@@ -6,19 +6,25 @@
 
   <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <HEAD>
-    <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='login.css') }}">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
+      <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='login.css') }}">
+      <LINK REL="stylesheet" TYPE="text/css"
+            HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
+      <LINK REL="stylesheet" TYPE="text/css"
+            HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
+      <LINK REL="stylesheet" TYPE="text/css"
+            HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
+      <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
+      <LINK REL="stylesheet" TYPE="text/css"
+            HREF="{{ url_for('little_brother.static', filename='contrib/fontawesome/css/all.min.css') }}">
 
-    <LINK REL="shortcut icon" TYPE="image/x-icon" HREF="{{ url_for('little_brother.static', filename='icons/baby-panda_32x32.ico') }}">
+      <LINK REL="shortcut icon" TYPE="image/x-icon"
+            HREF="{{ url_for('little_brother.static', filename='icons/baby-panda-32x32.ico') }}">
 
-    <META name="viewport" content="width=device-width, initial-scale=1">
+      <META name="viewport" content="width=device-width, initial-scale=1">
 
-    <TITLE>LittleBrother-{{_('Login')}}</TITLE>
+      <TITLE>LittleBrother-{{_('Login')}}</TITLE>
 
   </HEAD>
 
@@ -26,8 +32,11 @@
     {% include 'navbar.include.html' %}
 
     <div class="wrapper">
-    	<form class="form-signin" ACTION="" METHOD="post">       
-            <h2 class="form-signin-heading localetext"><IMG SRC="{{url_for('little_brother.static', filename='icons/icon_baby-panda_128x128.png')}}"> <div>Little Brother</div></h2>
+    	<form class="form-signin" ACTION="" METHOD="post">
+            <h2 class="form-signin-heading localetext"><IMG
+                    SRC="{{url_for('little_brother.static', filename='icons/icon-baby-panda-128x128.png')}}">
+                <div>Little Brother</div>
+            </h2>
 
             {{ helpers.render_flashed_messages() }}
 

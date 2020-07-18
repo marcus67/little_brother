@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-11 23:49+0200\n"
+"POT-Creation-Date: 2020-06-19 09:31+0200\n"
 "PO-Revision-Date: 2020-04-19 23:19+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -16,30 +16,30 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:90
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:90
 msgid "username '{username}' not specified"
 msgstr "kullanıcı adı '{username}' belirtilmemiştir"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:98
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:98
 msgid "username '{username}' not being monitored"
 msgstr "kullanıcı adı '{username}' gözetlenmiyor"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:159
 msgid "{days} days ago"
 msgstr "{days} gün önce"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:153
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:162
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:55
 msgid "Today"
 msgstr "Bugün"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:154
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:163
 msgid "Yesterday"
 msgstr "Dün"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:165
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
@@ -47,7 +47,7 @@ msgstr ""
 "{user}, bugün bilgisayar zamanın kalmadı.\n"
 "Oturumun kapatılacaktır"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:157
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:166
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -55,7 +55,7 @@ msgstr ""
 "{user}, bugün sadece {minutes_left_before_logout} dakikan kaldı.\n"
 "Lütfen oturumunu kapat."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
@@ -63,7 +63,7 @@ msgstr ""
 "{user}, bugün hiç bilgisayar zamanın yok.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:160
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:169
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
@@ -71,7 +71,7 @@ msgstr ""
 "{user}, bilgisayarı kullanmak için daha erken.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:170
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
@@ -79,7 +79,7 @@ msgstr ""
 "{user}, bilgisayarı kullanmak için geç oldu.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:171
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -89,7 +89,7 @@ msgstr ""
 "için geç olacaktır.\n"
 "Lütfen oturumunu kapat."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:173
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
@@ -97,7 +97,7 @@ msgstr ""
 "{user}, mola vermen gerekmektedir.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:165
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:174
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -107,7 +107,7 @@ msgstr ""
 "gerekmektedir.\n"
 "Lütfen oturumunu kapat."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:176
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -115,7 +115,7 @@ msgstr ""
 "{user}, molan {break_minutes_left} dakika sonra sona erecektir.\n"
 "Oturumun kapatılacaktır."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:178
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -124,318 +124,590 @@ msgstr ""
 "Merhaba {user}, bu oturumda {minutes_left_in_session} dakika oynamak için"
 " iznin var."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:180
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Merhaba {user}, bu oturumda sınırsız oyun zamanın var."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1143
 msgid "'Today ('EEE')'"
 msgstr "'Bugün ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1085
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1144
 msgid "'Today'"
 msgstr "'Bugün'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1147
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Yarın ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1091
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1148
 msgid "'Tomorrow'"
 msgstr "'yarın'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1151
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd.MM.yyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1097
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1152
 msgid "EEE"
 msgstr "EEE"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
+#: /home/mr/projects/LittleBrotherFeature/little_brother/context_rule_handler.py:48
+msgid "Details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:47
+msgid "Not a valid host address"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
 msgid "vacation"
 msgstr "tatil"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
-msgid "No activity before {hh_mm} hours"
-msgstr "{hh_mm} saatinden önce etkinlik yok"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
-msgid "No activity after {hh_mm} hours"
-msgstr "{hh_mm} saatinden sonra etkinlik yok"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:350
-msgid "Day blocked: no activity permitted"
-msgstr "Gün engellendi: etkinlik için izin yok"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:356
-msgid "Activity limited to {hh_mm} per day"
-msgstr "Etkinlik günlük {hh_mm} için sınırlandırılmıştır"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:382
-msgid "No activity exceeding {hh_mm}"
-msgstr "{hh_mm}yı aşan etkinlik yok"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:416
-msgid "Minimum break time {hh_mm} not reached"
-msgstr "Minimum mola zamanına {hh_mm} ulaşılmamıştır"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
-msgid "default"
-msgstr "varsayılan"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
-msgid "weekday"
-msgstr "hafta içi"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
-msgid "weekend"
-msgstr "hafta sonu"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
-msgid "weekdays"
-msgstr "hafta içi günleri"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
-msgid "mondays"
-msgstr "her pazartesi"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
-msgid "tuesdays"
-msgstr "her salı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
-msgid "wednesdays"
-msgstr "her çarşamba"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
-msgid "thursdays"
-msgstr "her perşembe"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
-msgid "fridays"
-msgstr "her cuma"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
-msgid "saturdays"
-msgstr "her cumartesi"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
-msgid "sundays"
-msgstr "her pazar"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
-msgid "On"
-msgstr "Açık"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
-msgid "Off"
-msgstr "Kapalı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:37
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
-msgid "About"
-msgstr "Hakkında"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:53
-msgid "Setting"
-msgstr "Ayar"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:54
-msgid "Value"
-msgstr "Değer"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:57
-msgid "Repository"
-msgstr "Veri Havuzu"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:61
-msgid "Version"
-msgstr "Versiyon"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:65
-msgid "Package Revision"
-msgstr "Paket Revizyonu"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:69
-msgid "Git Commit ID"
-msgstr "Git Commit Kimliği"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:73
-msgid "Git Branch Name"
-msgstr "Git Branş Adı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:77
-msgid "Git Author's Name"
-msgstr "Git Yazar Adı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:81
-msgid "Git Author's Email Address"
-msgstr "Git Yazarın Email Adresi"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:85
-msgid "Supported Languages"
-msgstr "Desteklenen Diller"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:39
-msgid "Administration"
-msgstr "Yönetim"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:50
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
-msgid "User"
-msgstr "Kullanıcı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:59
-msgid "Show configurations of upcoming days"
-msgstr "İlerleyen günlerin yapılarını göster"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:70
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
-msgid "Today's Activity"
-msgstr "Bugünün Etkinliği"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:78
-msgid "Save"
-msgstr "Kaydet"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
-msgid "Day"
-msgstr "Gün"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:85
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
-msgid "Context"
-msgstr "Bağlam"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:86
-msgid "Min Time of Day"
-msgstr "Günün minimum zamanı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:87
-msgid "Max Time of Day"
-msgstr "Günün maximum zamanı"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
-msgid "Time per Day"
-msgstr "Günlük Sınır"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:92
-msgid "Minimum Break"
-msgstr "Minimum Mola"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:93
-msgid "Max Duration"
-msgstr "Maximum Süre"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:94
-msgid "Free Play"
-msgstr "Serbest Oyun"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
-msgid "Show overrides for day"
-msgstr "Günün geçersiz kılınanlarını göster"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
-msgid "override"
-msgstr "Geçersiz kıl"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:38
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
-msgid "Status"
-msgstr "Durum"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:51
-msgid "Previous Activity Start Time"
-msgstr "Son etkinliğin başlangıç saati"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
-msgid "Previous Activity End Time"
-msgstr "Son etkinliğin bitiş saati"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
-msgid "Current Activity Start Time"
-msgstr "Güncel etkinliğin başlangıç saati"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
-msgid "Current Activity Duration"
-msgstr "Güncel aktivite süresi"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
-msgid "Current"
-msgstr "Güncel"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
-msgid "Activity permitted"
-msgstr "Etkinliğe izin verildi"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:59
-msgid "OK?"
-msgstr "TAMAM?"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
-msgid "Reasons"
-msgstr "Sebepler"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:67
-msgid "Show durations of most recent days"
-msgstr "En son günlerin sürelerini göster"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
-msgid "Active Time"
-msgstr "Aktif Süre"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
-msgid "Active"
-msgstr "Aktif"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
-msgid "Activity Start"
-msgstr "Etkinlik Başlangıç"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
-msgid "Start"
-msgstr "Başlangıç"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:118
-msgid "Activity End"
-msgstr "Etkinlik Bitiş"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:119
-msgid "End"
-msgstr "Bitiş"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:120
-msgid "Host(#procs)"
-msgstr "Host(#procs)"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:127
-msgid "Show activity times"
-msgstr "Etkinlik sürelerini göster"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:21
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:41
-msgid "Login"
-msgstr "Oturum aç"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:34
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:34
+msgid "german-vacation-calendar"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:217
+msgid "Federal State"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:227
+msgid "Invalid state '{detail}'. Must be one of {choices}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:212
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:34
 msgid "Username"
 msgstr "Kullanıcı adı"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:35
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:214
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:308
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:223
+msgid "Monitored"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:220
+msgid "Unknown"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:222
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:95
+msgid "Locale"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:285
+msgid "Assigned users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:287
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:80
+msgid "Host Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:312
+msgid "Shared with"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:353
+msgid "No activity before {hh_mm} hours"
+msgstr "{hh_mm} saatinden önce etkinlik yok"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:360
+msgid "No activity after {hh_mm} hours"
+msgstr "{hh_mm} saatinden sonra etkinlik yok"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:385
+msgid "Day blocked: no activity permitted"
+msgstr "Gün engellendi: etkinlik için izin yok"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:391
+msgid "Activity limited to {hh_mm} per day"
+msgstr "Etkinlik günlük {hh_mm} için sınırlandırılmıştır"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:418
+msgid "No activity exceeding {hh_mm}"
+msgstr "{hh_mm}yı aşan etkinlik yok"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:437
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:103
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:159
+msgid "Free Play"
+msgstr "Serbest Oyun"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:444
+msgid "Remaining play time today: {hh_mm}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:454
+msgid "Remaining play time in current session: {hh_mm}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:479
+msgid "Minimum break time {hh_mm} not reached"
+msgstr "Minimum mola zamanına {hh_mm} ulaşılmamıştır"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:26
+msgid "default"
+msgstr "varsayılan"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:27
+msgid "weekplan"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:33
+msgid "weekend"
+msgstr "hafta sonu"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:34
+msgid "weekdays"
+msgstr "hafta içi günleri"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:35
+msgid "mondays"
+msgstr "her pazartesi"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:36
+msgid "tuesdays"
+msgstr "her salı"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:37
+msgid "wednesdays"
+msgstr "her çarşamba"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:38
+msgid "thursdays"
+msgstr "her perşembe"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:39
+msgid "fridays"
+msgstr "her cuma"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:40
+msgid "saturdays"
+msgstr "her cumartesi"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:41
+msgid "sundays"
+msgstr "her pazar"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:104
+msgid ""
+"Invalid detail '{detail}'. Must be one of {choices} or have length seven "
+"characters denoting the days of the week (starting with Monday) and "
+"consist of active letters '{valid_active_characters}' and inactive "
+"letters '{valid_inactive_characters}'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:117
+msgid "Selected Days"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:485
+msgid "New device {id}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:37
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:43
+msgid "About"
+msgstr "Hakkında"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:54
+msgid "Setting"
+msgstr "Ayar"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:55
+msgid "Value"
+msgstr "Değer"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:58
+msgid "Repository"
+msgstr "Veri Havuzu"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:62
+msgid "Version"
+msgstr "Versiyon"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:66
+msgid "Package Revision"
+msgstr "Paket Revizyonu"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:70
+msgid "Git Commit ID"
+msgstr "Git Commit Kimliği"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:74
+msgid "Git Branch Name"
+msgstr "Git Branş Adı"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:78
+msgid "Git Author's Name"
+msgstr "Git Yazar Adı"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:82
+msgid "Git Author's Email Address"
+msgstr "Git Yazarın Email Adresi"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:86
+msgid "Supported Languages"
+msgstr "Desteklenen Diller"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:39
+msgid "Administration"
+msgstr "Yönetim"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:51
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:58
+msgid "User"
+msgstr "Kullanıcı"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:60
+msgid "Show configurations of upcoming days"
+msgstr "İlerleyen günlerin yapılarını göster"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:69
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:50
+msgid "Today's Activity"
+msgstr "Bugünün Etkinliği"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:73
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:84
+msgid "unlimited"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:121
+msgid "Day"
+msgstr "Gün"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:47
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:152
+msgid "Context"
+msgstr "Bağlam"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:95
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:154
+msgid "Min Time of Day"
+msgstr "Günün minimum zamanı"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:96
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:155
+msgid "Max Time of Day"
+msgstr "Günün maximum zamanı"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:97
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:156
+msgid "Time per Day"
+msgstr "Günlük Sınır"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:101
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:157
+msgid "Minimum Break"
+msgstr "Minimum Mola"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:102
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:158
+msgid "Max Duration"
+msgstr "Maximum Süre"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:111
+msgid "Show overrides for day"
+msgstr "Günün geçersiz kılınanlarını göster"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:182
+msgid "override"
+msgstr "Geçersiz kıl"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:206
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:104
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:98
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:178
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:233
+msgid "Save"
+msgstr "Kaydet"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:38
+msgid "Device Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:52
+msgid "Device"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:55
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:197
+msgid "Add device"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:64
+msgid "Edit device details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:73
+msgid "Remove device from monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:79
+msgid "Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:81
+msgid "Min Activity Duration [s]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:82
+msgid "Max Active Response Delay [ms]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:83
+msgid "Sample Size"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+msgid "Do you really want to permanently remove the device from monitoring?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+msgid "Remove from Monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
+msgid "Cancel"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:38
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:39
+msgid "Status"
+msgstr "Durum"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:125
+msgid "Downtime"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:57
+msgid "Previous Activity Start Time"
+msgstr "Son etkinliğin başlangıç saati"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:58
+msgid "Previous Activity End Time"
+msgstr "Son etkinliğin bitiş saati"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:59
+msgid "Current Activity Start Time"
+msgstr "Güncel etkinliğin başlangıç saati"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:61
+msgid "Current Activity Duration"
+msgstr "Güncel aktivite süresi"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:62
+msgid "Current"
+msgstr "Güncel"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:64
+msgid "Activity permitted"
+msgstr "Etkinliğe izin verildi"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:65
+msgid "OK?"
+msgstr "TAMAM?"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:67
+msgid "Reasons"
+msgstr "Sebepler"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:73
+msgid "Show durations of most recent days"
+msgstr "En son günlerin sürelerini göster"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:123
+msgid "Active Time"
+msgstr "Aktif Süre"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:128
+msgid "Active"
+msgstr "Aktif"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:129
+msgid "Activity Start"
+msgstr "Etkinlik Başlangıç"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:130
+msgid "Start"
+msgstr "Başlangıç"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:131
+msgid "Activity End"
+msgstr "Etkinlik Bitiş"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:132
+msgid "End"
+msgstr "Bitiş"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:133
+msgid "Host(#procs)"
+msgstr "Host(#procs)"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:140
+msgid "Show activity times"
+msgstr "Etkinlik sürelerini göster"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:21
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:41
+msgid "Login"
+msgstr "Oturum aç"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:35
 msgid "Password"
 msgstr "Şifre"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:40
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:40
 msgid "Admin"
 msgstr "Yönetici"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:41
+msgid "Users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:42
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:189
+msgid "Devices"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:46
 msgid "Signed in as"
 msgstr "Olarak giriş yapıldı"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:48
 msgid "Logout"
 msgstr "Oturumu kapat"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:40
+msgid "User Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:63
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:195
+msgid "Add to monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:65
+msgid "Add User"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:76
+msgid "Edit user details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:86
+msgid "Remove user from monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:93
+msgid "First Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:94
+msgid "Last Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:96
+msgid "Process Name Pattern"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
+msgid "Rulesets"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
+msgid "Count"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:120
+msgid "Add ruleset"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:129
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:208
+msgid "Edit ruleset details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:139
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+msgid "Remove ruleset"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:142
+msgid "Move ruleset up"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:145
+msgid "Move ruleset down"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:151
+msgid "Label"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:153
+msgid "Context Details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:217
+msgid "Remove monitoring of this device for the user"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:224
+msgid "Percent"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+msgid "Do you really want to permanently remove the user from monitoring?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
+msgid "Remove from monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+msgid "Do you really want to permanently remove the ruleset?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
+msgid ""
+"Do you really want to permanently remove monitoring of the device for "
+"this user?"
+msgstr ""
+
+#~ msgid "Hostname"
+#~ msgstr ""
+
+#~ msgid "weekday"
+#~ msgstr "hafta içi"
+
+#~ msgid "Details"
+#~ msgstr ""
+
+#~ msgid "Number of assigned users"
+#~ msgstr ""
+
+#~ msgid "Not set"
+#~ msgstr ""
+
+#~ msgid "Shared with: "
+#~ msgstr ""
+
+#~ msgid "Summary"
+#~ msgstr ""
+
+#~ msgid "'{name}' is not a valid host address"
+#~ msgstr ""
 

@@ -1,9 +1,35 @@
-![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
+![LittleBrother-Logo](little_brother/static/icons/icon-baby-panda-128x128.png)
 
 # Change History 
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.0 Revision 64 (July 18th, 2020)
+
+*   New Prometheus gauge `little_brother_configured_users`
+*   Configuration for Prometheus port in test cases
+*   Completely revised status handling in class `ClientDeviceHandler`
+*   Use `percent` in `User2Device` to compute fractional playtime on devices
+*   Closes #78, see [here](https://github.com/marcus67/little_brother/issues/78)
+*   Closes #90, see [here](https://github.com/marcus67/little_brother/issues/90)
+*   Closes #38, see [here](https://github.com/marcus67/little_brother/issues/38)
+*   Closes #39, see [here](https://github.com/marcus67/little_brother/issues/39)
+*   Closes #88, see [here](https://github.com/marcus67/little_brother/issues/88)
+*   Closes #91, see [here](https://github.com/marcus67/little_brother/issues/91)
+*   Provide configuration file for apparmor
+*   Move creation of `/var/run/little-brother` from service configuration to tmpfiles.d configuration
+*   Completely revised documentation
+*   Catch exception while retrieving data on the German vacation schedules.
+*   Include local installation of fontawesome
+*   Decativate settings changes to log handling by alembic
+*   Support broadcasting of user settings, activate on all relevant changes
+*   Increase connection pool size
+*   Activate mandatory sqlite backend for slaves
+*   Make sure database session are always closed
+*   Deploy etc/master.config as a template
+*   Closes #93, see [here](https://github.com/marcus67/little_brother/issues/93)
+*   Do not schedule tasks too far into the future
+ 
 ## Version 0.2.3 Revision 63 (May 23rd, 2020)
 
 *   Add Danish localization (locale "da")

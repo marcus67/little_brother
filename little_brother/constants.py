@@ -17,6 +17,33 @@
 
 import os.path
 
+DIR_NAME = 'little-brother'
+APPLICATION_USER = 'little-brother'
+
+DEFAULT_PROCESS_NAME_PATTERN = "systemd|bash|sh|csh|tsh"
+DEFAULT_USER2DEVICE_PERCENT = 100
+
+DEFAULT_DEVICE_SAMPLE_SIZE = 10
+DEFAULT_DEVICE_MIN_ACTIVITY_DURATION = 120
+DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY = 50
+
+LANGUAGES = {
+    'en': 'English',
+    'de': 'Deutsch',
+    'fr': 'Français',
+    'it': 'Italiano',
+    'nl': 'Nederlands',
+    'fi': 'Suomen kieli',
+    'tr': 'Türkçe',
+    'ru': 'Русский язык',
+    'ja': '日本語',
+    'bn': 'বাংলা',
+    'th': 'ภาษาไทย',
+    'da': 'Dansk',
+}
+
+TEXT_SEPERATOR = " 🞄 "
+
 API_URL = "/api"
 API_REL_URL_EVENTS = "events"
 API_URL_EVENTS = os.path.join(API_URL, API_REL_URL_EVENTS)
@@ -31,6 +58,7 @@ JSON_EVENTS = "events"
 JSON_RULESETS = "rulesets"
 JSON_USERNAME = "username"
 JSON_PROCESS_NAME_PATTERN = "process_name_pattern"
+JSON_ACTIVE = "active"
 JSON_ACCESS_TOKEN = "secret"
 JSON_ERROR = "error"
 

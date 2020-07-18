@@ -22,14 +22,13 @@ After=network.target
 
 [Service]
 Type=forking
-ExecStart=/usr/local/bin/run_little_brother.py --daemonize --pidfile=/var/run/little-brother/little-brother.pid --config=/etc/little-brother/little-brother.config --logdir=/var/log/little-brother
-ExecStop=/usr/local/bin/run_little_brother.py  --pidfile=/var/run/little-brother/little-brother.pid --kill
+ExecStart=/usr/local/bin/run_little_brother.py --daemonize --pidfile=/run/little-brother/little-brother.pid --config=/etc/little-brother/little-brother.config --logdir=/var/log/little-brother --create-databases --upgrade-databases=head
+ExecStop=/usr/local/bin/run_little_brother.py  --pidfile=/run/little-brother/little-brother.pid --kill
 IgnoreSIGPIPE=false
-PIDFile=/var/run/little-brother/little-brother.pid
+PIDFile=/run/little-brother/little-brother.pid
+RuntimeDirectory=little-brother
 KillMode=process
 PermissionsStartOnly=true
-ExecStartPre=-/bin/mkdir -p /var/run/little-brother
-ExecStartPre=/bin/chown -R little-brother:little-brother /var/run/little-brother
 User=little-brother
 Group=little-brother
 TimeoutStopSec=10

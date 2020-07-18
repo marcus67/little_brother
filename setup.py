@@ -18,8 +18,9 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from setuptools import setup
 from os import path
+
+from setuptools import setup
 
 import little_brother.settings
 
@@ -27,7 +28,6 @@ this_directory = path.abspath(path.dirname(__file__))
 
 with open(path.join(this_directory, 'requirements.txt')) as f:
     install_requires = f.read().splitlines()
-
 
 setup_params = {
     # standard setup configuration
@@ -41,9 +41,8 @@ setup_params = {
     "scripts": [
         "run_little_brother.py",
         "run_little_brother_test_suite.py",
-        "bin/little-brother-grant-x-access.sh"
     ],
-    "long_description": "Tool to monitor usage time of users on Debian hosts and terminate processes if usage times "
+    "long_description": "Tool to monitor login time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded.",
 }
 
@@ -66,15 +65,19 @@ extended_setup_params = {
     "create_group": True,
     "user_group_mappings": [("little-brother", "audio")],
     "deploy_systemd_service": True,
+    # "deploy_tmpfile_conf": True,
     "deploy_sudoers_file": True,
+    "deploy_apparmor_file": True,
     "contributing_setups": ["python_base_app", "flask_helpers"],
     "publish_debian_package": ["master", "release"],
     "publish_docker_images": ["master", "release"],
     "publish_latest_docker_image": "release",
     "debian_extra_files": [
-        ("etc/minimal-slave.config", "etc/little-brother/minimal-slave.config"),
-        ("etc/minimal-master.config", "etc/little-brother/minimal-master.config"),
-        ("etc/multi-rule-master.config", "etc/little-brother/multi-rule-master.config"),
+        ("etc/slave.config", "etc/little-brother/slave.config"),
+        ("etc/master.config", "etc/little-brother/master.config"),
+    ],
+    "debian_templates": [
+        ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ]
 
 }

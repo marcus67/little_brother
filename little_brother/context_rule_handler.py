@@ -17,11 +17,14 @@
 
 import abc
 
+_ = lambda x:x
+
 class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
 
-    def __init__(self, p_context_name):
+    def __init__(self, p_context_name, p_locale_helper=None):
 
         self._context_name = p_context_name
+        self._locale_helper = p_locale_helper
 
     @abc.abstractmethod
     def is_active(self, p_reference_date, p_details):
@@ -33,6 +36,19 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
     @property
     def context_name(self):
         return self._context_name
+
+    def get_choices(self):
+        return []
+
+    def validate_context_details(self, p_context_detail):
+        pass
+
+    def summary(self, p_context_detail):
+        if p_context_detail is not None and p_context_detail != "":
+            return [_("Details"), ": ", p_context_detail]
+
+        else:
+            return []
 
     def check_data(self):
         pass

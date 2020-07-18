@@ -30,3 +30,9 @@ include little_brother/translations/*/*/messages.mo
 include little_brother/alembic/env.py
 include little_brother/alembic/versions/*.py
 include little_brother/alembic.ini
+
+# See https://fontawesome.com/how-to-use/on-the-web/setup/hosting-font-awesome-yourself
+include little_brother/static/contrib/fontawesome/LICENSE.txt
+include little_brother/static/contrib/fontawesome/css/all.min.css
+include little_brother/static/contrib/fontawesome/js/all.min.js
+include little_brother/static/contrib/fontawesome/webfonts/*.svg

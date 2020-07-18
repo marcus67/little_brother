@@ -21,12 +21,15 @@
 import datetime
 import os.path
 
+from little_brother import db_migrations
 from little_brother import german_vacation_context_rule_handler
+from little_brother import persistence
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
+from little_brother.test import test_persistence
 from python_base_app import configuration
 from python_base_app.test import base_test
 
@@ -55,36 +58,48 @@ DURATION = 55  # seconds
 
 class TestRuleHandler(base_test.BaseTestCase):
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_priority(self):
-        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=self.create_dummy_ruleset_configs())
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        session_context = persistence.SessionContext(p_persistence=dummy_persistence)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=NORMAL_DAY_1)
+        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+        migrator.migrate_ruleset_configs(self.create_dummy_ruleset_configs())
+
+        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                            p_username=TEST_USER, p_reference_date=NORMAL_DAY_1)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=WEEKEND_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_1)
         self.assertIsNotNone(active_rule_set)
-        self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
+        self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=WEEKEND_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_2)
         self.assertIsNotNone(active_rule_set)
-        self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
+        self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER,
-                                                                   p_reference_date=VACATION_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                            p_username=TEST_USER,
+                                                            p_reference_date=VACATION_DAY_1)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context,
                          german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER,
-                                                                   p_reference_date=VACATION_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                            p_username=TEST_USER,
+                                                            p_reference_date=VACATION_DAY_2)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context,
                          german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset_config(p_username=TEST_USER, p_reference_date=WEEKEND_DAY_3)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_3)
         self.assertIsNotNone(active_rule_set)
-        self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
+        self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
     @staticmethod
     def create_dummy_ruleset_config():
@@ -98,6 +113,7 @@ class TestRuleHandler(base_test.BaseTestCase):
     @staticmethod
     def create_dummy_ruleset_configs(p_create_complex_configs=True):
 
+        # TODO: Migrate test instances of ruleset configurations to database entries of ruleset
         configs = []
 
         # DEFAULT
@@ -119,23 +135,23 @@ class TestRuleHandler(base_test.BaseTestCase):
             weekend_config = rule_handler.RuleSetConfigModel()
             weekend_config.username = TEST_USER
             weekend_config.priority = 3
-            weekend_config.context = simple_context_rule_handlers.WEEKDAY_CONTEXT_RULE_HANDLER_NAME
-            weekend_config.context_details = simple_context_rule_handlers.WEEKDAY_PREDEFINED_DETAILS["weekend"]
+            weekend_config.context = simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME
+            weekend_config.context_details = simple_context_rule_handlers.WEEKPLAN_PREDEFINED_DETAILS["weekend"]
 
             configs.append(weekend_config)
 
         return {TEST_USER: configs}
 
     @staticmethod
-    def create_dummy_rule_handler(p_ruleset_configs, p_create_complex_handlers=True):
+    def create_dummy_rule_handler(p_persistence, p_create_complex_handlers=True):
         default_context_rule_handler = simple_context_rule_handlers.DefaultContextRuleHandler()
         rulehandler_config = rule_handler.RuleHandlerConfigModel()
 
-        a_rule_handler = rule_handler.RuleHandler(p_config=rulehandler_config, p_rule_set_configs=p_ruleset_configs)
+        a_rule_handler = rule_handler.RuleHandler(p_config=rulehandler_config, p_persistence=p_persistence)
         a_rule_handler.register_context_rule_handler(p_context_rule_handler=default_context_rule_handler,
                                                      p_default=True)
         if p_create_complex_handlers:
-            weekend_context_rule_handler = simple_context_rule_handlers.WeekdayContextRuleHandler()
+            weekend_context_rule_handler = simple_context_rule_handlers.WeekplanContextRuleHandler()
             vacation_context_rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
             a_rule_handler.register_context_rule_handler(p_context_rule_handler=weekend_context_rule_handler)
             a_rule_handler.register_context_rule_handler(p_context_rule_handler=vacation_context_rule_handler)
@@ -262,8 +278,8 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_session_duration(self):
 
-        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
-        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
         reference_time = datetime.datetime.utcnow()
@@ -301,8 +317,8 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_session_duration_with_downtime(self):
 
-        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
-        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
         reference_time = datetime.datetime.utcnow()
@@ -341,8 +357,8 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_time_per_day(self):
 
-        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
-        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
         reference_time = datetime.datetime.utcnow()
@@ -380,8 +396,8 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_time_per_day_with_downtime(self):
 
-        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
-        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
         reference_time = datetime.datetime.utcnow()
@@ -420,8 +436,8 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_time_per_day_with_downtime_and_previous_activity(self):
 
-        ruleset_configs = self.create_dummy_ruleset_configs(p_create_complex_configs=False)
-        a_rule_handler = self.create_dummy_rule_handler(p_ruleset_configs=ruleset_configs,
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
         reference_time = datetime.datetime.utcnow()
@@ -458,7 +474,7 @@ class TestRuleHandler(base_test.BaseTestCase):
                                           p_rule_result_info=rule_result_info)
 
         self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
-                         rule_handler.RULE_TIME_PER_DAY)
+                         rule_handler.RULE_TIME_PER_DAY)  # TODO: test error on CircleCI
 
         rule_set.max_time_per_day = 651
 

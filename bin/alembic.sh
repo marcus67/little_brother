@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-export PYTHONPATH=.:contrib/python_base_app
+export PYTHONPATH=..:../contrib/python_base_app:
 
 SCRIPT_DIR=$(dirname $0)
-WORK_DIR=$(realpath ${SCRIPT_DIR}/../little_brother)
+WORK_DIR=$(realpath ${SCRIPT_DIR}/..)
 
 if [ "$1" == "" ] ; then
     echo "Usage (for example):"
@@ -14,5 +14,5 @@ if [ "$1" == "" ] ; then
     exit 1
 fi
 
-cd ${WORK_DIR}
+cd ${WORK_DIR}/little_brother
 alembic "$@"
