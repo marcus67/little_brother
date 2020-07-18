@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.0 Revision 65 (July 18th, 2020)
+
+*   Add Spanish localization (locale "es")
+
 ## Version 0.3.0 Revision 64 (July 18th, 2020)
 
 *   New Prometheus gauge `little_brother_configured_users`
