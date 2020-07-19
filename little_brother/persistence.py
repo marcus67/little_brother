@@ -592,7 +592,10 @@ class Persistence(object):
 
     def build_url(self):
 
-        if self._config.database_user is not None:
+        if self._config.database_driver != DATABASE_DRIVER_SQLITE:
+            if self._config.database_user is None:
+                raise configuration.ConfigurationException("No database user configured!")
+
             url = urllib.parse.urlunsplit(
                 (
                     self._config.database_driver,
