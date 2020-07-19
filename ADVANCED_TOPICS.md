@@ -169,6 +169,9 @@ must be set as follows:
 | MariaDB     | `mysql+pymysql`      | 3306                |
 | PostgreSQL  | `postgresql`         | 5432                |
 
+Note that in revision 64 and above there is no default value for `database_user` anymore (is was `little_brother`).
+The name has to be set explicitly now!
+
 ### Create the Database
 
 Stop the application by issuing as root user:

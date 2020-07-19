@@ -4,6 +4,13 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.0 Revision 66 (July 20th, 2020)
+
+*   Update Italian localization (locale "it")
+*   Issue error when no database user is given when driver != sqlite
+*   Register logging filter for alembic
+*   Add up-to-dateness of translations as column to localization table
+
 ## Version 0.3.0 Revision 65 (July 18th, 2020)
 
 *   Add Spanish localization (locale "es")

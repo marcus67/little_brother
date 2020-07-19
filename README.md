@@ -193,7 +193,7 @@ You have to be `root` to follow these steps (e.g. use `sudo`):
 
 *   Save the file.
 
-*   Restart the application by issueing: 
+*   Restart the application by issuing: 
 
         systemctl restart little-brother 
 
@@ -230,22 +230,24 @@ the following languages are supported or currently in preparation (in the order 
 
 | Flag                                                           | Language      | Locale | Status         | Translation provided by    |
 | ---------------------------------------------------------------| ------------- | ------ | -------------- | ---------------------------|
-| ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Available      |  Marcus Rickert            |
-| ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Available      |  Marcus Rickert            |
-| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Available      |  Albano Battistella        |
-| ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Available      |  Simone & Lex              |
-| ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Available      |  Isakkii Kosonen           |
-| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Available      |  Albano Battistella        |
-| ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Available      |  Selay Dogan               |
-| ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Available      |  J. Moldawski              |
-| ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Available      |  Arik M.                   |
-| ![Flag Bangladesh](doc/bangladesh-flag-icon-32.png)            | Bangla        | bn     | Available      |  Rownak Jyoti Zaman        |
-| ![Flag Thailand](doc/thailand-flag-icon-32.png)                | Thai          | th     | Available      |  Busaba Kramer             |
-| ![Flag Denmark](doc/denmark-flag-icon-32.png)                  | Danish        | da     | Available      |  Erik Husmark              |
-| ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | Available      |  Ruth Wucherpfennig-Krömer |
+| ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Up-to-date     |  Marcus Rickert            |
+| ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Up-to-date     |  Marcus Rickert            |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
+| ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
+| ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
+| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 63    |  Albano Battistella        |
+| ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Revision 63    |  Selay Dogan               |
+| ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Revision 63    |  J. Moldawski              |
+| ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Revision 63    |  Arik M.                   |
+| ![Flag Bangladesh](doc/bangladesh-flag-icon-32.png)            | Bangla        | bn     | Revision 63    |  Rownak Jyoti Zaman        |
+| ![Flag Thailand](doc/thailand-flag-icon-32.png)                | Thai          | th     | Revision 63    |  Busaba Kramer             |
+| ![Flag Denmark](doc/denmark-flag-icon-32.png)                  | Danish        | da     | Revision 63    |  Erik Husmark              |
+| ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | Revision 63    |  Ruth Wucherpfennig-Krömer |
 | ![Flag Lithuania](doc/lithuania-flag-icon-32.png)              | Lithuanian    | lt     | In preparation |  N.N.                      |
 | ![Flag Croatia](doc/croatia-flag-icon-32.png)                  | Croatian      | hr     | In preparation |  N.N.                      |
 
+A revision number in the status column denotes that all texts up to that revision have been localized.
+ 
 Your help with translations is greatly appreciated. Please, contact the author if you are interested in providing
 a translation. You do not necessarily have to clone this repository or be familiar with Python to do so.
 
