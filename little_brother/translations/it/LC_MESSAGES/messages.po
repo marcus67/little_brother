@@ -1,14 +1,14 @@
 # Italian translations for PROJECT.
 # Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# ALBANO BATTISTELLA <albano_battistella@hotmail.com>, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2020-06-19 09:31+0200\n"
-"PO-Revision-Date: 2019-06-02 00:51+0200\n"
+"PO-Revision-Date: 2020-07-19 15:51+0200\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: it\n"
 "Language-Team: it <LL@li.org>\n"
@@ -50,6 +50,8 @@ msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
 msgstr ""
+"{user}, hai solo {minutes_left_before_logout} minuti rimanenti oggi.\n"
+"Per favore, disconnettersi."
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
 msgid ""
@@ -140,11 +142,11 @@ msgstr "EEE"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/context_rule_handler.py:48
 msgid "Details"
-msgstr ""
+msgstr "Dettagli"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:47
 msgid "Not a valid host address"
-msgstr ""
+msgstr "Non è un indirizzo host valido"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
 msgid "vacation"
@@ -152,15 +154,15 @@ msgstr "vacanza"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:34
 msgid "german-vacation-calendar"
-msgstr ""
+msgstr "calendario-tedesco-vacanze"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:217
 msgid "Federal State"
-msgstr ""
+msgstr "Stato Federale"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:227
 msgid "Invalid state '{detail}'. Must be one of {choices}"
-msgstr ""
+msgstr "Stato non valido '{detail}'. Deve essere uno di {choices}""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:212
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:34
@@ -172,11 +174,11 @@ msgstr "Nome Utente"
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:92
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:223
 msgid "Monitored"
-msgstr ""
+msgstr "Monitorato"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:220
 msgid "Unknown"
-msgstr ""
+msgstr "Sconosciuto"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:222
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:95
@@ -185,16 +187,16 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:285
 msgid "Assigned users"
-msgstr ""
+msgstr "Utenti assegnati"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:287
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:80
 msgid "Host Name"
-msgstr ""
+msgstr "Nome Host"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:312
 msgid "Shared with"
-msgstr ""
+msgstr "Condiviso con"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:353
 msgid "No activity before {hh_mm} hours"
@@ -224,11 +226,11 @@ msgstr "Gioco libero"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:444
 msgid "Remaining play time today: {hh_mm}"
-msgstr ""
+msgstr "Tempo di gioco rimanente oggi: {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:454
 msgid "Remaining play time in current session: {hh_mm}"
-msgstr ""
+msgstr "Tempo di gioco rimanente nella sessione corrente: {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:479
 msgid "Minimum break time {hh_mm} not reached"
@@ -240,7 +242,7 @@ msgstr "predefinito"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:27
 msgid "weekplan"
-msgstr ""
+msgstr "piano settimanale"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:33
 msgid "weekend"
@@ -285,23 +287,27 @@ msgid ""
 "consist of active letters '{valid_active_characters}' and inactive "
 "letters '{valid_inactive_characters}'"
 msgstr ""
+"Dettaglio non valido '{detail}'. Deve essere uno di {choices} o avere una lunghezza di sette "
+"caratteri che indicano i giorni della settimana (a partire da lunedì) e "
+"siano costituiti da lettere attive '{valid_active_characters}' e lettere "
+"inattive '{valid_inactive_characters}'
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:117
 msgid "Selected Days"
-msgstr ""
+msgstr "Giorni Selezionati"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:485
 msgid "New device {id}"
-msgstr ""
+msgstr "Nuovo dispositivo {id}"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:37
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:43
 msgid "About"
-msgstr "Informazioni su"
+msgstr "Informazioni"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:54
 msgid "Setting"
-msgstr "Impostazione"
+msgstr "Impostazioni"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:55
 msgid "Value"
@@ -361,7 +367,7 @@ msgstr "Attività di oggi"
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:73
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:84
 msgid "unlimited"
-msgstr ""
+msgstr "illimitato"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:121
@@ -417,32 +423,32 @@ msgstr "Salva"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:38
 msgid "Device Configuration"
-msgstr ""
+msgstr "Configurazione del dispositivo"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:52
 msgid "Device"
-msgstr ""
+msgstr "Dispositivo"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:55
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:197
 msgid "Add device"
-msgstr ""
+msgstr "Aggiungi dispositivo"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:64
 msgid "Edit device details"
-msgstr ""
+msgstr "Modifica i dettagli del dispositivo"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:73
 msgid "Remove device from monitoring"
-msgstr ""
+msgstr "Rimuovi il dispositivo dal monitoraggio"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:79
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:81
 msgid "Min Activity Duration [s]"
-msgstr ""
+msgstr "Durata minima dell'attività [s]"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:82
 msgid "Max Active Response Delay [ms]"
@@ -450,22 +456,22 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:83
 msgid "Sample Size"
-msgstr ""
+msgstr "Misura di prova"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
 msgid "Do you really want to permanently remove the device from monitoring?"
-msgstr ""
+msgstr "Vuoi veramente rimuovere definitivamente il dispositivo dal monitoraggio?"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
 msgid "Remove from Monitoring"
-msgstr ""
+msgstr "Rimuovi dal monitoraggio"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
 msgid "Cancel"
-msgstr ""
+msgstr "Cancella"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:38
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:39
@@ -475,7 +481,7 @@ msgstr "Stato"
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:52
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:125
 msgid "Downtime"
-msgstr ""
+msgstr "Tempo di inattività"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:57
 msgid "Previous Activity Start Time"
@@ -560,12 +566,12 @@ msgstr "Amministratore"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:41
 msgid "Users"
-msgstr ""
+msgstr "Utenti"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:42
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:189
 msgid "Devices"
-msgstr ""
+msgstr "Dispositivi"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:46
 msgid "Signed in as"
@@ -577,32 +583,32 @@ msgstr "Logout"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:40
 msgid "User Configuration"
-msgstr ""
+msgstr "Configurazione Utente"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:63
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:195
 msgid "Add to monitoring"
-msgstr ""
+msgstr "Aggiungi al monitoraggio"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:65
 msgid "Add User"
-msgstr ""
+msgstr "Aggiungi Utente"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:76
 msgid "Edit user details"
-msgstr ""
+msgstr "Modifica i dettagli dell'utente"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:86
 msgid "Remove user from monitoring"
-msgstr ""
+msgstr "Rimuovi l'utente dal monitoraggio"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:93
 msgid "First Name"
-msgstr ""
+msgstr "Nome"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:94
 msgid "Last Name"
-msgstr ""
+msgstr "Cognome"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:96
 msgid "Process Name Pattern"
@@ -610,45 +616,45 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
 msgid "Rulesets"
-msgstr ""
+msgstr "Regole"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
 msgid "Count"
-msgstr ""
+msgstr "Conteggio"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:120
 msgid "Add ruleset"
-msgstr ""
+msgstr "Aggiungi regola"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:129
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:208
 msgid "Edit ruleset details"
-msgstr ""
+msgstr "Aggiungi dettaglio regola"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:139
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
 msgid "Remove ruleset"
-msgstr ""
+msgstr "Rimuovi regola"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:142
 msgid "Move ruleset up"
-msgstr ""
+msgstr "Sposta regole in alto"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:145
 msgid "Move ruleset down"
-msgstr ""
+msgstr "Sposta regole in basso"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:151
 msgid "Label"
-msgstr ""
+msgstr "Etichetta"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:153
 msgid "Context Details"
-msgstr ""
+msgstr "Dettagli di contesto"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:217
 msgid "Remove monitoring of this device for the user"
-msgstr ""
+msgstr "Rimuovere il monitoraggio di questo dispositivo per l'utente"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:224
 msgid "Percent"
@@ -656,44 +662,46 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
 msgid "Do you really want to permanently remove the user from monitoring?"
-msgstr ""
+msgstr "Vuoi veramente rimuovere permanentemente l'utente dal monitoraggio?"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
 msgid "Remove from monitoring"
-msgstr ""
+msgstr "Rimuovi dal monitoraggio"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
 msgid "Do you really want to permanently remove the ruleset?"
-msgstr ""
+msgstr "Vuoi veramente rimuovere definitivamente il set di regole?"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
 msgid ""
 "Do you really want to permanently remove monitoring of the device for "
 "this user?"
 msgstr ""
+"Desideri veramente rimuovere definitivamente il monitoraggio del dispositivo per"
+"questo utente?"
 
 #~ msgid "Hostname"
-#~ msgstr ""
+#~ msgstr "Nome Host"
 
 #~ msgid "weekday"
 #~ msgstr "giorno feriale"
 
 #~ msgid "Details"
-#~ msgstr ""
+#~ msgstr "Dettagli"
 
 #~ msgid "Number of assigned users"
-#~ msgstr ""
+#~ msgstr "Numero di utenti assegnati"
 
 #~ msgid "Not set"
-#~ msgstr ""
+#~ msgstr "Non impostato"
 
 #~ msgid "Shared with: "
-#~ msgstr ""
+#~ msgstr "Condiviso con: "
 
 #~ msgid "Summary"
-#~ msgstr ""
+#~ msgstr "Riepilogo"
 
 #~ msgid "'{name}' is not a valid host address"
-#~ msgstr ""
+#~ msgstr "{name}' non è un indirizzo host valido"
 
