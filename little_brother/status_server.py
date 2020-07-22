@@ -282,7 +282,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def save_users_data(self, p_users, p_forms):
 
-        session = self._persistence.get_session()
+        session_context = persistence.SessionContext(p_persistence=self._persistence)
+        session = session_context.get_session()
         changed = False
 
         for user in p_users:
@@ -315,6 +316,7 @@ class StatusServer(base_web_server.BaseWebServer):
         if changed:
             self._persistence.clear_cache()
             self._appcontrol.send_config_to_all_slaves()
+            self._appcontrol.reset_users(p_session_context=session_context)
 
     def save_devices_data(self, p_devices, p_forms):
 

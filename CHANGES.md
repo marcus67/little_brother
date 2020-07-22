@@ -4,6 +4,13 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 67 (July 20th, 2020)
+
+*   Fix issue with master process not detecting user activity when new users are activated
+*   Change the default configuration on the Docker slave image:
+    *   Set sqlite as the default backend
+    *   Deactivate audio output and pop notifications
+
 ## Version 0.3.0 Revision 66 (July 20th, 2020)
 
 *   Update Italian localization (locale "it")
@@ -12,7 +19,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Add up-to-dateness of translations as column to localization table
 
 ## Version 0.3.0 Revision 65 (July 18th, 2020)
-
+    
 *   Add Spanish localization (locale "es")
 
 ## Version 0.3.0 Revision 64 (July 18th, 2020)

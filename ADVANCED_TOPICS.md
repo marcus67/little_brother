@@ -142,6 +142,10 @@ a more mature backend you can switch to a full fledge database such as MySQL or 
 the persistence uses the abstraction layer [SQLAlchemy](https://www.sqlalchemy.org/) which can be used with many 
 different database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
 
+**IMPORTANT NOTE**: The steps shown below only refer to the MASTER host. The slave(s) should ALWAYS use the simple
+sqlite backend no matter which kind of backend the master will use! This is due to the fact that the slaves never have
+to store any data persistently. This is completely handled by the master.
+
 ### Configuring the Database
 
 In order to use a database the configuration file in `/etc/little-brother/little-brother.conf` has to be adapted. 

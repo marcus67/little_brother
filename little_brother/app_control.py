@@ -123,7 +123,7 @@ class AppControl(object):
         if self._rule_handler is not None:
             self.register_rule_context_handlers()
 
-        self.reset_users()
+        self.reset_users(p_session_context=self._session_context)
 
         self._event_queue = queue.Queue()
         self._outgoing_events = []
@@ -141,9 +141,9 @@ class AppControl(object):
 
         self.init_labels_and_notifications()
 
-    def reset_users(self):
+    def reset_users(self, p_session_context):
         self._process_regex_map = None
-        self._usernames_not_found.extend(self._persistence.user_map(p_session_context=self._session_context).keys())
+        self._usernames_not_found.extend(self._persistence.user_map(p_session_context=p_session_context).keys())
 
         fmt = "Watching usernames: %s" % ",".join(self._usernames_not_found)
         self._logger.info(fmt)
@@ -220,7 +220,7 @@ class AppControl(object):
             self._logger.info(fmt.format(user=str(user)))
 
         session.commit()
-        self.reset_users()
+        self.reset_users(p_session_context=self._session_context)
 
     def get_context_rule_handler_choices(self):
 
@@ -571,6 +571,7 @@ class AppControl(object):
 
         for client in self._client_infos.values():
             self.send_config_to_slave(p_hostname=client.host_name)
+
 
     def send_login_mapping_to_slave(self, p_hostname):
 
