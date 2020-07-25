@@ -1,0 +1,701 @@
+# Japanese translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <arikmahbub@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-06-19 09:31+0200\n"
+"PO-Revision-Date: 2020-04-20 09:49+0200\n"
+"Last-Translator: Arik Mahbub <arikmahbub@gmail.com>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:90
+msgid "username '{username}' not specified"
+msgstr "ユーザー名 '{username}' は特定していません"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/api_view_handler.py:98
+msgid "username '{username}' not being monitored"
+msgstr "ユーザー名 '{username}' は監視されていません"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:159
+msgid "{days} days ago"
+msgstr "{days} 日前"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:162
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:55
+msgid "Today"
+msgstr "今日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:163
+msgid "Yesterday"
+msgstr "昨日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:165
+msgid ""
+"{user}, you do not have computer time left today.\n"
+"You will be logged out."
+msgstr ""
+"{user} さん,今日のコンピューター時間は残っていません.\n"
+"ログアウトされます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:166
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"Please, log out."
+msgstr "{user} さん,今日はたった{minutes_left_before_logout}分が残ります.ログアウトして下さい."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:168
+msgid ""
+"{user}, you do not have any computer time today.\n"
+"You will be logged out."
+msgstr ""
+"{user} さん,今日のコンピューター時間が終わりました.\n"
+"ログアウトされます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:169
+msgid ""
+"{user}, it is too early to use the computer.\n"
+"You will be logged out."
+msgstr "{user} さん,コンピューターを使用するにはまだ早いです.ログアウトされます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:170
+msgid ""
+"{user}, it is too late to use the computer.\n"
+"You will be logged out."
+msgstr "{user} さん,コンピューターを使用するにはもう遅くなりました.ログアウトされます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:171
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"use the computer.\n"
+"Please, log out."
+msgstr ""
+"{user} さん,{minutes_left_before_logout}\"分掛かるとコンピューターを使うには遅くなります.\n"
+"ログアウトしてください."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:173
+msgid ""
+"{user}, you have to take a break.\n"
+"You will be logged out."
+msgstr "{user} さん,休まなければ行けません.ログアウトされます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:174
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"break.\n"
+"Please, log out."
+msgstr ""
+"{user} さん,{minutes_left_before_logout}\"分には休憩を取らければ行けません.\n"
+"ログアウトしてください."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:176
+msgid ""
+"{user}, your break will only be over in {break_minutes_left} minutes.\n"
+"You will be logged out."
+msgstr ""
+"{user}さん, 君の休憩はただ{break_minutes_left}分に終わります.\n"
+"ログアウトされます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:178
+msgid ""
+"Hello {user}, you will be allowed to play for {minutes_left_in_session} "
+"minutes\n"
+"in this session."
+msgstr "こんにちは{user}さん,このセッションでは {minutes_left_in_session} 分の間プレイが許可されています.\n"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:180
+msgid "Hello {user}, you have unlimited playtime in this session."
+msgstr "こんにちは {user} さん,このセッションでは無制限にプレイできます."
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1143
+msgid "'Today ('EEE')'"
+msgstr "'今日('EEE')'"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1144
+msgid "'Today'"
+msgstr "'今日'"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1147
+msgid "'Tomorrow ('EEE')'"
+msgstr "明日('EEE')'"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1148
+msgid "'Tomorrow'"
+msgstr "'明日'"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1151
+msgid "yyyy-MM-dd' ('EEE')'"
+msgstr "yyyy'年'MM'月'dd'日 ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/app_control.py:1152
+msgid "EEE"
+msgstr "EEE"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/context_rule_handler.py:48
+msgid "Details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/entity_forms.py:47
+msgid "Not a valid host address"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:32
+msgid "vacation"
+msgstr "休日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:34
+msgid "german-vacation-calendar"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:217
+msgid "Federal State"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/german_vacation_context_rule_handler.py:227
+msgid "Invalid state '{detail}'. Must be one of {choices}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:212
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:34
+msgid "Username"
+msgstr "ユーザー名"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:214
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:308
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:92
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:223
+msgid "Monitored"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:220
+msgid "Unknown"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:222
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:95
+msgid "Locale"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:285
+msgid "Assigned users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:287
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:80
+msgid "Host Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/persistence.py:312
+msgid "Shared with"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:353
+msgid "No activity before {hh_mm} hours"
+msgstr "{hh_mm} 時間前は活動なし"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:360
+msgid "No activity after {hh_mm} hours"
+msgstr "{hh_mm} 時間後は活動なし"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:385
+msgid "Day blocked: no activity permitted"
+msgstr "ブロックされた日:活動は禁止"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:391
+msgid "Activity limited to {hh_mm} per day"
+msgstr "活動は１日 {hh_mm} 時間に制限された"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:418
+msgid "No activity exceeding {hh_mm}"
+msgstr "{hh_mm} 超過活動なし"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:437
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:103
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:159
+msgid "Free Play"
+msgstr "自由な遊び"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:444
+msgid "Remaining play time today: {hh_mm}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:454
+msgid "Remaining play time in current session: {hh_mm}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/rule_handler.py:479
+msgid "Minimum break time {hh_mm} not reached"
+msgstr "最小休憩時間 {hh_mm} に達していません"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:26
+msgid "default"
+msgstr "デフォルト"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:27
+msgid "weekplan"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:33
+msgid "weekend"
+msgstr "週末"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:34
+msgid "weekdays"
+msgstr "平日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:35
+msgid "mondays"
+msgstr "月曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:36
+msgid "tuesdays"
+msgstr "火曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:37
+msgid "wednesdays"
+msgstr "水曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:38
+msgid "thursdays"
+msgstr "木曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:39
+msgid "fridays"
+msgstr "金曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:40
+msgid "saturdays"
+msgstr "土曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:41
+msgid "sundays"
+msgstr "日曜日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:104
+msgid ""
+"Invalid detail '{detail}'. Must be one of {choices} or have length seven "
+"characters denoting the days of the week (starting with Monday) and "
+"consist of active letters '{valid_active_characters}' and inactive "
+"letters '{valid_inactive_characters}'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/simple_context_rule_handlers.py:117
+msgid "Selected Days"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/status_server.py:485
+msgid "New device {id}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:37
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:43
+msgid "About"
+msgstr "について"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:54
+msgid "Setting"
+msgstr "設定"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:55
+msgid "Value"
+msgstr "値"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:58
+msgid "Repository"
+msgstr "リポジトリ"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:62
+msgid "Version"
+msgstr "バージョン"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:66
+msgid "Package Revision"
+msgstr "パッケージリビジョン"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:70
+msgid "Git Commit ID"
+msgstr "GitコミットのID"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:74
+msgid "Git Branch Name"
+msgstr "Gitブランチ名"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:78
+msgid "Git Author's Name"
+msgstr "Git作者の名前"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:82
+msgid "Git Author's Email Address"
+msgstr "Git作者の電子メールアドレス"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/about.template.html:86
+msgid "Supported Languages"
+msgstr "サポートされている言語"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:39
+msgid "Administration"
+msgstr "行政"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:51
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:46
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:58
+msgid "User"
+msgstr "ユーザー"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:60
+msgid "Show configurations of upcoming days"
+msgstr "近日の構成を見る"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:69
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:50
+msgid "Today's Activity"
+msgstr "今日の活動"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:73
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:84
+msgid "unlimited"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:93
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:121
+msgid "Day"
+msgstr "日"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:94
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:47
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:152
+msgid "Context"
+msgstr "事情"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:95
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:154
+msgid "Min Time of Day"
+msgstr "最小時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:96
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:155
+msgid "Max Time of Day"
+msgstr "最高時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:97
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:156
+msgid "Time per Day"
+msgstr "一日あたりの時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:101
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:157
+msgid "Minimum Break"
+msgstr "最小休憩"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:102
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:158
+msgid "Max Duration"
+msgstr "最高期間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:111
+msgid "Show overrides for day"
+msgstr "日のオーバーライドを見る"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:182
+msgid "override"
+msgstr "オーバーライド"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/admin.template.html:206
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:104
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:98
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:178
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:233
+msgid "Save"
+msgstr "セーブ"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:38
+msgid "Device Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:52
+msgid "Device"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:55
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:197
+msgid "Add device"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:64
+msgid "Edit device details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:73
+msgid "Remove device from monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:79
+msgid "Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:81
+msgid "Min Activity Duration [s]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:82
+msgid "Max Active Response Delay [ms]"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:83
+msgid "Sample Size"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+msgid "Do you really want to permanently remove the device from monitoring?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+msgid "Remove from Monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:118
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
+msgid "Cancel"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:38
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:39
+msgid "Status"
+msgstr "状態"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:52
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:125
+msgid "Downtime"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:57
+msgid "Previous Activity Start Time"
+msgstr "前回の活動始まった時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:58
+msgid "Previous Activity End Time"
+msgstr "前回の活動終わった時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:59
+msgid "Current Activity Start Time"
+msgstr "今回の活動始まった時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:61
+msgid "Current Activity Duration"
+msgstr "今回の活動期間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:62
+msgid "Current"
+msgstr "現在"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:64
+msgid "Activity permitted"
+msgstr "活動は許可されました"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:65
+msgid "OK?"
+msgstr "いいですか？"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:67
+msgid "Reasons"
+msgstr "理由"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:73
+msgid "Show durations of most recent days"
+msgstr "最近の日の期間を見る"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:123
+msgid "Active Time"
+msgstr "活動時間"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:128
+msgid "Active"
+msgstr "活動中"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:129
+msgid "Activity Start"
+msgstr "活動始まる"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:130
+msgid "Start"
+msgstr "始まる"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:131
+msgid "Activity End"
+msgstr "活動終わる"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:132
+msgid "End"
+msgstr "終わる"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:133
+msgid "Host(#procs)"
+msgstr "ホスト(#procs)"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/index.template.html:140
+msgid "Show activity times"
+msgstr "活動時間を見る"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:21
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:41
+msgid "Login"
+msgstr "サインイン"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/login.template.html:35
+msgid "Password"
+msgstr "パスワード"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:40
+msgid "Admin"
+msgstr "管理者"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:41
+msgid "Users"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:42
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:189
+msgid "Devices"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:46
+msgid "Signed in as"
+msgstr "サインインのユーザーは"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/navbar.include.html:48
+msgid "Logout"
+msgstr "ログアウト"
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:40
+msgid "User Configuration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:63
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:195
+msgid "Add to monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:65
+msgid "Add User"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:76
+msgid "Edit user details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:86
+msgid "Remove user from monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:93
+msgid "First Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:94
+msgid "Last Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:96
+msgid "Process Name Pattern"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
+msgid "Rulesets"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
+msgid "Count"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:120
+msgid "Add ruleset"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:129
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:208
+msgid "Edit ruleset details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:139
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+msgid "Remove ruleset"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:142
+msgid "Move ruleset up"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:145
+msgid "Move ruleset down"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:151
+msgid "Label"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:153
+msgid "Context Details"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:217
+msgid "Remove monitoring of this device for the user"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:224
+msgid "Percent"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+msgid "Do you really want to permanently remove the user from monitoring?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
+msgid "Remove from monitoring"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:247
+msgid "Do you really want to permanently remove the ruleset?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:252
+msgid ""
+"Do you really want to permanently remove monitoring of the device for "
+"this user?"
+msgstr ""
+
+#~ msgid "Hostname"
+#~ msgstr ""
+
+#~ msgid "weekday"
+#~ msgstr "平日"
+
+#~ msgid "Details"
+#~ msgstr ""
+
+#~ msgid "Number of assigned users"
+#~ msgstr ""
+
+#~ msgid "Not set"
+#~ msgstr ""
+
+#~ msgid "Shared with: "
+#~ msgstr ""
+
+#~ msgid "Summary"
+#~ msgstr ""
+
+#~ msgid "'{name}' is not a valid host address"
+#~ msgstr ""
+

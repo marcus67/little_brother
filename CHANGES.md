@@ -1,8 +1,77 @@
-![LittleBrother-Logo](little_brother/static/icons/icon_baby-panda_128x128.png)
+![LittleBrother-Logo](little_brother/static/icons/icon-baby-panda-128x128.png)
 
 # Change History 
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
+
+## Version 0.3.1 Revision 67 (July 20th, 2020)
+
+*   Fix issue with master process not detecting user activity when new users are activated
+*   Change the default configuration on the Docker slave image:
+    *   Set sqlite as the default backend
+    *   Deactivate audio output and pop notifications
+
+## Version 0.3.0 Revision 66 (July 20th, 2020)
+
+*   Update Italian localization (locale "it")
+*   Issue error when no database user is given when driver != sqlite
+*   Register logging filter for alembic
+*   Add up-to-dateness of translations as column to localization table
+
+## Version 0.3.0 Revision 65 (July 18th, 2020)
+    
+*   Add Spanish localization (locale "es")
+
+## Version 0.3.0 Revision 64 (July 18th, 2020)
+
+*   New Prometheus gauge `little_brother_configured_users`
+*   Configuration for Prometheus port in test cases
+*   Completely revised status handling in class `ClientDeviceHandler`
+*   Use `percent` in `User2Device` to compute fractional playtime on devices
+*   Closes #78, see [here](https://github.com/marcus67/little_brother/issues/78)
+*   Closes #90, see [here](https://github.com/marcus67/little_brother/issues/90)
+*   Closes #38, see [here](https://github.com/marcus67/little_brother/issues/38)
+*   Closes #39, see [here](https://github.com/marcus67/little_brother/issues/39)
+*   Closes #88, see [here](https://github.com/marcus67/little_brother/issues/88)
+*   Closes #91, see [here](https://github.com/marcus67/little_brother/issues/91)
+*   Provide configuration file for apparmor
+*   Move creation of `/var/run/little-brother` from service configuration to tmpfiles.d configuration
+*   Completely revised documentation
+*   Catch exception while retrieving data on the German vacation schedules.
+*   Include local installation of fontawesome
+*   Decativate settings changes to log handling by alembic
+*   Support broadcasting of user settings, activate on all relevant changes
+*   Increase connection pool size
+*   Activate mandatory sqlite backend for slaves
+*   Make sure database session are always closed
+*   Deploy etc/master.config as a template
+*   Closes #93, see [here](https://github.com/marcus67/little_brother/issues/93)
+*   Do not schedule tasks too far into the future
+ 
+## Version 0.2.3 Revision 63 (May 23rd, 2020)
+
+*   Add Danish localization (locale "da")
+*   Minor corrections to Bangla translation
+*   Closes #89, see [here](https://github.com/marcus67/little_brother/issues/89)
+
+## Version 0.2.2 Revision 62 (May 6th, 2020)
+
+*   Added Finnish localization (locale "nl")
+*   Added Turkish localization (locale "tr")
+*   Added Russian localization (locale "ru")
+*   Added Japanese localization (locale "ja")
+*   Added Bangla localization (locale "bn")
+*   Added French localization (locale "fr")
+*   Added Thai localization (locale "th")
+*   Added two Prometheus metrics to provide version information and uptime
+*   Updated Grafana dashboard 
+*   Optional font scaling depending on request locale (for e.g. Bangla)
+*   Closes #79, see [here](https://github.com/marcus67/little_brother/issues/79)
+*   Add test cases for classes `RuleHandler` and `AppControl`
+*   Closes #56, see [here](https://github.com/marcus67/little_brother/issues/56)
+*   Closes #74, see [here](https://github.com/marcus67/little_brother/issues/74)
+*   Closes #40, see [here](https://github.com/marcus67/little_brother/issues/40)
+*   Upgrade to `python_base_app` version 0.1.9
 
 ## Version 0.2.1 Revision 61 (April 18th, 2020)
 

@@ -27,7 +27,5 @@ fi
 
 PATH=${PATH}:${HOME}/.virtualenvs/little-brother/bin
 pybabel extract -F ${BASE_DIR}/etc/babel.cfg -o ${BASE_DIR}/etc/messages.pot \
-        ${BASE_DIR}/little_brother \
-        ${BASE_DIR}/contrib/python_base_app/python_base_app \
-        ${BASE_DIR}/contrib/flask_helpers/flask_helpers
+        ${BASE_DIR}/little_brother
 pybabel update -i ${BASE_DIR}/etc/messages.pot -d ${BASE_DIR}/little_brother/translations

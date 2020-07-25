@@ -15,6 +15,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import wtforms
+
 from little_brother import context_rule_handler
 from python_base_app import configuration
 
@@ -22,11 +24,12 @@ from python_base_app import configuration
 _ = lambda x: x
 
 DEFAULT_CONTEXT_RULE_HANDLER_NAME = _("default")
-WEEKDAY_CONTEXT_RULE_HANDLER_NAME = _("weekday")
+WEEKPLAN_CONTEXT_RULE_HANDLER_NAME = _("weekplan")
 
 VALID_ACTIVE_DAY_CHARACTERS = "1YX"
+VALID_INACTIVE_DAY_CHARACTERS = "0N-"
 
-WEEKDAY_PREDEFINED_DETAILS = {
+WEEKPLAN_PREDEFINED_DETAILS = {
     _("weekend"): "-----11",
     _("weekdays"): "11111--",
     _("mondays"): "1------",
@@ -41,18 +44,18 @@ WEEKDAY_PREDEFINED_DETAILS = {
 
 class DefaultContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
 
-    def __init__(self):
-        super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME)
+    def __init__(self, p_locale_helper=None):
+        super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
 
     def is_active(self, p_reference_date, p_details):
         return True
 
 
-class WeekdayContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
+class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
 
-    def __init__(self):
+    def __init__(self, p_locale_helper=None):
 
-        super().__init__(p_context_name=WEEKDAY_CONTEXT_RULE_HANDLER_NAME)
+        super().__init__(p_context_name=WEEKPLAN_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
 
     def is_active(self, p_reference_date, p_details):
 
@@ -61,8 +64,8 @@ class WeekdayContextRuleHandler(context_rule_handler.AbstractContextRuleHandler)
 
         p_details = p_details.lower()
 
-        if p_details in WEEKDAY_PREDEFINED_DETAILS:
-            weekday_string = WEEKDAY_PREDEFINED_DETAILS[p_details]
+        if p_details in WEEKPLAN_PREDEFINED_DETAILS:
+            weekday_string = WEEKPLAN_PREDEFINED_DETAILS[p_details]
 
         elif len(p_details) == 7:
             weekday_string = p_details
@@ -74,3 +77,41 @@ class WeekdayContextRuleHandler(context_rule_handler.AbstractContextRuleHandler)
         time_tuple = p_reference_date.timetuple()
 
         return weekday_string[time_tuple.tm_wday] in VALID_ACTIVE_DAY_CHARACTERS
+
+    def get_choices(self):
+
+        return WEEKPLAN_PREDEFINED_DETAILS.keys()
+
+    def validate_context_details(self, p_context_detail):
+
+        if p_context_detail in WEEKPLAN_PREDEFINED_DETAILS:
+            return
+
+        invalid = False
+
+        if len(p_context_detail) != 7:
+            invalid = True
+
+        else:
+            for c in p_context_detail:
+                if c not in VALID_ACTIVE_DAY_CHARACTERS + VALID_INACTIVE_DAY_CHARACTERS:
+                    invalid = True
+
+        if invalid:
+            localized_choices = "'" + "', '".join(
+                [self._locale_helper.gettext(p_text=choice) for choice in WEEKPLAN_PREDEFINED_DETAILS.keys()]) + "'"
+
+            fmt = _("Invalid detail '{detail}'. Must be one of {choices} or " \
+                    "have length seven characters denoting the days of the week (starting with Monday) and " \
+                    "consist of active letters '{valid_active_characters}' " \
+                    "and inactive letters '{valid_inactive_characters}'")
+            fmt = self._locale_helper.gettext(fmt)
+            msg = fmt.format(detail=p_context_detail, choices=localized_choices,
+                             valid_active_characters=VALID_ACTIVE_DAY_CHARACTERS,
+                             valid_inactive_characters=VALID_INACTIVE_DAY_CHARACTERS)
+
+            raise wtforms.validators.ValidationError(message=str(msg))
+
+    def summary(self, p_context_detail):
+
+        return [_("Selected Days"), ": ", p_context_detail]

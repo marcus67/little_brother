@@ -36,11 +36,13 @@ EVENT_TYPE_SPEAK = "SPEAK"
 def create_process_info_from_event(p_event):
     return process_info.ProcessInfo(
         p_hostname=p_event.hostname,
+        p_hostlabel=p_event.hostlabel,
         p_pid=p_event.pid,
         p_username=p_event.username,
         p_processhandler=p_event.processhandler,
         p_processname=p_event.processname,
-        p_start_time=p_event.process_start_time)
+        p_start_time=p_event.process_start_time,
+        p_percent=p_event.percent)
 
 
 class AdminEvent(object):
@@ -56,7 +58,9 @@ class AdminEvent(object):
                  p_text=None,
                  p_locale=None,
                  p_payload=None,
-                 p_downtime=0):
+                 p_downtime=0,
+                 p_percent=100,
+                 p_hostlabel=None):
         if p_event_time is None:
             p_event_time = datetime.datetime.now()
 
@@ -72,6 +76,8 @@ class AdminEvent(object):
         self.locale = p_locale
         self.payload = p_payload
         self.downtime = p_downtime
+        self.percent = p_percent
+        self.hostlabel = p_hostlabel
 
     def __str__(self):
         return "AdminEvent (type=%s, host=%s, user=%s, process=%s, PID=%s)" % (

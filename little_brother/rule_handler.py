@@ -19,6 +19,7 @@ import copy
 import datetime
 import re
 
+from little_brother import constants
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -39,12 +40,18 @@ RULE_DAY_BLOCKED = 8
 RULE_ACTIVITY_DURATION = 16
 RULE_MIN_BREAK = 32
 
+RULE_MASK = RULE_TIME_OF_DAY | RULE_TIME_PER_DAY | RULE_DAY_BLOCKED | RULE_ACTIVITY_DURATION | RULE_MIN_BREAK
+
+INFO_REMAINING_PLAYTIME = 64
+INFO_REMAINING_PLAYTIME_THIS_SESSION = 128
+
+INFO_MASK = INFO_REMAINING_PLAYTIME | INFO_REMAINING_PLAYTIME_THIS_SESSION
+
 DEFAULT_RULESET_LABEL = "default"
-DEFAULT_PROCESS_PATTERN = "systemd|.*sh"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
-# Dummy function to trigger extraction by pybabel...F
+# Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
 
 
@@ -66,7 +73,7 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.context_label = configuration.NONE_STRING
         self.priority = DEFAULT_PRIORITY
         self.username = None
-        self.process_name_pattern = DEFAULT_PROCESS_PATTERN
+        self.process_name_pattern = constants.DEFAULT_PROCESS_NAME_PATTERN
         self.min_time_of_day = configuration.NONE_STRING
         self.max_time_of_day = configuration.NONE_STRING
         self.max_time_per_day = configuration.NONE_STRING
@@ -141,7 +148,6 @@ class RuleSetConfigModel(configuration.ConfigModel):
         self.min_break = tools.get_string_as_duration(p_string=self.min_break)
 
 
-
 class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
 
     def __init__(self):
@@ -165,7 +171,6 @@ class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
             self.rule_set_configs[rule_set_section.username] = configs
 
         configs.append(rule_set_section)
-
 
     @staticmethod
     def read_time_of_day(p_time_of_day):
@@ -197,6 +202,7 @@ class RuleResultInfo(object):
         self.applying_rules = 0
         self.break_minutes_left = 0
         self.approaching_logout_rules = 0
+        self.minutes_left_today = None
         self.minutes_left_in_session = None
         self.minutes_left_before_logout = None
         self.default_rule_set = None
@@ -213,9 +219,19 @@ class RuleResultInfo(object):
 
     def set_minutes_left_in_session(self, p_minutes_left):
 
+        p_minutes_left = max(p_minutes_left, 0)
+
         if self.minutes_left_in_session is None or p_minutes_left < self.minutes_left_in_session:
             self.minutes_left_in_session = p_minutes_left
             self.args['minutes_left_in_session'] = p_minutes_left
+
+    def set_minutes_left_today(self, p_minutes_left):
+
+        p_minutes_left = max(p_minutes_left, 0)
+
+        if self.minutes_left_today is None or p_minutes_left < self.minutes_left_today:
+            self.minutes_left_today = p_minutes_left
+            self.args['minutes_left_today'] = p_minutes_left
 
     def get_minutes_left_in_session(self):
 
@@ -223,7 +239,7 @@ class RuleResultInfo(object):
 
     def activity_allowed(self):
 
-        return self.applying_rules == 0
+        return self.applying_rules & RULE_MASK == 0
 
     def limited_session_time(self):
 
@@ -265,10 +281,10 @@ def apply_override(p_rule_set, p_rule_override):
 
 class RuleHandler(object):
 
-    def __init__(self, p_config, p_rule_set_configs):
+    def __init__(self, p_config, p_persistence):
 
         self._config = p_config
-        self._rule_set_configs = p_rule_set_configs
+        self._persistence = p_persistence
         self._context_rule_handlers = {}
         self._default_context_rule_handler_name = None
 
@@ -280,33 +296,54 @@ class RuleHandler(object):
         if p_default:
             self._default_context_rule_handler_name = p_context_rule_handler.context_name
 
-    def get_active_ruleset_config(self, p_username, p_reference_date):
+    def get_context_rule_handler_names(self):
 
-        active_ruleset_config = None
+        return self._context_rule_handlers.keys()
+
+    def get_context_rule_handler(self, p_context_name):
+
+        return self._context_rule_handlers.get(p_context_name)
+
+    def validate_context_rule_handler_details(self, p_context_name, p_context_details):
+
+        context_rule_handler = self._context_rule_handlers.get(p_context_name)
+
+        if context_rule_handler is not None:
+            context_rule_handler.validate_context_details(p_context_details)
+
+    def get_context_rule_handler_choices(self):
+
+        choices = []
+
+        for handler in self._context_rule_handlers.values():
+            choices.extend(handler.get_choices())
+
+        return choices
+
+    def get_active_ruleset(self, p_session_context, p_username, p_reference_date):
+
+        active_ruleset = None
         max_priority = None
 
-        ruleset_configs = self._rule_set_configs.get(p_username)
+        user = self._persistence.user_map(p_session_context).get(p_username)
 
-        if ruleset_configs is not None:
-            for c_config in ruleset_configs:
-                active = False
-
-                context_name = c_config.context or self._default_context_rule_handler_name
-
+        if user is not None:
+            for ruleset in user.rulesets:
+                context_name = ruleset.context or self._default_context_rule_handler_name
                 context_rule_handler = self._context_rule_handlers.get(context_name)
 
                 if context_rule_handler is None:
-                    raise configuration.ConfigurationException("invalid rule set context '%s'" % c_config.context)
+                    raise configuration.ConfigurationException("invalid rule set context '%s'" % ruleset.context)
 
                 active = context_rule_handler.is_active(p_reference_date=p_reference_date,
-                                                        p_details=c_config.context_details)
+                                                        p_details=ruleset.context_details)
 
                 if active:
-                    if max_priority is None or c_config.priority > max_priority:
-                        max_priority = c_config.priority
-                        active_ruleset_config = c_config
+                    if max_priority is None or ruleset.priority > max_priority:
+                        max_priority = ruleset.priority
+                        active_ruleset = ruleset
 
-        return active_ruleset_config
+        return active_ruleset
 
     def check_time_of_day(self, p_rule_set, p_stat_info, p_rule_result_info):
 
@@ -328,7 +365,9 @@ class RuleHandler(object):
                 )
 
             max_time_of_day_as_date = datetime.datetime.combine(datetime.date.today(), p_rule_set.max_time_of_day)
-            time_left_in_minutes = int((max_time_of_day_as_date - p_stat_info.reference_time).total_seconds() + 30 / 60)
+            time_left_in_seconds = (max_time_of_day_as_date - p_stat_info.reference_time).total_seconds()
+            time_left_in_minutes = max(int((time_left_in_seconds + 30) / 60), 0)
+            p_rule_result_info.set_minutes_left_today(p_minutes_left=time_left_in_minutes)
             p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
             if time_left_in_minutes <= self._config.warning_before_logout:
@@ -341,7 +380,9 @@ class RuleHandler(object):
             return
 
         if p_rule_set.max_time_per_day is not None:
-            if p_stat_info.todays_activity_duration >= p_rule_set.max_time_per_day:
+            todays_activity_duration = p_stat_info.todays_activity_duration
+
+            if todays_activity_duration >= p_rule_set.max_time_per_day:
                 if p_rule_set.max_time_per_day == 0:
                     p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_DAY_BLOCKED
                     p_rule_result_info.applying_rule_text_templates.append(
@@ -358,7 +399,8 @@ class RuleHandler(object):
 
             if p_rule_set.max_time_per_day > 0:
                 time_left_in_minutes = int(
-                    (p_rule_set.max_time_per_day - p_stat_info.todays_activity_duration + 30) / 60)
+                    (p_rule_set.max_time_per_day - todays_activity_duration + 30) / 60)
+                p_rule_result_info.set_minutes_left_today(p_minutes_left=time_left_in_minutes)
                 p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
                 if time_left_in_minutes <= self._config.warning_before_logout:
@@ -391,6 +433,33 @@ class RuleHandler(object):
                         p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION,
                                                                        p_minutes_left=time_left_in_minutes)
 
+    def check_info_rules(self, p_rule_set, p_stat_info, p_rule_result_info):
+
+        if p_rule_set.free_play:
+            p_rule_result_info.applying_rules |= INFO_REMAINING_PLAYTIME
+            p_rule_result_info.applying_rule_text_templates.append(
+                (_("Free Play"), {})
+            )
+
+        else:
+            if p_rule_result_info.minutes_left_today is not None:
+                p_rule_result_info.applying_rules |= INFO_REMAINING_PLAYTIME
+                p_rule_result_info.applying_rule_text_templates.append(
+                    (_("Remaining play time today: {hh_mm}"),
+                     {"hh_mm": tools.get_duration_as_string(p_seconds=60 * p_rule_result_info.minutes_left_today,
+                                                            p_include_seconds=False)})
+                )
+
+            current_activity_duration = p_stat_info.current_activity_duration
+
+            if current_activity_duration is not None and p_rule_result_info.minutes_left_in_session is not None:
+                p_rule_result_info.applying_rules |= INFO_REMAINING_PLAYTIME_THIS_SESSION
+                p_rule_result_info.applying_rule_text_templates.append(
+                    (_("Remaining play time in current session: {hh_mm}"),
+                     {"hh_mm": tools.get_duration_as_string(
+                         p_seconds=60 * p_rule_result_info.minutes_left_in_session, p_include_seconds=False)})
+                )
+
     @staticmethod
     def check_min_break(p_rule_set, p_stat_info, p_rule_result_info):
 
@@ -412,7 +481,7 @@ class RuleHandler(object):
                 p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_MIN_BREAK
                 p_rule_result_info.applying_rule_text_templates.append(
                     (_("Minimum break time {hh_mm} not reached"),
-                     {"hh_mm": tools.get_duration_as_string(p_seconds=p_rule_set.min_break)})
+                     {"hh_mm": tools.get_duration_as_string(p_seconds=min_relative_break)})
                 )
                 p_rule_result_info.break_minutes_left = int(
                     (min_relative_break - seconds_since_last_activity + 30) / 60)
@@ -420,15 +489,16 @@ class RuleHandler(object):
 
         return
 
-    def process_ruleset(self, p_stat_info, p_reference_time, p_rule_override, p_locale):
+    def process_ruleset(self, p_session_context, p_stat_info, p_reference_time, p_rule_override, p_locale):
 
         rule_result_info = RuleResultInfo()
 
-        rule_set = self.get_active_ruleset_config(p_username=p_stat_info.username, p_reference_date=p_reference_time)
+        rule_set = self.get_active_ruleset(p_session_context=p_session_context,
+                                           p_username=p_stat_info.username, p_reference_date=p_reference_time)
         rule_result_info.default_rule_set = rule_set
         rule_result_info.effective_rule_set = apply_override(p_rule_set=rule_set, p_rule_override=p_rule_override)
 
-        rule_result_info.args["user"] = p_stat_info.username
+        rule_result_info.args["user"] = p_stat_info.notification_name
         rule_result_info.locale = p_locale
 
         if rule_set is not None:
@@ -441,9 +511,14 @@ class RuleHandler(object):
             self.check_min_break(p_rule_set=rule_result_info.effective_rule_set, p_stat_info=p_stat_info,
                                  p_rule_result_info=rule_result_info)
 
+            # This check must be the last in the set because it uses results stored into rule_result_info
+            # by the other checks!
+            self.check_info_rules(p_rule_set=rule_result_info.effective_rule_set, p_stat_info=p_stat_info,
+                                  p_rule_result_info=rule_result_info)
+
         if not rule_result_info.activity_allowed():
             fmt = "Activity prohibited for user %s: applying rules(s) %d" % (
-            p_stat_info.username, rule_result_info.applying_rules)
+                p_stat_info.username, rule_result_info.applying_rules)
             self._logger.debug(fmt)
 
         return rule_result_info
