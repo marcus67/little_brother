@@ -198,7 +198,7 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         super().__init__(p_config=p_config)
         self._persistence = p_persistence
-        self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
+        #self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
 
         try:
             self.ping_result_regex = re.compile(self._config.ping_result_regex)
@@ -219,8 +219,9 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_device_info(self, p_device_name):
 
-        device_info = self._device_infos.get(p_device_name)
-        device = self._persistence.device_map(self._session_context).get(p_device_name)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            device_info = self._device_infos.get(p_device_name)
+            device = self._persistence.device_map(session_context).get(p_device_name)
 
         if device is not None:
             if device_info is None:
@@ -310,71 +311,72 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_number_of_monitored_devices(self):
 
-        return len(self._persistence.devices(self._session_context))
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            return len(self._persistence.devices(session_context))
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
                        p_process_regex_map):
 
         events = []
 
-        session_context = object()
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
 
-        for device in self._persistence.devices(p_session_context):
-            self.ping_device(p_reference_time=p_reference_time, p_device=device)
+            for device in self._persistence.devices(p_session_context):
+                self.ping_device(p_reference_time=p_reference_time, p_device=device)
 
-        for device_info in self._device_infos.values():
-            if device_info.device_name not in self._persistence.device_map(self._session_context):
-                # Clear statistics for old device names so that they are correctly reported in Prometheus 
-                device_info.clear_moving_average()
+            for device_info in self._device_infos.values():
+                if device_info.device_name not in self._persistence.device_map(session_context):
+                    # Clear statistics for old device names so that they are correctly reported in Prometheus
+                    device_info.clear_moving_average()
 
-        for device in self._persistence.devices(self._session_context):
-            device_info = self.get_device_info(p_device_name=device.device_name)
+            for device in self._persistence.devices(session_context):
+                device_info = self.get_device_info(p_device_name=device.device_name)
 
-            if device_info.requires_process_start_event(p_reference_time=p_reference_time):
-                # Send process start event for monitored users (if required)
-                for user2device in device.users:
-                    current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
+                if device_info.requires_process_start_event(p_reference_time=p_reference_time):
+                    # Send process start event for monitored users (if required)
+                    for user2device in device.users:
+                        current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
 
-                    if user2device.active:
-                        if current_pinfo is None:
-                            event = admin_event.AdminEvent(
-                                p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
-                                p_hostname=device_info.hostname,
-                                p_hostlabel=device_info.device_name,
-                                p_processhandler=self.id,
-                                p_username=user2device.user.username,
-                                p_percent=user2device.percent,
-                                p_process_start_time=p_reference_time)
-                            events.append(event)
+                        if user2device.active:
+                            if current_pinfo is None:
+                                event = admin_event.AdminEvent(
+                                    p_event_type=admin_event.EVENT_TYPE_PROCESS_START,
+                                    p_hostname=device_info.hostname,
+                                    p_hostlabel=device_info.device_name,
+                                    p_processhandler=self.id,
+                                    p_username=user2device.user.username,
+                                    p_percent=user2device.percent,
+                                    p_process_start_time=p_reference_time)
+                                events.append(event)
 
-                    else:
+                        else:
+                            if current_pinfo is not None:
+                                event = self.create_admin_event_process_end_from_pinfo(
+                                    p_pinfo=current_pinfo,
+                                    p_reference_time=p_reference_time)
+                                events.append(event)
+
+
+                else:
+                    # Send process stop event for non monitored users (if required)
+                    for user2device in device.users:
+                        current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
+
                         if current_pinfo is not None:
                             event = self.create_admin_event_process_end_from_pinfo(
                                 p_pinfo=current_pinfo,
                                 p_reference_time=p_reference_time)
                             events.append(event)
 
+            active_hostnames = [device_info.hostname for device_info in self._device_infos.values() if device_info.is_up]
 
-            else:
-                # Send process stop event for non monitored users (if required)
-                for user2device in device.users:
-                    current_pinfo = self.get_current_active_pinfo(device.hostname, p_username=user2device.user.username)
-
-                    if current_pinfo is not None:
-                        event = self.create_admin_event_process_end_from_pinfo(
-                            p_pinfo=current_pinfo,
-                            p_reference_time=p_reference_time)
-                        events.append(event)
-
-        active_hostnames = [device_info.hostname for device_info in self._device_infos.values() if device_info.is_up]
-
-        for pinfo in self._process_infos.values():
-            # If the end time of a current entry is None AND the process was started on the local host AND
-            # the process is no longer running THEN send an EVENT_TYPE_PROCESS_END event!
-            if pinfo.end_time is None and pinfo.hostname not in active_hostnames:
-                event = self.create_admin_event_process_end_from_pinfo(
-                    p_pinfo=pinfo,
-                    p_reference_time=p_reference_time)
-                events.append(event)
+            for pinfo in self._process_infos.values():
+                # If the end time of a current entry is None AND the process was started on the local host AND
+                # the process is no longer running THEN send an EVENT_TYPE_PROCESS_END event!
+                if pinfo.end_time is None and pinfo.hostname not in active_hostnames:
+                    event = self.create_admin_event_process_end_from_pinfo(
+                        p_pinfo=pinfo,
+                        p_reference_time=p_reference_time)
+                    events.append(event)
 
         return events
