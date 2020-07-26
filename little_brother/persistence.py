@@ -489,6 +489,13 @@ class SessionContext(object):
         if p_register:
             SessionContext._session_registry.append(self)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close_session()
+        return True
+
     def get_cache(self, p_name):
 
         # result =
@@ -499,9 +506,9 @@ class SessionContext(object):
 
         # print(str(self) + "clear_cache " + str(self._caches))
 
-        if self._session is not None:
-            self._session.close()
-            self._session = None
+#        if self._session is not None:
+#            self._session.close()
+#            self._session = None
 
         self._caches = {}
 
@@ -511,6 +518,11 @@ class SessionContext(object):
             self._session = self._persistence.get_session()
 
         return self._session
+
+    def close_session(self):
+        if self._session is not None:
+            self._session.close()
+            self._session = None
 
     def set_cache(self, p_name, p_object):
 
@@ -588,6 +600,9 @@ class Persistence(object):
             options['pool_size'] = self._config.pool_size
             options['max_overflow'] = self._config.max_overflow
 
+        # if DATABASE_DRIVER_SQLITE in self._config.database_driver:
+        #     options['check_same_thread'] = False
+
         self._engine = sqlalchemy.create_engine(url, **options)
 
     def build_url(self):
@@ -644,7 +659,7 @@ class Persistence(object):
             self._logger.info(fmt)
             self._session_used = True
 
-        return sqlalchemy.orm.sessionmaker(bind=self._engine)()
+        return sqlalchemy.orm.scoped_session(sqlalchemy.orm.sessionmaker(bind=self._engine))()
 
     def create_mysql(self, p_create_tables):
 
@@ -813,22 +828,22 @@ class Persistence(object):
 
     def load_process_infos(self, p_lookback_in_days):
 
-        session_context = SessionContext(self)
-        session = session_context.get_session()
-        reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
+        with SessionContext(self) as session_context:
+            session_context = SessionContext(self)
+            session = session_context.get_session()
+            reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
 
-        result = session.query(ProcessInfo).filter(ProcessInfo.start_time > reference_time).all()
+            result = session.query(ProcessInfo).filter(ProcessInfo.start_time > reference_time).all()
 
-        for pinfo in result:
-            device = self.hostname_device_map(session_context).get(pinfo.hostname)
+            for pinfo in result:
+                device = self.hostname_device_map(session_context).get(pinfo.hostname)
 
-            if device is not None:
-                pinfo.hostlabel = device.device_name
+                if device is not None:
+                    pinfo.hostlabel = device.device_name
 
-            else:
-                pinfo.hostlabel = None
+                else:
+                    pinfo.hostlabel = None
 
-        session.close()
         return result
 
     def load_rule_overrides(self, p_lookback_in_days):

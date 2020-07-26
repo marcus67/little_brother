@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 68 (July 20th, 2020)
+
+*   Closes #98, see [here](https://github.com/marcus67/little_brother/issues/98)
+*   Closes #99, see [here](https://github.com/marcus67/little_brother/issues/99)
+
 ## Version 0.3.1 Revision 67 (July 20th, 2020)
 
 *   Fix issue with master process not detecting user activity when new users are activated
