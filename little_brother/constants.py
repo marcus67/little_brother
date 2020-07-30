@@ -40,6 +40,7 @@ LANGUAGES = {
     'bn': 'বাংলা',
     'th': 'ภาษาไทย',
     'da': 'Dansk',
+    'es': 'Español'
 }
 
 TEXT_SEPERATOR = " 🞄 "

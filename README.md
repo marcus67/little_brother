@@ -135,10 +135,12 @@ This guide will take you through the steps required to install, configure, and r
 on your system. This guide works both for master and slave setups. For setting up a slave there is a second option
 using Docker. See the [Docker](DOCKER.md) page for more details.
 
-### YouTube Video
+### YouTube Videos
 
-TODO: New YouTube video
- 
+| Thumbnail and Link to Video                                                                                                                                           | Content                                                                        | Related Versions                   |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -----------------------------------------------------------------------------  | ---------------------------------- |
+| <A HREF="https://www.youtube.com/watch?v=gOxUBlfKZyM">![little-brother-0_3_1](doc/youtube-presentations/2020-07-30_LittleBrother_YouTube_Presentation.thumb.png) </A> | Install Debian package, edit configuration file, add user, test functionality  | LittleBrother 0.3.1 on Ubuntu 19.3 |
+
 ### Download the Software
 
 The application is available as a Debian package 

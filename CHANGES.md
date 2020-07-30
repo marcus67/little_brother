@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 69 (July 30th, 2020)
+
+*   Closes #85, see [here](https://github.com/marcus67/little_brother/issues/85)
+*   Add table of YouTube videos to README
+*   Activate Spanish translation 
+
 ## Version 0.3.1 Revision 68 (July 20th, 2020)
 
 *   Closes #98, see [here](https://github.com/marcus67/little_brother/issues/98)
