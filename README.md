@@ -137,9 +137,9 @@ using Docker. See the [Docker](DOCKER.md) page for more details.
 
 ### YouTube Videos
 
-| Thumbnail and Link to Video                                                                                                                                           | Content                                                                        | Related Versions                   |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -----------------------------------------------------------------------------  | ---------------------------------- |
-| <A HREF="https://www.youtube.com/watch?v=gOxUBlfKZyM">![little-brother-0_3_1](doc/youtube-presentations/2020-07-30_LittleBrother_YouTube_Presentation.thumb.png) </A> | Install Debian package, edit configuration file, add user, test functionality  | LittleBrother 0.3.1 on Ubuntu 19.3 |
+| Thumbnail and Link to Video                                                                                                                                           | Duration | Content                                                                        | Related Versions                   |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -----------------------------------------------------------------------------  | ---------------------------------- |
+| <A HREF="https://www.youtube.com/watch?v=gOxUBlfKZyM">![little-brother-0_3_1](doc/youtube-presentations/2020-07-30_LittleBrother_YouTube_Presentation.thumb.png) </A> | 16 min   | Install Debian package, edit configuration file, add user, test functionality  | LittleBrother 0.3.1 on Ubuntu 19.3 |
 
 ### Download the Software
 

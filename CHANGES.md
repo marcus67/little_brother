@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 70 (August 4th, 2020)
+
+*   Publish slide deck used in YouTube video
+
 ## Version 0.3.1 Revision 69 (July 30th, 2020)
 
 *   Closes #85, see [here](https://github.com/marcus67/little_brother/issues/85)
