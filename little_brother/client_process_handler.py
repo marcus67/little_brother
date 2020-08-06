@@ -110,7 +110,11 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         self._logger.debug(fmt.format(cmd=kill_command))
 
         cmd_array = shlex.split(kill_command)
-        subprocess.run(cmd_array)
+        completed_process = subprocess.run(cmd_array)
+
+        if completed_process.stderr is not None and len(completed_process.stderr) > 0:
+            fmt = "Error while killing process: {stderr}"
+            self._logger.warning(fmt.format(stderr=completed_process.stderr))
 
         _gone, alive = psutil.wait_procs([proc], timeout=self._config.kill_delay)
 
@@ -130,7 +134,11 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             self._logger.debug(fmt.format(cmd=kill_command))
 
             cmd_array = shlex.split(kill_command)
-            subprocess.run(cmd_array)
+            completed_process = subprocess.run(cmd_array)
+
+            if completed_process.stderr is not None and len(completed_process.stderr) > 0:
+                fmt = "Error while killing process: {stderr}"
+                self._logger.warning(fmt.format(stderr=completed_process.stderr))
 
         return []
 

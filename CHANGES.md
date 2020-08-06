@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 71 (August 6th, 2020)
+
+*   Issue warning when kill command returns non-empty stderr
+*   Fixed problem with notification in wrong locale being passed on to LittleBrotherTaskbar 
+
 ## Version 0.3.1 Revision 70 (August 4th, 2020)
 
 *   Publish slide deck used in YouTube video

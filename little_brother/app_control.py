@@ -21,6 +21,7 @@ import locale
 import queue
 import re
 import socket
+import os.path
 
 from little_brother import admin_event
 from little_brother import constants, process_statistics
@@ -141,6 +142,8 @@ class AppControl(object):
             self._host_name = self._config.hostname
 
         self.init_labels_and_notifications()
+        self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
+
 
     def reset_users(self, p_session_context):
         self._process_regex_map = None
@@ -759,7 +762,7 @@ class AppControl(object):
 
     def pick_text_for_ruleset(self, p_rule_result_info, p_text=None):
 
-        t = gettext.translation('messages', localedir='little_brother/translations',
+        t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
         if p_text is not None:
