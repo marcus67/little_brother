@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 72 (August 6th, 2020)
+
+*   Added second YouTube video
+
 ## Version 0.3.1 Revision 71 (August 6th, 2020)
 
 *   Issue warning when kill command returns non-empty stderr

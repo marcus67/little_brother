@@ -1,0 +1,435 @@
+# Lithuanian translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-05-11 23:49+0200\n"
+"PO-Revision-Date: 2020-04-20 09:48+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: lt\n"
+"Language-Team: lt <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:90
+msgid "username '{username}' not specified"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:98
+msgid "username '{username}' not being monitored"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:150
+msgid "{days} days ago"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:153
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+msgid "Today"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:154
+msgid "Yesterday"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+msgid ""
+"{user}, you do not have computer time left today.\n"
+"You will be logged out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:157
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"Please, log out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+msgid ""
+"{user}, you do not have any computer time today.\n"
+"You will be logged out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:160
+msgid ""
+"{user}, it is too early to use the computer.\n"
+"You will be logged out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+msgid ""
+"{user}, it is too late to use the computer.\n"
+"You will be logged out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"use the computer.\n"
+"Please, log out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+msgid ""
+"{user}, you have to take a break.\n"
+"You will be logged out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:165
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"break.\n"
+"Please, log out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+msgid ""
+"{user}, your break will only be over in {break_minutes_left} minutes.\n"
+"You will be logged out."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+msgid ""
+"Hello {user}, you will be allowed to play for {minutes_left_in_session} "
+"minutes\n"
+"in this session."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+msgid "Hello {user}, you have unlimited playtime in this session."
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+msgid "'Today ('EEE')'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1085
+msgid "'Today'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+msgid "'Tomorrow ('EEE')'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1091
+msgid "'Tomorrow'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+msgid "yyyy-MM-dd' ('EEE')'"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1097
+msgid "EEE"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
+msgid "vacation"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
+msgid "No activity before {hh_mm} hours"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
+msgid "No activity after {hh_mm} hours"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:350
+msgid "Day blocked: no activity permitted"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:356
+msgid "Activity limited to {hh_mm} per day"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:382
+msgid "No activity exceeding {hh_mm}"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:416
+msgid "Minimum break time {hh_mm} not reached"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
+msgid "default"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
+msgid "weekday"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
+msgid "weekend"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
+msgid "weekdays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
+msgid "mondays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
+msgid "tuesdays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
+msgid "wednesdays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
+msgid "thursdays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
+msgid "fridays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
+msgid "saturdays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
+msgid "sundays"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
+msgid "On"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:225
+msgid "Off"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:37
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
+msgid "About"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:53
+msgid "Setting"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:54
+msgid "Value"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:57
+msgid "Repository"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:61
+msgid "Version"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:65
+msgid "Package Revision"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:69
+msgid "Git Commit ID"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:73
+msgid "Git Branch Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:77
+msgid "Git Author's Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:81
+msgid "Git Author's Email Address"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:85
+msgid "Supported Languages"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:39
+msgid "Administration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:50
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
+msgid "User"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:59
+msgid "Show configurations of upcoming days"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:70
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+msgid "Today's Activity"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:78
+msgid "Save"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
+msgid "Day"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:85
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+msgid "Context"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:86
+msgid "Min Time of Day"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:87
+msgid "Max Time of Day"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
+msgid "Time per Day"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:92
+msgid "Minimum Break"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:93
+msgid "Max Duration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:94
+msgid "Free Play"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
+msgid "Show overrides for day"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
+msgid "override"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:38
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
+msgid "Status"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:51
+msgid "Previous Activity Start Time"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+msgid "Previous Activity End Time"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+msgid "Current Activity Start Time"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
+msgid "Current Activity Duration"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+msgid "Current"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
+msgid "Activity permitted"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:59
+msgid "OK?"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
+msgid "Reasons"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:67
+msgid "Show durations of most recent days"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
+msgid "Active Time"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
+msgid "Active"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
+msgid "Activity Start"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
+msgid "Start"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:118
+msgid "Activity End"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:119
+msgid "End"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:120
+msgid "Host(#procs)"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:127
+msgid "Show activity times"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:21
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:41
+msgid "Login"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:34
+msgid "Username"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:35
+msgid "Password"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:40
+msgid "Admin"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
+msgid "Signed in as"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+msgid "Logout"
+msgstr ""
+
+#~ msgid "Show overrides for day"
+#~ msgstr ""
+
+#~ msgid "Please log in to access this page."
+#~ msgstr ""
+
+#~ msgid "Wrong login or password"
+#~ msgstr ""
+
+#~ msgid "Use Hh MMm SSs"
+#~ msgstr ""
+
+#~ msgid "Use HH[:MM[:SS]]"
+#~ msgstr ""
+

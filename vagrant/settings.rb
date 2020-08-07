@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-
+# coding: utf-8
+#
 # Copyright (C) 2019  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
@@ -15,19 +15,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-settings = {
-    "name": "little-brother",
-    "url": "https://github.com/marcus67/little_brother",
-    "version": "0.3.1",
-    "description": "Simple parental control application monitoring specific processes on Linux hosts "
-                   "to monitor and limit the play time of (young) children.",
-    "author": "Marcus Rickert",
-    "author_email": "little-brother@web.de",
-}
+# Type and version of the VM
+VAGRANT_BOX='ubuntu/trusty64'
+VAGRANT_BOX_VERSION='v20190429.0.1'
 
-extended_settings = {
-    "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "72",
-    "debian_package_architecture": "all",
-    "babel_rel_directory": "translations"
-}
+# Version of the VBOX guest additions
+VIRTUALBOX_GUEST_ADDITIONS_VERSION="6.0.2"
+
+# Logical name of the VM (among other things appearing in the VirtualBox GUI)
+VM_NAME='little-brother'
+
+# RAM of the VM in Megabytes
+VM_MEMORY=4096
+
+# Number of CPUs of the VM
+VM_CPUS=2
+
+# Video RAM size in Megabytes
+VM_VRAM=128
