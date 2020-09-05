@@ -94,9 +94,6 @@ class AppControl(object):
                  p_login_mapping=None,
                  p_locale_helper=None):
 
-        if p_login_mapping is None:
-            p_login_mapping = login_mapping.LoginMapping()
-
         self._config = p_config
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
@@ -110,6 +107,10 @@ class AppControl(object):
         self._locale_helper = p_locale_helper
         #self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
 
+        if p_login_mapping is None:
+            p_login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
+
+
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._usernames_not_found = []
@@ -117,7 +118,6 @@ class AppControl(object):
         self._process_regex_map = None
         # self._uid_map = {}
         # self._username_map = p_login_mapping
-        self._login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
 
         self._logout_warnings = {}
 
@@ -143,6 +143,8 @@ class AppControl(object):
 
         self.init_labels_and_notifications()
         self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
+        self._login_mapping = p_login_mapping
+        self._login_mapping_received = self.is_master()
 
 
     def reset_users(self, p_session_context):
@@ -247,14 +249,13 @@ class AppControl(object):
     def retrieve_user_mappings(self):
 
         if len(self._usernames_not_found) > 0:
-
             usernames_found = []
 
             for username in self._usernames_not_found:
                 uid = self._login_mapping.get_uid_by_login(p_server_group=self._config.server_group,
                                                            p_login=username)
 
-                if uid is None:
+                if uid is None and self._login_mapping_received:
                     uid = self._user_handler.get_uid(p_username=username)
 
                     if uid is not None:
@@ -263,7 +264,6 @@ class AppControl(object):
                                                       p_login_uid_mapping_entry=new_entry)
 
                 if uid is not None:
-
                     usernames_found.append(username)
                     if username not in self._usernames:
                         self._usernames.append(username)
@@ -284,7 +284,12 @@ class AppControl(object):
 
     def is_master(self):
 
-        return self._master_connector._config.host_url is None
+        if self._master_connector is None:
+            # This is for test cases which do not instantiate a master connector
+            return True
+
+        else:
+            return self._master_connector._config.host_url is None
 
     def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
 
@@ -546,6 +551,7 @@ class AppControl(object):
         server_group_names = ', '.join(self._login_mapping.get_server_group_names())
         fmt = "Received login mapping for server group(s) {group_names}"
         self._logger.info(fmt.format(group_names=server_group_names))
+        self._login_mapping_received = True
 
     def update_client_info(self, p_hostname):
 
