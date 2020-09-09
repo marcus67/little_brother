@@ -121,6 +121,8 @@ The [page](ARCHITECTURE.md) gives a detailed description of the architecture of 
 
 ## Tested Distributions
 
+So far, `LittleBrother` has only been released as a Debian package.
+
 | Distribution | Version       | Architecture | Comments                                                               | Most Recent Test |
 | ------------ | ------------- | ------------ | ---------------------------------------------------------------------- | ---------------- |
 | Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
@@ -246,8 +248,8 @@ the following languages are supported or currently in preparation (in the order 
 | ![Flag Thailand](doc/thailand-flag-icon-32.png)                | Thai          | th     | Revision 63    |  Busaba Kramer             |
 | ![Flag Denmark](doc/denmark-flag-icon-32.png)                  | Danish        | da     | Revision 63    |  Erik Husmark              |
 | ![Flag Spain](doc/spain-flag-icon-32.png)                      | Spanish       | es     | Revision 63    |  Ruth Wucherpfennig-Krömer |
+| ![Flag Croatia](doc/croatia-flag-icon-32.png)                  | Croatian      | hr     | Revision 63    |  Incognito                 |
 | ![Flag Lithuania](doc/lithuania-flag-icon-32.png)              | Lithuanian    | lt     | In preparation |  N.N.                      |
-| ![Flag Croatia](doc/croatia-flag-icon-32.png)                  | Croatian      | hr     | In preparation |  N.N.                      |
 
 A revision number in the status column denotes that all texts up to that revision have been localized.
  

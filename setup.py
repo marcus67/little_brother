@@ -78,8 +78,9 @@ extended_setup_params = {
     ],
     "debian_templates": [
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
-    ]
-
+    ],
+    "build_pypi_package": True,
+    "publish_pypi_package": ['release']
 }
 
 setup_params.update(little_brother.settings.settings)

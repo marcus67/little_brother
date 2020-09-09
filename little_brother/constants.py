@@ -31,6 +31,7 @@ LANGUAGES = {
     'en': 'English',
     'de': 'Deutsch',
     'fr': 'Français',
+    'hr': 'Hrvatski',
     'it': 'Italiano',
     'nl': 'Nederlands',
     'fi': 'Suomen kieli',

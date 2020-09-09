@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.1 Revision 74 (September 7th, 2020)
+
+*   Added Croatian localization (locale "hr")
+
 ## Version 0.3.1 Revision 73 (September 6th, 2020)
 
 *   Closes #97, see [here](https://github.com/marcus67/little_brother/issues/97)
