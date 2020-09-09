@@ -452,7 +452,7 @@ msgstr "Durata minima dell'attività [s]"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:82
 msgid "Max Active Response Delay [ms]"
-msgstr ""
+msgstr "Ritardo risposta attiva massima [ms]"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/devices.template.html:83
 msgid "Sample Size"
@@ -612,7 +612,7 @@ msgstr "Cognome"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:96
 msgid "Process Name Pattern"
-msgstr ""
+msgstr "Schema Nome Processo"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:115
 msgid "Rulesets"
@@ -658,7 +658,7 @@ msgstr "Rimuovere il monitoraggio di questo dispositivo per l'utente"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:224
 msgid "Percent"
-msgstr ""
+msgstr "Percentuale"
 
 #: /home/mr/projects/LittleBrotherFeature/little_brother/templates/users.template.html:243
 msgid "Do you really want to permanently remove the user from monitoring?"
