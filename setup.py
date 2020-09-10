@@ -80,7 +80,8 @@ extended_setup_params = {
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ],
     "build_pypi_package": True,
-    "publish_pypi_package": ['release']
+    "publish_pypi_package": { 'release' : 'https://pypi.org',
+                              'master': 'https://test.pypi.org/legacy/' }
 }
 
 setup_params.update(little_brother.settings.settings)
