@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.3.1 Revision 74 (September 10th, 2020)
+## Version 0.3.2 Revision 74 (September 12th, 2020)
 
 *   Added Croatian localization (locale "hr")
 *   Publish master branch to [PyPi-Test](https://test.pypi.org/)

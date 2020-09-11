@@ -18,7 +18,7 @@
 settings = {
     "name": "little-brother",
     "url": "https://github.com/marcus67/little_brother",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "Simple parental control application monitoring specific processes on Linux hosts "
                    "to monitor and limit the play time of (young) children.",
     "author": "Marcus Rickert",
