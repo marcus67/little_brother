@@ -68,7 +68,7 @@ extended_setup_params = {
     # "deploy_tmpfile_conf": True,
     "deploy_sudoers_file": True,
     "deploy_apparmor_file": True,
-    "contributing_setups": ["python_base_app", "flask_helpers"],
+    "contributing_setups": ["python_base_app", "some_flask_helpers"],
     "publish_debian_package": ["master", "release"],
     "publish_docker_images": ["master", "release"],
     "publish_latest_docker_image": "release",
@@ -81,7 +81,8 @@ extended_setup_params = {
     ],
     "build_pypi_package": True,
     "publish_pypi_package": { 'release': ( 'https://pypi.org', 'PYPI_API_TOKEN' ),
-                              'master': ( 'https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN') }
+                              'master': ( 'https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN') },
+    "generate_generic_install": True,
 }
 
 setup_params.update(little_brother.settings.settings)

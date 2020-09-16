@@ -25,7 +25,7 @@ import flask_login
 import flask_wtf
 
 import little_brother
-from flask_helpers import blueprint_adapter
+from some_flask_helpers import blueprint_adapter
 from little_brother import api_view_handler
 from little_brother import constants
 from little_brother import entity_forms

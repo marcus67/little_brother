@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.3 Revision 75 (September 12th, 2020)
+
+*   Using renamed library some_flask_helpers (instead of flask_helpers)
+*   Add documentation page about non-Debian installation
+
 ## Version 0.3.2 Revision 74 (September 12th, 2020)
 
 *   Added Croatian localization (locale "hr")

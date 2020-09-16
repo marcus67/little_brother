@@ -19,7 +19,7 @@ import json
 import flask
 
 import little_brother
-from flask_helpers import blueprint_adapter
+from some_flask_helpers import blueprint_adapter
 from little_brother import constants
 from python_base_app import log_handling
 from python_base_app import tools
