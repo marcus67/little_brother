@@ -121,7 +121,9 @@ The [page](ARCHITECTURE.md) gives a detailed description of the architecture of 
 
 ## Tested Distributions
 
-So far, `LittleBrother` has only been released as a Debian package.
+So far, `LittleBrother` has only been released as a Debian package. For other non-Debian based distributions 
+there is some basic support using a generic installation script. 
+See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
 | Distribution | Version       | Architecture | Comments                                                               | Most Recent Test |
 | ------------ | ------------- | ------------ | ---------------------------------------------------------------------- | ---------------- |

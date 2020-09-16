@@ -43,4 +43,4 @@ Install the following Linux packages. Note that the exact names may differ in yo
     
     and store a copy of them into `/tmp`.
     Note: By default, these three files are included in the Debian package.
-*   Change to `root` and execute the script `$INSTALL_BASE_DIR/bin/generic-install.sh`
+*   Change to `root` and execute the script [`$INSTALL_BASE_DIR/bin/generic-install.sh`](bin/generic-install.sh)

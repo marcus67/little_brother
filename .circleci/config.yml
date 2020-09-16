@@ -42,11 +42,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.3.3_75.deb
+          path: debian/little-brother_0.3.4_76.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.3.3_75.deb
+            - little-brother_0.3.4_76.deb
   build_pypi:
     #working_directory: ~
     docker:
@@ -61,11 +61,11 @@ jobs:
 
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - store_artifacts:
-          path: "dist/little-brother-0.3.3.tar.gz"
+          path: "dist/little-brother-0.3.4.tar.gz"
       - persist_to_workspace:
           root: dist
           paths:
-            - "little-brother-0.3.3.tar.gz"
+            - "little-brother-0.3.4.tar.gz"
   install_pypi:
     #working_directory: ~
     docker:

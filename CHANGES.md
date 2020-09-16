@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.4 Revision 76 (September 16th, 2020)
+
+*   Provide link to new installation documentation in README.md.
+
 ## Version 0.3.3 Revision 75 (September 12th, 2020)
 
 *   Using renamed library some_flask_helpers (instead of flask_helpers)
