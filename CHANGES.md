@@ -4,6 +4,13 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.5 Revision 77 (September 30th, 2020)
+
+*   Add two diagrams on application architecture 
+*   Move aspects of Docker image and container to new [repository](https://github.com/marcus67/docker-little-brother)
+*   Support env variables `APP_SECRET` and `LOGLEVEL` in Docker container
+*   Activate local webserver in Docker container to support health check
+
 ## Version 0.3.4 Revision 76 (September 16th, 2020)
 
 *   Provide link to new installation documentation in README.md.
