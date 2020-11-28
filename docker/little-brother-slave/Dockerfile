@@ -7,3 +7,4 @@ COPY assets/entrypoint.sh /entrypoint.sh
 COPY assets/little-brother.config /etc
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
+USER little-brother

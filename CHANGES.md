@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.6 Revision 78 (November 28nd, 2020)
+
+*   Provide configuration option to set hostname 
+*   Closes #27, see [here](https://github.com/marcus67/little_brother/issues/27)
+*   Upgrade (almost) all required PyPi libraries
+
 ## Version 0.3.5 Revision 77 (September 30th, 2020)
 
 *   Add two diagrams on application architecture 
@@ -18,7 +24,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.3.3 Revision 75 (September 12th, 2020)
 
 *   Using renamed library some_flask_helpers (instead of flask_helpers)
-*   Add documentation page about non-Debian installation
+*   Add documentation page about non-Debian installation
 
 ## Version 0.3.2 Revision 74 (September 12th, 2020)
 
@@ -64,7 +70,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Update Italian localization (locale "it")
 *   Issue error when no database user is given when driver != sqlite
-*   Register logging filter for alembic
+*   Register logging filter for alembic
 *   Add up-to-dateness of translations as column to localization table
 
 ## Version 0.3.0 Revision 65 (July 18th, 2020)
@@ -177,8 +183,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Move alembic files into package directory to make them available in the pip installation directory
 *   Add command line option '--stamp-databases' to force an alembic database revision  
-*   Correct alembic.sh (invalid use of env variable)
-*   Correct German translation
+*   Correct alembic.sh (invalid use of env variable)
+*   Correct German translation
 *   Exclude alembic delta scripts from duplicate checks (after move of directory)
 
 ## Version 0.2 Revision 52 (March 4th, 2020)
