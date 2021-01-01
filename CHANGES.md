@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.7 Revision 78 (Januray 1st, 2021)
+
+*   Increment PiPy version number 
+
 ## Version 0.3.6 Revision 78 (November 28nd, 2020)
 
 *   Provide configuration option to set hostname 
