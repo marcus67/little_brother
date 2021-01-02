@@ -27,7 +27,7 @@ settings = {
 
 extended_settings = {
     "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "78",
+    "debian_package_revision": "79",
     "debian_package_architecture": "all",
     "babel_rel_directory": "translations",
 }
