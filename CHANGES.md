@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.9 Revision 80 (January 2nd, 2021)
+
+*   Upgrade to python_base_app 0.2.7
+
 ## Version 0.3.8 Revision 79 (January 2nd, 2021)
 
 *   Upgrade to python_base_app 0.2.6
