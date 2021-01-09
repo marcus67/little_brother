@@ -18,8 +18,8 @@
 import time
 import prometheus_client
 
-from python_base_app import configuration
 from little_brother import settings
+from little_brother import client_stats
 
 SECTION_NAME = "PrometheusClient"
 
@@ -83,9 +83,18 @@ class PrometheusClient(object):
                                      "revision": settings.extended_settings['debian_package_revision']})
 
             self._gauge_uptime = prometheus_client.Gauge(self._config.prefix + "uptime",
-                                                         "uptime in seconds")
-            self._start_time = time.time()
-            self._gauge_uptime.set_function(lambda : time.time() - self._start_time)
+                                                         "uptime in seconds", ["hostname"])
+
+            self._resident_memory_bytes_metric = prometheus_client.Gauge(
+                'node_process_resident_memory_bytes',
+                'resident memory in bytes on node', ['hostname'])
+            self._cpu_seconds_total_metric = prometheus_client.Gauge(
+                'node_process_cpu_seconds_total',
+                'CPU time in seconds on node on node', ['hostname'])
+
+            # self._resident_memory_bytes_metric = client_stats.find_built_in_metric('process_resident_memory_bytes')
+            # self._start_time_seconds_metric = client_stats.find_built_in_metric('process_cpu_seconds_total')
+            # self._cpu_seconds_total_metric = client_stats.find_built_in_metric('process_start_time_seconds')
 
         def start(self):
 
@@ -114,6 +123,20 @@ class PrometheusClient(object):
             prometheus_client.REGISTRY.unregister(self._gauge_device_moving_average_response_time)
             prometheus_client.REGISTRY.unregister(self._gauge_uptime)
             prometheus_client.REGISTRY.unregister(self._info_system)
+            prometheus_client.REGISTRY.unregister(self._resident_memory_bytes_metric)
+#            prometheus_client.REGISTRY.unregister(self._start_time_seconds_metric)
+            prometheus_client.REGISTRY.unregister(self._cpu_seconds_total_metric)
+
+        def set_client_stats(self, p_hostname, p_client_stats):
+
+            self._cpu_seconds_total_metric.labels(hostname=p_hostname).set(p_client_stats.cpu_seconds_total)
+
+            self.set_uptime(p_hostname=p_hostname, p_uptime=time.time() - p_client_stats.start_time_seconds)
+
+            self._resident_memory_bytes_metric.labels(hostname=p_hostname).set(p_client_stats.resident_memory_bytes)
+
+        def set_uptime(self, p_hostname, p_uptime):
+            self._gauge_uptime.labels(hostname=p_hostname).set(p_uptime)
 
         def set_user_active(self, p_username, p_is_active):
 

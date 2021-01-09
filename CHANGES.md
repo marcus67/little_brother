@@ -4,9 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.3.9 Revision 80 (January 2nd, 2021)
+## Version 0.3.9 Revision 80 (January 9th, 2021)
 
 *   Upgrade to python_base_app 0.2.7
+*   Closes #28, see [here](https://github.com/marcus67/little_brother/issues/28)
+*   Closes #108, see [here](https://github.com/marcus67/little_brother/issues/108)
+*   Update Grafana default configuration to reflect new meta data from clients
 
 ## Version 0.3.8 Revision 79 (January 2nd, 2021)
 

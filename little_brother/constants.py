@@ -57,6 +57,7 @@ API_URL_PARAM_USERNAME = "username"
 
 JSON_HOSTNAME = "hostname"
 JSON_EVENTS = "events"
+JSON_CLIENT_STATS = "client_stats"
 JSON_RULESETS = "rulesets"
 JSON_USERNAME = "username"
 JSON_PROCESS_NAME_PATTERN = "process_name_pattern"

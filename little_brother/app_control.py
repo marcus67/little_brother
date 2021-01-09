@@ -22,6 +22,9 @@ import queue
 import re
 import socket
 import os.path
+import sys
+import prometheus_client
+import time
 
 from little_brother import admin_event
 from little_brother import constants, process_statistics
@@ -33,10 +36,13 @@ from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
+from little_brother import settings
+from little_brother import client_stats
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
 from python_base_app import view_info
+from packaging import version
 
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
@@ -44,12 +50,19 @@ DEFAULT_PROCESS_LOOKUP_IN_DAYS = 7  # days
 DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_CHECK_INTERVAL = 5  # seconds
 DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
+DEFAULT_TOPOLOGY_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_LOCALE = "en_US"
 DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
 
 ALEMBIC_VERSION_INIT_GUI_CONFIGURATION = ""
 
 SECTION_NAME = "AppControl"
+
+LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT = "0.3.8"
+MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT = "0.3.9"
+
+CSS_CLASS_MAXIMUM_PING_EXCEEDED = "node_inactive"
+CSS_CLASS_SLAVE_VERSION_OUTDATED = "node_outdated"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x, y=None: x
@@ -69,14 +82,67 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.min_activity_duration = DEFAULT_MIN_ACTIVITY_DURATION
         self.user_mappings = [configuration.NONE_STRING]
         self.index_refresh_interval = DEFAULT_INDEX_REFRESH_INTERVAL
+        self.topology_refresh_interval = DEFAULT_TOPOLOGY_REFRESH_INTERVAL
         self.maximum_client_ping_interval = DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL
 
 
 class ClientInfo(object):
 
-    def __init__(self, p_host_name):
+    def __init__(self, p_is_master, p_host_name, p_client_stats, p_maximum_client_ping_interval=None,
+                 p_master_version=None):
+        self.is_master = p_is_master
         self.host_name = p_host_name
+        self.client_stats = p_client_stats
+        self.maximum_client_ping_interval = p_maximum_client_ping_interval
         self.last_message = None
+        self.master_version = p_master_version
+
+    @property
+    def node_type(self):
+        return _("Master") if self.is_master else _("Slave")
+
+    @property
+    def last_message_string(self):
+        if self.last_message is None:
+            return _("n/a")
+
+        seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
+        return tools.get_duration_as_string(seconds_without_ping)
+
+
+    @property
+    def last_message_class(self):
+        if self.last_message is None:
+            return ""
+
+        if self.maximum_client_ping_interval is not None:
+            seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
+
+            if seconds_without_ping > self.maximum_client_ping_interval:
+                return CSS_CLASS_MAXIMUM_PING_EXCEEDED
+
+        return ""
+
+    @property
+    def version_string(self):
+        if self.client_stats is not None and self.client_stats.version is not None:
+            return self.client_stats.version
+
+        return "<" + MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT
+
+    @property
+    def version_class(self):
+        if self.master_version is not None:
+            if self.client_stats is not None and self.client_stats.version is not None:
+                client_version = self.client_stats.version
+
+            else:
+                client_version = LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT
+
+            if version.parse(client_version) < version.parse(self.master_version):
+                return CSS_CLASS_SLAVE_VERSION_OUTDATED
+
+        return ""
 
 
 class AppControl(object):
@@ -109,7 +175,6 @@ class AppControl(object):
 
         if p_login_mapping is None:
             p_login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
-
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -146,6 +211,7 @@ class AppControl(object):
         self._login_mapping = p_login_mapping
         self._login_mapping_received = self.is_master()
 
+        self._start_time = time.time()
 
     def reset_users(self, p_session_context):
         self._process_regex_map = None
@@ -313,6 +379,8 @@ class AppControl(object):
 
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             if self._prometheus_client is not None:
+                self._prometheus_client.set_uptime(p_hostname="master", p_uptime=time.time() - self._start_time)
+
                 self._prometheus_client.set_number_of_monitored_users(self.get_number_of_monitored_users())
                 self._prometheus_client.set_number_of_configured_users(
                     len(self._persistence.user_map(session_context)))
@@ -341,6 +409,9 @@ class AppControl(object):
 
                 else:
                     self._prometheus_client.set_number_of_monitored_devices(0)
+
+                for client_info in self._client_infos.values():
+                    self._prometheus_client.set_client_stats(p_hostname=client_info.host_name, p_client_stats=client_info.client_stats)
 
     def check(self):
 
@@ -553,15 +624,19 @@ class AppControl(object):
         self._logger.info(fmt.format(group_names=server_group_names))
         self._login_mapping_received = True
 
-    def update_client_info(self, p_hostname):
+    def update_client_info(self, p_hostname, p_client_stats=None):
 
         client_info = self._client_infos.get(p_hostname)
 
         if client_info is None:
-            client_info = ClientInfo(p_host_name=p_hostname)
+            client_info = ClientInfo(p_host_name=p_hostname, p_client_stats=p_client_stats, p_is_master=False,
+                                     p_maximum_client_ping_interval=self._config.maximum_client_ping_interval,
+                                     p_master_version=self.get_client_version(),
+                                     )
             self._client_infos[p_hostname] = client_info
 
         client_info.last_message = tools.get_current_time()
+        client_info.client_stats = p_client_stats
 
     def handle_event_start_client(self, p_event):
 
@@ -1221,10 +1296,56 @@ class AppControl(object):
 
         return sorted(admin_infos, key=lambda info: info.full_name)
 
+    def get_topology_infos(self, p_session_context):
+
+        topology_infos = [ info for info in self._client_infos.values() ]
+
+        master_stats = self.get_client_stats()
+        master_info = ClientInfo(p_is_master=True, p_host_name=self._host_name, p_client_stats=master_stats)
+
+        topology_infos.append(master_info)
+
+        sorted_infos = sorted(topology_infos, key=lambda info : (0 if info.is_master else 1, info.host_name))
+        return sorted_infos
+
+    def get_client_version(self):
+        return settings.settings['version']
+
+    def get_client_stats(self):
+
+        a_client_stats = client_stats.ClientStats(
+            p_version=self.get_client_version(),
+            p_revision=settings.extended_settings['debian_package_revision'],
+            p_python_version="{major}.{minor}.{micro}".format(major=sys.version_info.major,
+                                                              minor=sys.version_info.minor,
+                                                              micro=sys.version_info.micro),
+            p_running_in_docker=tools.running_in_docker()
+            )
+
+        if not self.is_master():
+            # Use the Prometheus Client ProcessCollector to retrieve run time stats for CPU and memory usage
+            # to be consistent with the stats collected on the master.
+
+            collector = prometheus_client.process_collector.PROCESS_COLLECTOR
+            stats= collector.collect()
+
+            for stat in stats:
+                if stat.name == 'process_resident_memory_bytes':
+                    a_client_stats.resident_memory_bytes = stat.samples[0].value
+
+                elif stat.name == 'process_start_time_seconds':
+                    a_client_stats.start_time_seconds = stat.samples[0].value
+
+                elif stat.name == 'process_cpu_seconds':
+                    a_client_stats.cpu_seconds_total = stat.samples[0].value
+
+        return a_client_stats
+
     def send_events(self):
 
         try:
-            result = self._master_connector.send_events(p_hostname=self._host_name, p_events=self._outgoing_events)
+            result = self._master_connector.send_events(p_hostname=self._host_name, p_events=self._outgoing_events,
+                                                        p_client_stats=self.get_client_stats())
             self._outgoing_events = []
 
             if self._could_not_send:
@@ -1246,6 +1367,11 @@ class AppControl(object):
                 fmt = "Propagating exception due to debug_mode=True"
                 self._logger.warn(fmt)
                 raise e
+
+    def receive_client_stats(self, p_json_data):
+
+        return tools.objectify_dict(p_dict=p_json_data,
+                                    p_class=client_stats.ClientStats)
 
     def receive_events(self, p_json_data):
 

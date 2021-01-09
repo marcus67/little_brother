@@ -78,7 +78,55 @@ be set in the configuration file (see the main [README](README.md)).
 
 After successful login the user will be display in the menu bar.
 
-![Login](doc/login-status.png)  
+![Login](doc/login-status.png)
+
+## Checking the Topology of the LittleBrother Network  
+
+![Menubar-Topology](doc/menubar-topology.png)
+
+Although `LittleBrother` can run on a single PC (master), it is possible to monitor several slave PCs at the same time.
+In order to keep the overview over the network of PCs the tab `Topology` provides a list of the currently known PCs.
+
+![Topology](doc/topology.png)
+
+It shows the master and all slave nodes with the following columns:
+
+*   *Node Type*: Denotes the type of node ("Master" or "Slave"). There is exactly one master and `0..N` slaves. If
+    the node process is running in a Docker container it will have an additional `(Docker)` remark.
+    
+*   *Node Name*: Denotes Unique name of the node. I usually corresponds to the host DNS name but it can be set in the
+    configuration file.
+    
+*   *App Version*: Denotes the version of the `LittleBrother` process on that node.
+
+*   *Revision*: Denotes the revision of the `LittleBrother` process on that node.
+
+*   *Python Version*: Denotes the version of the Python interpreter running the `LittleBrother` process on that node.
+
+*   *Time Since Last Ping*: Denotes the time since the master has received the most recent statistics from that node.
+    Since the default ping time is five seconds this value will usually not exceed four seconds.
+    
+### Detection of Suspicious Constellations
+
+There is some support for detecting suspicious configuration constellations by highlighting value in the table above
+in red.
+
+![Topology with Highlighting](doc/topology_with_highlighting.png)
+
+#### Outdated Clients 
+
+When a client is detected whose version is older then 0.3.9 the additional meta data (AppVersion, Revision and Python
+Version) is not available. In this case the AppVersion will show "< 0.3.9" in red color. If the slave version is 
+smaller than the master version the AppVersion will also show in red. See screenshot above.
+
+#### Inactive Clients
+
+If the master has not received a message from the client for more than a certain number of seconds (defaults to `60`)
+the value in column *Time Since Last Ping* will be displayed in red. See screenshot above.
+
+**Note:** The master cannot differentiate between slaves that are only temporarily not available and slaves which have
+completely been removed from the topology. In the latter case the master has to be restarted to "forget" the 
+removed clients.
 
 ## Administration
 

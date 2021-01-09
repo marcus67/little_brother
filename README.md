@@ -27,6 +27,7 @@ The following screenshots show the web frontend of `LittleBrother`. Click on the
 <A HREF="doc/screenshot_admin.png">![Screenshot Status](doc/screenshot_admin.thumb.png)</A> 
 <A HREF="doc/screenshot_users.png">![Screenshot Status](doc/screenshot_users.thumb.png)</A> 
 <A HREF="doc/screenshot_devices.png">![Screenshot Status](doc/screenshot_devices.thumb.png)</A> 
+<A HREF="doc/screenshot_topology.png">![Screenshot Status](doc/screenshot_topology.thumb.png)</A>
 <A HREF="doc/screenshot_about.png">![Screenshot Status](doc/screenshot_about.thumb.png)</A>
 
 ## Change History 

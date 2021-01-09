@@ -62,6 +62,10 @@ DEVICES_HTML_TEMPLATE = "devices.template.html"
 DEVICES_REL_URL = "devices"
 DEVICES_VIEW_NAME = "devices"
 
+TOPOLOGY_HTML_TEMPLATE = "topology.template.html"
+TOPOLOGY_REL_URL = "topology"
+TOPOLOGY_VIEW_NAME = "topology"
+
 ABOUT_HTML_TEMPLATE = "about.template.html"
 ABOUT_REL_URL = "about"
 ABOUT_VIEW_NAME = "about"
@@ -377,6 +381,26 @@ class StatusServer(base_web_server.BaseWebServer):
                     forms=forms,
                     navigation={
                         'current_view': ADMIN_VIEW_NAME},
+                )
+
+    @BLUEPRINT_ADAPTER.route_method("/topology", endpoint="topology")
+    @flask_login.login_required
+    def topology_view(self):
+
+        request = flask.request
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
+            with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+
+                topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
+                return flask.render_template(
+                    TOPOLOGY_HTML_TEMPLATE,
+                    rel_font_size=self.get_rel_font_size(),
+                    topology_infos=topology_infos,
+                    app_control_config=self._appcontrol._config,
+                    authentication=self.get_authenication_info(),
+                    navigation={
+                        'current_view': TOPOLOGY_VIEW_NAME},
                 )
 
     @BLUEPRINT_ADAPTER.route_method("/users", endpoint="users", methods=["GET", "POST"])

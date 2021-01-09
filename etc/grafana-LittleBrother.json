@@ -17,15 +17,81 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1587335465828,
+  "iteration": 1609868082785,
   "links": [],
   "panels": [
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 5,
+        "w": 2,
+        "x": 0,
+        "y": 0
+      },
+      "id": 42,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "$$hashKey": "object:213",
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.7.2",
+      "targets": [
+        {
+          "expr": "sum(little_brother_configured_users{job=\"$job\"})",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Config'ed Users",
+      "type": "stat"
+    },
     {
       "datasource": null,
       "gridPos": {
         "h": 5,
-        "w": 3,
-        "x": 0,
+        "w": 2,
+        "x": 2,
         "y": 0
       },
       "id": 4,
@@ -70,7 +136,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Monitored Users",
+      "title": "Monit'ed Users",
       "type": "stat"
     },
     {
@@ -78,8 +144,8 @@
       "datasource": null,
       "gridPos": {
         "h": 5,
-        "w": 3,
-        "x": 3,
+        "w": 2,
+        "x": 4,
         "y": 0
       },
       "id": 14,
@@ -232,22 +298,7 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
       "datasource": null,
-      "format": "s",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
       "gridPos": {
         "h": 5,
         "w": 3,
@@ -255,68 +306,73 @@
         "y": 0
       },
       "id": 35,
-      "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "$$hashKey": "object:264",
-          "name": "value to text",
-          "value": 1
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "$$hashKey": "object:267",
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "s"
+          },
+          "overrides": [],
+          "values": false
         },
-        {
-          "$$hashKey": "object:265",
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal"
       },
-      "tableColumn": "",
+      "pluginVersion": "6.7.2",
       "targets": [
         {
           "expr": "little_brother_uptime{job=\"$job\"}",
           "instant": true,
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{hostname}}",
           "refId": "A"
         }
       ],
-      "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Uptime",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "$$hashKey": "object:267",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
+      "title": "Uptime (Nodes)",
+      "type": "stat"
+    },
+    {
+      "content": "",
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 44,
+      "mode": "markdown",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Master Node (Versions and Revisions)",
+      "type": "text"
     },
     {
       "cacheTimeout": null,
@@ -337,10 +393,10 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 2,
         "x": 18,
-        "y": 0
+        "y": 1
       },
       "id": 41,
       "interval": null,
@@ -393,7 +449,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Python Version",
+      "title": "Python",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -425,10 +481,10 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 2,
         "x": 20,
-        "y": 0
+        "y": 1
       },
       "id": 37,
       "interval": null,
@@ -513,10 +569,10 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 2,
         "x": 22,
-        "y": 0
+        "y": 1
       },
       "id": 39,
       "interval": null,
@@ -1038,7 +1094,7 @@
         "values": false
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 0,
       "nullPointMode": "null",
       "options": {
         "dataLinks": []
@@ -1237,8 +1293,14 @@
         {
           "expr": "delta(process_cpu_seconds_total{job=\"$job\"}[5m])/3",
           "interval": "",
-          "legendFormat": "{{job}}",
+          "legendFormat": "master",
           "refId": "A"
+        },
+        {
+          "expr": "delta(node_process_cpu_seconds_total{job=\"$job\"}[5m])/3",
+          "interval": "",
+          "legendFormat": "{{hostname}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -1328,8 +1390,14 @@
         {
           "expr": "process_resident_memory_bytes{job=\"$job\"}",
           "interval": "",
-          "legendFormat": "master process",
+          "legendFormat": "master",
           "refId": "A"
+        },
+        {
+          "expr": "node_process_resident_memory_bytes{job=\"$job\"}",
+          "interval": "",
+          "legendFormat": "{{hostname}}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -1754,8 +1822,7 @@
       {
         "allValue": null,
         "current": {
-          "$$hashKey": "object:131",
-          "selected": false,
+          "tags": [],
           "text": "little-brother-test",
           "value": "little-brother-test"
         },
@@ -1766,26 +1833,32 @@
         "name": "job",
         "options": [
           {
-            "$$hashKey": "object:130",
+            "$$hashKey": "object:75",
             "selected": false,
             "text": "little-brother-prod",
             "value": "little-brother-prod"
           },
           {
-            "$$hashKey": "object:131",
+            "$$hashKey": "object:76",
             "selected": true,
             "text": "little-brother-test",
             "value": "little-brother-test"
+          },
+          {
+            "$$hashKey": "object:77",
+            "selected": false,
+            "text": "little-brother-feature-test",
+            "value": "little-brother-feature-test"
           }
         ],
-        "query": "little-brother-prod, little-brother-test",
+        "query": "little-brother-prod, little-brother-test, little-brother-feature-test",
         "skipUrlSync": false,
         "type": "custom"
       }
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -1808,5 +1881,5 @@
   "variables": {
     "list": []
   },
-  "version": 21
+  "version": 31
 }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-09-06 22:52+0200\n"
+"POT-Creation-Date: 2021-01-05 00:40+0100\n"
 "PO-Revision-Date: 2020-04-21 00:21+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sr\n"
@@ -17,117 +17,129 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:90
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:99
 msgid "username '{username}' not specified"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:98
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:107
 msgid "username '{username}' not being monitored"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:166
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
+msgid "Master"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
+msgid "Slave"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:99
+msgid "n/a"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:219
 msgid "{days} days ago"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:222
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Today"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:170
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:223
 msgid "Yesterday"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:172
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:225
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:173
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:226
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:175
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:228
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:176
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:229
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:177
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:230
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:178
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:231
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:180
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:233
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:181
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:234
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:183
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:236
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:185
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:238
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
 "in this session."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:187
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:240
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1201
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1257
 msgid "'Today ('EEE')'"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1202
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1258
 msgid "'Today'"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1205
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1261
 msgid "'Tomorrow ('EEE')'"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1206
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1262
 msgid "'Tomorrow'"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1209
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1265
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1210
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1266
 msgid "EEE"
 msgstr ""
 
@@ -283,12 +295,12 @@ msgstr ""
 msgid "Selected Days"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:495
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:518
 msgid "New device {id}"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:43
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:47
 msgid "About"
 msgstr ""
 
@@ -560,12 +572,41 @@ msgstr ""
 msgid "Devices"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:49
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:44
+msgid "Topology"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:50
 msgid "Signed in as"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:51
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:52
 msgid "Logout"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:54
+msgid "Node Type"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:55
+msgid "Node Name"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:56
+msgid "App Version"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
+msgid "Revision"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
+msgid "Python Version"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
+msgid "Time Since Last Ping"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:46

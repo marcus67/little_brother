@@ -1,5 +1,6 @@
 FROM marcusrickert/docker-minipython:release-0.9
 LABEL maintainer="marcus.rickert@web.de"
+ENV RUNNING_IN_DOCKER=1
 COPY assets/*.deb /tmp
 RUN DEBIAN_FRONTEND=noninteractive \
         apt-get install -y --no-install-recommends \
