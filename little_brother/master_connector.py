@@ -66,7 +66,7 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
             constants.JSON_ACCESS_TOKEN: self._config.access_token,
             constants.JSON_HOSTNAME: p_hostname,
             constants.JSON_EVENTS: p_events,
-            #constants.JSON_CLIENT_STATS: p_client_stats
+            constants.JSON_CLIENT_STATS: p_client_stats
         }
 
         try:
