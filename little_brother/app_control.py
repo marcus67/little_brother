@@ -874,7 +874,7 @@ class AppControl(object):
 
     def pick_text_for_approaching_logout(self, p_rule_result_info):
 
-        t = gettext.translation('messages', localedir='little_brother/translations',
+        t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
         if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
