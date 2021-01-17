@@ -4,6 +4,15 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.10 Revision 81 (January 17th, 2021)
+
+*   Upgrade to python_base_app 0.2.9
+*   Update CI configuration for GitLab-CI
+*   Fixed bug with not using correct locale for texts regarding approaching logout
+*   Reactivate sending of client stats (was commented out for testing)
+*   Correct test case
+*   Add apt-get update to Dockerfile
+
 ## Version 0.3.9 Revision 80 (January 9th, 2021)
 
 *   Upgrade to python_base_app 0.2.7
