@@ -24,7 +24,7 @@
 stages:
 - build
 - install_and_check
-- docker
+- deploy
 
 build:
   image: accso/docker-python-app:latest
