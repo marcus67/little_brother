@@ -9,10 +9,10 @@ This page is still under construction. Please, bear with me. Thanks!
 *A more detailed description will follow in a while. For the time being this is the architecture in a nutshell:*
 
 *   `LittleBrother` is  all-Python3 application running as a dedicated user `little-brother` (which is installed 
-by the Debian package).
+by the Debian package) in a Python virtualenv environment.
 
-*   The application regularly scans the process list of the host for configured patterns and, if found, executes configured
-rules. When not active it sleeps in a system interrupt.
+*   The application regularly scans the process list of the host for configured patterns and, if found, executes 
+configured rules. When not active it sleeps in a system interrupt.
 
 *   If the maximum login time of users is exceeded the application will terminate the appropriate processes.
 
@@ -30,3 +30,12 @@ to be packaged as PIP packages which are included in the Debian package.
 
 *   The control script of the Debian package installs `pip3` and installs the included PIP packages and all other
 required PIP packages from [pypi](https://pypi.org/).
+
+## Technical Context
+
+![Application Context](doc/application-context.png)
+
+## Build Block View Level 1
+
+![Application Context](doc/application-level-1.png)
+

@@ -19,7 +19,7 @@ import json
 import flask
 
 import little_brother
-from flask_helpers import blueprint_adapter
+from some_flask_helpers import blueprint_adapter
 from little_brother import constants
 from python_base_app import log_handling
 from python_base_app import tools
@@ -63,12 +63,21 @@ class ApiViewHandler(object):
                 return flask.Response("{error: invalid access code}", status=constants.HTTP_STATUS_CODE_UNAUTHORIZED,
                                       mimetype='application/json')
 
-            (hostname, json_events) = event_info
+            client_stats = None
+
+            if len(event_info) > 2:
+                # new format: 3 entries including client statistics
+                (hostname, json_events, json_client_stats) = event_info
+                client_stats = self._appcontrol.receive_client_stats(p_json_data=json_client_stats)
+
+            else:
+                # old format: 2 entries without slave statistics
+                (hostname, json_events) = event_info
 
             msg = "Received {count} events from host '{hostname}'"
             self._logger.debug(msg.format(count=len(json_events), hostname=hostname))
 
-            self._appcontrol.update_client_info(p_hostname=hostname)
+            self._appcontrol.update_client_info(p_hostname=hostname, p_client_stats=client_stats)
             self._appcontrol.receive_events(p_json_data=json_events)
 
             return_events = self._appcontrol.get_return_events(p_hostname=hostname)

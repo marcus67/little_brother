@@ -1,0 +1,449 @@
+# Bangla translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-04-18 12:22+0200\n"
+"PO-Revision-Date: 2020-04-20 10:00+0200\n"
+"Last-Translator: Rownak Jyoti Zaman <jyotizaman@yahoo.com>\n"
+"Language: bn\n"
+"Language-Team: bn <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:80
+msgid "username '{username}' not specified"
+msgstr " ব্যবহারকারীর নাম '{username}' নেই"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/api_view_handler.py:88
+msgid "username '{username}' not being monitored"
+msgstr " ব্যবহারকারীর নাম '{username}' মনিটর করা হচ্ছে না"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:152
+msgid "{days} days ago"
+msgstr "{days} দিন আগে"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:155
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:46
+msgid "Today"
+msgstr "আজ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:156
+msgid "Yesterday"
+msgstr "গতকাল"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:158
+msgid ""
+"{user}, you do not have computer time left today.\n"
+"You will be logged out."
+msgstr ""
+"{user}, তোমার কম্পিউটার ব্যবহারের সময় আজ শেষ।\n"
+"তোমাকে লগ আউট করা হচ্ছে। "
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:159
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"Please, log out."
+msgstr ""
+"{user}, আজ তোমার শুধু {minutes_left_before_logout} মিনিট বাকী আছে।\n"
+"প্লিজ, লগ আউট করো."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:161
+msgid ""
+"{user}, you do not have any computer time today.\n"
+"You will be logged out."
+msgstr ""
+"{user}, আজ তোমার কম্পিউটার ব্যবহারের আর কোন সময় বাকী নেই।\n"
+"তোমাকে লগ আউট করা হচ্ছে।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:162
+msgid ""
+"{user}, it is too early to use the computer.\n"
+"You will be logged out."
+msgstr ""
+"{user}, কম্পিউটার ব্যবহারের এখনো সময় হয়নি।\n"
+"তোমাকে লগ আউট করা হচ্ছে।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:163
+msgid ""
+"{user}, it is too late to use the computer.\n"
+"You will be logged out."
+msgstr ""
+"{user}, কম্পিউটার ব্যবহারের সময় পার হয়ে গেছে।\n"
+"তোমাকে লগ আউট করা হচ্ছে।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:164
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"use the computer.\n"
+"Please, log out."
+msgstr ""
+"{user}, {minutes_left_before_logout} মিনিটের পর আর"
+"কম্পিউটার ব্যবহার করা যাবে না।\n"
+"প্লিজ, লগ আউট করো।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:166
+msgid ""
+"{user}, you have to take a break.\n"
+"You will be logged out."
+msgstr ""
+"{user}, তোমাকে বিরতি নিতে হবে।\n"
+"তোমাকে লগ আউট করা হচ্ছে।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:167
+msgid ""
+"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"break.\n"
+"Please, log out."
+msgstr ""
+"{user}, {minutes_left_before_logout} মিনিটের মধ্যে তোমাকে বিরতি "
+"নিতে হবে।\n"
+"প্লিজ, লগ আউট করো।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:169
+msgid ""
+"{user}, your break will only be over in {break_minutes_left} minutes.\n"
+"You will be logged out."
+msgstr ""
+"{user}, তোমার বিরতি শেষ হতে মাত্র {break_minutes_left} মিনিট বাকী।\n"
+"তোমাকে লগ আউট করা হচ্ছে।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:171
+msgid ""
+"Hello {user}, you will be allowed to play for {minutes_left_in_session} "
+"minutes\n"
+"in this session."
+msgstr ""
+"হ্যালো {user}, তোমার এই সেশনে খেলার জন্য {minutes_left_in_session} "
+"মিনিট\n"
+"  বাকী আছে।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:173
+msgid "Hello {user}, you have unlimited playtime in this session."
+msgstr "হ্যালো {user}, তোমার এই সেশনের খেলার জন্য কোন সময়সীমা নেই।" 
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1083
+msgid "'Today ('EEE')'"
+msgstr "'আজ ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1084
+msgid "'Today'"
+msgstr " 'আজ' "
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1089
+msgid "'Tomorrow ('EEE')'"
+msgstr "'আগামীকাল ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1090
+msgid "'Tomorrow'"
+msgstr "'আগামীকাল'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1095
+msgid "dd-MM-yyyy' ('EEE')'"
+msgstr " দিন-মাস- বছর' ('EEE')'"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1096
+msgid "EEE"
+msgstr "EEE"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:31
+msgid "vacation"
+msgstr "ছুটি"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:320
+msgid "No activity before {hh_mm} hours"
+msgstr " {hh_mm} ঘণ্টার আগে আর কিছু করতে পারবেনা।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:327
+msgid "No activity after {hh_mm} hours"
+msgstr " {hh_mm} ঘণ্টার পর আর কিছু করতে পারবেনা।"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:348
+msgid "Day blocked: no activity permitted"
+msgstr " নিষিদ্ধ দিনঃ কোন কাজ করা যাবেনা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:354
+msgid "Activity limited to {hh_mm} per day"
+msgstr "প্রতিদিন কাজ {hh_mm} -এ সীমাবদ্ধ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:380
+msgid "No activity exceeding {hh_mm}"
+msgstr "কোন কাজ {hh_mm}-এর বেশী হতে পারবেনা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:414
+msgid "Minimum break time {hh_mm} not reached"
+msgstr " সবচেয়ে কম বিরতি {hh_mm} এখনও শেষ হয়নি"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:24
+msgid "default"
+msgstr "চলতি মান"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:25
+msgid "weekday"
+msgstr " সপ্তাহের দিন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:30
+msgid "weekend"
+msgstr " সপ্তাহ শেষে ছুটি"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:31
+msgid "weekdays"
+msgstr "কাজের দিন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:32
+msgid "mondays"
+msgstr "সব সোমবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
+msgid "tuesdays"
+msgstr "সব মঙ্গলবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:34
+msgid "wednesdays"
+msgstr "সব বুধবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:35
+msgid "thursdays"
+msgstr "সব বৃহস্পতিবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:36
+msgid "fridays"
+msgstr "সব শুক্রবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:37
+msgid "saturdays"
+msgstr "সব শনিবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:38
+msgid "sundays"
+msgstr "সব রবিবার"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+msgid "On"
+msgstr "অন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:202
+msgid "Off"
+msgstr "অফ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:41
+msgid "About"
+msgstr "বিষয়"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:51
+msgid "Setting"
+msgstr "সেটিং"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:52
+msgid "Value"
+msgstr "মান"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:55
+msgid "Repository"
+msgstr "রেপোজেটরী"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:59
+msgid "Version"
+msgstr "সংকলন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:63
+msgid "Package Revision"
+msgstr "প্যাকেজ সংকলন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:67
+msgid "Git Commit ID"
+msgstr "জিআইটি কমিট আইডি"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:71
+msgid "Git Branch Name"
+msgstr "জিআইটি শাখার নাম"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:75
+msgid "Git Author's Name"
+msgstr "জিআইটি লেখকের নাম"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:79
+msgid "Git Author's Email Address"
+msgstr "জিআইটি লেখকের ইমেইল"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:83
+msgid "Supported Languages"
+msgstr "বাকী ভাষাসমূহ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:36
+msgid "Administration"
+msgstr "এডমিনিস্ট্রেশান"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:47
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:42
+msgid "User"
+msgstr "ব্যবহারকারী"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:55
+msgid "Show configurations of upcoming days"
+msgstr "আগামী দিনগুলোর কনফিগারেশান দেখাও"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:66
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:45
+msgid "Today's Activity"
+msgstr "আজকের কাজ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:74
+msgid "Save"
+msgstr "সেইভ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:80
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:110
+msgid "Day"
+msgstr "দিন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:81
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:43
+msgid "Context"
+msgstr "বিষয়"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:82
+msgid "Min Time of Day"
+msgstr "দিনের সবচেয়ে কম সময়সীমা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:83
+msgid "Max Time of Day"
+msgstr " দিনের সর্বোচ্চ সময়সীমা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:84
+msgid "Time per Day"
+msgstr "একদিনের সময়সীমা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:88
+msgid "Minimum Break"
+msgstr "সবচেয়ে কম বিরতি"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:89
+msgid "Max Duration"
+msgstr "সর্বোচ্চ সময়সীমা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:90
+msgid "Free Play"
+msgstr "সীমাহীন খেলা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:97
+msgid "Show overrides for day"
+msgstr "দিনের জন্য ওভাররাইড দেখাও"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
+msgid "override"
+msgstr "ওভাররাইড"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:35
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:39
+msgid "Status"
+msgstr " স্ট্যাটাস "
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:48
+msgid "Previous Activity Start Time"
+msgstr "আগের কাজ শুরু করার সময়"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:49
+msgid "Previous Activity End Time"
+msgstr "আগের কাজ শেষ করার সময়"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:50
+msgid "Current Activity Start Time"
+msgstr "বর্তমান কাজ শুরুর সময়"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:52
+msgid "Current Activity Duration"
+msgstr "এই কাজের সময়সীমা"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
+msgid "Current"
+msgstr "বর্তমান"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:55
+msgid "Activity permitted"
+msgstr "অনুমোদিত কাজ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:56
+msgid "OK?"
+msgstr "ঠিক আছে?"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
+msgid "Reasons"
+msgstr "কারণ সমুহ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:64
+msgid "Show durations of most recent days"
+msgstr " গতদিনগুলোর কাজের সময়সীমা দেখাও"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:111
+msgid "Active Time"
+msgstr "কাজে থাকার সময়"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:112
+msgid "Active"
+msgstr "কাজে আছে"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:113
+msgid "Activity Start"
+msgstr "কাজ শুরু"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:114
+msgid "Start"
+msgstr "শুরু"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:115
+msgid "Activity End"
+msgstr "কাজ শেষ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:116
+msgid "End"
+msgstr "শেষ"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:117
+msgid "Host(#procs)"
+msgstr "হোস্ট"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:124
+msgid "Show activity times"
+msgstr "কাজের সময় দেখাও"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:19
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:39
+msgid "Login"
+msgstr "লগ ইন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:32
+msgid "Username"
+msgstr "ব্যবহারকারীর নাম"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:33
+msgid "Password"
+msgstr "পাসওয়ার্ড"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:40
+msgid "Admin"
+msgstr "এডমিন"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
+msgid "Signed in as"
+msgstr " সাইন ইন কারীর নাম"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
+msgid "Logout"
+msgstr "লগ আউট"
+
+#: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:34
+msgid "Please log in to access this page."
+msgstr "এই পাতায় লগ ইন করো"
+
+#: /home/mr/projects/LittleBrotherGitHub/contrib/python_base_app/python_base_app/auth_view_handler.py:135
+msgid "Wrong login or password"
+msgstr " লগ ইন অথবা পাসওয়ার্ড ভুল হয়েছে "

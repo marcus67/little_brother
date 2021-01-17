@@ -21,6 +21,10 @@ import locale
 import queue
 import re
 import socket
+import os.path
+import sys
+import prometheus_client
+import time
 
 from little_brother import admin_event
 from little_brother import constants, process_statistics
@@ -32,10 +36,13 @@ from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
+from little_brother import settings
+from little_brother import client_stats
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
 from python_base_app import view_info
+from packaging import version
 
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
@@ -43,12 +50,19 @@ DEFAULT_PROCESS_LOOKUP_IN_DAYS = 7  # days
 DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_CHECK_INTERVAL = 5  # seconds
 DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
+DEFAULT_TOPOLOGY_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_LOCALE = "en_US"
 DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
 
 ALEMBIC_VERSION_INIT_GUI_CONFIGURATION = ""
 
 SECTION_NAME = "AppControl"
+
+LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT = "0.3.8"
+MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT = "0.3.9"
+
+CSS_CLASS_MAXIMUM_PING_EXCEEDED = "node_inactive"
+CSS_CLASS_SLAVE_VERSION_OUTDATED = "node_outdated"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x, y=None: x
@@ -68,14 +82,67 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.min_activity_duration = DEFAULT_MIN_ACTIVITY_DURATION
         self.user_mappings = [configuration.NONE_STRING]
         self.index_refresh_interval = DEFAULT_INDEX_REFRESH_INTERVAL
+        self.topology_refresh_interval = DEFAULT_TOPOLOGY_REFRESH_INTERVAL
         self.maximum_client_ping_interval = DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL
 
 
 class ClientInfo(object):
 
-    def __init__(self, p_host_name):
+    def __init__(self, p_is_master, p_host_name, p_client_stats, p_maximum_client_ping_interval=None,
+                 p_master_version=None):
+        self.is_master = p_is_master
         self.host_name = p_host_name
+        self.client_stats = p_client_stats
+        self.maximum_client_ping_interval = p_maximum_client_ping_interval
         self.last_message = None
+        self.master_version = p_master_version
+
+    @property
+    def node_type(self):
+        return _("Master") if self.is_master else _("Slave")
+
+    @property
+    def last_message_string(self):
+        if self.last_message is None:
+            return _("n/a")
+
+        seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
+        return tools.get_duration_as_string(seconds_without_ping)
+
+
+    @property
+    def last_message_class(self):
+        if self.last_message is None:
+            return ""
+
+        if self.maximum_client_ping_interval is not None:
+            seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
+
+            if seconds_without_ping > self.maximum_client_ping_interval:
+                return CSS_CLASS_MAXIMUM_PING_EXCEEDED
+
+        return ""
+
+    @property
+    def version_string(self):
+        if self.client_stats is not None and self.client_stats.version is not None:
+            return self.client_stats.version
+
+        return "<" + MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT
+
+    @property
+    def version_class(self):
+        if self.master_version is not None:
+            if self.client_stats is not None and self.client_stats.version is not None:
+                client_version = self.client_stats.version
+
+            else:
+                client_version = LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT
+
+            if version.parse(client_version) < version.parse(self.master_version):
+                return CSS_CLASS_SLAVE_VERSION_OUTDATED
+
+        return ""
 
 
 class AppControl(object):
@@ -93,9 +160,6 @@ class AppControl(object):
                  p_login_mapping=None,
                  p_locale_helper=None):
 
-        if p_login_mapping is None:
-            p_login_mapping = login_mapping.LoginMapping()
-
         self._config = p_config
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
@@ -107,7 +171,10 @@ class AppControl(object):
         self._prometheus_client = p_prometheus_client
         self._user_handler = p_user_handler
         self._locale_helper = p_locale_helper
-        self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
+        #self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
+
+        if p_login_mapping is None:
+            p_login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -116,14 +183,14 @@ class AppControl(object):
         self._process_regex_map = None
         # self._uid_map = {}
         # self._username_map = p_login_mapping
-        self._login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
 
         self._logout_warnings = {}
 
         if self._rule_handler is not None:
             self.register_rule_context_handlers()
 
-        self.reset_users(p_session_context=self._session_context)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            self.reset_users(p_session_context=session_context)
 
         self._event_queue = queue.Queue()
         self._outgoing_events = []
@@ -140,6 +207,11 @@ class AppControl(object):
             self._host_name = self._config.hostname
 
         self.init_labels_and_notifications()
+        self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
+        self._login_mapping = p_login_mapping
+        self._login_mapping_received = self.is_master()
+
+        self._start_time = time.time()
 
     def reset_users(self, p_session_context):
         self._process_regex_map = None
@@ -196,31 +268,33 @@ class AppControl(object):
 
     def set_user_configs(self, p_user_configs):
 
-        session = self._session_context.get_session()
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
 
-        # Delete all locally known users since the message from the master will not contain users
-        # that have been deleted on the master. These might otherwise remain active on the client.
-        for user in self._persistence.users(p_session_context=self._session_context):
-            session.delete(user)
+            session = session_context.get_session()
 
-        session.commit()
+            # Delete all locally known users since the message from the master will not contain users
+            # that have been deleted on the master. These might otherwise remain active on the client.
+            for user in self._persistence.users(p_session_context=session_context):
+                session.delete(user)
 
-        for username, user_config in p_user_configs.items():
-            user = persistence.User.get_by_username(p_session=session, p_username=username)
+            session.commit()
 
-            if user is None:
-                user = persistence.User()
-                user.username = username
-                session.add(user)
+            for username, user_config in p_user_configs.items():
+                user = persistence.User.get_by_username(p_session=session, p_username=username)
 
-            user.process_name_pattern = user_config[constants.JSON_PROCESS_NAME_PATTERN]
-            user.active = user_config[constants.JSON_ACTIVE]
+                if user is None:
+                    user = persistence.User()
+                    user.username = username
+                    session.add(user)
 
-            fmt = "Set config for {user}"
-            self._logger.info(fmt.format(user=str(user)))
+                user.process_name_pattern = user_config[constants.JSON_PROCESS_NAME_PATTERN]
+                user.active = user_config[constants.JSON_ACTIVE]
 
-        session.commit()
-        self.reset_users(p_session_context=self._session_context)
+                fmt = "Set config for {user}"
+                self._logger.info(fmt.format(user=str(user)))
+
+            session.commit()
+            self.reset_users(p_session_context=session_context)
 
     def get_context_rule_handler_choices(self):
 
@@ -229,25 +303,25 @@ class AppControl(object):
     @property
     def process_regex_map(self):
 
-        if self._process_regex_map is None:
-            self._process_regex_map = {}
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            if self._process_regex_map is None:
+                self._process_regex_map = {}
 
-            for user in self._persistence.users(self._session_context):
-                self._process_regex_map[user.username] = re.compile(user.process_name_pattern)
+                for user in self._persistence.users(session_context):
+                    self._process_regex_map[user.username] = re.compile(user.process_name_pattern)
 
         return self._process_regex_map
 
     def retrieve_user_mappings(self):
 
         if len(self._usernames_not_found) > 0:
-
             usernames_found = []
 
             for username in self._usernames_not_found:
                 uid = self._login_mapping.get_uid_by_login(p_server_group=self._config.server_group,
                                                            p_login=username)
 
-                if uid is None:
+                if uid is None and self._login_mapping_received:
                     uid = self._user_handler.get_uid(p_username=username)
 
                     if uid is not None:
@@ -256,9 +330,9 @@ class AppControl(object):
                                                       p_login_uid_mapping_entry=new_entry)
 
                 if uid is not None:
-
                     usernames_found.append(username)
-                    self._usernames.append(username)
+                    if username not in self._usernames:
+                        self._usernames.append(username)
 
                     fmt = "Found user information for user '{user}': UID={uid}"
                     self._logger.info(fmt.format(user=username, uid=uid))
@@ -276,7 +350,12 @@ class AppControl(object):
 
     def is_master(self):
 
-        return self._master_connector._config.host_url is None
+        if self._master_connector is None:
+            # This is for test cases which do not instantiate a master connector
+            return True
+
+        else:
+            return self._master_connector._config.host_url is None
 
     def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
 
@@ -289,43 +368,50 @@ class AppControl(object):
 
         count = 0
 
-        for user in self._persistence.users(self._session_context):
-            if user.active and user.username in self._usernames:
-                count += 1
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            for user in self._persistence.users(session_context):
+                if user.active and user.username in self._usernames:
+                    count += 1
 
         return count
 
     def set_metrics(self):
 
-        if self._prometheus_client is not None:
-            self._prometheus_client.set_number_of_monitored_users(self.get_number_of_monitored_users())
-            self._prometheus_client.set_number_of_configured_users(
-                len(self._persistence.user_map(self._session_context)))
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            if self._prometheus_client is not None:
+                self._prometheus_client.set_uptime(p_hostname="master", p_uptime=time.time() - self._start_time)
 
-            if self._config.scan_active:
-                self._prometheus_client.set_monitored_host(self._host_name, True)
+                self._prometheus_client.set_number_of_monitored_users(self.get_number_of_monitored_users())
+                self._prometheus_client.set_number_of_configured_users(
+                    len(self._persistence.user_map(session_context)))
 
-            latest_ping_time = tools.get_current_time() + \
-                               datetime.timedelta(seconds=-self._config.maximum_client_ping_interval)
+                if self._config.scan_active:
+                    self._prometheus_client.set_monitored_host(self._host_name, True)
 
-            for hostname, client_info in self._client_infos.items():
-                active = client_info.last_message > latest_ping_time
-                self._prometheus_client.set_monitored_host(hostname, active)
+                latest_ping_time = tools.get_current_time() + \
+                                   datetime.timedelta(seconds=-self._config.maximum_client_ping_interval)
 
-            if self._device_handler is not None:
-                self._prometheus_client.set_number_of_monitored_devices(
-                    self._device_handler.get_number_of_monitored_devices())
+                for hostname, client_info in self._client_infos.items():
+                    active = client_info.last_message > latest_ping_time
+                    self._prometheus_client.set_monitored_host(hostname, active)
 
-                for device_info in self._device_handler.device_infos.values():
-                    self._prometheus_client.set_device_active(
-                        device_info.device_name, 1 if device_info.is_up else 0)
-                    self._prometheus_client.set_device_response_time(
-                        device_info.device_name, device_info.response_time)
-                    self._prometheus_client.set_device_moving_average_response_time(
-                        device_info.device_name, device_info.moving_average_response_time)
+                if self._device_handler is not None:
+                    self._prometheus_client.set_number_of_monitored_devices(
+                        self._device_handler.get_number_of_monitored_devices())
 
-            else:
-                self._prometheus_client.set_number_of_monitored_devices(0)
+                    for device_info in self._device_handler.device_infos.values():
+                        self._prometheus_client.set_device_active(
+                            device_info.device_name, 1 if device_info.is_up else 0)
+                        self._prometheus_client.set_device_response_time(
+                            device_info.device_name, device_info.response_time)
+                        self._prometheus_client.set_device_moving_average_response_time(
+                            device_info.device_name, device_info.moving_average_response_time)
+
+                else:
+                    self._prometheus_client.set_number_of_monitored_devices(0)
+
+                for client_info in self._client_infos.values():
+                    self._prometheus_client.set_client_stats(p_hostname=client_info.host_name, p_client_stats=client_info.client_stats)
 
     def check(self):
 
@@ -494,14 +580,15 @@ class AppControl(object):
 
     def handle_event_speak(self, p_event):
 
-        if p_event.locale is None:
-            user_locale = self.get_user_locale(p_session_context=self._session_context, p_username=p_event.username)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            if p_event.locale is None:
+                user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_event.username)
 
-        else:
-            user_locale = p_event.locale
+            else:
+                user_locale = p_event.locale
 
-        for notification_handler in self._notification_handlers:
-            notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
+            for notification_handler in self._notification_handlers:
+                notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
 
     def get_user_locale(self, p_session_context, p_username):
 
@@ -535,16 +622,21 @@ class AppControl(object):
         server_group_names = ', '.join(self._login_mapping.get_server_group_names())
         fmt = "Received login mapping for server group(s) {group_names}"
         self._logger.info(fmt.format(group_names=server_group_names))
+        self._login_mapping_received = True
 
-    def update_client_info(self, p_hostname):
+    def update_client_info(self, p_hostname, p_client_stats=None):
 
         client_info = self._client_infos.get(p_hostname)
 
         if client_info is None:
-            client_info = ClientInfo(p_host_name=p_hostname)
+            client_info = ClientInfo(p_host_name=p_hostname, p_client_stats=p_client_stats, p_is_master=False,
+                                     p_maximum_client_ping_interval=self._config.maximum_client_ping_interval,
+                                     p_master_version=self.get_client_version(),
+                                     )
             self._client_infos[p_hostname] = client_info
 
         client_info.last_message = tools.get_current_time()
+        client_info.client_stats = p_client_stats
 
     def handle_event_start_client(self, p_event):
 
@@ -559,11 +651,12 @@ class AppControl(object):
 
     def send_config_to_slave(self, p_hostname):
 
-        config = {
-            user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
-                            constants.JSON_ACTIVE: user.active}
-            for user in self._persistence.users(p_session_context=self._session_context)
-        }
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            config = {
+                user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
+                                constants.JSON_ACTIVE: user.active}
+                for user in self._persistence.users(p_session_context=session_context)
+            }
 
         self.queue_event_update_config(p_hostname=p_hostname, p_config=config)
 
@@ -638,12 +731,13 @@ class AppControl(object):
         if p_reference_time is None:
             p_reference_time = datetime.datetime.now()
 
-        events = p_process_handler.scan_processes(
-            p_session_context=self._session_context,
-            p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
-            p_host_name=self._host_name,
-            p_process_regex_map=self.process_regex_map,
-            p_reference_time=p_reference_time)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            events = p_process_handler.scan_processes(
+                p_session_context=session_context,
+                p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
+                p_host_name=self._host_name,
+                p_process_regex_map=self.process_regex_map,
+                p_reference_time=p_reference_time)
 
         if p_queue_events:
             self.queue_events(p_events=events, p_to_master=True)
@@ -749,7 +843,7 @@ class AppControl(object):
 
     def pick_text_for_ruleset(self, p_rule_result_info, p_text=None):
 
-        t = gettext.translation('messages', localedir='little_brother/translations',
+        t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
         if p_text is not None:
@@ -780,7 +874,7 @@ class AppControl(object):
 
     def pick_text_for_approaching_logout(self, p_rule_result_info):
 
-        t = gettext.translation('messages', localedir='little_brother/translations',
+        t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
         if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
@@ -799,37 +893,38 @@ class AppControl(object):
 
     def get_current_rule_result_info(self, p_reference_time, p_username):
 
-        users_stat_infos = process_statistics.get_process_statistics(
-            p_process_infos=self.get_process_infos(),
-            p_reference_time=p_reference_time,
-            p_max_lookback_in_days=1,
-            p_user_map=self._persistence.user_map(self._session_context),
-            p_min_activity_duration=self._config.min_activity_duration)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            users_stat_infos = process_statistics.get_process_statistics(
+                p_process_infos=self.get_process_infos(),
+                p_reference_time=p_reference_time,
+                p_max_lookback_in_days=1,
+                p_user_map=self._persistence.user_map(session_context),
+                p_min_activity_duration=self._config.min_activity_duration)
 
-        rule_result_info = None
-        user_locale = self.get_user_locale(p_session_context=self._session_context, p_username=p_username)
-        rule_set = self._rule_handler.get_active_ruleset(p_session_context=self._session_context,
-                                                         p_username=p_username,
-                                                         p_reference_date=p_reference_time.date())
+            rule_result_info = None
+            user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_username)
+            rule_set = self._rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                             p_username=p_username,
+                                                             p_reference_date=p_reference_time.date())
 
-        stat_infos = users_stat_infos.get(p_username)
+            stat_infos = users_stat_infos.get(p_username)
 
-        if stat_infos is not None:
-            stat_info = stat_infos.get(rule_set.context)
+            if stat_infos is not None:
+                stat_info = stat_infos.get(rule_set.context)
 
-            if stat_info is not None:
-                self._logger.debug(str(stat_info))
+                if stat_info is not None:
+                    self._logger.debug(str(stat_info))
 
-                key_rule_override = rule_override.get_key(p_username=p_username,
-                                                          p_reference_date=p_reference_time.date())
-                override = self._rule_overrides.get(key_rule_override)
+                    key_rule_override = rule_override.get_key(p_username=p_username,
+                                                              p_reference_date=p_reference_time.date())
+                    override = self._rule_overrides.get(key_rule_override)
 
-                rule_result_info = self._rule_handler.process_ruleset(
-                    p_session_context=self._session_context,
-                    p_stat_info=stat_info,
-                    p_reference_time=p_reference_time,
-                    p_rule_override=override,
-                    p_locale=user_locale)
+                    rule_result_info = self._rule_handler.process_ruleset(
+                        p_session_context=session_context,
+                        p_stat_info=stat_info,
+                        p_reference_time=p_reference_time,
+                        p_rule_override=override,
+                        p_locale=user_locale)
 
         return rule_result_info
 
@@ -841,8 +936,9 @@ class AppControl(object):
             current_user_status = user_status.UserStatus(p_username=p_username)
             self._user_status[p_username] = current_user_status
 
-        current_user_status.locale = self.get_user_locale(p_session_context=self._session_context,
-                                                          p_username=p_username)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            current_user_status.locale = self.get_user_locale(p_session_context=session_context,
+                                                              p_username=p_username)
         return current_user_status
 
     def process_rules(self, p_reference_time):
@@ -850,99 +946,100 @@ class AppControl(object):
         fmt = "Processing rules START..."
         self._logger.debug(fmt)
 
-        users_stat_infos = process_statistics.get_process_statistics(
-            p_process_infos=self.get_process_infos(),
-            p_reference_time=p_reference_time,
-            p_max_lookback_in_days=self._config.process_lookback_in_days,
-            p_user_map=self._persistence.user_map(self._session_context),
-            p_min_activity_duration=self._config.min_activity_duration)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            users_stat_infos = process_statistics.get_process_statistics(
+                p_process_infos=self.get_process_infos(),
+                p_reference_time=p_reference_time,
+                p_max_lookback_in_days=self._config.process_lookback_in_days,
+                p_user_map=self._persistence.user_map(session_context),
+                p_min_activity_duration=self._config.min_activity_duration)
 
-        for user in self._persistence.users(self._session_context):
-            if user.active and user.username in self._usernames:
+            for user in self._persistence.users(session_context):
+                if user.active and user.username in self._usernames:
 
-                user_active = False
+                    user_active = False
 
-                user_locale = self.get_user_locale(p_username=user.username, p_session_context=self._session_context)
-                rule_set = self._rule_handler.get_active_ruleset(p_session_context=self._session_context,
-                                                                 p_username=user.username,
-                                                                 p_reference_date=p_reference_time.date())
+                    user_locale = self.get_user_locale(p_username=user.username, p_session_context=session_context)
+                    rule_set = self._rule_handler.get_active_ruleset(p_session_context=session_context,
+                                                                     p_username=user.username,
+                                                                     p_reference_date=p_reference_time.date())
 
-                stat_infos = users_stat_infos.get(user.username)
+                    stat_infos = users_stat_infos.get(user.username)
 
-                if stat_infos is not None:
-                    stat_info = stat_infos.get(rule_set.context)
+                    if stat_infos is not None:
+                        stat_info = stat_infos.get(rule_set.context)
 
-                    if stat_info is not None:
-                        self._logger.debug(str(stat_info))
+                        if stat_info is not None:
+                            self._logger.debug(str(stat_info))
 
-                        key_rule_override = rule_override.get_key(p_username=user.username,
-                                                                  p_reference_date=p_reference_time.date())
-                        override = self._rule_overrides.get(key_rule_override)
+                            key_rule_override = rule_override.get_key(p_username=user.username,
+                                                                      p_reference_date=p_reference_time.date())
+                            override = self._rule_overrides.get(key_rule_override)
 
-                        if rule_override is not None:
-                            self._logger.debug(str(override))
+                            if rule_override is not None:
+                                self._logger.debug(str(override))
 
-                        rule_result_info = self._rule_handler.process_ruleset(
-                            p_session_context=self._session_context,
-                            p_stat_info=stat_info,
-                            p_reference_time=p_reference_time,
-                            p_rule_override=override,
-                            p_locale=user_locale)
+                            rule_result_info = self._rule_handler.process_ruleset(
+                                p_session_context=session_context,
+                                p_stat_info=stat_info,
+                                p_reference_time=p_reference_time,
+                                p_rule_override=override,
+                                p_locale=user_locale)
 
-                        current_user_status = self.get_current_user_status(p_username=user.username)
+                            current_user_status = self.get_current_user_status(p_username=user.username)
 
-                        if (rule_result_info.limited_session_time()):
-                            current_user_status.minutes_left_in_session = rule_result_info.get_minutes_left_in_session()
+                            if (rule_result_info.limited_session_time()):
+                                current_user_status.minutes_left_in_session = rule_result_info.get_minutes_left_in_session()
 
-                        else:
-                            current_user_status.minutes_left_in_session = None
+                            else:
+                                current_user_status.minutes_left_in_session = None
 
-                        current_user_status.activity_allowed = rule_result_info.activity_allowed()
-                        user_active = stat_info.current_activity is not None
-                        current_user_status.logged_in = user_active
+                            current_user_status.activity_allowed = rule_result_info.activity_allowed()
+                            user_active = stat_info.current_activity is not None
+                            current_user_status.logged_in = user_active
 
-                        if not rule_result_info.activity_allowed():
-                            fmt = "Process %s" % str(rule_result_info.effective_rule_set)
-                            self._logger.debug(fmt)
-
-                            for (hostname, processes) in stat_info.currently_active_host_processes.items():
-
-                                fmt = "User %s has %d active process(es) on host %s" % (
-                                    user.username, len(processes), hostname)
+                            if not rule_result_info.activity_allowed():
+                                fmt = "Process %s" % str(rule_result_info.effective_rule_set)
                                 self._logger.debug(fmt)
 
-                                process_killed = False
+                                for (hostname, processes) in stat_info.currently_active_host_processes.items():
 
-                                for processhandler_id, pid, process_start_time in processes:
-                                    processhandler = self._process_handlers.get(processhandler_id)
+                                    fmt = "User %s has %d active process(es) on host %s" % (
+                                        user.username, len(processes), hostname)
+                                    self._logger.debug(fmt)
 
-                                    if processhandler is not None and processhandler.can_kill_processes():
-                                        if self._prometheus_client is not None:
-                                            self._prometheus_client.count_forced_logouts(p_username=user.username)
+                                    process_killed = False
 
-                                        self.queue_event_kill_process(
+                                    for processhandler_id, pid, process_start_time in processes:
+                                        processhandler = self._process_handlers.get(processhandler_id)
+
+                                        if processhandler is not None and processhandler.can_kill_processes():
+                                            if self._prometheus_client is not None:
+                                                self._prometheus_client.count_forced_logouts(p_username=user.username)
+
+                                            self.queue_event_kill_process(
+                                                p_hostname=hostname,
+                                                p_username=user.username,
+                                                p_processhandler=processhandler_id,
+                                                p_pid=pid,
+                                                p_process_start_time=process_start_time)
+                                            process_killed = True
+
+                                    if process_killed:
+                                        self.queue_event_speak(
                                             p_hostname=hostname,
                                             p_username=user.username,
-                                            p_processhandler=processhandler_id,
-                                            p_pid=pid,
-                                            p_process_start_time=process_start_time)
-                                        process_killed = True
+                                            p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info))
 
-                                if process_killed:
-                                    self.queue_event_speak(
-                                        p_hostname=hostname,
-                                        p_username=user.username,
-                                        p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info))
+                                        self.reset_logout_warning(p_username=user.username)
 
-                                    self.reset_logout_warning(p_username=user.username)
+                            elif rule_result_info.approaching_logout_rules > 0:
+                                for (hostname, processes) in stat_info.currently_active_host_processes.items():
+                                    self.issue_logout_warning(p_hostname=hostname, p_username=user.username,
+                                                              p_rule_result_info=rule_result_info)
 
-                        elif rule_result_info.approaching_logout_rules > 0:
-                            for (hostname, processes) in stat_info.currently_active_host_processes.items():
-                                self.issue_logout_warning(p_hostname=hostname, p_username=user.username,
-                                                          p_rule_result_info=rule_result_info)
-
-                if self._prometheus_client is not None:
-                    self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
+                    if self._prometheus_client is not None:
+                        self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
 
         fmt = "Processing rules END..."
         self._logger.debug(fmt)
@@ -982,7 +1079,8 @@ class AppControl(object):
 
         current_user_status.notification = p_text
 
-        locale = self.get_user_locale(p_username=p_username, p_session_context=self._session_context)
+        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            locale = self.get_user_locale(p_username=p_username, p_session_context=session_context)
 
         event = admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_SPEAK,
@@ -1198,10 +1296,56 @@ class AppControl(object):
 
         return sorted(admin_infos, key=lambda info: info.full_name)
 
+    def get_topology_infos(self, p_session_context):
+
+        topology_infos = [ info for info in self._client_infos.values() ]
+
+        master_stats = self.get_client_stats()
+        master_info = ClientInfo(p_is_master=True, p_host_name=self._host_name, p_client_stats=master_stats)
+
+        topology_infos.append(master_info)
+
+        sorted_infos = sorted(topology_infos, key=lambda info : (0 if info.is_master else 1, info.host_name))
+        return sorted_infos
+
+    def get_client_version(self):
+        return settings.settings['version']
+
+    def get_client_stats(self):
+
+        a_client_stats = client_stats.ClientStats(
+            p_version=self.get_client_version(),
+            p_revision=settings.extended_settings['debian_package_revision'],
+            p_python_version="{major}.{minor}.{micro}".format(major=sys.version_info.major,
+                                                              minor=sys.version_info.minor,
+                                                              micro=sys.version_info.micro),
+            p_running_in_docker=tools.running_in_docker()
+            )
+
+        if not self.is_master():
+            # Use the Prometheus Client ProcessCollector to retrieve run time stats for CPU and memory usage
+            # to be consistent with the stats collected on the master.
+
+            collector = prometheus_client.process_collector.PROCESS_COLLECTOR
+            stats= collector.collect()
+
+            for stat in stats:
+                if stat.name == 'process_resident_memory_bytes':
+                    a_client_stats.resident_memory_bytes = stat.samples[0].value
+
+                elif stat.name == 'process_start_time_seconds':
+                    a_client_stats.start_time_seconds = stat.samples[0].value
+
+                elif stat.name == 'process_cpu_seconds':
+                    a_client_stats.cpu_seconds_total = stat.samples[0].value
+
+        return a_client_stats
+
     def send_events(self):
 
         try:
-            result = self._master_connector.send_events(p_hostname=self._host_name, p_events=self._outgoing_events)
+            result = self._master_connector.send_events(p_hostname=self._host_name, p_events=self._outgoing_events,
+                                                        p_client_stats=self.get_client_stats())
             self._outgoing_events = []
 
             if self._could_not_send:
@@ -1223,6 +1367,11 @@ class AppControl(object):
                 fmt = "Propagating exception due to debug_mode=True"
                 self._logger.warn(fmt)
                 raise e
+
+    def receive_client_stats(self, p_json_data):
+
+        return tools.objectify_dict(p_dict=p_json_data,
+                                    p_class=client_stats.ClientStats)
 
     def receive_events(self, p_json_data):
 

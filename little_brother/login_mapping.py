@@ -16,11 +16,44 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import collections
+import re
+
+from python_base_app import configuration
+from python_base_app import tools
+
 
 DEFAULT_SERVER_GROUP = "default-group"
+LOGIN_MAPPING_SECTION_PREFIX = "LoginMapping"
 
 LoginUidMappingEntry = collections.namedtuple('LoginUidMappingEntry', ['login', 'uid'])
 
+MAPPING_ENTRY_PATTERN = re.compile("^ *([-a-z0-9]+) *: *([0-9]+) *$")
+
+class LoginMappingSectionHandler(configuration.ConfigurationSectionHandler):
+
+    def __init__(self):
+
+        super().__init__(p_section_prefix=LOGIN_MAPPING_SECTION_PREFIX)
+        self._login_mapping_sections = {}
+
+    def handle_section(self, p_section_name):
+
+        login_mapping_section = LoginMappingSection(p_section_name=p_section_name)
+        self.scan(p_section=login_mapping_section)
+
+        tools.check_config_value(p_config=login_mapping_section, p_config_attribute_name="server_group")
+
+        self._login_mapping_sections[login_mapping_section.server_group] = login_mapping_section
+
+
+class LoginMappingSection(configuration.ConfigModel):
+
+    def __init__(self, p_section_name=None):
+
+        super().__init__(p_section_name=p_section_name)
+
+        self.server_group = configuration.NONE_STRING
+        self.mapping_entries = [ configuration.NONE_STRING ]
 
 class LoginMapping(object):
 
@@ -48,7 +81,7 @@ class LoginMapping(object):
         return self._login2uid_mappings.keys()
 
 
-    def add_entry(self, p_login_uid_mapping_entry, p_server_group=DEFAULT_SERVER_GROUP):
+    def add_entry(self, p_login_uid_mapping_entry:LoginUidMappingEntry, p_server_group:str=DEFAULT_SERVER_GROUP):
 
         login2uid_mapping = self._login2uid_mappings.get(p_server_group)
 
@@ -66,7 +99,7 @@ class LoginMapping(object):
 
         uid2login_mapping[p_login_uid_mapping_entry.uid] = p_login_uid_mapping_entry
 
-    def get_login_by_uid(self, p_uid, p_server_group=DEFAULT_SERVER_GROUP):
+    def get_login_by_uid(self, p_uid:int, p_server_group:str=DEFAULT_SERVER_GROUP):
 
         uid2login_mapping = self._uid2login_mappings.get(p_server_group)
 
@@ -99,3 +132,20 @@ class LoginMapping(object):
             return None
 
         return entry.uid
+
+    def read_from_configuration(self, p_login_mapping_section_handler:LoginMappingSectionHandler):
+
+        for section in p_login_mapping_section_handler._login_mapping_sections.values():
+            for mapping_entry in section.mapping_entries:
+                single_entries = mapping_entry.split(",")
+
+                for entry in single_entries:
+                    match = MAPPING_ENTRY_PATTERN.match(entry)
+
+                    if match is None:
+                        msg = "Invalid logging mapping '{entry}' for host group {group}"
+                        raise configuration.ConfigurationException(msg.format(entry=entry, group=section.server_group))
+
+                    login_uid_mapping_entry = LoginUidMappingEntry(match.group(1), int(match.group(2)))
+                    self.add_entry(p_server_group=section.server_group,
+                                   p_login_uid_mapping_entry=login_uid_mapping_entry)

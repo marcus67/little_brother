@@ -366,3 +366,11 @@ ul {
 .error-label {
   color: #a94442;
 }
+
+.node_inactive {
+  color: red;
+}
+
+.node_outdated {
+  color: red;
+}

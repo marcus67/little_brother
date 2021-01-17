@@ -4,6 +4,85 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.10 Revision 81 (January 17th, 2021)
+
+*   Upgrade to python_base_app 0.2.9
+*   Update CI configuration for GitLab-CI
+*   Fixed bug with not using correct locale for texts regarding approaching logout
+*   Reactivate sending of client stats (was commented out for testing)
+*   Correct test case
+*   Add apt-get update to Dockerfile
+
+## Version 0.3.9 Revision 80 (January 9th, 2021)
+
+*   Upgrade to python_base_app 0.2.7
+*   Closes #28, see [here](https://github.com/marcus67/little_brother/issues/28)
+*   Closes #108, see [here](https://github.com/marcus67/little_brother/issues/108)
+*   Update Grafana default configuration to reflect new meta data from clients
+
+## Version 0.3.8 Revision 79 (January 2nd, 2021)
+
+*   Upgrade to python_base_app 0.2.6
+
+## Version 0.3.7 Revision 78 (January 1st, 2021)
+
+*   Increment PiPy version number 
+
+## Version 0.3.6 Revision 78 (November 28nd, 2020)
+
+*   Provide configuration option to set hostname 
+*   Closes #27, see [here](https://github.com/marcus67/little_brother/issues/27)
+*   Upgrade (almost) all required PyPi libraries
+
+## Version 0.3.5 Revision 77 (September 30th, 2020)
+
+*   Add two diagrams on application architecture 
+*   Move aspects of Docker image and container to new [repository](https://github.com/marcus67/docker-little-brother)
+*   Support env variables `APP_SECRET` and `LOGLEVEL` in Docker container
+*   Activate local webserver in Docker container to support health check
+
+## Version 0.3.4 Revision 76 (September 16th, 2020)
+
+*   Provide link to new installation documentation in README.md.
+
+## Version 0.3.3 Revision 75 (September 12th, 2020)
+
+*   Using renamed library some_flask_helpers (instead of flask_helpers)
+*   Add documentation page about non-Debian installation
+
+## Version 0.3.2 Revision 74 (September 12th, 2020)
+
+*   Added Croatian localization (locale "hr")
+*   Publish master branch to [PyPi-Test](https://test.pypi.org/)
+
+## Version 0.3.1 Revision 73 (September 6th, 2020)
+
+*   Closes #97, see [here](https://github.com/marcus67/little_brother/issues/97)
+
+## Version 0.3.1 Revision 72 (August 6th, 2020)
+
+*   Added second YouTube video
+
+## Version 0.3.1 Revision 71 (August 6th, 2020)
+
+*   Issue warning when kill command returns non-empty stderr
+*   Fixed problem with notification in wrong locale being passed on to LittleBrotherTaskbar 
+
+## Version 0.3.1 Revision 70 (August 4th, 2020)
+
+*   Publish slide deck used in YouTube video
+
+## Version 0.3.1 Revision 69 (July 30th, 2020)
+
+*   Closes #85, see [here](https://github.com/marcus67/little_brother/issues/85)
+*   Add table of YouTube videos to README
+*   Activate Spanish translation 
+
+## Version 0.3.1 Revision 68 (July 20th, 2020)
+
+*   Closes #98, see [here](https://github.com/marcus67/little_brother/issues/98)
+*   Closes #99, see [here](https://github.com/marcus67/little_brother/issues/99)
+
 ## Version 0.3.1 Revision 67 (July 20th, 2020)
 
 *   Fix issue with master process not detecting user activity when new users are activated
@@ -15,7 +94,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Update Italian localization (locale "it")
 *   Issue error when no database user is given when driver != sqlite
-*   Register logging filter for alembic
+*   Register logging filter for alembic
 *   Add up-to-dateness of translations as column to localization table
 
 ## Version 0.3.0 Revision 65 (July 18th, 2020)
@@ -128,8 +207,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Move alembic files into package directory to make them available in the pip installation directory
 *   Add command line option '--stamp-databases' to force an alembic database revision  
-*   Correct alembic.sh (invalid use of env variable)
-*   Correct German translation
+*   Correct alembic.sh (invalid use of env variable)
+*   Correct German translation
 *   Exclude alembic delta scripts from duplicate checks (after move of directory)
 
 ## Version 0.2 Revision 52 (March 4th, 2020)

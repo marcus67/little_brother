@@ -20,6 +20,5 @@
 echo "Starting Little-Brother in Slave Mode"
 export MasterConnector__host_url=${MASTER_HOST_URL}
 export MasterConnector__access_token=${MASTER_ACCESS_TOKEN}
-run_little_brother.py \
-     --config /etc/little-brother.config
-
+export StatusServer__app_secret=${APP_SECRET}
+run_little_brother.py --config /etc/little-brother.config --loglevel ${LOGLEVEL}

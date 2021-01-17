@@ -440,7 +440,8 @@ class TestRuleHandler(base_test.BaseTestCase):
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
-        reference_time = datetime.datetime.utcnow()
+        # Use reference time around noon so that we don't get trouble with time intervals spanning midnight
+        reference_time = datetime.datetime.today() + datetime.timedelta(hours=+12)
         rule_set = TestRuleHandler.create_dummy_ruleset_config()
 
         activity_start = reference_time + datetime.timedelta(seconds=-2000)
@@ -474,7 +475,7 @@ class TestRuleHandler(base_test.BaseTestCase):
                                           p_rule_result_info=rule_result_info)
 
         self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
-                         rule_handler.RULE_TIME_PER_DAY)  # TODO: test error on CircleCI
+                         rule_handler.RULE_TIME_PER_DAY)
 
         rule_set.max_time_per_day = 651
 

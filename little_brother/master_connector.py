@@ -45,22 +45,29 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
         access_token = p_json_data[constants.JSON_ACCESS_TOKEN]
         hostname = p_json_data[constants.JSON_HOSTNAME]
         json_events = p_json_data[constants.JSON_EVENTS]
+        json_slave_stats = p_json_data.get(constants.JSON_CLIENT_STATS, None)
 
         if access_token != self._config.access_token:
             fmt = "Received invalid access token from host '{hostname}'"
             self._logger.warning(fmt.format(hostname=hostname))
             return None
 
-        return (hostname, json_events)
+        if json_slave_stats is not None:
+            return (hostname, json_events, json_slave_stats)
 
-    def send_events(self, p_hostname, p_events):
+        else:
+            return (hostname, json_events)
+
+    def send_events(self, p_hostname, p_events, p_client_stats):
 
         url = self._get_api_url(constants.API_REL_URL_EVENTS)
 
         data = {
             constants.JSON_ACCESS_TOKEN: self._config.access_token,
             constants.JSON_HOSTNAME: p_hostname,
-            constants.JSON_EVENTS: p_events}
+            constants.JSON_EVENTS: p_events,
+            constants.JSON_CLIENT_STATS: p_client_stats
+        }
 
         try:
             result = self.execute_api_call(

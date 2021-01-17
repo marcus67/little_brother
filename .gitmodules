@@ -1,6 +1,6 @@
 [submodule "contrib/python_base_app"]
 	path = contrib/python_base_app
 	url = ../python_base_app.git
-[submodule "contrib/flask_helpers"]
-	path = contrib/flask_helpers
-	url = ../flask_helpers.git
+[submodule "contrib/some_flask_helpers"]
+	path = contrib/some_flask_helpers
+	url = ../some_flask_helpers.git

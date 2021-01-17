@@ -32,7 +32,9 @@ from little_brother import popup_handler
 from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother import status_server
+from little_brother import login_mapping
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
+
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
@@ -138,6 +140,9 @@ class App(base_app.BaseApp):
 
         user_handler_section = unix_user_handler.BaseUserHandlerConfigModel()
         p_configuration.add_section(user_handler_section)
+
+        self._login_mapping_section_handler = login_mapping.LoginMappingSectionHandler()
+        p_configuration.register_section_handler(p_section_handler=self._login_mapping_section_handler)
 
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
@@ -262,6 +267,9 @@ class App(base_app.BaseApp):
         else:
             self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
 
+        self._login_mapping = login_mapping.LoginMapping()
+        self._login_mapping.read_from_configuration(p_login_mapping_section_handler=self._login_mapping_section_handler)
+
         self._app_control = app_control.AppControl(
             p_config=self._config[app_control.SECTION_NAME],
             p_debug_mode=self._app_config.debug_mode,
@@ -273,7 +281,8 @@ class App(base_app.BaseApp):
             p_master_connector=self._master_connector,
             p_prometheus_client=self._prometheus_client,
             p_user_handler=self._user_handler,
-            p_locale_helper=self.locale_helper)
+            p_locale_helper=self.locale_helper,
+            p_login_mapping=self._login_mapping)
 
         if self._config[app_control.SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",

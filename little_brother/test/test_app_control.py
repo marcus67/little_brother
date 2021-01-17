@@ -23,6 +23,7 @@ import unittest
 from little_brother import app_control
 from little_brother import master_connector
 from little_brother import prometheus
+from little_brother import client_stats
 from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
 from python_base_app.test import base_test
@@ -61,12 +62,15 @@ class TestAppControl(base_test.BaseTestCase):
         self.assertIsNotNone(ac)
 
     def test_constructor3(self):
-        ci = app_control.ClientInfo(p_host_name=HOSTNAME)
+        some_client_stats = client_stats.ClientStats()
+        ci = app_control.ClientInfo(p_is_master=True, p_host_name=HOSTNAME, p_client_stats=some_client_stats)
 
         self.assertIsNotNone(ci)
 
+        self.assertTrue(ci.is_master)
         self.assertEqual(ci.host_name, HOSTNAME)
         self.assertIsNone(ci.last_message)
+        self.assertEqual(ci.client_stats, some_client_stats)
 
     def test_get_number_of_monitored_users_function(self):
         config = app_control.AppControlConfigModel()

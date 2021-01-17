@@ -43,6 +43,7 @@
 	        <li {% if navigation.current_view == "admin" %}class="active"{% endif %}><a href="{{ url_for('little_brother.admin') }}">{{_('Admin')}} <span class="sr-only">(current)</span></a></li>
 	        <li {% if navigation.current_view == "users" %}class="active"{% endif %}><a href="{{ url_for('little_brother.users') }}">{{_('Users')}} <span class="sr-only">(current)</span></a></li>
 	        <li {% if navigation.current_view == "devices" %}class="active"{% endif %}><a href="{{ url_for('little_brother.devices') }}">{{_('Devices')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "topology" %}class="active"{% endif %}><a href="{{ url_for('little_brother.topology') }}">{{_('Topology')}} <span class="sr-only">(current)</span></a></li>
 	        <li {% if navigation.current_view == "about" %}class="active"{% endif %}><a href="{{ url_for('little_brother.about') }}">{{_('About')}} <span class="sr-only">(current)</span></a></li>
 	      </ul>
 	      {% if authentication.is_authenticated %}

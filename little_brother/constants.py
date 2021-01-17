@@ -31,6 +31,7 @@ LANGUAGES = {
     'en': 'English',
     'de': 'Deutsch',
     'fr': 'Français',
+    'hr': 'Hrvatski',
     'it': 'Italiano',
     'nl': 'Nederlands',
     'fi': 'Suomen kieli',
@@ -40,6 +41,7 @@ LANGUAGES = {
     'bn': 'বাংলা',
     'th': 'ภาษาไทย',
     'da': 'Dansk',
+    'es': 'Español'
 }
 
 TEXT_SEPERATOR = " 🞄 "
@@ -55,6 +57,7 @@ API_URL_PARAM_USERNAME = "username"
 
 JSON_HOSTNAME = "hostname"
 JSON_EVENTS = "events"
+JSON_CLIENT_STATS = "client_stats"
 JSON_RULESETS = "rulesets"
 JSON_USERNAME = "username"
 JSON_PROCESS_NAME_PATTERN = "process_name_pattern"

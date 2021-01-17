@@ -33,3 +33,14 @@ This page tries to help you with troubleshooting the most common problems with r
         that you find in the list and use that in the `process_name_pattern=` setting instead. If in doubt open a 
         ticket [here](../issues) or write mail to  little-brother(at)web.de to get help. Include the process list, 
         please, after removing any potentially sensitive information from it (e.g. passwords).    
+
+## Error `AttributeError: Module Pip has no attribute 'main'` during Debian Package installation 
+
+This is most likely due to a version mismatch or an outdated version of `pip`. Try this:
+
+     rm -rf /var/lib/little-brother/virtualenv/
+     apt-get install python3-setuptools python3-pip
+     apt-get install -f
+     
+The last step will probably not be necessary because the previous `apt-get` has already made a second attempt
+at installing `little-brother`. 

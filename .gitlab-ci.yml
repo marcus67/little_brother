@@ -24,39 +24,68 @@
 stages:
 - build
 - install_and_check
-- docker
+- deploy
 
-
-make_debian_package:
+build_debian:
   image: accso/docker-python-app:latest
   stage: build
   script:
-  - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
   artifacts:
     paths:
-    - debian/*.deb
+      - debian/*.deb
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
-check_installation:
+test_debian:
   image: accso/docker-python-app:latest
   stage: install_and_check
   script:
-  - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
-  - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --run-dir=/tmp 
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - codecov
   artifacts:
-    when: always
     paths:
-    - /var/log/little-brother/*.log*
-    - ./htmlcov/*
+      - htmlcov
+  variables:
+    # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+build_pypi:
+  image: accso/docker-python-app:latest
+  stage: build
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  artifacts:
+      when: always
+      paths:
+        - dist/little-brother-0.3.10.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
-build_docker_images:
+install_pypi:
+  image: accso/docker-python-app:latest
+  stage: install_and_check
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  artifacts:
+      when: always
+      paths:
+        - htmlcov
+  variables:
+    # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+docker:
   image: marcusrickert/docker-docker-ci:release-0.9
-  stage: docker
+  stage: deploy
   script:
   - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.
   variables:

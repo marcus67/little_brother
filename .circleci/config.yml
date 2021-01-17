@@ -42,11 +42,64 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.3.1_67.deb
+          path: debian/little-brother_0.3.10_82.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.3.1_67.deb
+            - little-brother_0.3.10_82.deb
+  build_pypi:
+    #working_directory: ~
+    docker:
+      - image: accso/docker-python-app:latest
+    steps:
+      - checkout
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - store_artifacts:
+          path: "dist/little-brother-0.3.10.tar.gz"
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - "little-brother-0.3.10.tar.gz"
+  install_pypi:
+    #working_directory: ~
+    docker:
+      - image: accso/docker-python-app:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: "dist"
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: codecov
+      - store_artifacts:
+          path: htmlcov
+  publish_pypi:
+    #working_directory: ~
+    docker:
+      - image: accso/docker-python-app:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: "dist"
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
   deploy:
     docker:
       - image: accso/docker-python-app:latest
@@ -86,3 +139,16 @@ workflows:
         - docker:
             requires:
               - build
+        - build_pypi
+        - install_pypi:
+            requires:
+              - build_pypi
+        - publish_pypi:
+            requires:
+              - install_pypi
+              - docker
+            filters:
+              branches:
+                only:
+                  - release
+                  - master
