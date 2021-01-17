@@ -26,18 +26,28 @@ stages:
 - install_and_check
 - deploy
 
-build_and_test_debian:
+build_debian:
   image: accso/docker-python-app:latest
   stage: build
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+  artifacts:
+    paths:
+      - debian/*.deb
+  variables:
+    # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+test_debian:
+  image: accso/docker-python-app:latest
+  stage: install_and_check
+  script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codedov
   artifacts:
     paths:
       - htmlcov
-      - debian/*.deb
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
