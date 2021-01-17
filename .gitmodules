@@ -3,4 +3,4 @@
 	url = ../python_base_app.git
 [submodule "contrib/some_flask_helpers"]
 	path = contrib/some_flask_helpers
-	url = https://github.com/marcus67/some_flask_helpers.git
+	url = ../some_flask_helpers.git
