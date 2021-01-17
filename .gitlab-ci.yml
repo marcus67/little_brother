@@ -44,7 +44,7 @@ test_debian:
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
-    - codedov
+    - codecov
   artifacts:
     paths:
       - htmlcov
