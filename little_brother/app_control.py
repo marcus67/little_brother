@@ -102,12 +102,21 @@ class ClientInfo(object):
         return _("Master") if self.is_master else _("Slave")
 
     @property
-    def last_message_string(self):
+    def seconds_without_ping(self):
         if self.last_message is None:
+            return None
+
+        return (tools.get_current_time() - self.last_message).seconds
+
+    @property
+    def last_message_string(self):
+
+        some_seconds_without_ping = self.seconds_without_ping
+
+        if some_seconds_without_ping is None:
             return _("n/a")
 
-        seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
-        return tools.get_duration_as_string(seconds_without_ping)
+        return tools.get_duration_as_string(some_seconds_without_ping)
 
 
     @property

@@ -66,7 +66,7 @@
             <DIV CLASS="col-xs-2 localetext {{ info.version_class }}">{{ info.version_string }}</DIV>
             <DIV CLASS="col-xs-2 localetext">{{ info.client_stats.revision }}</DIV>
             <DIV CLASS="col-xs-2 localetext">{{ info.client_stats.python_version }}</DIV>
-            <DIV CLASS="col-xs-2 localetext {{ info.last_message_class}}">{{ info.last_message_string }}</DIV>
+            <DIV CLASS="col-xs-2 localetext {{ info.last_message_class}}">{{ info.seconds_without_ping | seconds_as_humanized_duration }}</DIV>
         </DIV>
         {% endfor %}
     </DIV>
