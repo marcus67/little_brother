@@ -46,6 +46,7 @@ DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
+DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60 # seconds
 
 
 class AppConfigModel(base_app.BaseAppConfigModel):
@@ -54,6 +55,7 @@ class AppConfigModel(base_app.BaseAppConfigModel):
         super(AppConfigModel, self).__init__(APP_NAME)
 
         self.check_interval = base_app.DEFAULT_TASK_INTERVAL
+        self.clean_history_interval = DEFAULT_CLEAN_HISTORY_INTERVAL
 
 
 def get_argument_parser(p_app_name):
@@ -302,6 +304,14 @@ class App(base_app.BaseApp):
                     p_process_handler=self._client_device_handler),
                 p_interval=self._client_device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
+
+        if self.is_master():
+            task = base_app.RecurringTask(
+                p_name="app_control.clean_history",
+                p_handler_method=lambda: self._app_control.clean_history(),
+                p_interval=self._app_config.clean_history_interval)
+            self.add_recurring_task(p_recurring_task=task)
+
 
         if status_server_config.is_active():
             self._status_server = status_server.StatusServer(
