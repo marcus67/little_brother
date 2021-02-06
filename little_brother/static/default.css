@@ -73,6 +73,46 @@ a.CVE_HYPERLINK:visited {
   padding-right: 1px;
 }
 
+.col-xs-5 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-6 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-7 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-8 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-9 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-10 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-11 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-12 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
 .col-lg-1 {
   padding-left: 2px;
   padding-right: 2px;
@@ -311,6 +351,14 @@ ul {
 
 .center {
   text-align: center;
+}
+
+.dense-font {
+  font-size: 90%;
+}
+
+.very-dense-font {
+  font-size: 80%;
 }
 
 /* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */

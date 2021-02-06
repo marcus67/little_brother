@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.12 Revision 83 (February 6th, 2021)
+
+*   Closes #101, see [here](https://github.com/marcus67/little_brother/issues/101)
+*   Greatly improved layouts of web interface for smaller screens
+
 ## Version 0.3.11 Revision 82 (February 6th, 2021)
 
 *   Closes #28, see [here](https://github.com/marcus67/little_brother/issues/28)
