@@ -15,6 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
 import gettext
 import os
 
@@ -23,6 +24,7 @@ import flask
 import flask_babel
 import flask_login
 import flask_wtf
+import humanize
 
 import little_brother
 from some_flask_helpers import blueprint_adapter
@@ -170,6 +172,7 @@ class StatusServer(base_web_server.BaseWebServer):
         self._app.jinja_env.filters['format_babel_date'] = self.format_babel_date
         self._app.jinja_env.filters['format_text_array'] = self.format_text_array
         self._app.jinja_env.filters['invert'] = self.invert
+        self._app.jinja_env.filters['seconds_as_humanized_duration'] = self.format_seconds_as_humanized_duration
         self._app.jinja_env.filters['_base'] = self._base_gettext
 
         self._babel = flask_babel.Babel(self._app)
@@ -235,6 +238,21 @@ class StatusServer(base_web_server.BaseWebServer):
 
         else:
             return value.strftime(self._config.time_format)
+
+    def format_seconds_as_humanized_duration(self, seconds):
+
+        if seconds is None:
+            return _("n/a")
+
+        try:
+            # trying to activate the localization for a non-existing locale (including 'en'!) triggers an exception
+            if self._locale_helper.locale is not None:
+                humanize.i18n.activate(self._locale_helper.locale)
+
+        except Exception:
+            humanize.i18n.deactivate()
+
+        return humanize.naturaldelta(datetime.timedelta(seconds=seconds))
 
     @staticmethod
     def format_seconds(value):

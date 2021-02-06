@@ -47,6 +47,7 @@ from packaging import version
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
 DEFAULT_PROCESS_LOOKUP_IN_DAYS = 7  # days
+DEFAULT_HISTORY_LENGTH_IN_DAYS = 180  # days
 DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_CHECK_INTERVAL = 5  # seconds
 DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
@@ -74,6 +75,7 @@ class AppControlConfigModel(configuration.ConfigModel):
         super(AppControlConfigModel, self).__init__(p_section_name=SECTION_NAME)
 
         self.process_lookback_in_days = DEFAULT_PROCESS_LOOKUP_IN_DAYS
+        self.history_length_in_days = DEFAULT_HISTORY_LENGTH_IN_DAYS
         self.admin_lookahead_in_days = DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS
         self.server_group = login_mapping.DEFAULT_SERVER_GROUP
         self.hostname = configuration.NONE_STRING
@@ -102,12 +104,21 @@ class ClientInfo(object):
         return _("Master") if self.is_master else _("Slave")
 
     @property
-    def last_message_string(self):
+    def seconds_without_ping(self):
         if self.last_message is None:
+            return None
+
+        return (tools.get_current_time() - self.last_message).seconds
+
+    @property
+    def last_message_string(self):
+
+        some_seconds_without_ping = self.seconds_without_ping
+
+        if some_seconds_without_ping is None:
             return _("n/a")
 
-        seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
-        return tools.get_duration_as_string(seconds_without_ping)
+        return tools.get_duration_as_string(some_seconds_without_ping)
 
 
     @property
@@ -465,6 +476,10 @@ class AppControl(object):
         if not self.is_master():
             self.send_events()
 
+    def clean_history(self):
+        self._persistence.delete_historic_entries(p_history_length_in_days=self._config.history_length_in_days)
+
+
     def queue_event(self, p_event, p_to_master=False, p_is_action=False):
 
         if p_is_action:
@@ -533,7 +548,14 @@ class AppControl(object):
 
     def handle_event_process_start(self, p_event):
 
-        pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_start(p_event)
+        process_handler = self.get_process_handler(p_id=p_event.processhandler)
+
+        if process_handler is None:
+            msg = "Received event for process handler of type id '{id}' which is not registered -> discarding event"
+            self._logger.warning(msg.format(id=p_event.processhandler))
+            return
+
+        pinfo, updated = process_handler.handle_event_process_start(p_event)
 
         if updated:
             if self._persistence is not None:
@@ -877,14 +899,14 @@ class AppControl(object):
         t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
-        if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
-            return t.gettext(self.text_no_time_left_approaching).format(**p_rule_result_info.args)
+        if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_ACTIVITY_DURATION:
+            return t.gettext(self.text_need_break_approaching).format(**p_rule_result_info.args)
 
         elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TOO_LATE:
             return t.gettext(self.text_too_late_approaching).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_ACTIVITY_DURATION:
-            return t.gettext(self.text_need_break_approaching).format(**p_rule_result_info.args)
+        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
+            return t.gettext(self.text_no_time_left_approaching).format(**p_rule_result_info.args)
 
         else:
             fmt = "pick_text_for_approaching_logout(): cannot derive text for rule result %d" % p_rule_result_info.approaching_logout_rules

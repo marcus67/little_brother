@@ -829,7 +829,7 @@ class Persistence(object):
     def load_process_infos(self, p_lookback_in_days):
 
         with SessionContext(self) as session_context:
-            session_context = SessionContext(self)
+#            session_context = SessionContext(self)
             session = session_context.get_session()
             reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
 
@@ -845,6 +845,44 @@ class Persistence(object):
                     pinfo.hostlabel = None
 
         return result
+
+    def delete_historic_entries(self, p_history_length_in_days):
+
+        msg = "Deleting historic entries older than {days} days..."
+        self._logger.info(msg.format(days=p_history_length_in_days))
+
+        with SessionContext(self) as session_context:
+            session = session_context.get_session()
+            reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_history_length_in_days)
+            reference_date = reference_time.date()
+
+            result = session.query(RuleOverride).filter(RuleOverride.reference_date < reference_date).all()
+
+            msg = "Deleting {count} rule override entries..."
+            self._logger.info(msg.format(count=len(result)))
+
+            for override in result:
+                session.delete(override)
+
+            result = session.query(AdminEvent).filter(AdminEvent.event_time < reference_time).all()
+
+            msg = "Deleting {count} admin events..."
+            self._logger.info(msg.format(count=len(result)))
+
+            for event in result:
+                session.delete(event)
+
+            result = session.query(ProcessInfo).filter(ProcessInfo.start_time < reference_time).all()
+
+            msg = "Deleting {count} process infos..."
+            self._logger.info(msg.format(count=len(result)))
+
+            for pinfo in result:
+                session.delete(pinfo)
+
+            session.commit()
+
+
 
     def load_rule_overrides(self, p_lookback_in_days):
 

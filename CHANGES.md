@@ -4,6 +4,15 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.11 Revision 82 (February 6th, 2021)
+
+*   Closes #28, see [here](https://github.com/marcus67/little_brother/issues/28)
+*   Closes #113, see [here](https://github.com/marcus67/little_brother/issues/113)
+*   Closes #112, see [here](https://github.com/marcus67/little_brother/issues/112) (presumably)
+*   Closes #58, see [here](https://github.com/marcus67/little_brother/issues/58) (presumably)
+*   Closes #110, see [here](https://github.com/marcus67/little_brother/issues/110)
+*   Closes #86, see [here](https://github.com/marcus67/little_brother/issues/86)
+
 ## Version 0.3.10 Revision 81 (January 17th, 2021)
 
 *   Upgrade to python_base_app 0.2.9
