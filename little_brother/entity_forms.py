@@ -19,9 +19,11 @@ import wtforms
 
 from python_base_app import custom_fields
 from python_base_app import custom_form
-from python_base_app import tools
+from python_base_app import pinger
 
 _ = lambda x: x
+
+a_pinger = pinger.Pinger()
 
 
 # TODO: edit fields should be marked by special color when containing modified (and not yet saved ) value
@@ -35,15 +37,15 @@ class UserForm(custom_form.ModelForm):
 
 
 class NewUserForm(custom_form.ModelForm):
-
     username = wtforms.SelectField("NewUsername")
 
-class NewUser2DeviceForm(custom_form.ModelForm):
 
+class NewUser2DeviceForm(custom_form.ModelForm):
     device_id = wtforms.SelectField("NewDeviceId")
 
+
 def dns_validator(_form, field):
-    if not tools.is_valid_dns_name(field.data):
+    if not a_pinger.is_valid_ping(field.data):
         raise wtforms.validators.ValidationError(_("Not a valid host address"))
 
 

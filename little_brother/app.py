@@ -39,6 +39,7 @@ from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import locale_helper
+from python_base_app import pinger
 from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
@@ -96,6 +97,7 @@ class App(base_app.BaseApp):
         self._prometheus_client = None
         self._user_handler = None
         self._locale_helper = None
+        self._pinger = None
 
     def prepare_configuration(self, p_configuration):
 
@@ -145,6 +147,9 @@ class App(base_app.BaseApp):
 
         self._login_mapping_section_handler = login_mapping.LoginMappingSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._login_mapping_section_handler)
+
+        pinger_section = pinger.PingerConfigModel()
+        p_configuration.add_section(pinger_section)
 
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
@@ -221,9 +226,13 @@ class App(base_app.BaseApp):
             p_config=self._config[client_process_handler.SECTION_NAME],
             p_process_iterator_factory=ProcessIteratorFactory())
 
+        pinger_config = self._config[pinger.SECTION_NAME]
+        self._pinger = pinger.Pinger(p_config=pinger_config)
+
         self._client_device_handler = client_device_handler.ClientDeviceHandler(
             p_config=self._config[client_device_handler.SECTION_NAME],
-            p_persistence=self._persistence)
+            p_persistence=self._persistence,
+            p_pinger=self._pinger)
 
         self._process_handlers = {
             process_handler.id: process_handler,

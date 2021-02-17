@@ -8,6 +8,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Closes #101, see [here](https://github.com/marcus67/little_brother/issues/101)
 *   Greatly improved layouts of web interface for smaller screens
+*   Optional use of [ProxyPing](https://github.com/marcus67/proxy_ping)
 
 ## Version 0.3.11 Revision 82 (February 6th, 2021)
 

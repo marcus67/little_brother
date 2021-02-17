@@ -123,7 +123,8 @@ class StatusServer(base_web_server.BaseWebServer):
                  p_locale_helper,
                  p_base_gettext=None,
                  p_languages=None,
-                 p_user_handler=None):
+                 p_user_handler=None,
+                 p_pinger=None):
 
         super(StatusServer, self).__init__(
             p_config=p_config,

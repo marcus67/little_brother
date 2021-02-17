@@ -391,6 +391,29 @@ has to be unique across all devices. If you want to monitor devices in your loca
 that your WIFI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
 router accordingly. Look out for *persistent IP addresses* in the manual.
 
+    As of version 0.3.12 of `LittleBrother` the host name may also have an extended format permitting to ping devices
+    behind firewall. This feature is supported by [ProxyPing](https://github.com/marcus67/proxy_ping). In this case the
+    host name has the following format
+
+        proxy.host.name:port,device.host.name
+    
+    where `proxy.host.name` ist the DNS name of proxy host and `port` is the optional port number. `device.host.name`
+    denotes the DNS name of the actual device. The port defaults to `6666` which is the default of `ProxyPing`. If 
+    no port is given the colon has to be omitted, too. Of course, instead of either host name an IP address may be used. 
+
+    Some examples:
+
+    | Host Specification                           | Description                                                                                                                      |                                                                                                                                                                                                                                                                                                                                    
+    |:-------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------- |
+    | `my.device.net`                              | Direct ping to device with DNS name `my.device.net`                                                                              |
+    | `192.168.5.2`                                | Direct ping to device with IP address `192.168.5.2`                                                                              |
+    | `my.proxy.somenet,my.hidden.device`          | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using default port `6666`  |
+    | `my.proxy.somenet:6665,my.hidden.device`     | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using explicit port `6665` |
+
+    **Note** that `LittleBrother` will only check the validity of the proxy host 
+    name, whereas the `device.host.name` will not be checked. For the time being, format errors in the specification above
+    or a wrong device host name will silently be ignored resulting in the device being regarded as *down* all the time.   
+
 *   *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
 as active. Durations shorter than this period will be ignored completely.
 

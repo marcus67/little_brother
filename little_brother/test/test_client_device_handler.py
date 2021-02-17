@@ -26,6 +26,7 @@ from little_brother import persistence
 from little_brother.test import test_data
 from little_brother.test import test_persistence
 from python_base_app.test import base_test
+from python_base_app import pinger
 
 
 class TestClientDeviceHandler(base_test.BaseTestCase):
@@ -51,8 +52,10 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
         dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_client_device_configs(device_configs)
+        a_pinger = pinger.Pinger()
         process_handler = client_device_handler.ClientDeviceHandler(p_config=config,
-                                                                    p_persistence=dummy_persistence)
+                                                                    p_persistence=dummy_persistence,
+                                                                    p_pinger=a_pinger)
 
         process_handler.scan_processes(p_session_context=session_context,
                                        p_server_group=None,

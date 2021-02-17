@@ -15,10 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import re
-import shlex
-import subprocess
-
 from little_brother import admin_event
 from little_brother import persistence
 from little_brother import process_handler
@@ -194,19 +190,12 @@ class DeviceInfo(object):
 
 class ClientDeviceHandler(process_handler.ProcessHandler):
 
-    def __init__(self, p_config, p_persistence):
+    def __init__(self, p_config, p_persistence, p_pinger=None):
 
         super().__init__(p_config=p_config)
         self._persistence = p_persistence
+        self._pinger = p_pinger
         #self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
-
-        try:
-            self.ping_result_regex = re.compile(self._config.ping_result_regex)
-
-        except Exception:
-            fmt = "Invalid regular expression '{regex}' in [{section}]ping_result_regex"
-            raise configuration.ConfigurationException(
-                fmt.format(regex=self._config.ping_result_regex, section=SECTION_NAME))
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -240,46 +229,13 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
         return device_info
 
-    # https://stackoverflow.com/questions/2953462/pinging-servers-in-python
-    def ping(self, p_host):
-        """
-        Returns True if host (str) responds to a ping request.
-        Remember that a host may not respond to a ping (ICMP) request even if the host name is valid.
-        """
-
-        fmt = "{ping_command} -w 1 {c_option} {host}"
-        raw_command = fmt.format(ping_command=self._config.ping_command,
-                                 # Ping command count option as function of OS
-                                 c_option='-n 1' if tools.is_windows() else '-c 1',
-                                 host=shlex.quote(p_host))
-
-        command = shlex.split(raw_command)
-        delay = None
-
-        fmt = "Executing command {cmd} in Popen"
-        self._logger.debug(fmt.format(cmd=command))
-
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE)
-
-        for line in proc.stdout:
-            result = self.ping_result_regex.match(line.decode("UTF-8"))
-
-            if result:
-                delay = float(result.group(1))
-                break
-
-        fmt = "Host {host} is {status}"
-        self._logger.debug(
-            fmt.format(host=p_host, status="responding (%.1f ms)" % delay if delay is not None else "down"))
-
-        return delay
-
     def ping_device(self, p_reference_time, p_device):
 
         fmt = "Pinging {device}..."
         self._logger.debug(fmt.format(device=p_device.hostname))
 
-        delay = self.ping(p_device.hostname)
+        delay = self._pinger.ping(p_host=p_device.hostname)
+
         device_info = self.get_device_info(p_device_name=p_device.device_name)
 
         if delay is not None:

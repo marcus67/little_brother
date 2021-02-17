@@ -109,6 +109,9 @@ be used to determine the activity on those devices. In contrast to the Linux hos
 will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
 
+*   As of version 0.3.12 `LittleBrother` is able to use [ProxyPing](https://github.com/marcus67/proxy_ping) to ping
+devices behind firewalls provided the tool can be deployed on a Debian server behind the firewall.
+
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
 Linux host with a Docker deamon available.
 
