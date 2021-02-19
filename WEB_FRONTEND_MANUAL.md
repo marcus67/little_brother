@@ -392,7 +392,7 @@ that your WIFI router always issues the same IP numbers to the same devices. Usu
 router accordingly. Look out for *persistent IP addresses* in the manual.
 
     As of version 0.3.12 of `LittleBrother` the host name may also have an extended format permitting to ping devices
-    behind firewall. This feature is supported by [ProxyPing](https://github.com/marcus67/proxy_ping). In this case the
+    behind a firewall. This feature is supported by [ProxyPing](https://github.com/marcus67/proxy_ping). In this case the
     host name has the following format
 
         proxy.host.name:port,device.host.name
