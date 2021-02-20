@@ -192,7 +192,12 @@ class User(Base):
     def regex_process_name_pattern(self):
 
         if self._regex_process_name_pattern is None:
-            self._regex_process_name_pattern = re.compile(self.process_name_pattern)
+
+            if "/" in self.process_name_pattern:
+                self._regex_process_name_pattern = re.compile(self.process_name_pattern)
+
+            else:
+                self._regex_process_name_pattern = re.compile(".*(" + self.process_name_pattern + ").*")
 
         return self._regex_process_name_pattern
 

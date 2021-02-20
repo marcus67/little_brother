@@ -163,7 +163,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                 if username is not None and username in p_process_regex_map:
                     proc_cmdline = ' '.join(proc.cmdline())
 
-                    if p_process_regex_map[username].search(proc_cmdline):
+                    if p_process_regex_map[username].match(proc_cmdline):
                         start_time = datetime.datetime.fromtimestamp(proc.create_time(),
                                                                      datetime.timezone.utc).astimezone().replace(
                             tzinfo=None)

@@ -208,8 +208,16 @@ tool [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) 
 the locale always defaults to the locale which is detected from the browser.
 
 *   *Process Name Pattern*: sets a regular expression defining the processes which represents a "login" by the user. 
-The default value comprises all standard shells and `systemd` which is started by login process using X11. Only change
-this setting if you absolutely know what you are doing.
+    The default value comprises all standard shells and `systemd` which is started by login process using X11. Only 
+    change this setting if you absolutely know what you are doing.
+
+    As of version 0.3.12 the pattern will be matched against the complete command line and no longer the process name 
+    only. This requires/permits the pattern to be more precise if you have several binaries with the same name in 
+    different directories. Thanks to [bhulsken](https://github.com/bhulsken) for providing a pull request.
+    
+    **Note**: In order to guarantee backward compatibility prior to version 0.3.12, process name patterns without a 
+    single `/` will be braced by `.*( PATTERN ).*` so that the original expression will be matched at any location in the 
+    command line. If no `/` is contained in the configured expression it will be used literally.  
  
 ### Adding Rulesets
 

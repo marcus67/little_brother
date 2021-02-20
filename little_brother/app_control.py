@@ -319,7 +319,7 @@ class AppControl(object):
                 self._process_regex_map = {}
 
                 for user in self._persistence.users(session_context):
-                    self._process_regex_map[user.username] = re.compile(user.process_name_pattern)
+                    self._process_regex_map[user.username] = user.regex_process_name_pattern
 
         return self._process_regex_map
 

@@ -274,4 +274,9 @@ a translation. You do not necessarily have to clone this repository or be famili
 *   The site [www.mehr-schulferien.de](https://www.mehr-schulferien.de) maintains the vacation metadata for
     Germany.
     
-*   The icons are provided by [fontawesome.com](https://fontawesome.com). 
+*   The icons are provided by [fontawesome.com](https://fontawesome.com).
+
+*   People contributing by providing pull requests:
+
+    *   [bhulsken](https://github.com/bhulsken) (see [issue 120](https://github.com/marcus67/little_brother/issues/120))
+    *   [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 

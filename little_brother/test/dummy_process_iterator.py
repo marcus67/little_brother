@@ -33,6 +33,10 @@ class DummyProcess(object):
     def name(self):
         return self._pinfo.processname
 
+    def cmdline(self):
+        return [self._pinfo.processname]
+
+
     def create_time(self):
         return self._pinfo.start_time.timestamp()
 

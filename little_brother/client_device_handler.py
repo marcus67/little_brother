@@ -30,8 +30,9 @@ CLIENT_DEVICE_SECTION_PREFIX = "ClientDevice"
 DEFAULT_PING_COMMAND = "/bin/ping"
 DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_MAX_ACTIVE_PING_DELAY = 100  # milliseconds
+DEFAULT_INACTIVE_FACTOR = 2
 DEFAULT_PING_RESULT_REGEX = r"rtt min/avg/max/mdev = [\d\.]+/([\d\.]+)/[\d\.]+/[\d\.]+ ms"
-DEFAULT_SAMPLE_SIZE = 10
+DEFAULT_SAMPLE_SIZE = 8
 DEFAULT_SERVER_GROUP = "default-group"
 
 
@@ -42,6 +43,7 @@ class ClientDeviceHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
 
         self.ping_command = DEFAULT_PING_COMMAND
         self.ping_result_regex = DEFAULT_PING_RESULT_REGEX
+        self.inactive_factor = DEFAULT_INACTIVE_FACTOR
 
 
 class ClientDeviceConfigModel(configuration.ConfigModel):
@@ -235,15 +237,16 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
         self._logger.debug(fmt.format(device=p_device.hostname))
 
         delay = self._pinger.ping(p_host=p_device.hostname)
-
         device_info = self.get_device_info(p_device_name=p_device.device_name)
 
-        if delay is not None:
-            device_info.add_ping_delay(p_reference_time=p_reference_time, p_delay=delay)
-            fmt = "Moving average={delay:.0f}"
-            self._logger.debug(fmt.format(delay=device_info.moving_average_response_time))
-        else:
-            device_info.clear_moving_average()
+        if delay is None:
+            delay = self._config.inactive_factor * p_device.max_active_ping_delay
+
+        device_info.add_ping_delay(p_reference_time=p_reference_time, p_delay=delay)
+
+        fmt = "Moving average={delay:.0f}"
+        self._logger.debug(fmt.format(delay=device_info.moving_average_response_time))
+
 
         fmt = "{device} is {status}"
         self._logger.debug(fmt.format(device=p_device.device_name, status="up" if device_info.is_up else "down"))

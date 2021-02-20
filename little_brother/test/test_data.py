@@ -24,10 +24,18 @@ import re
 from little_brother import process_info
 from little_brother import rule_handler
 from little_brother import login_mapping
+from little_brother import persistence
 
 USER_1 = "user1"
 UID_1 = 123
 PROCESS_NAME_1 = "process1"
+
+USER_OBJECT_1 = persistence.User()
+USER_OBJECT_1.process_name_pattern = PROCESS_NAME_1
+
+PROCESS_PATTERN_REGEX = USER_OBJECT_1.regex_process_name_pattern
+
+PROCESS_PATH_1 = "/usr/bin/process1"
 PID_1 = 12345
 
 HOSTNAME_1 = "host1"
@@ -48,10 +56,14 @@ LOGIN_UID_MAPPING_ENTRY = p_login_uid_mapping_entry=login_mapping.LoginUidMappin
 LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                         p_login_uid_mapping_entry=LOGIN_UID_MAPPING_ENTRY)
 
-PROCESS_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_NAME_1)}
+PROCESS_REGEX_MAP_1 = {USER_1: PROCESS_PATTERN_REGEX }
+
+PROCESS_PATH_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_PATH_1)}
 
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1)
+PINFO_PATH_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_PATH_1,
+                                        p_pid=PID_1, p_start_time=START_TIME_1)
 PINFO_2 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1, p_end_time=END_TIME_1)
 
@@ -81,6 +93,10 @@ RULESET_CONFIGS_USER1_ALL_RESTRICTIONS = [RULESET_CONFIG_USER1_ALL_RESTRICTIONS]
 
 PROCESSES_1 = [
     PINFO_1
+]
+
+PROCESSES_PATH_1 = [
+    PINFO_PATH_1
 ]
 
 PROCESSES_2 = [
