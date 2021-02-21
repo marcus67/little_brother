@@ -371,6 +371,9 @@ class AppControl(object):
     def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
 
         if self._prometheus_client is not None:
+
+            # try to resolve ip addresses
+            p_hostname = tools.get_dns_name_by_ip_address(p_ip_address=p_hostname)
             self._prometheus_client.set_http_requests_summary(p_hostname=p_hostname,
                                                               p_service=p_service,
                                                               p_duration=p_duration)

@@ -11,6 +11,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #120, see [here](https://github.com/marcus67/little_brother/issues/120)
 *   Greatly improved layouts of web interface for smaller screens
 *   Optional use of [ProxyPing](https://github.com/marcus67/proxy_ping)
+*   Closes #115, see [here](https://github.com/marcus67/little_brother/issues/115)
+*   Accepts [pull request regarding scanning whole command lines](https://github.com/marcus67/little_brother/pull/119)
+*   Simplified service URLs in Grafana dashboard 
 
 ## Version 0.3.11 Revision 82 (February 6th, 2021)
 

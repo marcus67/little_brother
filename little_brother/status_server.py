@@ -194,11 +194,15 @@ class StatusServer(base_web_server.BaseWebServer):
                                                               p_service=p_service,
                                                               p_duration=p_duration)
 
+    def simplify_url(self, p_url):
+        return str(p_url).replace(self._config.base_url, '')
+
     def login_view(self):
 
         request = flask.request
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                               p_service=request.url_rule, p_duration=duration)):
+                                                               p_service=self.simplify_url(request.url_rule),
+                                                               p_duration=duration)):
             page = flask.render_template(
                 LOGIN_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
@@ -367,7 +371,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
         request = flask.request
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                               p_service=request.url_rule, p_duration=duration)):
+                                                               p_service=self.simplify_url(request.url_rule),
+                                                               p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
 
                 admin_infos = self._appcontrol.get_admin_infos(p_session_context=session_context)
@@ -408,7 +413,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
         request = flask.request
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                               p_service=request.url_rule, p_duration=duration)):
+                                                               p_service=self.simplify_url(request.url_rule),
+                                                               p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
 
                 topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
@@ -429,7 +435,8 @@ class StatusServer(base_web_server.BaseWebServer):
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                                   p_service=request.url_rule, p_duration=duration)):
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
 
                 users = self._appcontrol.get_sorted_users(session_context)
                 forms = self.get_users_forms(p_users=users, p_session_context=session_context)
@@ -515,7 +522,8 @@ class StatusServer(base_web_server.BaseWebServer):
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                                   p_service=request.url_rule, p_duration=duration)):
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
 
                 devices = self._appcontrol.get_sorted_devices(session_context)
                 forms = self.get_devices_forms(p_devices=devices)
@@ -581,7 +589,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
         request = flask.request
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                               p_service=request.url_rule, p_duration=duration)):
+                                                               p_service=self.simplify_url(request.url_rule),
+                                                               p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
                 user_infos = self._appcontrol.get_user_status_infos(p_session_context=session_context)
                 page = flask.render_template(
@@ -603,7 +612,8 @@ class StatusServer(base_web_server.BaseWebServer):
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                                   p_service=request.url_rule, p_duration=duration)):
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
                 page = flask.render_template(
                     ABOUT_HTML_TEMPLATE,
                     rel_font_size=self.get_rel_font_size(),
