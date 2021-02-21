@@ -1,13 +1,13 @@
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the  project.
-# ALBANO BATTISTELLA <albano_battistella@hotmail.com>, 2020.
+# ALBANO BATTISTELLA <albano_battistella@hotmail.com>, 2020,2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version:  LittleBrother\n"
 "Report-Msgid-Bugs-To: little-brother@web.de\n"
 "POT-Creation-Date: 2021-01-05 00:40+0100\n"
-"PO-Revision-Date: 2020-04-26 12:11+0200\n"
+"PO-Revision-Date: 2021-02-21 10:30+0100\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: fr\n"
 "Language-Team: Albano Battistella <albano_battistella@hotmail.com>\n"
@@ -26,14 +26,12 @@ msgid "username '{username}' not being monitored"
 msgstr "le nom d'utilisateur '{username}' n'est pas surveillé"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
-#, fuzzy
 msgid "Master"
-msgstr "Utilisateur"
+msgstr "Master"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
-#, fuzzy
 msgid "Slave"
-msgstr "Sauver"
+msgstr "Slave"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:99
 msgid "n/a"
@@ -170,11 +168,11 @@ msgstr "EEE"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/context_rule_handler.py:48
 msgid "Details"
-msgstr ""
+msgstr "Détails"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:47
 msgid "Not a valid host address"
-msgstr ""
+msgstr "Pas une adresse hôte valide"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:32
 msgid "vacation"
@@ -182,15 +180,15 @@ msgstr "vacances"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:34
 msgid "german-vacation-calendar"
-msgstr ""
+msgstr "calendrier-vacances-allemand"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:224
 msgid "Federal State"
-msgstr ""
+msgstr "Etat Fédéral"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:239
 msgid "Invalid state '{detail}'. Must be one of {choices}"
-msgstr ""
+msgstr "État non valide '{detail}'. Doit être l'un des {choices}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:213
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:43
@@ -202,29 +200,29 @@ msgstr "Nom d'utilisateur"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:98
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:229
 msgid "Monitored"
-msgstr ""
+msgstr "Surveillé"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:221
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:223
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:101
 msgid "Locale"
-msgstr ""
+msgstr "Local"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:290
 msgid "Assigned users"
-msgstr ""
+msgstr "Utilisateurs attribués"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:292
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:81
 msgid "Host Name"
-msgstr ""
+msgstr "Nom Hôte"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:317
 msgid "Shared with"
-msgstr ""
+msgstr "Partagé avec"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:357
 msgid "No activity before {hh_mm} hours"
@@ -254,11 +252,11 @@ msgstr "Jeu Libre"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:448
 msgid "Remaining play time today: {hh_mm}"
-msgstr ""
+msgstr "Temps de jeu restant aujourd'hui: {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:458
 msgid "Remaining play time in current session: {hh_mm}"
-msgstr ""
+msgstr "Temps restant de jeu en session en cours:" {hh_mm}
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:483
 msgid "Minimum break time {hh_mm} not reached"
@@ -270,7 +268,7 @@ msgstr "par défaut"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:27
 msgid "weekplan"
-msgstr ""
+msgstr "plan de la semaine"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:33
 msgid "weekend"
@@ -315,14 +313,18 @@ msgid ""
 "consist of active letters '{valid_active_characters}' and inactive "
 "letters '{valid_inactive_characters}'"
 msgstr ""
+"Détail non valide'{detail}'. Doit être l'un des {choices} ou avoir la longueur sept "
+"caractères indiquant les jours de la semaine (commençant par lundi) et "
+"composé de lettres actives '{valid_active_characters}' et lettres "
+"inactives '{valid_inactive_characters}'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:117
 msgid "Selected Days"
-msgstr ""
+msgstr "Jours sélectionnés"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:518
 msgid "New device {id}"
-msgstr ""
+msgstr "nouveau dispositif {id}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/about.template.html:43
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:47
@@ -391,7 +393,7 @@ msgstr "Activité d'aujourd'hui"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:79
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:90
 msgid "unlimited"
-msgstr ""
+msgstr "illimité"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:99
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:127
@@ -447,36 +449,36 @@ msgstr "Sauver"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:39
 msgid "Device Configuration"
-msgstr ""
+msgstr "La configuration du dispositif"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:53
 msgid "Device"
-msgstr ""
+msgstr "Dispositif"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:56
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:203
 msgid "Add device"
-msgstr ""
+msgstr "Ajouter dispositif"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:65
 msgid "Edit device details"
-msgstr ""
+msgstr "Modifier détails dispositif"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:74
 msgid "Remove device from monitoring"
-msgstr ""
+msgstr "Retirer dispositif de surveillance"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:80
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:82
 msgid "Min Activity Duration [s]"
-msgstr ""
+msgstr "Durée minimale de l'activité [s]"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:83
 msgid "Max Active Response Delay [ms]"
-msgstr ""
+msgstr "Délai de réponse actif maximum [ms]"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:84
 msgid "Sample Size"
@@ -484,18 +486,18 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:119
 msgid "Do you really want to permanently remove the device from monitoring?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer définitivement le dispositif de surveillance?"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:119
 msgid "Remove from Monitoring"
-msgstr ""
+msgstr "Retirer de la surveillance"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:119
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:249
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:253
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:258
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:44
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:42
@@ -590,17 +592,17 @@ msgstr "Admin"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:44
 msgid "Users"
-msgstr ""
+msgstr "Utilisateurs"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:45
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:195
 msgid "Devices"
-msgstr ""
+msgstr "Dispositifs"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:44
 msgid "Topology"
-msgstr ""
+msgstr "Topologie"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:50
 msgid "Signed in as"
@@ -612,58 +614,56 @@ msgstr "Se déconnecter"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:54
 msgid "Node Type"
-msgstr ""
+msgstr "Type de nœud"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:55
 msgid "Node Name"
-msgstr ""
+msgstr "Nom du nœud"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:56
-#, fuzzy
 msgid "App Version"
-msgstr "Version"
+msgstr "Version de l'application"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
-#, fuzzy
 msgid "Revision"
-msgstr "Version"
+msgstr "Révision"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
 msgid "Python Version"
-msgstr ""
+msgstr "Version Python"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
 msgid "Time Since Last Ping"
-msgstr ""
+msgstr "Temps depuis le dernier ping"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:46
 msgid "User Configuration"
-msgstr ""
+msgstr "Configuration utilisateur"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:69
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:201
 msgid "Add to monitoring"
-msgstr ""
+msgstr "Ajouter à la surveillance"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:71
 msgid "Add User"
-msgstr ""
+msgstr "Ajouter un utilisateur"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:82
 msgid "Edit user details"
-msgstr ""
+msgstr "Modifier les détails de l'utilisateur"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:92
 msgid "Remove user from monitoring"
-msgstr ""
+msgstr "Retirer l'utilisateur de la surveillance"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:99
 msgid "First Name"
-msgstr ""
+msgstr "Prénom"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:100
 msgid "Last Name"
-msgstr ""
+msgstr "Nom de famille"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:102
 msgid "Process Name Pattern"
@@ -671,25 +671,25 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:121
 msgid "Rulesets"
-msgstr ""
+msgstr "Ensembles de règles"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:121
 msgid "Count"
-msgstr ""
+msgstr "Compter"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:126
 msgid "Add ruleset"
-msgstr ""
+msgstr "Ajouter un ensemble de règles"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:135
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:214
 msgid "Edit ruleset details"
-msgstr ""
+msgstr "Modifier les détails de l'ensemble de règles"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:145
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:253
 msgid "Remove ruleset"
-msgstr ""
+msgstr "Supprimer l'ensemble de règles"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:148
 msgid "Move ruleset up"
@@ -701,60 +701,62 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:157
 msgid "Label"
-msgstr ""
+msgstr "Étiqueter"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:159
 msgid "Context Details"
-msgstr ""
+msgstr "Détails du contexte"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:223
 msgid "Remove monitoring of this device for the user"
-msgstr ""
+msgstr "Supprimer la surveillance de cet dispositif pour l'utilisateur"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:230
 msgid "Percent"
-msgstr ""
+msgstr "Pour cent"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:249
 msgid "Do you really want to permanently remove the user from monitoring?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer définitivement l'utilisateur de la surveillance?"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:249
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:258
 msgid "Remove from monitoring"
-msgstr ""
+msgstr "Retirer de la surveillance"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:253
 msgid "Do you really want to permanently remove the ruleset?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer définitivement l'ensemble de règles?"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:258
 msgid ""
 "Do you really want to permanently remove monitoring of the device for "
 "this user?"
 msgstr ""
+"Voulez-vous vraiment supprimer définitivement la surveillance du dispositif pour "
+"cet utilisateur?"
 
 #~ msgid "Hostname"
-#~ msgstr ""
+#~ msgstr "Nom Hôte"
 
 #~ msgid "weekday"
 #~ msgstr "jour de la semaine"
 
 #~ msgid "Details"
-#~ msgstr ""
+#~ msgstr "Détails"
 
 #~ msgid "Number of assigned users"
-#~ msgstr ""
+#~ msgstr "Nombre de utilisateurs attribués"
 
 #~ msgid "Not set"
-#~ msgstr ""
+#~ msgstr "Pas encore défini"
 
 #~ msgid "Shared with: "
-#~ msgstr ""
+#~ msgstr "Partagé avec: "
 
 #~ msgid "Summary"
-#~ msgstr ""
+#~ msgstr "Sommaire"
 
 #~ msgid "'{name}' is not a valid host address"
-#~ msgstr ""
+#~ msgstr "'{name}' n'est pas une adresse d'hôte valide"
 
