@@ -33,10 +33,18 @@ PROCESS_NAME_1 = "process1"
 USER_OBJECT_1 = persistence.User()
 USER_OBJECT_1.process_name_pattern = PROCESS_NAME_1
 
+
 PROCESS_PATTERN_REGEX = USER_OBJECT_1.regex_process_name_pattern
 
 PROCESS_PATH_1 = "/usr/bin/process1"
 PID_1 = 12345
+
+PROCESS_CMD_LINE_OPTION_1 = "Minecraft"
+PROCESS_CMD_LINE_1 = [ "/usr/bin/process1", PROCESS_CMD_LINE_OPTION_1 ]
+
+USER_OBJECT_2 = persistence.User()
+USER_OBJECT_2.process_name_pattern = PROCESS_CMD_LINE_OPTION_1
+CMD_LINE_OPTION_REGEX = USER_OBJECT_2.regex_process_name_pattern
 
 HOSTNAME_1 = "host1"
 
@@ -60,10 +68,15 @@ PROCESS_REGEX_MAP_1 = {USER_1: PROCESS_PATTERN_REGEX }
 
 PROCESS_PATH_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_PATH_1)}
 
+PROCESS_CMD_LINE_OPTION_REGEX_MAP_1 = {USER_1: CMD_LINE_OPTION_REGEX}
+
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1)
 PINFO_PATH_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_PATH_1,
                                         p_pid=PID_1, p_start_time=START_TIME_1)
+PINFO_CMD_LINE_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_PATH_1,
+                                            p_pid=PID_1, p_start_time=START_TIME_1,
+                                            p_cmd_line=PROCESS_CMD_LINE_1)
 PINFO_2 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1, p_end_time=END_TIME_1)
 
@@ -98,6 +111,11 @@ PROCESSES_1 = [
 PROCESSES_PATH_1 = [
     PINFO_PATH_1
 ]
+
+PROCESSES_CMD_LINE_1 = [
+    PINFO_CMD_LINE_1
+]
+
 
 PROCESSES_2 = [
     PINFO_2

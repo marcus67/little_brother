@@ -64,7 +64,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         self.check_list_has_n_elements(p_list=events, p_n=0)
 
     @staticmethod
-    def get_dummy_process_handler(p_reference_time=None, p_processes=None):
+    def get_dummy_process_handler(p_reference_time=None, p_processes=None, p_config=None):
 
         if p_processes is None:
             p_processes = test_data.PROCESSES_1
@@ -75,8 +75,10 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
             p_processes=p_processes, p_login_mapping=test_data.LOGIN_MAPPING)
 
-        config = client_process_handler.ClientProcessHandlerConfigModel()
-        process_handler = client_process_handler.ClientProcessHandler(p_config=config,
+        if p_config is None:
+            p_config = client_process_handler.ClientProcessHandlerConfigModel()
+
+        process_handler = client_process_handler.ClientProcessHandler(p_config=p_config,
                                                                       p_process_iterator_factory=process_iterator_factory)
         process_iterator_factory.set_reference_time(p_reference_time=p_reference_time)
 
@@ -141,6 +143,48 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
         self.assertEqual(event.processhandler, process_handler.id)
         self.check_default_data(p_event=event)
+
+    def test_single_process_active_command_line_options_active(self):
+
+        config = client_process_handler.ClientProcessHandlerConfigModel()
+        config.scan_command_line_options = True
+
+        process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_CMD_LINE_1,
+                                                         p_config=config)
+
+        session_context = object()
+        events = process_handler.scan_processes(p_session_context=session_context,
+                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
+                                                p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_REGEX_MAP_1,
+                                                p_reference_time=datetime.datetime.now())
+
+        self.check_list_has_n_elements(p_list=events, p_n=1)
+
+        event = events[0]
+
+        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
+        self.assertEqual(event.processhandler, process_handler.id)
+        self.check_default_data(p_event=event)
+
+    def test_single_process_active_command_line_options_inactive(self):
+
+        config = client_process_handler.ClientProcessHandlerConfigModel()
+        config.scan_command_line_options = False
+
+        process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_CMD_LINE_1,
+                                                         p_config=config)
+
+        session_context = object()
+        events = process_handler.scan_processes(p_session_context=session_context,
+                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
+                                                p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_REGEX_MAP_1,
+                                                p_reference_time=datetime.datetime.now())
+
+        self.check_list_has_n_elements(p_list=events, p_n=0)
 
     def test_single_process_after(self):
         process_iterator_factory = dummy_process_iterator.DummyProcessFactory(

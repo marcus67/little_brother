@@ -14,6 +14,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #115, see [here](https://github.com/marcus67/little_brother/issues/115)
 *   Accepts [pull request regarding scanning whole command lines](https://github.com/marcus67/little_brother/pull/119)
 *   Simplified service URLs in Grafana dashboard 
+*   Accepts [pull request regarding Italian localization](https://github.com/marcus67/little_brother/pull/121)
+*   Accepts [pull request regarding French localization](https://github.com/marcus67/little_brother/pull/122)
+*   Add option to activate/deactivate the scanning of complete command lines
 
 ## Version 0.3.11 Revision 82 (February 6th, 2021)
 

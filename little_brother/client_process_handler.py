@@ -33,6 +33,7 @@ SECTION_NAME = "ClientProcessHandler"
 PROCESS_ID_PATTERN = "pid"
 USER_ID_PATTERN = "uid"
 SIGNAL_ID_PATTERN = "signal"
+DEFAUlT_SCAN_COMMAND_LINE_OPTIONS = False
 
 
 class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
@@ -48,6 +49,7 @@ class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel)
             self.kill_command_pattern = "/bin/kill -{signal} {pid}"
 
         self.kill_delay = 5  # seconds
+        self.scan_command_line_options = DEFAUlT_SCAN_COMMAND_LINE_OPTIONS
 
 
 class ClientProcessHandler(process_handler.ProcessHandler):
@@ -161,7 +163,13 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                 username = p_login_mapping.get_login_by_uid(p_server_group=p_server_group, p_uid=uid)
 
                 if username is not None and username in p_process_regex_map:
-                    proc_cmdline = ' '.join(proc.cmdline())
+
+                    if self._config.scan_command_line_options:
+                        proc_cmdline = ' '.join(proc.cmdline())
+
+                    else:
+                        # Just take the path of the binary
+                        proc_cmdline = proc.cmdline()[0]
 
                     if p_process_regex_map[username].match(proc_cmdline):
                         start_time = datetime.datetime.fromtimestamp(proc.create_time(),

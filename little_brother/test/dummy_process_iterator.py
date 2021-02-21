@@ -34,7 +34,11 @@ class DummyProcess(object):
         return self._pinfo.processname
 
     def cmdline(self):
-        return [self._pinfo.processname]
+        if self._pinfo.cmd_line:
+            return self._pinfo.cmd_line
+
+        else:
+            return [self._pinfo.processname]
 
 
     def create_time(self):

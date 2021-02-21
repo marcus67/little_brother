@@ -246,7 +246,7 @@ the following languages are supported or currently in preparation (in the order 
 | ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
-| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 63    |  Albano Battistella        |
+| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Up-to-date     |  Albano Battistella        |
 | ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Revision 63    |  Selay Dogan               |
 | ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Revision 63    |  J. Moldawski              |
 | ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Revision 63    |  Arik M.                   |
@@ -278,5 +278,5 @@ a translation. You do not necessarily have to clone this repository or be famili
 
 *   People contributing by providing pull requests:
 
-    *   [bhulsken](https://github.com/bhulsken) (see [issue 120](https://github.com/marcus67/little_brother/issues/120))
+    *   [Bas Hulsken](https://github.com/bhulsken) (see [issue 120](https://github.com/marcus67/little_brother/issues/120))
     *   [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 
