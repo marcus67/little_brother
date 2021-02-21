@@ -1,14 +1,14 @@
 # Italian translations for PROJECT.
 # Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# ALBANO BATTISTELLA <albano_battistella@hotmail.com>, 2019.
+# ALBANO BATTISTELLA <albano_battistella@hotmail.com>, 2019,2020,2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2021-01-05 00:40+0100\n"
-"PO-Revision-Date: 2020-07-19 15:51+0200\n"
+"PO-Revision-Date: 2021-02-21 10:00+0100\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: it\n"
 "Language-Team: it <LL@li.org>\n"
@@ -27,18 +27,16 @@ msgid "username '{username}' not being monitored"
 msgstr "utente '{username}' non monitorato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
-#, fuzzy
 msgid "Master"
-msgstr "Utente"
+msgstr "Master"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
-#, fuzzy
 msgid "Slave"
-msgstr "Salva"
+msgstr "Slave"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:99
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:219
 msgid "{days} days ago"
@@ -197,7 +195,7 @@ msgstr "Sconosciuto"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:223
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:101
 msgid "Locale"
-msgstr ""
+msgstr "Locale"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:290
 msgid "Assigned users"
@@ -591,7 +589,7 @@ msgstr "Dispositivi"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:44
 msgid "Topology"
-msgstr ""
+msgstr "Topologia"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:50
 msgid "Signed in as"
@@ -603,29 +601,27 @@ msgstr "Logout"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:54
 msgid "Node Type"
-msgstr ""
+msgstr "Tipo di Nodo"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:55
 msgid "Node Name"
-msgstr ""
+msgstr "Nome Nodo"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:56
-#, fuzzy
 msgid "App Version"
-msgstr "Versione"
+msgstr "Versione App"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
-#, fuzzy
 msgid "Revision"
-msgstr "Versione"
+msgstr "Revisione"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
 msgid "Python Version"
-msgstr ""
+msgstr "Versione Python"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
 msgid "Time Since Last Ping"
-msgstr ""
+msgstr "Tempo dall'ultimo ping"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:46
 msgid "User Configuration"
@@ -725,7 +721,7 @@ msgid ""
 "this user?"
 msgstr ""
 "Desideri veramente rimuovere definitivamente il monitoraggio del "
-"dispositivo perquesto utente?"
+"dispositivo per questo utente?"
 
 #~ msgid "Hostname"
 #~ msgstr "Nome Host"
