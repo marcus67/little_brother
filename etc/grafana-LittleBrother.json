@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1609868082785,
+  "iteration": 1614114952507,
   "links": [],
   "panels": [
     {
@@ -1366,11 +1366,11 @@
       "legend": {
         "avg": false,
         "current": false,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
         "show": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -1421,11 +1421,12 @@
       "yaxes": [
         {
           "$$hashKey": "object:622",
+          "decimals": null,
           "format": "decbytes",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1435,7 +1436,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -1662,7 +1663,7 @@
       "pluginVersion": "6.7.2",
       "targets": [
         {
-          "expr": "sum by (service) (delta(little_brother_http_requests_count{job=\"$job\"}[24h]))",
+          "expr": "sum by (service) (delta(little_brother_http_requests_count{job=\"$job\"}[1h]))",
           "interval": "",
           "legendFormat": "{{service}}",
           "refId": "A"
@@ -1670,7 +1671,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Request Count by Service (last 24h)",
+      "title": "Request Count by Service (last hour)",
       "type": "bargauge"
     },
     {
@@ -1801,7 +1802,7 @@
       "pluginVersion": "6.7.2",
       "targets": [
         {
-          "expr": "sum by(hostname) (delta(little_brother_http_requests_count{job=\"$job\"}[24h]))",
+          "expr": "sum by(hostname) (delta(little_brother_http_requests_count{job=\"$job\"}[1h]))",
           "interval": "",
           "legendFormat": "{{hostname}}",
           "refId": "A"
@@ -1809,7 +1810,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Request Count by Hostname (last 24h)",
+      "title": "Request Count by Hostname (last hour)",
       "type": "bargauge"
     }
   ],
@@ -1822,6 +1823,7 @@
       {
         "allValue": null,
         "current": {
+          "selected": false,
           "tags": [],
           "text": "little-brother-test",
           "value": "little-brother-test"
@@ -1858,7 +1860,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1881,5 +1883,5 @@
   "variables": {
     "list": []
   },
-  "version": 31
+  "version": 32
 }
