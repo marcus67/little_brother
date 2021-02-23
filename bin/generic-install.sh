@@ -55,12 +55,12 @@ else
   echo "Package little-brother-0.3.12.tar.gz was found."
 fi
 
-if [ ! -f $TMP_DIR/python-base-app-0.2.14.tar.gz ] ; then
-  echo "ERROR: package python-base-app-0.2.14.tar.gz not found in $TMP_DIR!"
+if [ ! -f $TMP_DIR/python-base-app-0.2.15.tar.gz ] ; then
+  echo "ERROR: package python-base-app-0.2.15.tar.gz not found in $TMP_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package python-base-app-0.2.14.tar.gz was found."
+  echo "Package python-base-app-0.2.15.tar.gz was found."
 fi
 
 if [ ! -f $TMP_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
@@ -183,18 +183,18 @@ ${PIP3} --version
 ${PIP3} install wheel setuptools
 echo "Installing PIP packages..."
 echo "  * little-brother-0.3.12.tar.gz"
-echo "  * python-base-app-0.2.14.tar.gz"
+echo "  * python-base-app-0.2.15.tar.gz"
 echo "  * some-flask-helpers-0.2.2.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --force-reinstall \
      ${TMP_DIR}/little-brother-0.3.12.tar.gz\
-     ${TMP_DIR}/python-base-app-0.2.14.tar.gz\
+     ${TMP_DIR}/python-base-app-0.2.15.tar.gz\
      ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz
 
 
 echo "Removing installation file ${TMP_DIR}/little-brother-0.3.12.tar.gz..."
 rm ${TMP_DIR}/little-brother-0.3.12.tar.gz
-echo "Removing installation file ${TMP_DIR}/python-base-app-0.2.14.tar.gz..."
-rm ${TMP_DIR}/python-base-app-0.2.14.tar.gz
+echo "Removing installation file ${TMP_DIR}/python-base-app-0.2.15.tar.gz..."
+rm ${TMP_DIR}/python-base-app-0.2.15.tar.gz
 echo "Removing installation file ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz..."
 rm ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz
