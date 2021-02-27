@@ -40,6 +40,7 @@ from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import locale_helper
 from python_base_app import pinger
+from python_base_app import ldap_user_handler
 from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
@@ -142,8 +143,11 @@ class App(base_app.BaseApp):
         self.app_config = AppConfigModel()
         p_configuration.add_section(self.app_config)
 
-        user_handler_section = unix_user_handler.BaseUserHandlerConfigModel()
+        user_handler_section = unix_user_handler.UnixUserHandlerConfigModel()
         p_configuration.add_section(user_handler_section)
+
+        ldap_handler_section = ldap_user_handler.LdapUserHandlerConfigModel()
+        p_configuration.add_section(ldap_handler_section)
 
         self._login_mapping_section_handler = login_mapping.LoginMappingSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._login_mapping_section_handler)
@@ -246,6 +250,7 @@ class App(base_app.BaseApp):
                 p_logger=self._logger, p_config=config)
 
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
+        ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
         status_server_config = self._config[status_server.SECTION_NAME]
 
         self.init_babel(p_localeselector=self.get_request_locale)
@@ -257,23 +262,27 @@ class App(base_app.BaseApp):
 
         if self.is_master():
             if status_server_config.is_active():
-                if status_server_config.admin_password is not None:
-                    msg = "admin_user and admin_password in section [StatusSever] " \
-                          "should be moved to section [UnixUserHandler]"
-                    self._logger.warning(msg)
+                if ldap_user_handler_config.is_active():
+                    self._user_handler = ldap_user_handler.LdapUserHandler(p_config=ldap_user_handler_config)
 
-                    if not unix_user_handler_config.is_active():
-                        unix_user_handler_config.admin_username = status_server_config.admin_username
-                        unix_user_handler_config.admin_password = status_server_config.admin_password
+                else:
+                    if status_server_config.admin_password is not None:
+                        msg = "admin_user and admin_password in section [StatusSever] " \
+                              "should be moved to section [UnixUserHandler]"
+                        self._logger.warning(msg)
 
-                if self.is_master() and not unix_user_handler_config.is_active():
-                    msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
-                    raise configuration.ConfigurationException(msg)
+                        if not unix_user_handler_config.is_active():
+                            unix_user_handler_config.admin_username = status_server_config.admin_username
+                            unix_user_handler_config.admin_password = status_server_config.admin_password
 
-                if unix_user_handler_config.is_active():
-                    self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
-                                                                           p_exclude_user_list=[
-                                                                               constants.APPLICATION_USER])
+                    if self.is_master() and not unix_user_handler_config.is_active():
+                        msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
+                        raise configuration.ConfigurationException(msg)
+
+                    if unix_user_handler_config.is_active():
+                        self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
+                                                                               p_exclude_user_list=[
+                                                                                   constants.APPLICATION_USER])
 
         else:
             self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
