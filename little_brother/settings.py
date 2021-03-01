@@ -18,7 +18,7 @@
 settings = {
     "name": "little-brother",
     "url": "https://github.com/marcus67/little_brother",
-    "version": "0.3.12",
+    "version": "0.3.13",
     "description": "Simple parental control application monitoring specific processes on Linux hosts "
                    "to monitor and limit the play time of (young) children.",
     "author": "Marcus Rickert",
@@ -27,7 +27,7 @@ settings = {
 
 extended_settings = {
     "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "83",
+    "debian_package_revision": "84",
     "debian_package_architecture": "all",
     "babel_rel_directory": "translations",
 }

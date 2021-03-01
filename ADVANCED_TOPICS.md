@@ -73,6 +73,24 @@ possible to provide a mapping of the UIDs for the user names.
 TODO: Describe UID mapping feature
 --> 
 
+## Using LDAP For Authorization and Authentication
+
+`LittleBrother` can use an external LDAP server for authorization and authentication. It is activated if all mandatory
+options are configured in the master configuration file. See section `[LdapUserHandler]` in 
+[master.config](etc/master.config). A fully configured `[LdapUserHandler]` will take precedence over
+`[UnixUserHandler]`. If at least one mandatory setting is missing `[UnixUserHandler]` will be used as a fallback. 
+
+All users/accounts in the administration group (setting `ldap_admin_group_name`) 
+will be able to login and have access to the restricted pages. The logged in user will be displayed in the 
+menu bar as shown below (`mr` in this case).
+
+![MenubarLdapLogin](doc/menubar-ldap-login.png)
+
+If a user group (setting `ldap_user_object_class`)
+is provided all users in that group will be offered as potential users to be monitored. If the group is missing
+all users in `/etc/passwd` will be offered that fulfill the same requirements as described above for the 
+section `[UnixUserHandler]`. Also as above the requirements can be changed using the same options. 
+
 ## Migrating From Older Revisions 
 
 ### Migrating Revisions < 41

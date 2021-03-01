@@ -44,7 +44,7 @@ LANGUAGES = {
     'es': 'Español'
 }
 
-TEXT_SEPERATOR = " 🞄 "
+TEXT_SEPERATOR = ' <i style="font-size: 0.5rem; vertical-align: +25%" class="fas fa-circle fa-sm"></i> '
 
 API_URL = "/api"
 API_REL_URL_EVENTS = "events"

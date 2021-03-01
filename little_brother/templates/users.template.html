@@ -90,7 +90,7 @@
 							{{ accordion.toggle_end() }}
 						</DIV>
 			    		<DIV CLASS="col-xs-8  col-sm-7  col-md-8  col-lg-8 localetext">
-							{{ user.summary|format_text_array }}
+							{{ user.summary|format_text_array|safe }}
 						</DIV>
 		        		<DIV class="col-xs-2  col-sm-3  col-md-2  col-lg-2 text-right localetext">
 							<BUTTON id="{{ user.delete_html_key }}" class="btn" title="{{_('Remove user from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>
@@ -162,7 +162,7 @@
 										{{ accordion.toggle_end() }}
 									</DIV>
 									<DIV CLASS="col-xs-5  col-sm-7  col-md-8  col-lg-9  localetext">
-										{{ ruleset.summary|format_text_array }}
+										{{ ruleset.summary|format_text_array|safe }}
 									</DIV>
 									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  text-right">
 										{% if not ruleset.fixed_context %}
@@ -257,7 +257,7 @@
 										{{ accordion.toggle_end() }}
 									</DIV>
 									<DIV CLASS="col-xs-8 localetext">
-										{{ user2device.summary|format_text_array }}
+										{{ user2device.summary|format_text_array|safe }}
 									</DIV>
 									<DIV CLASS="col-xs-1 text-right">
 										<BUTTON id="{{ user2device.delete_html_key }}" class="btn" title="{{_('Remove monitoring of this device for the user')}}"><I class="fas fa-trash"></I></BUTTON>

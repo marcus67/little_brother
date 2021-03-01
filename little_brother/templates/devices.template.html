@@ -68,7 +68,7 @@
 			        		{{ accordion.toggle_end() }}
 		        		</DIV>
 						<DIV CLASS="col-xs-6  col-sm-6  col-md-8  col-lg-8 localetext">
-							{{ device.summary|format_text_array }}</SPAN>
+							{{ device.summary|format_text_array|safe }}
 						</DIV>
 		        		<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
 							<BUTTON id="{{ device.delete_html_key }}" class="btn" title="{{_('Remove device from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>

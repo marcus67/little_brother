@@ -94,7 +94,7 @@ class TestStatusServer(base_test.BaseTestCase):
 
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
-        user_handler_config = unix_user_handler.BaseUserHandlerConfigModel()
+        user_handler_config = unix_user_handler.UnixUserHandlerConfigModel()
         user_handler_config.admin_username = ADMIN_USERNAME
         user_handler_config.admin_password = ADMIN_PASSWORD
 

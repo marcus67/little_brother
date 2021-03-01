@@ -178,11 +178,11 @@ various additional aspects that may require additional configuration.
 
 | Aspect                | Default Setting                                                    | Alternatives                                                    | Reference                                               |
 | --------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------- |
-| Admin Password        | User `admin` with password `test123`                               |                                                                 | See "Setting Admin Password" below                      | 
+| Admin Password        | User `admin` with password `test123`                               | Use LDAP for authentication and authorization                   | See "Setting Admin Password" below                      | 
 | Database backend      | File oriented database [sqlite](https://www.sqlite.org/index.html) | Full fledge database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Web frontend port     | `5555`                                                             | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Web frontend base URL | `/`                                                                | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| User registry         | `/etc/passwd`                                                      | Predfined users and UIDs                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| User registry         | `/etc/passwd`                                                      | Predefined users and UIDs or LDAP registry                      | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Master slave setup    | Use only a master host                                             | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Mapping UIDs          | UIDs are synchronized across all hosts                             | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Scanning Interval     | Every 5 seconds                                                    | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
