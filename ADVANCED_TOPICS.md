@@ -237,3 +237,27 @@ The `[StatusServer]` configuration section of the master host should contain the
 ## Monitoring the Application
 
 `LittleBrother` offers two options for operational monitoring. See [here](OPERATIONAL_MONITORING.md) for details.
+
+## Network Tempering Detection
+
+The master-slave approach of `LittleBrother` results in all runtime data about processes to be held and evaluated on
+the master node. It is there that the decision to terminate a user session will be made. The slaves only execute
+these decisions. If the network connection between master and slaves is cut the slaves are basically "headless".
+This could be abused by a user (whose activity does not depend on network access) to simply cut the connection to
+the master by *pulling the plug*.
+
+As of version 0.3.13 a detected network downtime will result in an automatic termination of user sessions on the
+affected slaves. The default timeout is 10 times the default scan interval of 5 seconds, that is 50 seconds. This value
+(`maximum_time_without_send_events`) can be changed in the configuration file:
+
+    # Number of seconds before warnings are issued about missing connectivity (no successful send events from slave to master)
+    # Defaults to 3 * DEFAULT_CHECK_INTERVAL.
+    warning_time_without_send_events = 15
+    
+    # Number of seconds before slave terminates processes due to missing connectivity (no successful send events from slave to master)
+    # Defaults to 10 * DEFAULT_CHECK_INTERVAL.
+    maximum_time_without_send_events = 50
+ 
+The second setting `warning_time_without_send_events` will be used in the tool 
+[LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) (as of version 0.1.17) to inform the user of 
+the impending logout due to connectivity issues.

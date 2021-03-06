@@ -112,6 +112,10 @@ hence will have an impact on the time allowed and also on the break time rules o
 *   As of version 0.3.12 `LittleBrother` is able to use [ProxyPing](https://github.com/marcus67/proxy_ping) to ping
 devices behind firewalls provided the tool can be deployed on a Debian server behind the firewall.
 
+*   As of version 0.3.13 `LittleBrother` slaves will terminate local user sessions if they cannot reach the master
+process for a certain time (defaults to 50 seconds). This ensures users cannot suppress being logged out by 
+*pulling the plug*.
+
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
 Linux host with a Docker deamon available.
 
@@ -176,19 +180,20 @@ to log into the [web frontend](http://localhost:5555/).
 The default setup will fit most first-time users (except for the password). The following table contains 
 various additional aspects that may require additional configuration.
 
-| Aspect                | Default Setting                                                    | Alternatives                                                    | Reference                                               |
-| --------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------- |
-| Admin Password        | User `admin` with password `test123`                               | Use LDAP for authentication and authorization                   | See "Setting Admin Password" below                      | 
-| Database backend      | File oriented database [sqlite](https://www.sqlite.org/index.html) | Full fledge database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Web frontend port     | `5555`                                                             | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Web frontend base URL | `/`                                                                | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| User registry         | `/etc/passwd`                                                      | Predefined users and UIDs or LDAP registry                      | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Master slave setup    | Use only a master host                                             | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Mapping UIDs          | UIDs are synchronized across all hosts                             | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Scanning Interval     | Every 5 seconds                                                    | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Reverse proxy setup   | No reverse proxy                                                   | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Docker Support        | Slave is installed as Debian package                               | Slave is run as Docker container                                | See [Docker](DOCKER.md).                                |
-| Prometheus Support    | Not activated                                                      | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
+| Aspect                      | Default Setting                                                            | Alternatives                                                    | Reference                                               |
+| --------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------- |
+| Admin Password              | User `admin` with password `test123`                                       | Use LDAP for authentication and authorization                   | See "Setting Admin Password" below                      | 
+| Database backend            | File oriented database [sqlite](https://www.sqlite.org/index.html)         | Full fledge database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Web frontend port           | `5555`                                                                     | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Web frontend base URL       | `/`                                                                        | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| User registry               | `/etc/passwd`                                                              | Predefined users and UIDs or LDAP registry                      | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Master slave setup          | Use only a master host                                                     | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Docker Support              | Slave is installed as Debian package                                       | Slave is run as Docker container                                | See [Docker](DOCKER.md).                                |
+| Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
+| Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 
 ### Setting the Admin Password
 
