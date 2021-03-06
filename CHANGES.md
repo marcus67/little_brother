@@ -8,6 +8,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Closes #12, see [here](https://github.com/marcus67/little_brother/issues/12)
 *   Closes #117, see [here](https://github.com/marcus67/little_brother/issues/117)
+*   Closes #20, see [here](https://github.com/marcus67/little_brother/issues/20)
 
 ## Version 0.3.12 Revision 83 (February 6th, 2021)
 

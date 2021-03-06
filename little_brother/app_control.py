@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -18,15 +18,17 @@
 import datetime
 import gettext
 import locale
-import queue
-import re
-import socket
 import os.path
+import queue
+import socket
 import sys
-import prometheus_client
 import time
 
+import prometheus_client
+from packaging import version
+
 from little_brother import admin_event
+from little_brother import client_stats
 from little_brother import constants, process_statistics
 from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
@@ -34,15 +36,13 @@ from little_brother import persistence
 from little_brother import process_info
 from little_brother import rule_handler
 from little_brother import rule_override
+from little_brother import settings
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
-from little_brother import settings
-from little_brother import client_stats
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
 from python_base_app import view_info
-from packaging import version
 
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
@@ -54,6 +54,8 @@ DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_TOPOLOGY_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_LOCALE = "en_US"
 DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
+DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL # seconds
+DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS = 10 * DEFAULT_CHECK_INTERVAL  # minutes
 
 ALEMBIC_VERSION_INIT_GUI_CONFIGURATION = ""
 
@@ -86,6 +88,8 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.index_refresh_interval = DEFAULT_INDEX_REFRESH_INTERVAL
         self.topology_refresh_interval = DEFAULT_TOPOLOGY_REFRESH_INTERVAL
         self.maximum_client_ping_interval = DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL
+        self.maximum_time_without_send_events = DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS
+        self.warning_time_without_send_events = DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS
 
 
 class ClientInfo(object):
@@ -119,7 +123,6 @@ class ClientInfo(object):
             return _("n/a")
 
         return tools.get_duration_as_string(some_seconds_without_ping)
-
 
     @property
     def last_message_class(self):
@@ -182,7 +185,8 @@ class AppControl(object):
         self._prometheus_client = p_prometheus_client
         self._user_handler = p_user_handler
         self._locale_helper = p_locale_helper
-        #self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
+        self._time_last_successful_send_events = tools.get_current_time()
+        # self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
 
         if p_login_mapping is None:
             p_login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
@@ -371,7 +375,6 @@ class AppControl(object):
     def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
 
         if self._prometheus_client is not None:
-
             # try to resolve ip addresses
             p_hostname = tools.get_dns_name_by_ip_address(p_ip_address=p_hostname)
             self._prometheus_client.set_http_requests_summary(p_hostname=p_hostname,
@@ -425,7 +428,8 @@ class AppControl(object):
                     self._prometheus_client.set_number_of_monitored_devices(0)
 
                 for client_info in self._client_infos.values():
-                    self._prometheus_client.set_client_stats(p_hostname=client_info.host_name, p_client_stats=client_info.client_stats)
+                    self._prometheus_client.set_client_stats(p_hostname=client_info.host_name,
+                                                             p_client_stats=client_info.client_stats)
 
     def check(self):
 
@@ -442,7 +446,19 @@ class AppControl(object):
 
         else:
             self.send_events()
+            self.check_network()
             self.process_queue()
+
+    def check_network(self):
+
+        time_since_last_send = int((tools.get_current_time() - self._time_last_successful_send_events).total_seconds())
+
+        if self._config.warning_time_without_send_events <= time_since_last_send < self._config.maximum_time_without_send_events:
+            msg = "No successful send events for {seconds} seconds"
+            self._logger.warning(msg.format(seconds=time_since_last_send))
+
+        elif time_since_last_send >= self._config.maximum_time_without_send_events:
+            self.queue_artificial_kill_events()
 
     def start(self):
 
@@ -481,7 +497,6 @@ class AppControl(object):
 
     def clean_history(self):
         self._persistence.delete_historic_entries(p_history_length_in_days=self._config.history_length_in_days)
-
 
     def queue_event(self, p_event, p_to_master=False, p_is_action=False):
 
@@ -633,9 +648,18 @@ class AppControl(object):
 
     def handle_event_update_config(self, p_event):
 
+        if constants.JSON_USER_CONFIG in p_event.payload:
+            # New mode (version >= 0.3.13)
+            user_config_payload = p_event.payload[constants.JSON_USER_CONFIG]
+            self._config.maximum_time_without_send_events = p_event.payload.get(constants.JSON_MAXIMUM_TIME_WITHOUT_SEND)
+
+        else:
+            # Compatibilty mode (version < 0.3.13)
+            user_config_payload = p_event.payload
+
         user_configs = {}
 
-        for username, user_config in p_event.payload.items():
+        for username, user_config in user_config_payload.items():
             user_configs[username] = user_config
 
         self.set_user_configs(p_user_configs=user_configs)
@@ -676,12 +700,17 @@ class AppControl(object):
 
     def send_config_to_slave(self, p_hostname):
 
+        config = {}
+
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
-            config = {
+            user_config = {
                 user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
                                 constants.JSON_ACTIVE: user.active}
                 for user in self._persistence.users(p_session_context=session_context)
             }
+
+        config[constants.JSON_USER_CONFIG] = user_config
+        config[constants.JSON_MAXIMUM_TIME_WITHOUT_SEND] = self._config.maximum_time_without_send_events
 
         self.queue_event_update_config(p_hostname=p_hostname, p_config=config)
 
@@ -689,7 +718,6 @@ class AppControl(object):
 
         for client in self._client_infos.values():
             self.send_config_to_slave(p_hostname=client.host_name)
-
 
     def send_login_mapping_to_slave(self, p_hostname):
 
@@ -961,9 +989,13 @@ class AppControl(object):
             current_user_status = user_status.UserStatus(p_username=p_username)
             self._user_status[p_username] = current_user_status
 
+        current_user_status.warning_time_without_send_events = self._config.warning_time_without_send_events
+        current_user_status.maximum_time_without_send_events = self._config.maximum_time_without_send_events
+
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             current_user_status.locale = self.get_user_locale(p_session_context=session_context,
                                                               p_username=p_username)
+
         return current_user_status
 
     def process_rules(self, p_reference_time):
@@ -1177,6 +1209,16 @@ class AppControl(object):
 
             self.queue_events(p_events=events, p_to_master=True)
 
+    def queue_artificial_kill_events(self):
+
+        for handler in self._process_handlers.values():
+            events = handler.get_artificial_kill_events()
+
+            fmt = "Artificially killing {process_count} active processes on handler {handler_id}"
+            self._logger.info(fmt.format(process_count=len(events), handler_id=handler.id))
+
+            self.queue_events(p_events=events, p_to_master=False)
+
     def get_sorted_devices(self, p_session_context):
 
         return sorted(self._persistence.devices(p_session_context), key=lambda device: device.device_name)
@@ -1323,14 +1365,14 @@ class AppControl(object):
 
     def get_topology_infos(self, p_session_context):
 
-        topology_infos = [ info for info in self._client_infos.values() ]
+        topology_infos = [info for info in self._client_infos.values()]
 
         master_stats = self.get_client_stats()
         master_info = ClientInfo(p_is_master=True, p_host_name=self._host_name, p_client_stats=master_stats)
 
         topology_infos.append(master_info)
 
-        sorted_infos = sorted(topology_infos, key=lambda info : (0 if info.is_master else 1, info.host_name))
+        sorted_infos = sorted(topology_infos, key=lambda info: (0 if info.is_master else 1, info.host_name))
         return sorted_infos
 
     def get_client_version(self):
@@ -1345,14 +1387,14 @@ class AppControl(object):
                                                               minor=sys.version_info.minor,
                                                               micro=sys.version_info.micro),
             p_running_in_docker=tools.running_in_docker()
-            )
+        )
 
         if not self.is_master():
             # Use the Prometheus Client ProcessCollector to retrieve run time stats for CPU and memory usage
             # to be consistent with the stats collected on the master.
 
             collector = prometheus_client.process_collector.PROCESS_COLLECTOR
-            stats= collector.collect()
+            stats = collector.collect()
 
             for stat in stats:
                 if stat.name == 'process_resident_memory_bytes':
@@ -1372,6 +1414,7 @@ class AppControl(object):
             result = self._master_connector.send_events(p_hostname=self._host_name, p_events=self._outgoing_events,
                                                         p_client_stats=self.get_client_stats())
             self._outgoing_events = []
+            self._time_last_successful_send_events = tools.get_current_time()
 
             if self._could_not_send:
                 self.queue_artificial_activation_events()

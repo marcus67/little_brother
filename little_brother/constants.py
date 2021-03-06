@@ -64,6 +64,8 @@ JSON_PROCESS_NAME_PATTERN = "process_name_pattern"
 JSON_ACTIVE = "active"
 JSON_ACCESS_TOKEN = "secret"
 JSON_ERROR = "error"
+JSON_USER_CONFIG = "config:user_config"
+JSON_MAXIMUM_TIME_WITHOUT_SEND = "config:maximum_time_without_send"
 
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_UNAUTHORIZED = 401
