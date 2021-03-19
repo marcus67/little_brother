@@ -18,7 +18,8 @@
 
 [Unit]
 Description=Tool for monitoring processes
-After=network.target
+After=network.target mysql.service
+Wants=mysql.service
 
 [Service]
 Type=forking

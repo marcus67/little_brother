@@ -27,7 +27,7 @@ class HostStat(object):
         self._count = p_count
         self._percent = p_percent
 
-    def add_occurence(self, p_percent, p_count=1):
+    def add_occurence(self, p_percent, p_count=0):
 
         self._count += p_count
 
@@ -79,7 +79,7 @@ class Activity(object):
 
     def add_host_process(self, p_hostname, p_percent=100):
 
-        host_stat = self.host_stats.get(p_hostname)
+        host_stat : HostStat = self.host_stats.get(p_hostname)
 
         if host_stat is None:
             host_stat = HostStat(p_hostname=p_hostname, p_percent=p_percent)

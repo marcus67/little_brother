@@ -56,6 +56,7 @@ DEFAULT_LOCALE = "en_US"
 DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
 DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL # seconds
 DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS = 10 * DEFAULT_CHECK_INTERVAL  # minutes
+DEFAULT_KILL_PROCESS_DELAY = 10 # seconds
 
 ALEMBIC_VERSION_INIT_GUI_CONFIGURATION = ""
 
@@ -90,6 +91,7 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.maximum_client_ping_interval = DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL
         self.maximum_time_without_send_events = DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS
         self.warning_time_without_send_events = DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS
+        self.kill_process_delay = DEFAULT_KILL_PROCESS_DELAY
 
 
 class ClientInfo(object):
@@ -616,7 +618,7 @@ class AppControl(object):
 
         return self.get_process_handler(
             p_id=p_event.processhandler).handle_event_kill_process(p_event, p_server_group=self._config.server_group,
-                                                                   p_login_mapping=self._login_mapping)
+                                                               p_login_mapping=self._login_mapping)
 
     def handle_event_speak(self, p_event):
 
@@ -765,6 +767,15 @@ class AppControl(object):
 
         return new_events
 
+    def delay_event(self, p_event):
+
+        msg = "Delaying execution of event {event} for {secs} seconds..."
+        self._logger.debug(msg.format(event=str(p_event), secs=p_event.delay))
+
+        time.sleep(p_event.delay)
+        self.process_event(p_event=p_event)
+
+
     def process_queue(self):
 
         while (self._event_queue.qsize() > 0):
@@ -774,7 +785,12 @@ class AppControl(object):
             except queue.Empty:
                 return
 
-            new_events = self.process_event(p_event=event)
+            if event.delay > 0:
+                tools.start_simple_thread(lambda : self.delay_event(p_event=event))
+                new_events = None
+
+            else:
+                new_events = self.process_event(p_event=event)
 
             if new_events is not None:
                 self.queue_events(p_events=new_events, p_to_master=True, p_is_action=False)
@@ -1170,7 +1186,8 @@ class AppControl(object):
             p_username=p_username,
             p_processhandler=p_processhandler,
             p_pid=p_pid,
-            p_process_start_time=p_process_start_time)
+            p_process_start_time=p_process_start_time,
+            p_delay=self._config.kill_process_delay)
         self.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_update_config(self, p_hostname, p_config):

@@ -72,7 +72,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(a.host_stats), 1)
         self.assertIn(HOSTNAME, a.host_stats)
         host_stat = a.host_stats[HOSTNAME]
-        self.assertEqual(host_stat.count, 2)
+        self.assertEqual(host_stat.count, 1)
         self.assertEqual(host_stat.percent, 50)
 
         a.add_host_process(p_hostname=HOSTNAME, p_percent=100)
@@ -81,7 +81,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(a.host_stats), 1)
         self.assertIn(HOSTNAME, a.host_stats)
         host_stat = a.host_stats[HOSTNAME]
-        self.assertEqual(host_stat.count, 3)
+        self.assertEqual(host_stat.count, 1)
         self.assertEqual(host_stat.percent, 100)
 
         a.add_host_process(p_hostname=HOSTNAME, p_percent=75)
@@ -90,7 +90,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(a.host_stats), 1)
         self.assertIn(HOSTNAME, a.host_stats)
         host_stat = a.host_stats[HOSTNAME]
-        self.assertEqual(host_stat.count, 4)
+        self.assertEqual(host_stat.count, 1)
         self.assertEqual(host_stat.percent, 100)
 
         a.add_host_process(p_hostname=HOSTNAME2)

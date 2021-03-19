@@ -60,7 +60,8 @@ class AdminEvent(object):
                  p_payload=None,
                  p_downtime=0,
                  p_percent=100,
-                 p_hostlabel=None):
+                 p_hostlabel=None,
+                 p_delay=0):
         if p_event_time is None:
             p_event_time = datetime.datetime.now()
 
@@ -78,6 +79,7 @@ class AdminEvent(object):
         self.downtime = p_downtime
         self.percent = p_percent
         self.hostlabel = p_hostlabel
+        self.delay = p_delay
 
     def __str__(self):
         return "AdminEvent (type=%s, host=%s, user=%s, process=%s, PID=%s)" % (
