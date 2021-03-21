@@ -66,12 +66,40 @@ The `USERNAME*` and `UID*` must match those on the slave hosts.
 ## Providing a Mapping between UIDs
 
 When using a master-slave setup the assumption is that UIDs on the master host and the slave hosts match. In this
-case no further configuration will be necessary. If however, there are differences between master and slave, it is
-possible to provide a mapping of the UIDs for the user names.
+case no further configuration will be necessary. If, however, there are differences between master and slaves, it is
+possible to provide a mapping of the UIDs for the user names. This mapping is done for each group of hosts sharing
+the same mapping by defining a `LoginMapping*` entry in the configuration file of the master host:
 
-<!--
-TODO: Describe UID mapping feature
---> 
+    [LoginMappingSomeServerGroup]
+    server_group = SomeServerGroup
+    mapping_entries[0] = leon:2000
+    mapping_entries[1] = christoph:2001
+    
+The name after `LoginMapping` can be chosen freely. It just has to be unique across all mappings. The actual name
+of the server is given by option `server_group`. It is followed by entries for each user in format `username:UID`.
+The `username` has to match the username on the master. The `uid` is the UID for that user on the slaves of the
+server group. Note that the actual username of the user on the slaves is irrelevant for the mapping!
+
+In the slave configuration the name of the server group has to be configured:
+
+    [AppControl]
+    server_group = SomeServerGroup
+  
+### Example
+
+In the example below there are two server groups with two slaves each: `AB` and `CD`. The blue boxes contain the
+local usernames ans UIDs on all servers. The green boxes contain the required configuration for `LittleBrother`.
+
+![Login Mappings](doc/login-mappings.png)
+
+Note the following aspects:
+
+*   The UIDs on the master and the slaves do not match.
+*   The login mappings always contain the usernames on the master. They may differ from the usernames on the slaves
+   (see `sam` on the slave who is called `sammy` on servers in group `AB`).
+*   The login mappings always contain the UIDs on the slaves.
+*   If users do not exist on servers of a group there is no need to supply a mapping entry. See mapping for group
+`CD`.   
 
 ## Using LDAP For Authorization and Authentication
 
@@ -89,7 +117,7 @@ menu bar as shown below (`mr` in this case).
 If a user group (setting `ldap_user_object_class`)
 is provided all users in that group will be offered as potential users to be monitored. If the group is missing
 all users in `/etc/passwd` will be offered that fulfill the same requirements as described above for the 
-section `[UnixUserHandler]`. Also as above the requirements can be changed using the same options. 
+section `[UnixUserHandler]`. Also as above, the requirements can be changed using the same options. 
 
 ## Migrating From Older Revisions 
 

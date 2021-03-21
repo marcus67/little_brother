@@ -45,6 +45,11 @@ class LoginMappingSectionHandler(configuration.ConfigurationSectionHandler):
 
         self._login_mapping_sections[login_mapping_section.server_group] = login_mapping_section
 
+        mappings = ", ".join(login_mapping_section.mapping_entries)
+        msg = "Found login mapping for server group '{server_group}': {mappings}"
+        self._logger.info(msg.format(server_group=login_mapping_section.server_group, mappings=mappings))
+
+
 
 class LoginMappingSection(configuration.ConfigModel):
 
