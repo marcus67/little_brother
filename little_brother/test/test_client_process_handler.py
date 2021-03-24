@@ -136,13 +136,8 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_process_regex_map=test_data.PROCESS_PATH_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+        self.check_list_has_n_elements(p_list=events, p_n=0)
 
-        event = events[0]
-
-        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
-        self.assertEqual(event.processhandler, process_handler.id)
-        self.check_default_data(p_event=event)
 
     def test_single_process_active_command_line_options_active(self):
 
@@ -182,6 +177,24 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_REGEX_MAP_1,
+                                                p_reference_time=datetime.datetime.now())
+
+        self.check_list_has_n_elements(p_list=events, p_n=0)
+
+    def test_single_process_active_command_line_options_inactive_pattern_part_of_path(self):
+
+        config = client_process_handler.ClientProcessHandlerConfigModel()
+        config.scan_command_line_options = False
+
+        process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_CMD_LINE_1,
+                                                         p_config=config)
+
+        session_context = object()
+        events = process_handler.scan_processes(p_session_context=session_context,
+                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                p_login_mapping=test_data.LOGIN_MAPPING,
+                                                p_host_name=test_data.HOSTNAME_1,
+                                                p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1,
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)

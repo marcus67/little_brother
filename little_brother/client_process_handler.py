@@ -168,8 +168,8 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                         proc_cmdline = ' '.join(proc.cmdline())
 
                     else:
-                        # Just take the path of the binary
-                        proc_cmdline = proc.cmdline()[0]
+                        # Just take the name of the binary
+                        proc_cmdline = proc.name()
 
                     if p_process_regex_map[username].match(proc_cmdline):
                         start_time = datetime.datetime.fromtimestamp(proc.create_time(),

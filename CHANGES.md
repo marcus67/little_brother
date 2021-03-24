@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.3.14 Revision 86 (March 25th, 2021)
+
+*   Closes #131, see [here](https://github.com/marcus67/little_brother/issues/131)
+
 ## Version 0.3.13 Revision 85 (March 22nd, 2021)
 
 *   Closes #125, see [here](https://github.com/marcus67/little_brother/issues/125)

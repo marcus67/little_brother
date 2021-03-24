@@ -46,6 +46,10 @@ USER_OBJECT_2 = persistence.User()
 USER_OBJECT_2.process_name_pattern = PROCESS_CMD_LINE_OPTION_1
 CMD_LINE_OPTION_REGEX = USER_OBJECT_2.regex_process_name_pattern
 
+USER_OBJECT_3 = persistence.User()
+USER_OBJECT_3.process_name_pattern = "bin"
+CMD_LINE_OPTION_REGEX_PART_OF_PATH = USER_OBJECT_3.regex_process_name_pattern
+
 HOSTNAME_1 = "host1"
 
 START_TIME_1 = datetime.datetime(2018, 1, 1, 10, 10, 10)
@@ -69,6 +73,8 @@ PROCESS_REGEX_MAP_1 = {USER_1: PROCESS_PATTERN_REGEX }
 PROCESS_PATH_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_PATH_1)}
 
 PROCESS_CMD_LINE_OPTION_REGEX_MAP_1 = {USER_1: CMD_LINE_OPTION_REGEX}
+
+PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1 = {USER_1: CMD_LINE_OPTION_REGEX_PART_OF_PATH}
 
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1)

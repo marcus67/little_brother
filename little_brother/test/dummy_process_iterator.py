@@ -31,7 +31,7 @@ class DummyProcess(object):
         return uids_tuple(real=self._uid, effective=self._uid)
 
     def name(self):
-        return self._pinfo.processname
+        return self._pinfo.processname.split('/')[-1]
 
     def cmdline(self):
         if self._pinfo.cmd_line:
