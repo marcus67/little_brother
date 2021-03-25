@@ -29,11 +29,13 @@ from packaging import version
 
 from little_brother import admin_event
 from little_brother import client_stats
-from little_brother import constants, process_statistics
+from little_brother import constants
 from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
 from little_brother import persistence
+from little_brother import persistent_user
 from little_brother import process_info
+from little_brother import process_statistics
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import settings
@@ -54,9 +56,9 @@ DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_TOPOLOGY_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_LOCALE = "en_US"
 DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
-DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL # seconds
+DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL  # seconds
 DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS = 10 * DEFAULT_CHECK_INTERVAL  # minutes
-DEFAULT_KILL_PROCESS_DELAY = 10 # seconds
+DEFAULT_KILL_PROCESS_DELAY = 10  # seconds
 
 ALEMBIC_VERSION_INIT_GUI_CONFIGURATION = ""
 
@@ -297,10 +299,10 @@ class AppControl(object):
             session.commit()
 
             for username, user_config in p_user_configs.items():
-                user = persistence.User.get_by_username(p_session=session, p_username=username)
+                user = persistent_user.User.get_by_username(p_session=session, p_username=username)
 
                 if user is None:
-                    user = persistence.User()
+                    user = persistent_user.User()
                     user.username = username
                     session.add(user)
 
@@ -618,7 +620,7 @@ class AppControl(object):
 
         return self.get_process_handler(
             p_id=p_event.processhandler).handle_event_kill_process(p_event, p_server_group=self._config.server_group,
-                                                               p_login_mapping=self._login_mapping)
+                                                                   p_login_mapping=self._login_mapping)
 
     def handle_event_speak(self, p_event):
 
@@ -653,7 +655,8 @@ class AppControl(object):
         if constants.JSON_USER_CONFIG in p_event.payload:
             # New mode (version >= 0.3.13)
             user_config_payload = p_event.payload[constants.JSON_USER_CONFIG]
-            self._config.maximum_time_without_send_events = p_event.payload.get(constants.JSON_MAXIMUM_TIME_WITHOUT_SEND)
+            self._config.maximum_time_without_send_events = p_event.payload.get(
+                constants.JSON_MAXIMUM_TIME_WITHOUT_SEND)
 
         else:
             # Compatibilty mode (version < 0.3.13)
@@ -775,7 +778,6 @@ class AppControl(object):
         time.sleep(p_event.delay)
         self.process_event(p_event=p_event)
 
-
     def process_queue(self):
 
         while (self._event_queue.qsize() > 0):
@@ -786,7 +788,7 @@ class AppControl(object):
                 return
 
             if event.delay > 0:
-                tools.start_simple_thread(lambda : self.delay_event(p_event=event))
+                tools.start_simple_thread(lambda: self.delay_event(p_event=event))
                 new_events = None
 
             else:

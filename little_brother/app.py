@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -22,25 +22,25 @@ import alembic.util.messaging
 import psutil
 
 from little_brother import app_control
+from little_brother import persistent_user
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import db_migrations
+from little_brother import login_mapping
 from little_brother import master_connector
 from little_brother import persistence
 from little_brother import popup_handler
 from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother import status_server
-from little_brother import login_mapping
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
-
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
+from python_base_app import ldap_user_handler
 from python_base_app import locale_helper
 from python_base_app import pinger
-from python_base_app import ldap_user_handler
 from python_base_app import unix_user_handler
 
 APP_NAME = 'LittleBrother'
@@ -48,7 +48,7 @@ DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
-DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60 # seconds
+DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60  # seconds
 
 
 class AppConfigModel(base_app.BaseAppConfigModel):
@@ -172,7 +172,7 @@ class App(base_app.BaseApp):
 
         if db_mig.check_if_version_is_active(p_version=alembic_version_gui.revision):
             session = self._persistence.get_session()
-            rows = session.query(persistence.User).count()
+            rows = session.query(persistent_user.User).count()
 
             if rows == 0:
                 # if there are no users in the database yet we assume that the migration has never run yet
@@ -329,7 +329,6 @@ class App(base_app.BaseApp):
                 p_handler_method=lambda: self._app_control.clean_history(),
                 p_interval=self._app_config.clean_history_interval)
             self.add_recurring_task(p_recurring_task=task)
-
 
         if status_server_config.is_active():
             self._status_server = status_server.StatusServer(

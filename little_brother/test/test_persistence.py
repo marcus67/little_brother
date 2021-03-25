@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -25,6 +25,8 @@ import unittest
 from little_brother import admin_event
 from little_brother import db_migrations
 from little_brother import persistence
+from little_brother import persistence_base
+from little_brother import persistent_process_info
 from little_brother import process_info
 from little_brother import rule_override
 from little_brother.test import test_data
@@ -47,7 +49,7 @@ class TestPersistence(base_test.BaseTestCase):
         config = persistence.PersistenceConfigModel()
         config.sqlite_filename = SQLITE_FILE
         config.sqlite_dir = SQLITE_DIR
-        config.database_driver = persistence.DATABASE_DRIVER_SQLITE
+        config.database_driver = persistence_base.DATABASE_DRIVER_SQLITE
         config.database_user = None
         config.database_admin = None
 
@@ -223,7 +225,7 @@ class TestPersistence(base_test.BaseTestCase):
 
         self.check_list_length(p_list=p_infos, p_length=1)
 
-        a_persistence.truncate_table(p_entity=persistence.ProcessInfo)
+        a_persistence.truncate_table(p_entity=persistent_process_info.ProcessInfo)
 
         p_infos = a_persistence.load_process_infos(p_lookback_in_days=4)
 

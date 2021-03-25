@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-21  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -27,17 +27,18 @@ import flask_wtf
 import humanize
 
 import little_brother
-from some_flask_helpers import blueprint_adapter
 from little_brother import api_view_handler
 from little_brother import constants
 from little_brother import entity_forms
 from little_brother import git
 from little_brother import persistence
+from little_brother import persistent_device
 from little_brother import rule_override
 from little_brother import settings
 from python_base_app import base_web_server
 from python_base_app import custom_fields
 from python_base_app import tools
+from some_flask_helpers import blueprint_adapter
 
 LOCALE_REL_FONT_SIZES = {
     'bn': 125  # scale Bangla fonts to 125% for readability
@@ -315,7 +316,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
             for user in p_users:
                 form = p_forms[user.html_key]
-                persistent_user = persistence.User.get_by_username(p_session=session, p_username=user.username)
+                persistent_user = persistent_user.User.get_by_username(p_session=session, p_username=user.username)
 
                 if persistent_user is not None and form.differs_from_model(p_model=persistent_user):
                     form.save_to_model(p_model=persistent_user)
@@ -323,7 +324,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for ruleset in user.rulesets:
                     form = p_forms[ruleset.html_key]
-                    persistent_ruleset = persistence.RuleSet.get_by_id(p_session=session, p_id=ruleset.id)
+                    persistent_ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=ruleset.id)
 
                     if persistent_ruleset is not None and form.differs_from_model(p_model=persistent_ruleset):
                         form.save_to_model(p_model=persistent_ruleset)
@@ -331,7 +332,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for user2device in user.devices:
                     form = p_forms[user2device.html_key]
-                    persistent_user2device = persistence.User2Device.get_by_id(p_session=session, p_id=user2device.id)
+                    persistent_user2device = persistent_user2device.User2Device.get_by_id(p_session=session, p_id=user2device.id)
 
                     if persistent_user2device is not None and form.differs_from_model(p_model=persistent_user2device):
                         form.save_to_model(p_model=persistent_user2device)
@@ -352,7 +353,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
             for device in p_devices:
                 form = p_forms[device.device_name]
-                device = persistence.Device.get_by_device_name(p_session=session, p_device_name=device.device_name)
+                device = persistent_device.Device.get_by_device_name(p_session=session,
+                                                                     p_device_name=device.device_name)
 
                 if device is not None and form.differs_from_model(p_model=device):
                     form.save_to_model(p_model=device)
@@ -363,7 +365,6 @@ class StatusServer(base_web_server.BaseWebServer):
 
             if changed:
                 self._persistence.clear_cache()
-
 
     @BLUEPRINT_ADAPTER.route_method("/admin", endpoint="admin", methods=["GET", "POST"])
     @flask_login.login_required
@@ -416,7 +417,6 @@ class StatusServer(base_web_server.BaseWebServer):
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
-
                 topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
                 return flask.render_template(
                     TOPOLOGY_HTML_TEMPLATE,

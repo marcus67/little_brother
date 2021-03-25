@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,10 @@ import os.path
 import alembic
 import alembic.config
 
+from little_brother import persistent_user
+from little_brother import persistent_rule_set
+from little_brother import persistent_device
+from little_brother import persistent_user_2_device
 from little_brother import constants
 from little_brother import persistence
 from little_brother import rule_handler
@@ -71,7 +75,7 @@ class DatabaseMigrations(object):
             msg = "Migrating username '{username}..."
             self._logger.info(msg.format(username=username))
 
-            user = persistence.User()
+            user = persistent_user.User()
             session.add(user)
 
             user.username = username
@@ -80,7 +84,7 @@ class DatabaseMigrations(object):
             locale = None
 
             for old_ruleset in configs:
-                ruleset = persistence.RuleSet()
+                ruleset = persistent_rule_set.RuleSet()
                 session.add(ruleset)
                 ruleset.user = user
                 persistence.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
@@ -109,7 +113,7 @@ class DatabaseMigrations(object):
         session.commit()
         session.close()
 
-    def migrate_client_device_configs(self, p_client_device_configs):
+    def migrate_client_device_configs(self, p_client_device_configs, persistent_user2device=None):
 
         session = self._persistence.get_session()
 
@@ -117,17 +121,17 @@ class DatabaseMigrations(object):
             msg = "Migrating device '{device_name}..."
             self._logger.info(msg.format(device_name=device_name))
 
-            device = persistence.Device()
+            device = persistent_device.Device()
             session.add(device)
             device.device_name = device_name
             persistence.copy_attributes(p_from=old_device, p_to=device, p_only_existing=True)
 
             if old_device.username is not None:
-                query = session.query(persistence.User).filter(persistence.User.username == old_device.username)
+                query = session.query(persistent_user.User).filter(persistent_user.User.username == old_device.username)
 
                 if query.count() == 1:
                     user = query.one()
-                    user2device = persistence.User2Device()
+                    user2device = persistent_user_2_device.User2Device()
                     user2device.device = device
                     user2device.percent = constants.DEFAULT_USER2DEVICE_PERCENT
                     user2device.active = True

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-21  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -21,18 +21,17 @@
 import datetime
 import re
 
+from little_brother import login_mapping
+from little_brother import persistent_user
 from little_brother import process_info
 from little_brother import rule_handler
-from little_brother import login_mapping
-from little_brother import persistence
 
 USER_1 = "user1"
 UID_1 = 123
 PROCESS_NAME_1 = "process1"
 
-USER_OBJECT_1 = persistence.User()
+USER_OBJECT_1 = persistent_user.User()
 USER_OBJECT_1.process_name_pattern = PROCESS_NAME_1
-
 
 PROCESS_PATTERN_REGEX = USER_OBJECT_1.regex_process_name_pattern
 
@@ -40,13 +39,13 @@ PROCESS_PATH_1 = "/usr/bin/process1"
 PID_1 = 12345
 
 PROCESS_CMD_LINE_OPTION_1 = "Minecraft"
-PROCESS_CMD_LINE_1 = [ "/usr/bin/process1", PROCESS_CMD_LINE_OPTION_1 ]
+PROCESS_CMD_LINE_1 = ["/usr/bin/process1", PROCESS_CMD_LINE_OPTION_1]
 
-USER_OBJECT_2 = persistence.User()
+USER_OBJECT_2 = persistent_user.User()
 USER_OBJECT_2.process_name_pattern = PROCESS_CMD_LINE_OPTION_1
 CMD_LINE_OPTION_REGEX = USER_OBJECT_2.regex_process_name_pattern
 
-USER_OBJECT_3 = persistence.User()
+USER_OBJECT_3 = persistent_user.User()
 USER_OBJECT_3.process_name_pattern = "bin"
 CMD_LINE_OPTION_REGEX_PART_OF_PATH = USER_OBJECT_3.regex_process_name_pattern
 
@@ -64,11 +63,11 @@ MIN_BREAK_1 = 1800
 FREEPLAY_1 = True
 
 LOGIN_MAPPING = login_mapping.LoginMapping(p_default_server_group=login_mapping.DEFAULT_SERVER_GROUP)
-LOGIN_UID_MAPPING_ENTRY = p_login_uid_mapping_entry=login_mapping.LoginUidMappingEntry(USER_1, UID_1)
+LOGIN_UID_MAPPING_ENTRY = p_login_uid_mapping_entry = login_mapping.LoginUidMappingEntry(USER_1, UID_1)
 LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                         p_login_uid_mapping_entry=LOGIN_UID_MAPPING_ENTRY)
 
-PROCESS_REGEX_MAP_1 = {USER_1: PROCESS_PATTERN_REGEX }
+PROCESS_REGEX_MAP_1 = {USER_1: PROCESS_PATTERN_REGEX}
 
 PROCESS_PATH_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_PATH_1)}
 
@@ -122,7 +121,6 @@ PROCESSES_CMD_LINE_1 = [
     PINFO_CMD_LINE_1
 ]
 
-
 PROCESSES_2 = [
     PINFO_2
 ]
@@ -131,10 +129,9 @@ PROCESSES_3 = [
     PINFO_3
 ]
 
+
 def get_process_dict(p_processes):
-
-    return { process.get_key() : process for process in p_processes}
-
+    return {process.get_key(): process for process in p_processes}
 
 
 def get_active_processes(p_start_time, p_end_time=None):
@@ -143,8 +140,8 @@ def get_active_processes(p_start_time, p_end_time=None):
                                  p_pid=PID_1, p_start_time=p_start_time, p_end_time=p_end_time)
     ]
 
-def get_dummy_ruleset_configs(p_ruleset_config):
 
+def get_dummy_ruleset_configs(p_ruleset_config):
     return {
         USER_1: p_ruleset_config
     }

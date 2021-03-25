@@ -2,7 +2,7 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from little_brother import persistence
+from little_brother import persistence_base
 
 #import persistence
 
@@ -20,7 +20,7 @@ config = context.config
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
-target_metadata = persistence.Base.metadata
+target_metadata = persistence_base.Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

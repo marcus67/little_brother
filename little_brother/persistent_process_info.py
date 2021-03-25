@@ -15,19 +15,22 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-settings = {
-    "name": "little-brother",
-    "url": "https://github.com/marcus67/little_brother",
-    "version": "0.4.0",
-    "description": "Simple parental control application monitoring specific processes on Linux hosts "
-                   "to monitor and limit the play time of (young) children.",
-    "author": "Marcus Rickert",
-    "author_email": "little-brother@web.de",
-}
+from sqlalchemy import Column, Integer, String, DateTime
 
-extended_settings = {
-    "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "87",
-    "debian_package_architecture": "all",
-    "babel_rel_directory": "translations",
-}
+from little_brother import persistence_base
+
+
+class ProcessInfo(persistence_base.Base):
+    __tablename__ = 'process_info'
+
+    id = Column(Integer, primary_key=True)
+    key = Column(String(256))
+    hostname = Column(String(256))
+    username = Column(String(256))
+    pid = Column(Integer)
+    processhandler = Column(String(1024))
+    processname = Column(String(1024))
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    downtime = Column(Integer, server_default="0")
+    percent = Column(Integer, server_default="100")
