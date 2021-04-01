@@ -24,23 +24,25 @@ import sqlalchemy.orm
 from sqlalchemy.exc import ProgrammingError
 
 from little_brother import constants
+from little_brother import dependency_injection
 from little_brother import persistence_base
 from little_brother import persistent_admin_event
 from little_brother import persistent_device
 from little_brother import persistent_process_info
 from little_brother import persistent_rule_override
 from little_brother import persistent_rule_set
+from little_brother import persistent_rule_set_entity_manager
 from little_brother import persistent_user
 from little_brother import persistent_user_2_device
-from little_brother import rule_handler
-from little_brother import simple_context_rule_handlers
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
 
-_ = lambda x: x
-
 SECTION_NAME = "Persistence"
+
+
+def _(x):
+    return x
 
 
 def copy_attributes(p_from, p_to, p_only_existing=False):
@@ -161,6 +163,8 @@ class Persistence(object):
         self._users_session = None
         self._devices_session = None
         self._cache_entities = True
+        self._rule_set_entity_manager : persistent_rule_set_entity_manager.RuleSetEntityManager = \
+            dependency_injection.container[persistent_rule_set_entity_manager.RuleSetEntityManager]
 
         if self._config.database_user is not None:
             tools.check_config_value(p_config=self._config, p_config_attribute_name="database_password")
@@ -321,26 +325,29 @@ class Persistence(object):
         if not self.check_create_table_engine():
             return
 
-        fmt = "Creating user %s" % self._config.database_user
+        fmt = "Creating user '%s'" % self._config.database_user
         self._logger.info(fmt)
 
         try:
+            sql = "CREATE USER {db_user} WITH PASSWORD '{password}';"
             self._admin_engine.execute(
-                "CREATE USER %s WITH PASSWORD '%s';" % (self._config.database_user, self._config.database_password))
+                sql.format(db_user=self._config.database_user, password=self._config.database_password))
 
         except ProgrammingError:
-            fmt = "User %s already exists" % self._config.database_user
+            fmt = "User '%s' already exists" % self._config.database_user
             self._logger.info(fmt)
 
-        fmt = "Creating database %s" % self._config.database_name
+        fmt = "Creating database '%s'" % self._config.database_name
         self._logger.info(fmt)
 
         try:
-            self._create_table_engine.execute("CREATE DATABASE %s WITH OWNER = %s ENCODING = 'UTF8';" % (
-                self._config.database_name, self._config.database_user))
+            # noinspection SqlInjection
+            sql = "CREATE DATABASE {db_name} WITH OWNER = {db_user} ENCODING = 'UTF8';"
+            self._create_table_engine.execute(
+                sql.format(db_name=self._config.database_name, db_user=self._config.database_user))
 
         except ProgrammingError:
-            fmt = "Database %s already exists" % self._config.database_name
+            fmt = "Database '%s' already exists" % self._config.database_name
             self._logger.info(fmt)
             return
 
@@ -363,7 +370,7 @@ class Persistence(object):
 
     def check_schema(self, p_create_tables=True):
 
-        msg = "Checking whether to create database {name}..."
+        msg = "Checking whether to create database '{name}'..."
         self._logger.info(msg.format(name=self._config.database_name))
 
         if persistence_base.DATABASE_DRIVER_POSTGRESQL in self._config.database_driver:
@@ -549,13 +556,6 @@ class Persistence(object):
     def clear_cache(self):
         SessionContext.clear_caches()
 
-    def get_default_ruleset(self, p_priority=rule_handler.DEFAULT_PRIORITY):
-
-        default_ruleset = persistent_rule_set.RuleSet()
-        default_ruleset.priority = p_priority
-        default_ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
-        return default_ruleset
-
     def add_new_user(self, p_session_context, p_username, p_locale=None):
 
         if p_username in self.user_map(p_session_context):
@@ -570,7 +570,7 @@ class Persistence(object):
         new_user.process_name_pattern = constants.DEFAULT_PROCESS_NAME_PATTERN
         session.add(new_user)
 
-        default_ruleset = self.get_default_ruleset()
+        default_ruleset = self._rule_set_entity_manager.get_default_ruleset()
         default_ruleset.user = new_user
         session.add(default_ruleset)
 
@@ -615,22 +615,6 @@ class Persistence(object):
         session.close()
         self.clear_cache()
 
-    def delete_ruleset(self, p_ruleset_id):
-
-        session = self.get_session()
-        ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
-
-        if ruleset is None:
-            msg = "Cannot delete ruleset {id}. Not in database!"
-            self._logger.warning(msg.format(id=p_ruleset_id))
-            session.close()
-            return
-
-        session.delete(ruleset)
-        session.commit()
-        session.close()
-        self.clear_cache()
-
     def delete_user2device(self, p_user2device_id):
 
         session = self.get_session()
@@ -666,27 +650,6 @@ class Persistence(object):
         session.close()
         self.clear_cache()
 
-    def add_ruleset(self, p_username):
-
-        session = self.get_session()
-        user = persistent_user.User.get_by_username(p_session=session, p_username=p_username)
-
-        if user is None:
-            msg = "Cannot add ruleset to user {username}. Not in database!"
-            self._logger.warning(msg.format(username=p_username))
-            session.close()
-            return
-
-        new_priority = max([ruleset.priority for ruleset in user.rulesets]) + 1
-
-        default_ruleset = self.get_default_ruleset(p_priority=new_priority)
-        default_ruleset.user = user
-        session.add(default_ruleset)
-
-        session.commit()
-        session.close()
-        self.clear_cache()
-
     def add_device(self, p_username, p_device_id):
 
         session = self.get_session()
@@ -713,48 +676,6 @@ class Persistence(object):
         user2device.percent = 100
 
         session.add(user2device)
-
-        session.commit()
-        session.close()
-        self.clear_cache()
-
-    def move_ruleset(self, p_ruleset, p_sorted_rulesets):
-
-        found = False
-        index = 0
-
-        while not found:
-            if p_sorted_rulesets[index].priority == p_ruleset.priority:
-                found = True
-
-            else:
-                index += 1
-
-        other_ruleset = p_sorted_rulesets[index + 1]
-
-        tmp = p_ruleset.priority
-        p_ruleset.priority = other_ruleset.priority
-        other_ruleset.priority = tmp
-
-    def move_up_ruleset(self, p_ruleset_id):
-
-        session = self.get_session()
-
-        ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
-        sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: ruleset.priority)
-        self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
-
-        session.commit()
-        session.close()
-        self.clear_cache()
-
-    def move_down_ruleset(self, p_ruleset_id):
-
-        session = self.get_session()
-
-        ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
-        sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: -ruleset.priority)
-        self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
 
         session.commit()
         session.close()

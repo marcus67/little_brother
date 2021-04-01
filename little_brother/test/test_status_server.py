@@ -28,6 +28,7 @@ from selenium.webdriver.common.keys import Keys
 from little_brother import app
 from little_brother import app_control
 from little_brother import client_process_handler
+from little_brother import dependency_injection
 from little_brother import master_connector
 from little_brother import settings
 from little_brother import status_server
@@ -44,6 +45,10 @@ ADMIN_PASSWORD = "hello!"
 
 
 class TestStatusServer(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
+
 
     @staticmethod
     def get_dummy_process_handlers():

@@ -22,6 +22,7 @@ import datetime
 import unittest
 
 from little_brother import db_migrations
+from little_brother import dependency_injection
 from little_brother import persistence
 from little_brother import process_info
 from little_brother import process_statistics
@@ -40,6 +41,10 @@ DURATION = 55  # seconds
 
 
 class TestProcessStatistics(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
+
 
     def test_activity_init(self):
         reference_time = datetime.datetime.utcnow()

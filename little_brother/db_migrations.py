@@ -90,7 +90,7 @@ class DatabaseMigrations(object):
                 persistence.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
 
                 if ruleset.priority is None:
-                    ruleset.priority = rule_handler.DEFAULT_PRIORITY
+                    ruleset.priority = constants.DEFAULT_RULE_SET_PRIORITY
 
                 if process_name_pattern is None and old_ruleset.process_name_pattern is not None:
                     process_name_pattern = old_ruleset.process_name_pattern

@@ -27,6 +27,9 @@ from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import db_migrations
+from little_brother import dependency_injection
+from little_brother import persistent_rule_set_entity_manager
+from little_brother import persistent_time_extension_entity_manager
 from little_brother import login_mapping
 from little_brother import master_connector
 from little_brother import persistence
@@ -203,8 +206,15 @@ class App(base_app.BaseApp):
         self._persistence = persistence.Persistence(
             p_config=self._config[persistence.SECTION_NAME])
 
+
         if not p_full_startup:
             return
+
+        dependency_injection.container[persistence.Persistence] = self._persistence
+        dependency_injection.container[persistent_rule_set_entity_manager.RuleSetEntityManager] = \
+            persistent_rule_set_entity_manager.RuleSetEntityManager()
+        dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager] = \
+            persistent_time_extension_entity_manager.TimeExtensionEntityManager()
 
         if self.is_master():
             self._rule_handler = rule_handler.RuleHandler(

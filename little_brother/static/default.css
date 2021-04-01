@@ -381,6 +381,22 @@ ul {
   width: 20px;
 }
 
+/* See https://stackoverflow.com/questions/306924/can-i-change-the-checkbox-size-using-css */
+/*
+input[type=checkbox]
+  /* Double-sized Checkboxes */
+
+  width: 32px;
+  size: 32px;
+
+  margin: 0px 0px 0px 5px;
+}
+
+.ycheck-box-wrapper {
+  margin: 0px 5px 5px 20px;
+  padding: 5px 5px 5px 5px;
+}
+
 /* Style buttons */
 .btn {
   background-color: gray; /* Blue background */
@@ -389,6 +405,32 @@ ul {
   padding: 4px 4px; /* Some padding */
   font-size: 16px; /* Set a font size */
   cursor: pointer; /* Mouse pointer on hover */
+}
+
+.btn-time-extension-plus {
+  background-color: lightgray; /* Blue background */
+  color: green; /* White text */
+  padding: 3px 3px 0px 3px; /* Some padding */
+}
+
+.btn-time-extension-minus {
+  background-color: lightgray; /* Blue background */
+  color: red; /* White text */
+  padding: 3px 3px 0px 3px; /* Some padding */
+}
+
+.btn-time-extension-off {
+  background-color: lightgray; /* Blue background */
+  color: red; /* White text */
+  padding: 5px 6px 5px 6px; /* Some padding */
+}
+
+.time-extension-plus {
+  color: green; /* White text */
+}
+
+.time-extension-minus {
+  color: red; /* White text */
 }
 
 /* Darker background on mouse-over */

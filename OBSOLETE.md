@@ -9,7 +9,7 @@ This page describes features which are now obsolete.
 The popups described below are obsolete. They have been replaced by the 
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar). 
 
-It is possible to activate popups to nofify the user about impending logouts. See the section `[PopupHandler]` 
+It is possible to activate popups to notify the user about impending logouts. See the section `[PopupHandler]` 
 in the configuration file (e.g. <A HREF="etc/minimal-slave.config">`minimal-slave.config`</A>).
  
 The application knows how to handle four different X11 popup tools:
@@ -34,9 +34,9 @@ since the specific file depends on the windows manager and/or login manager.
 
 These are some good locations:
 
-| Windows Manager | Filename  |
-| --------------- | ---------
-| Mate            | ~/.materc | 
+| Windows Manager | Filename    |
+| --------------- | ----------- |
+| Mate            | `~/.materc` | 
 
 ## Old YouTube Videos
 

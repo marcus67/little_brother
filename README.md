@@ -101,7 +101,7 @@ display the remaining playtime of a monitored user and speak the notifications.
 *   The application has international language support. Currently English, Italian and German translations are provided.
 Users are invited to provide translations for other languages.
 
-*   Downtime of a server during playtime (e.g. due to hibernation) is automatically substracted from the play time.
+*   Downtime of a server during playtime (e.g. due to hibernation) is automatically subtracted from the play time.
 
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
@@ -118,7 +118,7 @@ process for a certain time (defaults to 50 seconds). This ensures users cannot s
 *pulling the plug*.
 
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
-Linux host with a Docker deamon available.
+Linux host with a Docker daemon available.
 
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
@@ -184,7 +184,7 @@ various additional aspects that may require additional configuration.
 | Aspect                      | Default Setting                                                            | Alternatives                                                    | Reference                                               |
 | --------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------- |
 | Admin Password              | User `admin` with password `test123`                                       | Use LDAP for authentication and authorization                   | See "Setting Admin Password" below                      | 
-| Database backend            | File oriented database [sqlite](https://www.sqlite.org/index.html)         | Full fledge database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Database backend            | File oriented database [sqlite](https://www.sqlite.org/index.html)         | Full fledged database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Web frontend port           | `5555`                                                                     | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Web frontend base URL       | `/`                                                                        | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | User registry               | `/etc/passwd`                                                              | Predefined users and UIDs or LDAP registry                      | See [Advanced Configuration](ADVANCED_TOPICS.md)        |

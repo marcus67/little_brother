@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -21,9 +21,10 @@
 import unittest
 
 from little_brother import app_control
+from little_brother import client_stats
+from little_brother import dependency_injection
 from little_brother import master_connector
 from little_brother import prometheus
-from little_brother import client_stats
 from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
 from python_base_app.test import base_test
@@ -36,12 +37,15 @@ PID = 123
 
 class TestAppControl(base_test.BaseTestCase):
 
+    def setUp(self):
+        dependency_injection.reset()
+
     def test_constructor(self):
         config = app_control.AppControlConfigModel()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False, p_persistence=dummy_persistence)
 
         self.assertIsNotNone(ac)
 
@@ -49,10 +53,9 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         config.hostname = HOSTNAME
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
-
-        dummy_persistence = p_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        # rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_rule_handler=test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
@@ -73,11 +76,11 @@ class TestAppControl(base_test.BaseTestCase):
         self.assertEqual(ci.client_stats, some_client_stats)
 
     def test_get_number_of_monitored_users_function(self):
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         config = app_control.AppControlConfigModel()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False, p_persistence=dummy_persistence)
 
         func = ac.get_number_of_monitored_users_function()
         self.assertIsNotNone(func)

@@ -17,7 +17,9 @@
 
 import datetime
 import gettext
+import lagom
 import os
+import re
 
 import babel.dates
 import flask
@@ -28,13 +30,19 @@ import humanize
 
 import little_brother
 from little_brother import api_view_handler
+from little_brother import app_control
 from little_brother import constants
+from little_brother import dependency_injection
 from little_brother import entity_forms
 from little_brother import git
 from little_brother import persistence
 from little_brother import persistent_device
+from little_brother import persistent_rule_set
+from little_brother import persistent_rule_set_entity_manager
 from little_brother import rule_override
 from little_brother import settings
+from little_brother import persistent_time_extension_entity_manager
+from python_base_app import locale_helper
 from python_base_app import base_web_server
 from python_base_app import custom_fields
 from python_base_app import tools
@@ -97,6 +105,7 @@ BLUEPRINT_NAME = "little_brother"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+TIME_EXTENSION_SUBMIT_PATTERN = "time_extension_{username}_(off|-?[0-9]+)"
 
 class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
 
@@ -135,18 +144,24 @@ class StatusServer(base_web_server.BaseWebServer):
             p_login_view=self.login_view,
             p_logged_out_endpoint=BLUEPRINT_NAME + '.' + INDEX_VIEW_NAME)
 
-        self._blueprint = None
-        self._is_master = p_is_master
-        self._appcontrol = p_app_control
+        self._blueprint : blueprint_adapter.BlueprintAdapter = None
+        self._is_master : bool = p_is_master
+        self._appcontrol : app_control.AppControl = p_app_control
         self._master_connector = p_master_connector
-        self._persistence = p_persistence
+        self._persistence : persistence.Persistence = p_persistence
+        self._time_extension_entity_manager = \
+            dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
         self._stat_dict = {}
-        self._server_exception = None
-        self._locale_helper = p_locale_helper
+        self._server_exception : Exception = None
+        self._locale_helper : locale_helper.LocaleHelper = p_locale_helper
         self._languages = p_languages
         self._base_gettext = p_base_gettext
         self._langs = {}
         self._localedir = os.path.join(os.path.dirname(__file__), "translations")
+
+        container = lagom.Container()
+        self._rule_set_entity_manager : persistent_rule_set_entity_manager.RuleSetEntityManager= \
+            container[persistent_rule_set_entity_manager.RuleSetEntityManager]
 
         if self._languages is None:
             self._languages = {'en': "English"}
@@ -376,37 +391,75 @@ class StatusServer(base_web_server.BaseWebServer):
                                                                p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
 
-                admin_infos = self._appcontrol.get_admin_infos(p_session_context=session_context)
-                forms = self.get_admin_forms(p_admin_infos=admin_infos)
+                try:
+                    admin_infos = self._appcontrol.get_admin_infos(p_session_context=session_context)
+                    forms = self.get_admin_forms(p_admin_infos=admin_infos)
 
-                valid_and_submitted = True
-                submitted = False
+                    valid_and_submitted = True
+                    submitted = False
 
-                for form in forms.values():
-                    if not form.validate_on_submit():
-                        valid_and_submitted = False
+                    for form in forms.values():
+                        if not form.validate_on_submit():
+                            valid_and_submitted = False
 
-                    if form.is_submitted():
-                        submitted = True
+                        if form.is_submitted():
+                            submitted = True
 
-                if valid_and_submitted:
-                    self.save_admin_data(admin_infos, forms)
-                    return flask.redirect(flask.url_for("little_brother.admin"))
+                    if valid_and_submitted:
+                        self.save_admin_data(admin_infos, forms)
 
-                if not submitted:
-                    for admin_info in admin_infos:
-                        for day_info in admin_info.day_infos:
-                            forms[day_info.html_key].load_from_model(p_model=day_info.override)
 
-                return flask.render_template(
+                        for admin_info in admin_infos:
+
+                            username = admin_info.username
+                            submit_regex = re.compile(TIME_EXTENSION_SUBMIT_PATTERN.format(username=username))
+                            result = submit_regex.match(request.form['submit'])
+
+                            if result is not None:
+                                delta = int(result.group(1))
+
+                                reference_time = tools.get_current_time()
+                                start_datetime = reference_time
+
+                                session_active = admin_info.user_info["active_stat_info"].current_activity_start_time is not None
+
+                                if session_active:
+                                    active_rule_result_info = admin_info.user_info["active_rule_result_info"]
+
+                                    if active_rule_result_info.session_end_datetime is not None:
+                                        start_datetime = active_rule_result_info.session_end_datetime
+
+
+                                self._time_extension_entity_manager.set_time_extension(
+                                    p_session_context=session_context,
+                                    p_username=username,
+                                    p_reference_datetime=reference_time,
+                                    p_start_datetime=start_datetime,
+                                    p_time_delta=delta
+                                )
+
+                        return flask.redirect(flask.url_for("little_brother.admin"))
+
+                    if not submitted:
+                        for admin_info in admin_infos:
+                            for day_info in admin_info.day_infos:
+                                forms[day_info.html_key].load_from_model(p_model=day_info.override)
+
+                    page = flask.render_template(
                     ADMIN_HTML_TEMPLATE,
                     rel_font_size=self.get_rel_font_size(),
                     admin_infos=admin_infos,
                     authentication=self.get_authenication_info(),
                     forms=forms,
                     navigation={
-                        'current_view': ADMIN_VIEW_NAME},
-                )
+                        'current_view': ADMIN_VIEW_NAME})
+
+                except Exception as e:
+
+                    msg = "Exception '{exception}' while generating admin page"
+                    self._logger.exception(msg.format(exception=str(e)))
+
+                return page
 
     @BLUEPRINT_ADAPTER.route_method("/topology", endpoint="topology")
     @flask_login.login_required
@@ -464,10 +517,12 @@ class StatusServer(base_web_server.BaseWebServer):
                         for user in users:
                             if request.form['submit'] == user.delete_html_key:
                                 self._persistence.delete_user(user.username)
+                                self._persistence.clear_cache()
                                 self._appcontrol.send_config_to_all_slaves()
 
                             elif request.form['submit'] == user.new_ruleset_html_key:
-                                self._persistence.add_ruleset(user.username)
+                                persistent_rule_set.RuleSet.add_ruleset(
+                                    p_session_context=session_context, p_username=user.username)
 
                             elif request.form['submit'] == user.new_device_html_key:
                                 device_id = int(forms[user.new_device_html_key].device_id.data)
@@ -476,13 +531,16 @@ class StatusServer(base_web_server.BaseWebServer):
                             else:
                                 for ruleset in user.rulesets:
                                     if request.form['submit'] == ruleset.delete_html_key:
-                                        self._persistence.delete_ruleset(p_ruleset_id=ruleset.id)
+                                        self._rule_set_entity_manager.delete_ruleset(
+                                            p_session_context=session_context, p_ruleset_id=ruleset.id)
 
                                     elif request.form['submit'] == ruleset.move_down_html_key:
-                                        self._persistence.move_down_ruleset(p_ruleset_id=ruleset.id)
+                                        self._rule_set_entity_manager.move_down_ruleset(
+                                            p_session_context=session_context, p_ruleset_id=ruleset.id)
 
                                     elif request.form['submit'] == ruleset.move_up_html_key:
-                                        self._persistence.move_up_ruleset(p_ruleset_id=ruleset.id)
+                                        self._rule_set_entity_manager.move_up_ruleset(
+                                            p_session_context=session_context, p_ruleset_id=ruleset.id)
 
                                 for user2device in user.devices:
                                     if request.form['submit'] == user2device.delete_html_key:

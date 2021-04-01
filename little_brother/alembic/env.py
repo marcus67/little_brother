@@ -4,7 +4,30 @@ from sqlalchemy import pool
 
 from little_brother import persistence_base
 
-#import persistence
+# *************************************************************************************************
+# IMPORTANT
+# *************************************************************************************************
+# In order for the alembic auto generation mechanism to be able to detect the current model
+# ALL modules having a reference to the declarative_base() have to be imported!
+# See https://stackoverflow.com/questions/15660676/alembic-autogenerate-producing-empty-migration
+# *************************************************************************************************
+
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_admin_event
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_device
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_time_extension
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_process_info
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_rule_override
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_rule_set
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_user
+# noinspection PyUnresolvedReferences
+from little_brother import persistent_user_2_device
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -30,9 +30,11 @@ from packaging import version
 from little_brother import admin_event
 from little_brother import client_stats
 from little_brother import constants
+from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
 from little_brother import persistence
+from little_brother import persistent_time_extension_entity_manager
 from little_brother import persistent_user
 from little_brother import process_info
 from little_brother import process_statistics
@@ -59,6 +61,7 @@ DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
 DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL  # seconds
 DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS = 10 * DEFAULT_CHECK_INTERVAL  # minutes
 DEFAULT_KILL_PROCESS_DELAY = 10  # seconds
+DEFAULT_TIME_EXTENSION_PERIODS = "-30,-15,-5,5,10,15,30,45,60"
 
 ALEMBIC_VERSION_INIT_GUI_CONFIGURATION = ""
 
@@ -94,6 +97,23 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.maximum_time_without_send_events = DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS
         self.warning_time_without_send_events = DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS
         self.kill_process_delay = DEFAULT_KILL_PROCESS_DELAY
+        self.time_extension_periods = DEFAULT_TIME_EXTENSION_PERIODS
+
+        self._time_extension_periods_list = None
+
+    @property
+    def time_extension_periods_list(self):
+
+        if self._time_extension_periods_list is None:
+            try:
+                self._time_extension_periods_list = [int(entry) for entry in self.time_extension_periods.split(",")]
+
+            except Exception as e:
+                msg = "Invalid list of time extension periods '{periods}' (Exception: {exception})"
+                raise configuration.ConfigurationException(
+                    msg.format(periods=self.time_extension_periods, exception=str(e)))
+
+        return self._time_extension_periods_list
 
 
 class ClientInfo(object):
@@ -178,12 +198,14 @@ class AppControl(object):
                  p_login_mapping=None,
                  p_locale_helper=None):
 
-        self._config = p_config
+        self._config: AppControlConfigModel = p_config
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
         self._device_handler = p_device_handler
-        self._persistence = p_persistence
-        self._rule_handler = p_rule_handler
+        self._persistence: persistence.Persistence = p_persistence
+        self._time_extension_entity_manager: persistent_time_extension_entity_manager.TimeExtensionEntityManager = \
+            dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
+        self._rule_handler: rule_handler.RuleHandler = p_rule_handler
         self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
         self._prometheus_client = p_prometheus_client
@@ -776,7 +798,8 @@ class AppControl(object):
         self._logger.debug(msg.format(event=str(p_event), secs=p_event.delay))
 
         time.sleep(p_event.delay)
-        self.process_event(p_event=p_event)
+        new_events = self.process_event(p_event=p_event)
+        self.queue_events(p_events=new_events, p_to_master=True, p_is_action=False)
 
     def process_queue(self):
 
@@ -964,6 +987,8 @@ class AppControl(object):
 
     def get_current_rule_result_info(self, p_reference_time, p_username):
 
+        rule_result_info = None
+
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             users_stat_infos = process_statistics.get_process_statistics(
                 p_process_infos=self.get_process_infos(),
@@ -972,13 +997,16 @@ class AppControl(object):
                 p_user_map=self._persistence.user_map(session_context),
                 p_min_activity_duration=self._config.min_activity_duration)
 
-            rule_result_info = None
+            active_time_extensions = self._time_extension_entity_manager.get_active_time_extensions(
+                p_session_context=session_context, p_reference_datetime=tools.get_current_time())
+
             user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_username)
             rule_set = self._rule_handler.get_active_ruleset(p_session_context=session_context,
                                                              p_username=p_username,
                                                              p_reference_date=p_reference_time.date())
 
             stat_infos = users_stat_infos.get(p_username)
+            active_time_extension = active_time_extensions.get(p_username)
 
             if stat_infos is not None:
                 stat_info = stat_infos.get(rule_set.context)
@@ -994,6 +1022,7 @@ class AppControl(object):
                         p_session_context=session_context,
                         p_stat_info=stat_info,
                         p_reference_time=p_reference_time,
+                        p_active_time_extension=active_time_extension,
                         p_rule_override=override,
                         p_locale=user_locale)
 
@@ -1029,6 +1058,9 @@ class AppControl(object):
                 p_user_map=self._persistence.user_map(session_context),
                 p_min_activity_duration=self._config.min_activity_duration)
 
+            active_time_extensions = self._time_extension_entity_manager.get_active_time_extensions(
+                p_session_context=session_context, p_reference_datetime=tools.get_current_time())
+
             for user in self._persistence.users(session_context):
                 if user.active and user.username in self._usernames:
 
@@ -1057,6 +1089,7 @@ class AppControl(object):
                             rule_result_info = self._rule_handler.process_ruleset(
                                 p_session_context=session_context,
                                 p_stat_info=stat_info,
+                                p_active_time_extension=active_time_extensions.get(user.username),
                                 p_reference_time=p_reference_time,
                                 p_rule_override=override,
                                 p_locale=user_locale)
@@ -1271,6 +1304,9 @@ class AppControl(object):
 
         reference_time = datetime.datetime.now()
 
+        active_time_extensions = self._time_extension_entity_manager.get_active_time_extensions(
+            p_session_context=p_session_context, p_reference_datetime=reference_time)
+
         users_stat_infos = process_statistics.get_process_statistics(
             p_process_infos=self.get_process_infos(),
             p_reference_time=reference_time,
@@ -1283,6 +1319,7 @@ class AppControl(object):
                                                              p_username=username,
                                                              p_reference_date=reference_time.date())
             stat_infos = users_stat_infos.get(username)
+            active_time_extension = active_time_extensions.get(username)
             user_locale = self.get_user_locale(p_session_context=p_session_context, p_username=username)
 
             if stat_infos is not None:
@@ -1296,6 +1333,7 @@ class AppControl(object):
                     override = self._rule_overrides.get(key_rule_override)
                     rule_result_info = self._rule_handler.process_ruleset(p_session_context=p_session_context,
                                                                           p_stat_info=stat_info,
+                                                                          p_active_time_extension=active_time_extension,
                                                                           p_reference_time=reference_time,
                                                                           p_rule_override=override,
                                                                           p_locale=user_locale)
@@ -1318,6 +1356,8 @@ class AppControl(object):
         admin_infos = []
 
         user_infos = self.get_user_status_infos(p_session_context=p_session_context, p_include_history=False)
+        time_extensions = self._time_extension_entity_manager.get_active_time_extensions(
+            p_session_context=p_session_context, p_reference_datetime=tools.get_current_time())
 
         days = [datetime.date.today() + datetime.timedelta(days=i) for i in
                 range(0, self._config.admin_lookahead_in_days + 1)]
@@ -1330,6 +1370,23 @@ class AppControl(object):
             admin_info = view_info.ViewInfo(p_html_key=username)
             admin_info.username = username
             admin_info.full_name = username
+
+            admin_info.time_extension = time_extensions.get(username)
+            admin_info.time_extension_periods = []
+
+            if admin_info.time_extension is not None:
+                # add special value 0 for "off"
+                admin_info.time_extension_periods.append(0)
+
+            for period in self._config.time_extension_periods_list:
+                if period > 0:
+                    admin_info.time_extension_periods.append(period)
+
+                else:
+                    if admin_info.time_extension is not None:
+                        if admin_info.time_extension.end_datetime + datetime.timedelta(
+                                minutes=period) >= admin_info.time_extension.start_datetime:
+                            admin_info.time_extension_periods.append(period)
 
             user = self._persistence.user_map(p_session_context).get(username)
 

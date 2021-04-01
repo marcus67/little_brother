@@ -22,6 +22,7 @@ import datetime
 import os.path
 
 from little_brother import db_migrations
+from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
 from little_brother import persistence
 from little_brother import process_info
@@ -57,6 +58,10 @@ DURATION = 55  # seconds
 
 
 class TestRuleHandler(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
+
 
     @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_priority(self):
@@ -197,7 +202,14 @@ class TestRuleHandler(base_test.BaseTestCase):
         activity_start_time = reference_time + datetime.timedelta(seconds=-299)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_set.min_break = 300
+
+        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
+                                                        p_create_complex_handlers=False)
         rule_set.free_play = True
+
+        a_rule_handler.check_free_play(p_rule_set=rule_set, p_rule_result_info=rule_result_info)
+
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
                                                  p_rule_result_info=rule_result_info)
         self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)

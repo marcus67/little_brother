@@ -22,6 +22,7 @@ import datetime
 
 from little_brother import client_device_handler
 from little_brother import db_migrations
+from little_brother import dependency_injection
 from little_brother import persistence
 from little_brother.test import test_data
 from little_brother.test import test_persistence
@@ -30,6 +31,10 @@ from python_base_app import pinger
 
 
 class TestClientDeviceHandler(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
+
 
     def check_list_has_n_elements(self, p_list, p_n):
         self.assertIsNotNone(p_list)

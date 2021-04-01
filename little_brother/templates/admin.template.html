@@ -1,5 +1,5 @@
 <!--
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -94,6 +94,41 @@
 
 					</DIV>
 			    {% call accordion.details() %}{{admin_info.html_key}}{% endcall %}
+			        {% if admin_info.time_extension_periods|length > 0 %}
+						<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
+							<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
+							</DIV>
+							<DIV CLASS="col-xs-3  col-sm-3  col-md-3  col-lg-3 localetext">
+								{{ _("Manage Time Extension") }}
+							</DIV>
+							<DIV CLASS="col-xs-7  col-sm-7  col-md-7  col-lg-7 localetext">
+								{% for period in admin_info.time_extension_periods %}
+								    {% if period == 0 %}
+										{% set period_string = - period %}
+										<BUTTON class="btn btn-time-extension-off" type="submit" name="submit"
+												value="time_extension_{{ admin_info.username }}_0"
+												title="{{_('Deactivate time extension')}}">
+											<I class="fas fa-power-off"></I>
+										</BUTTON>
+								    {% elif period < 0 %}
+										{% set period_string = - period %}
+										<BUTTON class="btn btn-time-extension-minus" type="submit" name="submit"
+												value="time_extension_{{ admin_info.username }}_{{period}}"
+												title="{{_('Decrease time extension by {minutes} minutes')|format({'minutes':period_string})}}">
+											<I class="far fa-minus-square"></I> {{ period_string }}
+										</BUTTON>
+								    {% else %}
+										<BUTTON class="btn btn-time-extension-plus" type="submit" name="submit"
+												value="time_extension_{{ admin_info.username }}_{{period}}"
+												title="{{_('Increase time extension by {minutes} minutes')|format({'minutes':period})}}">
+											<I class="far fa-plus-square"></I> {{ period }}
+										</BUTTON>
+								    {% endif %}
+								{% endfor %}
+							</DIV>
+
+						</DIV>
+			        {% endif %}
 			    	<DIV CLASS="row ALTERNATE_ROWLEVEL_1 TITLE_ROW">
 			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Day')}}</DIV>
@@ -205,11 +240,12 @@
 								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
 									helper.render_field(forms[day_info.html_key].max_activity_duration) }}
 								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
-									helper.render_field(forms[day_info.html_key].free_play) }}
+								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  "><DIV CLASS="check-box-wrapper">{{
+									helper.render_field(forms[day_info.html_key].free_play) }}</DIV>
 								</DIV>
 								<DIV class="col-xs-1  col-sm-1  col-md-1  col-lg-1 text-right localetext">
-									<button class="btn" type="submit" title="{{_('Save')}}"><I class="fas fa-save"></I>
+									<BUTTON class="btn" type="submit" name="submit" title="{{_('Save')}}">
+										<I class="fas fa-save"></I>
 									</BUTTON>
 								</DIV>
 							</DIV>

@@ -24,9 +24,11 @@ import unittest
 
 from little_brother import admin_event
 from little_brother import db_migrations
+from little_brother import dependency_injection
 from little_brother import persistence
 from little_brother import persistence_base
 from little_brother import persistent_process_info
+from little_brother import persistent_time_extension_entity_manager
 from little_brother import process_info
 from little_brother import rule_override
 from little_brother.test import test_data
@@ -37,6 +39,10 @@ SQLITE_DIR = "/tmp"
 
 
 class TestPersistence(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
+
 
     @staticmethod
     def create_dummy_persistence(p_logger):
@@ -58,6 +64,10 @@ class TestPersistence(base_test.BaseTestCase):
 
         db_mig = db_migrations.DatabaseMigrations(p_logger, p_persistence=a_persistence)
         db_mig.upgrade_databases()
+
+        dependency_injection.container[persistence.Persistence] = a_persistence
+        dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager] = \
+            persistent_time_extension_entity_manager.TimeExtensionEntityManager()
 
         return a_persistence
 

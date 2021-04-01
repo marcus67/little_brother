@@ -20,6 +20,8 @@ import os.path
 DIR_NAME = 'little-brother'
 APPLICATION_USER = 'little-brother'
 
+DEFAULT_RULE_SET_PRIORITY = 1
+
 DEFAULT_PROCESS_NAME_PATTERN = "systemd|bash|sh|csh|tsh"
 DEFAULT_USER2DEVICE_PERCENT = 100
 

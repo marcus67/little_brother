@@ -181,10 +181,10 @@ Restart the application on the slave host again by issuing
 Beside the Debian package, there is also a Docker image available which can be used on the slave host. 
 See [Docker](DOCKER.md) for details.
 
-## Using a Full Fledge Database as Backend
+## Using a Full Fledged Database as Backend
 
 The default backend for `LittleBrother` is a Sqlite file oriented database. It works out of the box. If you prefer
-a more mature backend you can switch to a full fledge database such as MySQL or MariaDB. This is possible, since 
+a more mature backend you can switch to a full fledged database such as MySQL or MariaDB. This is possible, since 
 the persistence uses the abstraction layer [SQLAlchemy](https://www.sqlalchemy.org/) which can be used with many 
 different database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
 

@@ -41,6 +41,7 @@ ENTRY_FILTER = [
     'Sommer',
     'Himmelfahrt',
     'Ostern',
+    'Ostern/Frühjahr',
     'Allerheiligen',
     'Christi Himmelfahrt',
     'Pfingstmontag',

@@ -7,6 +7,12 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.4.0 Revision 87 (March, 2021)
 
 *   Split file persistence.py into separate class files
+*   New class `BaseEntityManager`
+*   Introduce entity managers for persistent entities rule set and time extension
+*   Introduce dependency injection using module `lagom`
+*   Closes #135, see [here](https://github.com/marcus67/little_brother/issues/135)
+*   Closes #136, see [here](https://github.com/marcus67/little_brother/issues/136)
+*   Closes #124, see [here](https://github.com/marcus67/little_brother/issues/124)
 
 ## Version 0.3.14 Revision 86 (March 25th, 2021)
 
@@ -45,8 +51,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Closes #28, see [here](https://github.com/marcus67/little_brother/issues/28)
 *   Closes #113, see [here](https://github.com/marcus67/little_brother/issues/113)
-*   Closes #112, see [here](https://github.com/marcus67/little_brother/issues/112) (presumably)
-*   Closes #58, see [here](https://github.com/marcus67/little_brother/issues/58) (presumably)
+*   Closes #112 (presumably), see [here](https://github.com/marcus67/little_brother/issues/112)
+*   Closes #58 (presumably), see [here](https://github.com/marcus67/little_brother/issues/58)
 *   Closes #110, see [here](https://github.com/marcus67/little_brother/issues/110)
 *   Closes #86, see [here](https://github.com/marcus67/little_brother/issues/86)
 
@@ -141,7 +147,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Update Italian localization (locale "it")
 *   Issue error when no database user is given when driver != sqlite
 *   Register logging filter for alembic
-*   Add up-to-dateness of translations as column to localization table
+*   Add latest change date of translations as column to localization table
 
 ## Version 0.3.0 Revision 65 (July 18th, 2020)
     
@@ -164,7 +170,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Completely revised documentation
 *   Catch exception while retrieving data on the German vacation schedules.
 *   Include local installation of fontawesome
-*   Decativate settings changes to log handling by alembic
+*   Deactivate settings changes to log handling by alembic
 *   Support broadcasting of user settings, activate on all relevant changes
 *   Increase connection pool size
 *   Activate mandatory sqlite backend for slaves
@@ -325,7 +331,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #4, see [here](https://github.com/marcus67/little_brother/issues/4)
 *   Increased default value for DEFAULT_MINIMUM_DOWNTIME_DURATION to 20
 *   Improved exception handling upon startup
-*   Improved security of Popen by using shlex
+*   Improved security of `Popen` by using `shlex`
 
 ## Version 0.1 Revision 43 (October 5th, 2019)
 

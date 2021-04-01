@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-05 00:40+0100\n"
+"POT-Creation-Date: 2021-04-01 01:21+0200\n"
 "PO-Revision-Date: 2021-02-21 10:00+0100\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: it\n"
@@ -26,38 +26,39 @@ msgstr "utente '{username}' non specificato"
 msgid "username '{username}' not being monitored"
 msgstr "utente '{username}' non monitorato"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
 msgid "Master"
 msgstr "Master"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:94
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
 msgid "Slave"
 msgstr "Slave"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:99
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:266
 msgid "n/a"
 msgstr "n/a"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:219
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:273
 msgid "{days} days ago"
 msgstr "{days} giorni fa"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:222
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Today"
 msgstr "Oggi"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:223
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:277
 msgid "Yesterday"
 msgstr "Ieri"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:225
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
 msgstr "{user}, non ti e' rimasto più tempo oggi al computer. Sarai disconnesso."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:226
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -65,25 +66,25 @@ msgstr ""
 "{user}, hai solo {minutes_left_before_logout} minuti rimanenti oggi.\n"
 "Per favore, disconnettersi."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:228
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
 msgstr "{user}, non hai tempo al computer oggi. Sarai disconnesso."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:229
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, è troppo presto per usare il computer. Sarai disconnesso."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:230
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:284
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, è troppo tardi per usare il computer. Sarai disconnesso."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:231
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -92,13 +93,13 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} minuti sarà troppo tardi per "
 "utilizzare il computer. Per favore, esci."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:233
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr "{user}, devi fare una pausa. Sarai disconnesso."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:234
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -107,7 +108,7 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} minuti dovrai fare una pausa. Per"
 " favore, esci."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:236
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -115,7 +116,7 @@ msgstr ""
 "{user}, la tua pausa sarà terminata tra {break_minutes_left} minuti. "
 "Sarai disconnesso."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:238
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -124,31 +125,31 @@ msgstr ""
 "Ciao {user}, potrai giocare per {minutes_left_in_session} minuti in "
 "questa sessione."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:240
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:294
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Ciao {user}, hai tempo di gioco illimitato in questa sessione."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1257
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1419
 msgid "'Today ('EEE')'"
 msgstr "'Oggi ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1258
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1420
 msgid "'Today'"
 msgstr "'Oggi'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1261
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1423
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Domani ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1262
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1424
 msgid "'Tomorrow'"
 msgstr "'Domani'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1265
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1427
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd.MM.yyyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1266
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1428
 msgid "EEE"
 msgstr "EEE"
 
@@ -156,7 +157,7 @@ msgstr "EEE"
 msgid "Details"
 msgstr "Dettagli"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:47
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:49
 msgid "Not a valid host address"
 msgstr "Non è un indirizzo host valido"
 
@@ -168,85 +169,90 @@ msgstr "vacanza"
 msgid "german-vacation-calendar"
 msgstr "calendario-tedesco-vacanze"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:224
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:225
 msgid "Federal State"
 msgstr "Stato Federale"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:239
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:240
 msgid "Invalid state '{detail}'. Must be one of {choices}"
 msgstr "Stato non valido '{detail}'. Deve essere uno di {choices}\""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:213
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_device.py:86
+msgid "Assigned users"
+msgstr "Utenti assegnati"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_device.py:88
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:82
+msgid "Host Name"
+msgstr "Nome Host"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_user.py:148
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:43
 msgid "Username"
 msgstr "Nome Utente"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:215
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:313
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:98
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:229
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_user.py:150
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_user_2_device.py:44
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:102
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:269
 msgid "Monitored"
 msgstr "Monitorato"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:221
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_user.py:156
 msgid "Unknown"
 msgstr "Sconosciuto"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:223
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:101
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_user.py:158
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:113
 msgid "Locale"
 msgstr "Locale"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:290
-msgid "Assigned users"
-msgstr "Utenti assegnati"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:292
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:81
-msgid "Host Name"
-msgstr "Nome Host"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence.py:317
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistent_user_2_device.py:48
 msgid "Shared with"
 msgstr "Condiviso con"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:357
-msgid "No activity before {hh_mm} hours"
-msgstr "Nessuna attività prima di {hh_mm} ore"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:364
-msgid "No activity after {hh_mm} hours"
-msgstr "Nessuna attività dopo {hh_mm} ore"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:389
-msgid "Day blocked: no activity permitted"
-msgstr "Giorno bloccato: nessuna attività consentita"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-msgid "Activity limited to {hh_mm} per day"
-msgstr "Attività limitate a {hh_mm} al giorno"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:422
-msgid "No activity exceeding {hh_mm}"
-msgstr "Nessuna attività superiore a {hh_mm}    "
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:441
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:109
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:165
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:383
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:144
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:196
 msgid "Free Play"
 msgstr "Gioco libero"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:448
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
+#, fuzzy
+msgid "Active time extension until {hh_mm}"
+msgstr "Nessuna attività superiore a {hh_mm}    "
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
+msgid "No activity before {hh_mm} hours"
+msgstr "Nessuna attività prima di {hh_mm} ore"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
+msgid "No activity after {hh_mm} hours"
+msgstr "Nessuna attività dopo {hh_mm} ore"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:450
+msgid "Day blocked: no activity permitted"
+msgstr "Giorno bloccato: nessuna attività consentita"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:456
+msgid "Activity limited to {hh_mm} per day"
+msgstr "Attività limitate a {hh_mm} al giorno"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:493
+msgid "No activity exceeding {hh_mm}"
+msgstr "Nessuna attività superiore a {hh_mm}    "
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:536
+msgid "Minimum break time {hh_mm} not reached"
+msgstr "Tempo di pausa minimo {hh_mm} non raggiunto"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:558
 msgid "Remaining play time today: {hh_mm}"
 msgstr "Tempo di gioco rimanente oggi: {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:458
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:568
 msgid "Remaining play time in current session: {hh_mm}"
 msgstr "Tempo di gioco rimanente nella sessione corrente: {hh_mm}"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:483
-msgid "Minimum break time {hh_mm} not reached"
-msgstr "Tempo di pausa minimo {hh_mm} non raggiunto"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:26
 msgid "default"
@@ -309,7 +315,7 @@ msgstr ""
 msgid "Selected Days"
 msgstr "Giorni Selezionati"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:518
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:604
 msgid "New device {id}"
 msgstr "Nuovo dispositivo {id}"
 
@@ -378,59 +384,75 @@ msgid "Today's Activity"
 msgstr "Attività di oggi"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:79
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:90
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:91
 msgid "unlimited"
 msgstr "illimitato"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:99
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:127
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
+msgid "Manage Time Extension"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:110
+msgid "Deactivate time extension"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:117
+msgid "Decrease time extension by {minutes} minutes"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:123
+msgid "Increase time extension by {minutes} minutes"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:134
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:131
 msgid "Day"
 msgstr "Giorno"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:100
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:135
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:53
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:158
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:184
 msgid "Context"
 msgstr "Contesto"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:101
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:160
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:136
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:191
 msgid "Min Time of Day"
 msgstr "Tempo minimo del giorno"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:102
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:161
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:137
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:192
 msgid "Max Time of Day"
 msgstr "Tempo massimo del giorno"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:103
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:162
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:138
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:193
 msgid "Time per Day"
 msgstr "Tempo per giorno"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:107
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:163
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:194
 msgid "Minimum Break"
 msgstr "Pausa minima"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:108
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:164
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:143
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:195
 msgid "Max Duration"
 msgstr "Durata maxima"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:117
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:152
 msgid "Show overrides for day"
 msgstr "Mostra sostituzioni per giorno"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:188
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:223
 msgid "override"
 msgstr "annullare"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:212
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:105
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:104
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:184
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:239
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:247
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:75
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:116
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:177
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:278
 msgid "Save"
 msgstr "Salva"
 
@@ -443,7 +465,7 @@ msgid "Device"
 msgstr "Dispositivo"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:56
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:203
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:242
 msgid "Add device"
 msgstr "Aggiungi dispositivo"
 
@@ -455,34 +477,34 @@ msgstr "Modifica i dettagli del dispositivo"
 msgid "Remove device from monitoring"
 msgstr "Rimuovi il dispositivo dal monitoraggio"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:80
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:81
 msgid "Name"
 msgstr "Nome"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:82
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:89
 msgid "Min Activity Duration [s]"
 msgstr "Durata minima dell'attività [s]"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:83
-msgid "Max Active Response Delay [ms]"
-msgstr "Ritardo risposta attiva massima [ms]"
-
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:84
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:90
 msgid "Sample Size"
 msgstr "Misura di prova"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:119
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:91
+msgid "Max Active Response Delay [ms]"
+msgstr "Ritardo risposta attiva massima [ms]"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:127
 msgid "Do you really want to permanently remove the device from monitoring?"
 msgstr "Vuoi veramente rimuovere definitivamente il dispositivo dal monitoraggio?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:119
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:127
 msgid "Remove from Monitoring"
 msgstr "Rimuovi dal monitoraggio"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:119
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:249
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:253
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:258
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:127
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:288
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:292
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:297
 msgid "Cancel"
 msgstr "Cancella"
 
@@ -492,7 +514,7 @@ msgid "Status"
 msgstr "Stato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:58
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:131
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:135
 msgid "Downtime"
 msgstr "Tempo di inattività"
 
@@ -532,35 +554,35 @@ msgstr "Motivi"
 msgid "Show durations of most recent days"
 msgstr "Mostra le durate degli ultimi giorni"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:129
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:133
 msgid "Active Time"
 msgstr "Tempo attivo"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:134
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:138
 msgid "Active"
 msgstr "Attivo"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:135
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:139
 msgid "Activity Start"
 msgstr "Inizio attività"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:136
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:140
 msgid "Start"
 msgstr "Inizio"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:137
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:141
 msgid "Activity End"
 msgstr "Fine attività"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:138
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:142
 msgid "End"
 msgstr "Fine"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:139
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:143
 msgid "Host(#procs)"
 msgstr "Host(#procs)"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:146
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:150
 msgid "Show activity times"
 msgstr "Mostra i tempi delle attività"
 
@@ -582,12 +604,12 @@ msgid "Users"
 msgstr "Utenti"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:45
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:195
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:235
 msgid "Devices"
 msgstr "Dispositivi"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:46
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:44
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:45
 msgid "Topology"
 msgstr "Topologia"
 
@@ -599,27 +621,27 @@ msgstr "Firmato come"
 msgid "Logout"
 msgstr "Logout"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:54
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:55
 msgid "Node Type"
 msgstr "Tipo di Nodo"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:55
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:56
 msgid "Node Name"
 msgstr "Nome Nodo"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:56
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
 msgid "App Version"
 msgstr "Versione App"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
 msgid "Revision"
 msgstr "Revisione"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
 msgid "Python Version"
 msgstr "Versione Python"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:60
 msgid "Time Since Last Ping"
 msgstr "Tempo dall'ultimo ping"
 
@@ -628,7 +650,7 @@ msgid "User Configuration"
 msgstr "Configurazione Utente"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:69
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:201
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:240
 msgid "Add to monitoring"
 msgstr "Aggiungi al monitoraggio"
 
@@ -636,86 +658,86 @@ msgstr "Aggiungi al monitoraggio"
 msgid "Add User"
 msgstr "Aggiungi Utente"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:82
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:86
 msgid "Edit user details"
 msgstr "Modifica i dettagli dell'utente"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:92
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:96
 msgid "Remove user from monitoring"
 msgstr "Rimuovi l'utente dal monitoraggio"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:99
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:103
 msgid "First Name"
 msgstr "Nome"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:100
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:104
 msgid "Last Name"
 msgstr "Cognome"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:102
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:114
 msgid "Process Name Pattern"
 msgstr "Schema Nome Processo"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:121
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:145
 msgid "Rulesets"
 msgstr "Regole"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:121
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:145
 msgid "Count"
 msgstr "Conteggio"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:126
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:149
 msgid "Add ruleset"
 msgstr "Aggiungi regola"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:135
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:214
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:159
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:254
 msgid "Edit ruleset details"
 msgstr "Aggiungi dettaglio regola"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:145
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:253
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:169
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:292
 msgid "Remove ruleset"
 msgstr "Rimuovi regola"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:148
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:172
 msgid "Move ruleset up"
 msgstr "Sposta regole in alto"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:151
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:175
 msgid "Move ruleset down"
 msgstr "Sposta regole in basso"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:157
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:183
 msgid "Label"
 msgstr "Etichetta"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:159
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:185
 msgid "Context Details"
 msgstr "Dettagli di contesto"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:223
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:263
 msgid "Remove monitoring of this device for the user"
 msgstr "Rimuovere il monitoraggio di questo dispositivo per l'utente"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:230
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:270
 msgid "Percent"
 msgstr "Percentuale"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:249
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:288
 msgid "Do you really want to permanently remove the user from monitoring?"
 msgstr "Vuoi veramente rimuovere permanentemente l'utente dal monitoraggio?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:249
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:258
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:288
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:297
 msgid "Remove from monitoring"
 msgstr "Rimuovi dal monitoraggio"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:253
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:292
 msgid "Do you really want to permanently remove the ruleset?"
 msgstr "Vuoi veramente rimuovere definitivamente il set di regole?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:258
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:297
 msgid ""
 "Do you really want to permanently remove monitoring of the device for "
 "this user?"

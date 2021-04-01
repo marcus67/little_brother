@@ -54,7 +54,7 @@ class RuleSet(persistence_base.Base):
         self.max_activity_duration = None
         self.min_break = None
         self.free_play = False
-        self.priority = None
+        self.priority = constants.DEFAULT_RULE_SET_PRIORITY
         self.get_context_rule_handler = None
 
     @property
@@ -96,16 +96,6 @@ class RuleSet(persistence_base.Base):
     @property
     def move_down_html_key(self):
         return "move_down_ruleset_{id}".format(id=self.id)
-
-    @staticmethod
-    def get_by_id(p_session, p_id):
-        query = p_session.query(RuleSet).filter(RuleSet.id == p_id)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
 
     @property
     def can_move_up(self):
