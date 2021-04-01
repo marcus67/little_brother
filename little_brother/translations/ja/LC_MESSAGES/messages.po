@@ -222,7 +222,7 @@ msgstr "自由な遊び"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
 msgid "Active time extension until {hh_mm}"
-msgstr "{hh_mm} 超過活動なし"
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
 msgid "No activity before {hh_mm} hours"

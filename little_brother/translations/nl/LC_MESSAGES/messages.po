@@ -221,7 +221,7 @@ msgstr "Vrij spel"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
 msgid "Active time extension until {hh_mm}"
-msgstr "Geen enkele activiteit overschrijdt {hh_mm}"
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
 msgid "No activity before {hh_mm} hours"

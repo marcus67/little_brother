@@ -30,7 +30,6 @@ from little_brother import persistent_admin_event
 from little_brother import persistent_device
 from little_brother import persistent_process_info
 from little_brother import persistent_rule_override
-from little_brother import persistent_rule_set
 from little_brother import persistent_rule_set_entity_manager
 from little_brother import persistent_user
 from little_brother import persistent_user_2_device
@@ -163,7 +162,7 @@ class Persistence(object):
         self._users_session = None
         self._devices_session = None
         self._cache_entities = True
-        self._rule_set_entity_manager : persistent_rule_set_entity_manager.RuleSetEntityManager = \
+        self._rule_set_entity_manager: persistent_rule_set_entity_manager.RuleSetEntityManager = \
             dependency_injection.container[persistent_rule_set_entity_manager.RuleSetEntityManager]
 
         if self._config.database_user is not None:

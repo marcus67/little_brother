@@ -18,9 +18,9 @@
 import lagom
 
 from little_brother import base_entity_manager
+from little_brother import constants
 from little_brother import persistent_rule_set
 from little_brother import persistent_user
-from little_brother import constants
 from little_brother import simple_context_rule_handlers
 
 
@@ -65,8 +65,9 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         default_ruleset = self.get_default_ruleset(p_priority=new_priority)
         default_ruleset.user = user
         session.add(default_ruleset)
+        session.commit()
 
-        self._persistence.clear_cache()
+        self.persistence.clear_cache()
 
     def delete_ruleset(self, p_session_context, p_ruleset_id):
 
@@ -80,7 +81,8 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
             return
 
         session.delete(ruleset)
-        self._persistence.clear_cache()
+        session.commit()
+        self.persistence.clear_cache()
 
     def move_up_ruleset(self, p_session_context, p_ruleset_id):
 
@@ -89,8 +91,9 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
         sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: ruleset.priority)
         self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
+        session.commit()
 
-        self._persistence.clear_cache()
+        self.persistence.clear_cache()
 
     def move_down_ruleset(self, p_session_context, p_ruleset_id):
 
@@ -99,8 +102,9 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
         sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: -ruleset.priority)
         self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
+        session.commit()
 
-        self._persistence.clear_cache()
+        self.persistence.clear_cache()
 
     @classmethod
     def move_ruleset(cls, p_ruleset, p_sorted_rulesets):

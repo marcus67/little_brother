@@ -232,9 +232,8 @@ msgid "Free Play"
 msgstr "ফ্রী খেলা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-#, fuzzy
 msgid "Active time extension until {hh_mm}"
-msgstr "কোন কাজ <span class=\"nonlocaletext\">{hh_mm}</span>-এর বেশী হতে পারবেনা"
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
 msgid "No activity before {hh_mm} hours"

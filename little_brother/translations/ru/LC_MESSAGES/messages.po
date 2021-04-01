@@ -239,7 +239,7 @@ msgstr "Неограниченная игра"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
 msgid "Active time extension until {hh_mm}"
-msgstr "Пользование не превышает {hh_mm}"
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
 msgid "No activity before {hh_mm} hours"

@@ -17,7 +17,6 @@
 
 import datetime
 import gettext
-import lagom
 import os
 import re
 
@@ -27,6 +26,7 @@ import flask_babel
 import flask_login
 import flask_wtf
 import humanize
+import lagom
 
 import little_brother
 from little_brother import api_view_handler
@@ -37,14 +37,15 @@ from little_brother import entity_forms
 from little_brother import git
 from little_brother import persistence
 from little_brother import persistent_device
-from little_brother import persistent_rule_set
 from little_brother import persistent_rule_set_entity_manager
+from little_brother import persistent_time_extension_entity_manager
+from little_brother import persistent_user
+from little_brother import persistent_user_2_device
 from little_brother import rule_override
 from little_brother import settings
-from little_brother import persistent_time_extension_entity_manager
-from python_base_app import locale_helper
 from python_base_app import base_web_server
 from python_base_app import custom_fields
+from python_base_app import locale_helper
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
 
@@ -331,26 +332,28 @@ class StatusServer(base_web_server.BaseWebServer):
 
             for user in p_users:
                 form = p_forms[user.html_key]
-                persistent_user = persistent_user.User.get_by_username(p_session=session, p_username=user.username)
+                a_persistent_user = persistent_user.User.get_by_username(p_session=session, p_username=user.username)
 
-                if persistent_user is not None and form.differs_from_model(p_model=persistent_user):
-                    form.save_to_model(p_model=persistent_user)
+                if a_persistent_user is not None and form.differs_from_model(p_model=a_persistent_user):
+                    form.save_to_model(p_model=a_persistent_user)
                     changed = True
 
                 for ruleset in user.rulesets:
                     form = p_forms[ruleset.html_key]
-                    persistent_ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=ruleset.id)
+                    a_persistent_ruleset = self._rule_set_entity_manager.get_by_id(p_session=session, p_id=ruleset.id)
 
-                    if persistent_ruleset is not None and form.differs_from_model(p_model=persistent_ruleset):
-                        form.save_to_model(p_model=persistent_ruleset)
+                    if a_persistent_ruleset is not None and form.differs_from_model(p_model=a_persistent_ruleset):
+                        form.save_to_model(p_model=a_persistent_ruleset)
                         changed = True
 
                 for user2device in user.devices:
                     form = p_forms[user2device.html_key]
-                    persistent_user2device = persistent_user2device.User2Device.get_by_id(p_session=session, p_id=user2device.id)
+                    a_persistent_user_2_device = persistent_user_2_device.User2Device.get_by_id(p_session=session,
+                                                                                                p_id=user2device.id)
 
-                    if persistent_user2device is not None and form.differs_from_model(p_model=persistent_user2device):
-                        form.save_to_model(p_model=persistent_user2device)
+                    if a_persistent_user_2_device is not None and form.differs_from_model(
+                            p_model=a_persistent_user_2_device):
+                        form.save_to_model(p_model=a_persistent_user_2_device)
                         changed = True
 
             if changed:
@@ -470,16 +473,23 @@ class StatusServer(base_web_server.BaseWebServer):
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
-                topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
-                return flask.render_template(
-                    TOPOLOGY_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    topology_infos=topology_infos,
-                    app_control_config=self._appcontrol._config,
-                    authentication=self.get_authenication_info(),
-                    navigation={
-                        'current_view': TOPOLOGY_VIEW_NAME},
-                )
+                try:
+                    topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
+                    page = flask.render_template(
+                        TOPOLOGY_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                        topology_infos=topology_infos,
+                        app_control_config=self._appcontrol._config,
+                        authentication=self.get_authenication_info(),
+                        navigation={
+                            'current_view': TOPOLOGY_VIEW_NAME},
+                    )
+
+                except Exception as e:
+                    msg = "Exception '{exception}' while generating about page"
+                    self._logger.exception(msg.format(exception=str(e)))
+
+                return page
 
     @BLUEPRINT_ADAPTER.route_method("/users", endpoint="users", methods=["GET", "POST"])
     @flask_login.login_required
@@ -487,91 +497,98 @@ class StatusServer(base_web_server.BaseWebServer):
 
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
+
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
+                try:
+                    users = self._appcontrol.get_sorted_users(session_context)
+                    forms = self.get_users_forms(p_users=users, p_session_context=session_context)
 
-                users = self._appcontrol.get_sorted_users(session_context)
-                forms = self.get_users_forms(p_users=users, p_session_context=session_context)
+                    valid_and_submitted = True
+                    submitted = False
 
-                valid_and_submitted = True
-                submitted = False
+                    for form in forms.values():
+                        if not form.validate_on_submit():
+                            valid_and_submitted = False
 
-                for form in forms.values():
-                    if not form.validate_on_submit():
-                        valid_and_submitted = False
+                        if form.is_submitted():
+                            submitted = True
 
-                    if form.is_submitted():
-                        submitted = True
+                    if valid_and_submitted:
+                        self.save_users_data(users, forms)
 
-                if valid_and_submitted:
-                    self.save_users_data(users, forms)
+                        if request.form['submit'] == HTML_KEY_NEW_USER:
+                            username = forms[HTML_KEY_NEW_USER].username.data
+                            self._appcontrol.add_new_user(p_session_context=session_context,
+                                                          p_username=username, p_locale=self._locale_helper.locale)
+                            # TODO: after adding new user Users window should be opened for new user
 
-                    if request.form['submit'] == HTML_KEY_NEW_USER:
-                        username = forms[HTML_KEY_NEW_USER].username.data
-                        self._appcontrol.add_new_user(p_session_context=session_context,
-                                                      p_username=username, p_locale=self._locale_helper.locale)
-                        # TODO: after adding new user Users window should be opened for new user
+                        else:
+                            for user in users:
+                                if request.form['submit'] == user.delete_html_key:
+                                    self._persistence.delete_user(user.username)
+                                    self._persistence.clear_cache()
+                                    self._appcontrol.send_config_to_all_slaves()
 
-                    else:
+                                elif request.form['submit'] == user.new_ruleset_html_key:
+                                    self._rule_set_entity_manager.add_ruleset(
+                                        p_session_context=session_context, p_username=user.username)
+
+                                elif request.form['submit'] == user.new_device_html_key:
+                                    device_id = int(forms[user.new_device_html_key].device_id.data)
+                                    self._persistence.add_device(p_device_id=device_id, p_username=user.username)
+
+                                else:
+                                    for ruleset in user.rulesets:
+                                        if request.form['submit'] == ruleset.delete_html_key:
+                                            self._rule_set_entity_manager.delete_ruleset(
+                                                p_session_context=session_context, p_ruleset_id=ruleset.id)
+
+                                        elif request.form['submit'] == ruleset.move_down_html_key:
+                                            self._rule_set_entity_manager.move_down_ruleset(
+                                                p_session_context=session_context, p_ruleset_id=ruleset.id)
+
+                                        elif request.form['submit'] == ruleset.move_up_html_key:
+                                            self._rule_set_entity_manager.move_up_ruleset(
+                                                p_session_context=session_context, p_ruleset_id=ruleset.id)
+
+                                    for user2device in user.devices:
+                                        if request.form['submit'] == user2device.delete_html_key:
+                                            self._persistence.delete_user2device(p_user2device_id=user2device.id)
+
+                        return flask.redirect(flask.url_for("little_brother.users"))
+
+                    if not submitted:
                         for user in users:
-                            if request.form['submit'] == user.delete_html_key:
-                                self._persistence.delete_user(user.username)
-                                self._persistence.clear_cache()
-                                self._appcontrol.send_config_to_all_slaves()
+                            forms[user.html_key].load_from_model(p_model=user)
 
-                            elif request.form['submit'] == user.new_ruleset_html_key:
-                                persistent_rule_set.RuleSet.add_ruleset(
-                                    p_session_context=session_context, p_username=user.username)
+                            for ruleset in user.rulesets:
+                                forms[ruleset.html_key].load_from_model(p_model=ruleset)
+                                # provide a callback function so that the RuleSet can retrieve context summaries
+                                ruleset.get_context_rule_handler = self._appcontrol.get_context_rule_handler
 
-                            elif request.form['submit'] == user.new_device_html_key:
-                                device_id = int(forms[user.new_device_html_key].device_id.data)
-                                self._persistence.add_device(p_device_id=device_id, p_username=user.username)
+                            for user2device in user.devices:
+                                forms[user2device.html_key].load_from_model(p_model=user2device)
 
-                            else:
-                                for ruleset in user.rulesets:
-                                    if request.form['submit'] == ruleset.delete_html_key:
-                                        self._rule_set_entity_manager.delete_ruleset(
-                                            p_session_context=session_context, p_ruleset_id=ruleset.id)
+                    page = flask.render_template(
+                        USERS_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                        users=users,
+                        authentication=self.get_authenication_info(),
+                        forms=forms,
+                        new_user_html_key=HTML_KEY_NEW_USER,
+                        new_user_submit_value=HTML_KEY_NEW_USER,
+                        navigation={
+                            'current_view': USERS_VIEW_NAME
+                        },
+                    )
 
-                                    elif request.form['submit'] == ruleset.move_down_html_key:
-                                        self._rule_set_entity_manager.move_down_ruleset(
-                                            p_session_context=session_context, p_ruleset_id=ruleset.id)
+                except Exception as e:
+                    msg = "Exception '{exception}' while generating user page"
+                    self._logger.exception(msg.format(exception=str(e)))
 
-                                    elif request.form['submit'] == ruleset.move_up_html_key:
-                                        self._rule_set_entity_manager.move_up_ruleset(
-                                            p_session_context=session_context, p_ruleset_id=ruleset.id)
-
-                                for user2device in user.devices:
-                                    if request.form['submit'] == user2device.delete_html_key:
-                                        self._persistence.delete_user2device(p_user2device_id=user2device.id)
-
-                    return flask.redirect(flask.url_for("little_brother.users"))
-
-                if not submitted:
-                    for user in users:
-                        forms[user.html_key].load_from_model(p_model=user)
-
-                        for ruleset in user.rulesets:
-                            forms[ruleset.html_key].load_from_model(p_model=ruleset)
-                            # provide a callback function so that the RuleSet can retrieve context summaries
-                            ruleset.get_context_rule_handler = self._appcontrol.get_context_rule_handler
-
-                        for user2device in user.devices:
-                            forms[user2device.html_key].load_from_model(p_model=user2device)
-
-                return flask.render_template(
-                    USERS_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    users=users,
-                    authentication=self.get_authenication_info(),
-                    forms=forms,
-                    new_user_html_key=HTML_KEY_NEW_USER,
-                    new_user_submit_value=HTML_KEY_NEW_USER,
-                    navigation={
-                        'current_view': USERS_VIEW_NAME
-                    },
-                )
+            return page
 
     @BLUEPRINT_ADAPTER.route_method("/devices", endpoint="devices", methods=["GET", "POST"])
     @flask_login.login_required
@@ -583,49 +600,56 @@ class StatusServer(base_web_server.BaseWebServer):
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
 
-                devices = self._appcontrol.get_sorted_devices(session_context)
-                forms = self.get_devices_forms(p_devices=devices)
+                try:
+                    devices = self._appcontrol.get_sorted_devices(session_context)
+                    forms = self.get_devices_forms(p_devices=devices)
 
-                valid_and_submitted = True
-                submitted = False
+                    valid_and_submitted = True
+                    submitted = False
 
-                for form in forms.values():
-                    if not form.validate_on_submit():
-                        valid_and_submitted = False
+                    for form in forms.values():
+                        if not form.validate_on_submit():
+                            valid_and_submitted = False
 
-                    if form.is_submitted():
-                        submitted = True
+                        if form.is_submitted():
+                            submitted = True
 
-                if valid_and_submitted:
-                    self.save_devices_data(devices, forms)
+                    if valid_and_submitted:
+                        self.save_devices_data(devices, forms)
 
-                    if request.form['submit'] == HTML_KEY_NEW_DEVICE:
-                        self._persistence.add_new_device(p_session_context=session_context,
-                                                         p_name_pattern=self.gettext("New device {id}"))
-                        # TODO: after adding new device Devices window should be opened for new device
-                    else:
+                        if request.form['submit'] == HTML_KEY_NEW_DEVICE:
+                            self._persistence.add_new_device(p_session_context=session_context,
+                                                             p_name_pattern=self.gettext("New device {id}"))
+                            # TODO: after adding new device Devices window should be opened for new device
+                        else:
+                            for device in devices:
+                                if request.form['submit'] == device.delete_html_key:
+                                    self._persistence.delete_device(device.id)
+
+                        return flask.redirect(flask.url_for("little_brother.devices"))
+
+                    if not submitted:
                         for device in devices:
-                            if request.form['submit'] == device.delete_html_key:
-                                self._persistence.delete_device(device.id)
+                            forms[device.device_name].load_from_model(p_model=device)
 
-                    return flask.redirect(flask.url_for("little_brother.devices"))
+                    page = flask.render_template(
+                        DEVICES_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                        devices=devices,
+                        authentication=self.get_authenication_info(),
+                        forms=forms,
+                        new_device_html_key=HTML_KEY_NEW_DEVICE,
+                        new_device_submit_value=HTML_KEY_NEW_DEVICE,
+                        navigation={
+                            'current_view': DEVICES_VIEW_NAME
+                        },
+                    )
 
-                if not submitted:
-                    for device in devices:
-                        forms[device.device_name].load_from_model(p_model=device)
+                except Exception as e:
+                    msg = "Exception '{exception}' while generating device page"
+                    self._logger.exception(msg.format(exception=str(e)))
 
-                return flask.render_template(
-                    DEVICES_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    devices=devices,
-                    authentication=self.get_authenication_info(),
-                    forms=forms,
-                    new_device_html_key=HTML_KEY_NEW_DEVICE,
-                    new_device_submit_value=HTML_KEY_NEW_DEVICE,
-                    navigation={
-                        'current_view': DEVICES_VIEW_NAME
-                    },
-                )
+            return page
 
     def get_rel_font_size(self):
 
@@ -650,41 +674,52 @@ class StatusServer(base_web_server.BaseWebServer):
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
             with persistence.SessionContext(p_persistence=self._persistence) as session_context:
-                user_infos = self._appcontrol.get_user_status_infos(p_session_context=session_context)
-                page = flask.render_template(
-                    INDEX_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    user_infos=user_infos,
-                    has_downtime_today=self.has_downtime_today(p_user_infos=user_infos),
-                    app_control_config=self._appcontrol._config,
-                    authentication=self.get_authenication_info(),
-                    navigation={
-                        'current_view': INDEX_VIEW_NAME},
-                )
+                try:
+                    user_infos = self._appcontrol.get_user_status_infos(p_session_context=session_context)
+                    page = flask.render_template(
+                        INDEX_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                        user_infos=user_infos,
+                        has_downtime_today=self.has_downtime_today(p_user_infos=user_infos),
+                        app_control_config=self._appcontrol._config,
+                        authentication=self.get_authenication_info(),
+                        navigation={
+                            'current_view': INDEX_VIEW_NAME},
+                    )
+                except Exception as e:
+                    msg = "Exception '{exception}' while generating index page"
+                    self._logger.exception(msg.format(exception=str(e)))
 
-        return page
+                return page
 
     @BLUEPRINT_ADAPTER.route_method("/about", endpoint="about")
     def about_view(self):
 
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
+
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                page = flask.render_template(
-                    ABOUT_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    user_infos=self._appcontrol.get_user_status_infos(session_context),
-                    settings=settings.settings,
-                    extended_settings=settings.extended_settings,
-                    git_metadata=git.git_metadata,
-                    authentication=self.get_authenication_info(),
-                    languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
-                    navigation={
-                        'current_view': ABOUT_VIEW_NAME}
+                try:
+                    page = flask.render_template(
+                        ABOUT_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                        user_infos=self._appcontrol.get_user_status_infos(session_context),
+                        settings=settings.settings,
+                        extended_settings=settings.extended_settings,
+                        git_metadata=git.git_metadata,
+                        authentication=self.get_authenication_info(),
+                        languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
+                        navigation={
+                            'current_view': ABOUT_VIEW_NAME}
 
-                )
+                    )
+
+                except Exception as e:
+                    msg = "Exception '{exception}' while generating about page"
+                    self._logger.exception(msg.format(exception=str(e)))
+
                 return page
 
     @staticmethod

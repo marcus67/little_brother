@@ -23,7 +23,7 @@ play and the estimated remaining play time for the day.
 
 The columns contain the following details:
 
-*   *Context*: Shows the active ruleset context for the day.
+*   *Context*: Shows the active rule set context for the day.
 
 *   *Today's Activity*: Shows the overall active time and the maximum activity duration for the current day. If one of 
 the hosts had a downtime, this column will also show the detected downtime (in yellow) which will be subtracted from 
@@ -144,14 +144,14 @@ play and the estimated remaining play time for the day.
 ![Admin-Level-1](doc/admin-level-1.png)
    
 The second level can be opened by clicking on the name of a user. It will show the active restrictions of
-the current day and the next seven days of the selected user. The column "Context" denotes which ruleset is active
+the current day and the next seven days of the selected user. The column "Context" denotes which rule set is active
 on the respective day. The entries are sorted by the start time in ascending order with
 the current day at the top.
 
 ![Admin-Level-2](doc/admin-level-2.png)
 
 The third level can be opened by clicking on a day row. It will show input fields to override the default
-restrictions of the active ruleset of the selected day.    
+restrictions of the active rule set of the selected day.    
 
 ![Admin-Level-3](doc/admin-level-3.png)
 
@@ -168,6 +168,49 @@ When default values are overridden the day row shows the values in blue color. R
 removes the color again. 
 
 ![Admin-Override](doc/admin-override.png)
+
+### Managing Time Extensions
+
+Often, it is helpful to be able to extend the time of an active user sessions by some minutes or to grant time
+to a user who is currently not allowed to user the computer. In principle, this is possible by changing one or several
+of the settings above, but it is not easy and not quick. In come the *time extensions* which allow you to do just this.
+
+Normally, that is without an active time extension, the administration below the user summary looks as follows.
+
+![Time-Extension](doc/screenshot-time-extension-inactive.png)
+
+The dialog shows a number of green buttons with plus signs and numbers on them denoting minutes. Pressing one of these 
+buttons activates the time extension with the selected number of minutes.
+
+The dialog changes to the following display.
+
+![Time-Extension](doc/screenshot-time-extension-active.png)
+
+The rule summary on the top right states that the time extension is active and shows the current end time. In the
+row below there are some red buttons now with minus signs and numbers on them also denoting minutes. Pressing one of 
+these red buttons shortens the time extension by the selected number of minutes. Pressing a green button will further
+extend the time by the selected number of minutes. Shortening the extension by more than its current length or 
+pressing the red off button will remove the time extension.
+
+The exact point of time when the extension starts depends on the current state of the user:
+
+*   *The user is active*: The time extension is *appended* to the current session effectively extending it by the
+number of selected minutes.
+*   *The user is not permitted to use the computer*: In this case the time extension is created starting right away
+and having the length of the selected number of minutes.
+
+**Please, note the following aspects**:
+
+*   Time extensions grant instant computer time overriding other restrictive rules. This will always allow the user
+to play at least until the end of the time extension. It will, however, **not** change the daily limit, nor will it
+influence the way minimum break times are computed.
+
+*   In the rule summary, active restrictive rules will still be displayed but they will be inactive. The only rule
+that will always show the "right" time is the one regarding the remaining number of minutes in the current session.
+
+*   In contrast to the normal rule sets which usually have trouble to cover computer times spanning midnight
+elegantly, time extensions will handle this case nicely.       
+      
 
 ## Configuring Users
 
@@ -187,7 +230,7 @@ To add the user choose the user name from the drop down list and click the add b
 
 After the user has been added her top level entry will be shown:
 
-![Users-New-User-Addes](doc/users-new-user-added.png)
+![Users-New-User-Adds](doc/users-new-user-added.png)
 
 Click on the username to change to second level of the user entry:
 
@@ -196,7 +239,7 @@ Click on the username to change to second level of the user entry:
 The details will show the following items:
 
 *   *Monitored*: denotes if the user will actually be monitored. This will be un-ticked for all new users and should 
-only be ticked off after the user has been configured completely using rulesets and optionally devices.
+only be ticked off after the user has been configured completely using rule sets and optionally devices.
 
 *   *First Name*: sets the first name of the user. When set the first name will be used in notifications instead of the
 username which may be unpronounceable. 
@@ -219,7 +262,7 @@ the locale always defaults to the locale which is detected from the browser.
     single `/` will be braced by `.*( PATTERN ).*` so that the original expression will be matched at any location in the 
     command line. If no `/` is contained in the configured expression it will be used literally.  
  
-### Adding Rulesets
+### Adding Rule Sets
 
 When a new user is created, there is always one default rule created for her which will act as a fallback if no other
 rule applies. However, the new rule does not contain any restrictions yet:
@@ -339,7 +382,7 @@ and click the add button
 
 ![Add-Button](doc/add-button.png)
 
-The top level device overview will show a comma seperated list of all devices.
+The top level device overview will show a comma separated list of all devices.
 
 ![User-Devices-Level-1](doc/users-devices-level-1.png)
  

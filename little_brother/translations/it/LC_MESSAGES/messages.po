@@ -220,7 +220,7 @@ msgstr "Gioco libero"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
 msgid "Active time extension until {hh_mm}"
-msgstr "Nessuna attività superiore a {hh_mm}    "
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
 msgid "No activity before {hh_mm} hours"
@@ -240,7 +240,7 @@ msgstr "Attività limitate a {hh_mm} al giorno"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:493
 msgid "No activity exceeding {hh_mm}"
-msgstr "Nessuna attività superiore a {hh_mm}    "
+msgstr "Nessuna attività superiore a {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:536
 msgid "Minimum break time {hh_mm} not reached"

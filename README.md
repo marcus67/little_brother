@@ -117,6 +117,12 @@ devices behind firewalls provided the tool can be deployed on a Debian server be
 process for a certain time (defaults to 50 seconds). This ensures users cannot suppress being logged out by 
 *pulling the plug*.
 
+*   As of version 0.4.0 `LittleBrother` provides an administration feature to easily extend the current computer time 
+or grant computer when the usage would normally be prohibited. This is called a time extension. During a active 
+extension all other restrictions (maximum time per session, time of day, and maximum time per day) are deactivated.
+Time extension can even extend into the next day making long night session possible. However, any computer time
+actually spent during a time extension will contribute to the overall time played in the course of a day.   
+
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
 Linux host with a Docker daemon available.
 
@@ -249,10 +255,10 @@ the following languages are supported or currently in preparation (in the order 
 | ---------------------------------------------------------------| ------------- | ------ | -------------- | ---------------------------|
 | ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Up-to-date     |  Marcus Rickert            |
 | ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Up-to-date     |  Marcus Rickert            |
-| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Revision 86    |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
-| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Up-to-date     |  Albano Battistella        |
+| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 86    |  Albano Battistella        |
 | ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Revision 63    |  Selay Dogan               |
 | ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Revision 63    |  J. Moldawski              |
 | ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Revision 63    |  Arik M.                   |
