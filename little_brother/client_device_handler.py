@@ -27,11 +27,9 @@ SECTION_NAME = "ClientDeviceHandler"
 
 CLIENT_DEVICE_SECTION_PREFIX = "ClientDevice"
 
-DEFAULT_PING_COMMAND = "/bin/ping"
 DEFAULT_MIN_ACTIVITY_DURATION = 30  # seconds
 DEFAULT_MAX_ACTIVE_PING_DELAY = 100  # milliseconds
 DEFAULT_INACTIVE_FACTOR = 2
-DEFAULT_PING_RESULT_REGEX = r"rtt min/avg/max/mdev = [\d\.]+/([\d\.]+)/[\d\.]+/[\d\.]+ ms"
 DEFAULT_SAMPLE_SIZE = 8
 DEFAULT_SERVER_GROUP = "default-group"
 
@@ -41,8 +39,6 @@ class ClientDeviceHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
     def __init__(self):
         super(ClientDeviceHandlerConfigModel, self).__init__(p_section_name=SECTION_NAME)
 
-        self.ping_command = DEFAULT_PING_COMMAND
-        self.ping_result_regex = DEFAULT_PING_RESULT_REGEX
         self.inactive_factor = DEFAULT_INACTIVE_FACTOR
 
 
