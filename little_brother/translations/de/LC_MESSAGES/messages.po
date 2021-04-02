@@ -83,7 +83,7 @@ msgid ""
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, du hast heute nur noch {minutes_left_before_logout} Minuten in "
+"{user}, du hast nur noch {minutes_left_before_logout} Minuten in "
 "Deiner Zeitverlängerung übrig. Bitte logge Dich aus."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287

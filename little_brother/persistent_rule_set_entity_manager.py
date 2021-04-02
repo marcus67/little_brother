@@ -87,7 +87,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
 
         session = p_session_context.get_session()
 
-        ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
+        ruleset = self.get_by_id(p_session_context=p_session_context, p_id=p_ruleset_id)
         sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: ruleset.priority)
         self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
         session.commit()
@@ -98,7 +98,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
 
         session = p_session_context.get_session()
 
-        ruleset = persistent_rule_set.RuleSet.get_by_id(p_session=session, p_id=p_ruleset_id)
+        ruleset = self.get_by_id(p_session_context=p_session_context, p_id=p_ruleset_id)
         sorted_rulesets = sorted(ruleset.user.rulesets, key=lambda ruleset: -ruleset.priority)
         self.move_ruleset(p_ruleset=ruleset, p_sorted_rulesets=sorted_rulesets)
         session.commit()
