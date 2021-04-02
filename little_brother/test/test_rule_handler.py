@@ -25,6 +25,8 @@ from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
 from little_brother import persistence
+from little_brother import persistent_user
+from little_brother import persistent_user_entity_manager
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
@@ -69,40 +71,38 @@ class TestRuleHandler(base_test.BaseTestCase):
         session_context = persistence.SessionContext(p_persistence=dummy_persistence)
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence)
 
+        user_entity_manager = dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_ruleset_configs(self.create_dummy_ruleset_configs())
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=NORMAL_DAY_1)
+        user: persistent_user.User = user_entity_manager.user_map(p_session_context=session_context).get(TEST_USER)
+        self.assertIsNotNone(user)
+
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=NORMAL_DAY_1)
+
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=WEEKEND_DAY_1)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=WEEKEND_DAY_2)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER,
-                                                            p_reference_date=VACATION_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=VACATION_DAY_1)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context,
                          german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER,
-                                                            p_reference_date=VACATION_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=VACATION_DAY_2)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context,
                          german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_3)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=WEEKEND_DAY_3)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 

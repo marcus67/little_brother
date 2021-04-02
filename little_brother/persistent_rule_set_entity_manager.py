@@ -15,10 +15,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import lagom
-
 from little_brother import base_entity_manager
 from little_brother import constants
+from little_brother import persistence
 from little_brother import persistent_rule_set
 from little_brother import persistent_user
 from little_brother import simple_context_rule_handlers
@@ -29,11 +28,11 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
     def __init__(self):
         super().__init__()
 
-        container = lagom.Container()
-
     @classmethod
-    def get_by_id(cls, p_session, p_id):
-        query = p_session.query(persistent_rule_set.RuleSet).filter(persistent_rule_set.RuleSet.id == p_id)
+    def get_by_id(cls, p_session_context: persistence.SessionContext, p_id: int) -> persistent_rule_set.RuleSet:
+
+        session = p_session_context.get_session()
+        query = session.query(persistent_rule_set.RuleSet).filter(persistent_rule_set.RuleSet.id == p_id)
 
         if query.count() == 1:
             return query.one()
@@ -42,20 +41,20 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
             return None
 
     @classmethod
-    def get_default_ruleset(cls, p_priority=constants.DEFAULT_RULE_SET_PRIORITY):
+    def get_default_ruleset(cls, p_priority: int = constants.DEFAULT_RULE_SET_PRIORITY) -> persistent_rule_set.RuleSet:
 
         default_ruleset = persistent_rule_set.RuleSet()
         default_ruleset.priority = p_priority
         default_ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
         return default_ruleset
 
-    def add_ruleset(self, p_session_context, p_username):
+    def add_ruleset(self, p_session_context: persistence.SessionContext, p_username: str) -> None:
 
         session = p_session_context.get_session()
         user = persistent_user.User.get_by_username(p_session=session, p_username=p_username)
 
         if user is None:
-            msg = "Cannot add ruleset to user {username}. Not in database!"
+            msg = "Cannot add rule set to user {username}. Not in database!"
             self._logger.warning(msg.format(username=p_username))
             session.close()
             return
@@ -69,10 +68,10 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
 
         self.persistence.clear_cache()
 
-    def delete_ruleset(self, p_session_context, p_ruleset_id):
+    def delete_ruleset(self, p_session_context: persistence.SessionContext, p_ruleset_id) -> None:
 
         session = p_session_context.get_session()
-        ruleset = self.get_by_id(p_session=session, p_id=p_ruleset_id)
+        ruleset = self.get_by_id(p_session_context=p_session_context, p_id=p_ruleset_id)
 
         if ruleset is None:
             msg = "Cannot delete ruleset {id}. Not in database!"
@@ -84,7 +83,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def move_up_ruleset(self, p_session_context, p_ruleset_id):
+    def move_up_ruleset(self, p_session_context: persistence.SessionContext, p_ruleset_id: int) -> None:
 
         session = p_session_context.get_session()
 
@@ -95,7 +94,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
 
         self.persistence.clear_cache()
 
-    def move_down_ruleset(self, p_session_context, p_ruleset_id):
+    def move_down_ruleset(self, p_session_context: persistence.SessionContext, p_ruleset_id: int) -> None:
 
         session = p_session_context.get_session()
 
@@ -107,7 +106,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         self.persistence.clear_cache()
 
     @classmethod
-    def move_ruleset(cls, p_ruleset, p_sorted_rulesets):
+    def move_ruleset(cls, p_ruleset: persistent_rule_set.RuleSet, p_sorted_rulesets):
 
         found = False
         index = 0

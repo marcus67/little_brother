@@ -24,6 +24,7 @@ import unittest
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import persistence
+from little_brother import persistent_user_entity_manager
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother.test import test_data
@@ -253,13 +254,18 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
         session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+        user_entity_manager.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_ruleset_configs(p_ruleset_configs=rule_set_configs)
         sis = process_statistics.get_empty_stat_infos(
-            p_user_map=dummy_persistence.user_map(session_context),
+            p_user_map=user_entity_manager.user_map(session_context),
             p_reference_time=start_time,
             p_max_lookback_in_days=5,
             p_min_activity_duration=30)
@@ -270,14 +276,18 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
         session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+        user_entity_manager.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_ruleset_configs(p_ruleset_configs=rule_set_configs)
 
         pss = process_statistics.get_process_statistics(
-            p_user_map=dummy_persistence.user_map(session_context),
+            p_user_map=user_entity_manager.user_map(session_context),
             p_process_infos=test_data.get_process_dict(p_processes=test_data.PROCESSES_3),
             p_reference_time=start_time,
             p_max_lookback_in_days=5,

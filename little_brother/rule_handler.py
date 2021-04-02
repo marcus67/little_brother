@@ -20,6 +20,7 @@ import datetime
 import re
 
 from little_brother import constants
+from little_brother import persistence
 from little_brother import persistent_time_extension
 from little_brother import process_statistics
 from python_base_app import configuration
@@ -314,7 +315,7 @@ class RuleHandler(object):
     def __init__(self, p_config, p_persistence):
 
         self._config = p_config
-        self._persistence = p_persistence
+        self._persistence: persistence.Persistence = p_persistence
         self._context_rule_handlers = {}
         self._default_context_rule_handler_name = None
 
@@ -350,28 +351,25 @@ class RuleHandler(object):
 
         return choices
 
-    def get_active_ruleset(self, p_session_context, p_username, p_reference_date):
+    def get_active_ruleset(self, p_rule_sets, p_reference_date):
 
         active_ruleset = None
         max_priority = None
 
-        user = self._persistence.user_map(p_session_context).get(p_username)
+        for ruleset in p_rule_sets:
+            context_name = ruleset.context or self._default_context_rule_handler_name
+            context_rule_handler = self._context_rule_handlers.get(context_name)
 
-        if user is not None:
-            for ruleset in user.rulesets:
-                context_name = ruleset.context or self._default_context_rule_handler_name
-                context_rule_handler = self._context_rule_handlers.get(context_name)
+            if context_rule_handler is None:
+                raise configuration.ConfigurationException("invalid rule set context '%s'" % ruleset.context)
 
-                if context_rule_handler is None:
-                    raise configuration.ConfigurationException("invalid rule set context '%s'" % ruleset.context)
+            active = context_rule_handler.is_active(p_reference_date=p_reference_date,
+                                                    p_details=ruleset.context_details)
 
-                active = context_rule_handler.is_active(p_reference_date=p_reference_date,
-                                                        p_details=ruleset.context_details)
-
-                if active:
-                    if max_priority is None or ruleset.priority > max_priority:
-                        max_priority = ruleset.priority
-                        active_ruleset = ruleset
+            if active:
+                if max_priority is None or ruleset.priority > max_priority:
+                    max_priority = ruleset.priority
+                    active_ruleset = ruleset
 
         return active_ruleset
 
@@ -570,20 +568,19 @@ class RuleHandler(object):
                      p_seconds=60 * p_rule_result_info.minutes_left_in_session, p_include_seconds=False)})
             )
 
-    def process_ruleset(self, p_session_context, p_stat_info, p_active_time_extension,
+    def process_ruleset(self, p_active_rule_set, p_stat_info, p_active_time_extension,
                         p_reference_time, p_rule_override, p_locale):
 
         rule_result_info = RuleResultInfo()
 
-        rule_set = self.get_active_ruleset(p_session_context=p_session_context,
-                                           p_username=p_stat_info.username, p_reference_date=p_reference_time)
-        rule_result_info.default_rule_set = rule_set
-        rule_result_info.effective_rule_set = apply_override(p_rule_set=rule_set, p_rule_override=p_rule_override)
+        rule_result_info.default_rule_set = p_active_rule_set
+        rule_result_info.effective_rule_set = apply_override(p_rule_set=p_active_rule_set,
+                                                             p_rule_override=p_rule_override)
 
         rule_result_info.args["user"] = p_stat_info.notification_name
         rule_result_info.locale = p_locale
 
-        if rule_set is not None:
+        if p_active_rule_set is not None:
             # Rules granting playtime
             self.check_free_play(p_rule_set=rule_result_info.effective_rule_set, p_rule_result_info=rule_result_info)
             self.check_active_time_extension(p_reference_time=p_reference_time,

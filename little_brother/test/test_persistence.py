@@ -29,6 +29,7 @@ from little_brother import persistence
 from little_brother import persistence_base
 from little_brother import persistent_process_info
 from little_brother import persistent_time_extension_entity_manager
+from little_brother import persistent_user_entity_manager
 from little_brother import process_info
 from little_brother import rule_override
 from little_brother.test import test_data
@@ -68,6 +69,8 @@ class TestPersistence(base_test.BaseTestCase):
         dependency_injection.container[persistence.Persistence] = a_persistence
         dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager] = \
             persistent_time_extension_entity_manager.TimeExtensionEntityManager()
+        dependency_injection.container[persistent_user_entity_manager.UserEntityManager] = \
+            persistent_user_entity_manager.UserEntityManager()
 
         return a_persistence
 

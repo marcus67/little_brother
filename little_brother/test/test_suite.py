@@ -21,20 +21,20 @@
 
 import unittest
 
+from little_brother.test import test_app_control
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
-from little_brother.test import test_process_handler
 from little_brother.test import test_german_vacation_context_rule_handler
 from little_brother.test import test_persistence
+from little_brother.test import test_persistent_time_extension
 from little_brother.test import test_popup_handler
+from little_brother.test import test_process_handler
 from little_brother.test import test_process_info
 from little_brother.test import test_process_statistics
+from little_brother.test import test_prometheus
 from little_brother.test import test_rule_handler
 from little_brother.test import test_simple_weekday_context_rule_handler
 from little_brother.test import test_status_server
-from little_brother.test import test_prometheus
-from little_brother.test import test_app_control
-
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
@@ -105,6 +105,11 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_app_control.TestAppControl, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_persistent_time_extension.TestPersistentTimeExtension,
+        p_config_filename=p_config_filename)
 
 
 def main():

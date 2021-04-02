@@ -36,6 +36,7 @@ from little_brother import login_mapping
 from little_brother import persistence
 from little_brother import persistent_time_extension_entity_manager
 from little_brother import persistent_user
+from little_brother import persistent_user_entity_manager
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
@@ -80,7 +81,7 @@ _ = lambda x, y=None: x
 class AppControlConfigModel(configuration.ConfigModel):
 
     def __init__(self):
-        super(AppControlConfigModel, self).__init__(p_section_name=SECTION_NAME)
+        super().__init__(p_section_name=SECTION_NAME)
 
         self.process_lookback_in_days = DEFAULT_PROCESS_LOOKUP_IN_DAYS
         self.history_length_in_days = DEFAULT_HISTORY_LENGTH_IN_DAYS
@@ -205,6 +206,8 @@ class AppControl(object):
         self._persistence: persistence.Persistence = p_persistence
         self._time_extension_entity_manager: persistent_time_extension_entity_manager.TimeExtensionEntityManager = \
             dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
+        self._user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
         self._rule_handler: rule_handler.RuleHandler = p_rule_handler
         self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
@@ -256,7 +259,7 @@ class AppControl(object):
 
     def reset_users(self, p_session_context):
         self._process_regex_map = None
-        self._usernames_not_found.extend(self._persistence.user_map(p_session_context=p_session_context).keys())
+        self._usernames_not_found.extend(self._user_entity_manager.user_map(p_session_context=p_session_context).keys())
 
         fmt = "Watching usernames: %s" % ",".join(self._usernames_not_found)
         self._logger.info(fmt)
@@ -315,7 +318,7 @@ class AppControl(object):
 
             # Delete all locally known users since the message from the master will not contain users
             # that have been deleted on the master. These might otherwise remain active on the client.
-            for user in self._persistence.users(p_session_context=session_context):
+            for user in self._user_entity_manager.users(p_session_context=session_context):
                 session.delete(user)
 
             session.commit()
@@ -348,7 +351,7 @@ class AppControl(object):
             if self._process_regex_map is None:
                 self._process_regex_map = {}
 
-                for user in self._persistence.users(session_context):
+                for user in self._user_entity_manager.users(session_context):
                     self._process_regex_map[user.username] = user.regex_process_name_pattern
 
         return self._process_regex_map
@@ -412,7 +415,7 @@ class AppControl(object):
         count = 0
 
         with persistence.SessionContext(p_persistence=self._persistence) as session_context:
-            for user in self._persistence.users(session_context):
+            for user in self._user_entity_manager.users(session_context):
                 if user.active and user.username in self._usernames:
                     count += 1
 
@@ -426,7 +429,7 @@ class AppControl(object):
 
                 self._prometheus_client.set_number_of_monitored_users(self.get_number_of_monitored_users())
                 self._prometheus_client.set_number_of_configured_users(
-                    len(self._persistence.user_map(session_context)))
+                    len(self._user_entity_manager.user_map(session_context)))
 
                 if self._config.scan_active:
                     self._prometheus_client.set_monitored_host(self._host_name, True)
@@ -658,7 +661,7 @@ class AppControl(object):
 
     def get_user_locale(self, p_session_context, p_username):
 
-        user = self._persistence.user_map(p_session_context).get(p_username)
+        user = self._user_entity_manager.user_map(p_session_context).get(p_username)
 
         if user is not None and user.locale is not None:
             return user.locale
@@ -733,7 +736,7 @@ class AppControl(object):
             user_config = {
                 user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
                                 constants.JSON_ACTIVE: user.active}
-                for user in self._persistence.users(p_session_context=session_context)
+                for user in self._user_entity_manager.users(p_session_context=session_context)
             }
 
         config[constants.JSON_USER_CONFIG] = user_config
@@ -994,16 +997,19 @@ class AppControl(object):
                 p_process_infos=self.get_process_infos(),
                 p_reference_time=p_reference_time,
                 p_max_lookback_in_days=1,
-                p_user_map=self._persistence.user_map(session_context),
+                p_user_map=self._user_entity_manager.user_map(session_context),
                 p_min_activity_duration=self._config.min_activity_duration)
 
             active_time_extensions = self._time_extension_entity_manager.get_active_time_extensions(
                 p_session_context=session_context, p_reference_datetime=tools.get_current_time())
 
             user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_username)
-            rule_set = self._rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                             p_username=p_username,
-                                                             p_reference_date=p_reference_time.date())
+            user: persistent_user.User = \
+                self._user_entity_manager.user_map(p_session_context=session_context).get(p_username)
+
+            if user is not None:
+                rule_set = self._rule_handler.get_active_ruleset(p_rule_sets=user.rulesets,
+                                                                 p_reference_date=p_reference_time.date())
 
             stat_infos = users_stat_infos.get(p_username)
             active_time_extension = active_time_extensions.get(p_username)
@@ -1018,8 +1024,11 @@ class AppControl(object):
                                                               p_reference_date=p_reference_time.date())
                     override = self._rule_overrides.get(key_rule_override)
 
+                    active_rule_set = self._rule_handler.get_active_ruleset(
+                        p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
+
                     rule_result_info = self._rule_handler.process_ruleset(
-                        p_session_context=session_context,
+                        p_active_rule_set=active_rule_set,
                         p_stat_info=stat_info,
                         p_reference_time=p_reference_time,
                         p_active_time_extension=active_time_extension,
@@ -1055,21 +1064,21 @@ class AppControl(object):
                 p_process_infos=self.get_process_infos(),
                 p_reference_time=p_reference_time,
                 p_max_lookback_in_days=self._config.process_lookback_in_days,
-                p_user_map=self._persistence.user_map(session_context),
+                p_user_map=self._user_entity_manager.user_map(session_context),
                 p_min_activity_duration=self._config.min_activity_duration)
 
             active_time_extensions = self._time_extension_entity_manager.get_active_time_extensions(
                 p_session_context=session_context, p_reference_datetime=tools.get_current_time())
 
-            for user in self._persistence.users(session_context):
+            for user in self._user_entity_manager.users(session_context):
                 if user.active and user.username in self._usernames:
 
                     user_active = False
 
                     user_locale = self.get_user_locale(p_username=user.username, p_session_context=session_context)
-                    rule_set = self._rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                                     p_username=user.username,
-                                                                     p_reference_date=p_reference_time.date())
+
+                    rule_set = self._rule_handler.get_active_ruleset(
+                        p_rule_sets=user.rulesets, p_reference_date=p_reference_time.date())
 
                     stat_infos = users_stat_infos.get(user.username)
 
@@ -1086,8 +1095,11 @@ class AppControl(object):
                             if rule_override is not None:
                                 self._logger.debug(str(override))
 
+                            active_rule_set = self._rule_handler.get_active_ruleset(
+                                p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
+
                             rule_result_info = self._rule_handler.process_ruleset(
-                                p_session_context=session_context,
+                                p_active_rule_set=active_rule_set,
                                 p_stat_info=stat_info,
                                 p_active_time_extension=active_time_extensions.get(user.username),
                                 p_reference_time=p_reference_time,
@@ -1096,7 +1108,7 @@ class AppControl(object):
 
                             current_user_status = self.get_current_user_status(p_username=user.username)
 
-                            if (rule_result_info.limited_session_time()):
+                            if rule_result_info.limited_session_time():
                                 current_user_status.minutes_left_in_session = rule_result_info.get_minutes_left_in_session()
 
                             else:
@@ -1175,7 +1187,7 @@ class AppControl(object):
     def reset_logout_warning(self, p_username):
 
         if p_username in self._logout_warnings:
-            del (self._logout_warnings[p_username])
+            del self._logout_warnings[p_username]
 
     ################################################################################################################################
     ################################################################################################################################
@@ -1277,12 +1289,12 @@ class AppControl(object):
 
     def get_sorted_users(self, p_session_context):
 
-        return sorted(self._persistence.users(p_session_context), key=lambda user: user.full_name)
+        return sorted(self._user_entity_manager.users(p_session_context), key=lambda user: user.full_name)
 
     def get_unmonitored_users(self, p_session_context):
 
         return [username for username in self._user_handler.list_users() if
-                username not in self._persistence.user_map(p_session_context)]
+                username not in self._user_entity_manager.user_map(p_session_context)]
 
     def get_unmonitored_devices(self, p_user, p_session_context):
 
@@ -1310,44 +1322,49 @@ class AppControl(object):
         users_stat_infos = process_statistics.get_process_statistics(
             p_process_infos=self.get_process_infos(),
             p_reference_time=reference_time,
-            p_user_map=self._persistence.user_map(p_session_context),
+            p_user_map=self._user_entity_manager.user_map(p_session_context),
             p_max_lookback_in_days=self._config.process_lookback_in_days if p_include_history else 1,
             p_min_activity_duration=self._config.min_activity_duration)
 
-        for username in self._persistence.user_map(p_session_context).keys():
-            rule_set = self._rule_handler.get_active_ruleset(p_session_context=p_session_context,
-                                                             p_username=username,
-                                                             p_reference_date=reference_time.date())
-            stat_infos = users_stat_infos.get(username)
-            active_time_extension = active_time_extensions.get(username)
-            user_locale = self.get_user_locale(p_session_context=p_session_context, p_username=username)
+        for username in self._user_entity_manager.user_map(p_session_context).keys():
+            user: persistent_user.User = self._user_entity_manager.user_map(p_session_context).get(username)
 
-            if stat_infos is not None:
-                stat_info = stat_infos.get(rule_set.context)
+            if user is not None:
+                rule_set = self._rule_handler.get_active_ruleset(
+                    p_rule_sets=user.rulesets, p_reference_date=reference_time.date())
+                stat_infos = users_stat_infos.get(username)
+                active_time_extension = active_time_extensions.get(username)
+                user_locale = self.get_user_locale(p_session_context=p_session_context, p_username=username)
 
-                if stat_info is not None:
-                    self._logger.debug(str(stat_info))
+                if stat_infos is not None:
+                    stat_info = stat_infos.get(rule_set.context)
 
-                    key_rule_override = rule_override.get_key(p_username=username,
-                                                              p_reference_date=reference_time.date())
-                    override = self._rule_overrides.get(key_rule_override)
-                    rule_result_info = self._rule_handler.process_ruleset(p_session_context=p_session_context,
-                                                                          p_stat_info=stat_info,
-                                                                          p_active_time_extension=active_time_extension,
-                                                                          p_reference_time=reference_time,
-                                                                          p_rule_override=override,
-                                                                          p_locale=user_locale)
+                    if stat_info is not None:
+                        self._logger.debug(str(stat_info))
 
-                    activity_permitted = rule_result_info.activity_allowed()
+                        key_rule_override = rule_override.get_key(p_username=username,
+                                                                  p_reference_date=reference_time.date())
+                        override = self._rule_overrides.get(key_rule_override)
 
-                    user_infos[username] = {
-                        'active_rule_set': rule_set,
-                        'active_stat_info': stat_info,
-                        'active_rule_result_info': rule_result_info,
-                        'max_lookback_in_days': self._config.process_lookback_in_days,
-                        'activity_permitted': activity_permitted,
-                        'history_labels': self.history_labels
-                    }
+                        active_rule_set = self._rule_handler.get_active_ruleset(
+                            p_reference_date=reference_time, p_rule_sets=user.rulesets)
+
+                        rule_result_info = self._rule_handler.process_ruleset(
+                            p_active_rule_set=active_rule_set, p_stat_info=stat_info,
+                            p_active_time_extension=active_time_extension,
+                            p_reference_time=reference_time, p_rule_override=override,
+                            p_locale=user_locale)
+
+                        activity_permitted = rule_result_info.activity_allowed()
+
+                        user_infos[username] = {
+                            'active_rule_set': rule_set,
+                            'active_stat_info': stat_info,
+                            'active_rule_result_info': rule_result_info,
+                            'max_lookback_in_days': self._config.process_lookback_in_days,
+                            'activity_permitted': activity_permitted,
+                            'history_labels': self.history_labels
+                        }
 
         return user_infos
 
@@ -1388,7 +1405,7 @@ class AppControl(object):
                                 minutes=period) >= admin_info.time_extension.start_datetime:
                             admin_info.time_extension_periods.append(period)
 
-            user = self._persistence.user_map(p_session_context).get(username)
+            user = self._user_entity_manager.user_map(p_session_context).get(username)
 
             if user is not None:
                 admin_info.full_name = user.full_name
@@ -1399,9 +1416,8 @@ class AppControl(object):
                 admin_info.day_infos = []
 
                 for reference_date in sorted(days):
-                    rule_set = self._rule_handler.get_active_ruleset(p_session_context=p_session_context,
-                                                                     p_username=username,
-                                                                     p_reference_date=reference_date)
+                    rule_set = self._rule_handler.get_active_ruleset(
+                        p_rule_sets=user.rulesets, p_reference_date=reference_date)
 
                     if rule_set is not None:
                         key_rule_override = rule_override.get_key(p_username=username, p_reference_date=reference_date)
@@ -1548,7 +1564,7 @@ class AppControl(object):
 
     def get_user_status(self, p_username):
 
-        user = self._persistence.user_map(p_session_context=persistence.SessionContext(self._persistence)).get(
+        user = self._user_entity_manager.user_map(p_session_context=persistence.SessionContext(self._persistence)).get(
             p_username)
 
         if user is not None and user.active:
@@ -1566,6 +1582,7 @@ class AppControl(object):
 
     def add_new_user(self, p_session_context, p_username, p_locale=None):
 
-        self._persistence.add_new_user(p_session_context=p_session_context, p_username=p_username, p_locale=p_locale)
+        self._user_entity_manager.add_new_user(p_session_context=p_session_context, p_username=p_username,
+                                               p_locale=p_locale)
         self.add_monitored_user(p_username=p_username)
         self.send_config_to_all_slaves()

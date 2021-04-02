@@ -24,13 +24,11 @@ import sqlalchemy.orm
 from sqlalchemy.exc import ProgrammingError
 
 from little_brother import constants
-from little_brother import dependency_injection
 from little_brother import persistence_base
 from little_brother import persistent_admin_event
 from little_brother import persistent_device
 from little_brother import persistent_process_info
 from little_brother import persistent_rule_override
-from little_brother import persistent_rule_set_entity_manager
 from little_brother import persistent_user
 from little_brother import persistent_user_2_device
 from python_base_app import configuration
@@ -157,13 +155,10 @@ class Persistence(object):
         self._admin_engine = None
         self._create_table_engine = None
         self._reuse_session = p_reuse_session
-        self._users = None
         self._devices = None
         self._users_session = None
         self._devices_session = None
         self._cache_entities = True
-        self._rule_set_entity_manager: persistent_rule_set_entity_manager.RuleSetEntityManager = \
-            dependency_injection.container[persistent_rule_set_entity_manager.RuleSetEntityManager]
 
         if self._config.database_user is not None:
             tools.check_config_value(p_config=self._config, p_config_attribute_name="database_password")
@@ -518,21 +513,6 @@ class Persistence(object):
         session.commit()
         session.close()
 
-    def users(self, p_session_context):
-
-        current_users = p_session_context.get_cache("users")
-
-        if current_users is None:
-            session = p_session_context.get_session()
-            current_users = session.query(persistent_user.User).all()
-            p_session_context.set_cache(p_name="users", p_object=current_users)
-
-        return current_users
-
-    def user_map(self, p_session_context):
-
-        return {user.username: user for user in self.users(p_session_context=p_session_context)}
-
     def devices(self, p_session_context):
 
         current_devices = p_session_context.get_cache("devices")
@@ -555,28 +535,6 @@ class Persistence(object):
     def clear_cache(self):
         SessionContext.clear_caches()
 
-    def add_new_user(self, p_session_context, p_username, p_locale=None):
-
-        if p_username in self.user_map(p_session_context):
-            msg = "Cannot create new user {username}. Already in database!"
-            self._logger.warning(msg.format(username=p_username))
-            return
-
-        session = self.get_session()
-        new_user = persistent_user.User()
-        new_user.username = p_username
-        new_user.locale = p_locale
-        new_user.process_name_pattern = constants.DEFAULT_PROCESS_NAME_PATTERN
-        session.add(new_user)
-
-        default_ruleset = self._rule_set_entity_manager.get_default_ruleset()
-        default_ruleset.user = new_user
-        session.add(default_ruleset)
-
-        session.commit()
-        session.close()
-        self.clear_cache()
-
     def add_new_device(self, p_session_context, p_name_pattern):
 
         session = self.get_session()
@@ -593,26 +551,6 @@ class Persistence(object):
         session.close()
         self.clear_cache()
 
-    def delete_user(self, p_username):
-
-        session = self.get_session()
-        user = persistent_user.User.get_by_username(p_session=session, p_username=p_username)
-
-        if user is None:
-            msg = "Cannot delete user {username}. Not in database!"
-            self._logger.warning(msg.format(username=p_username))
-            return
-
-        for ruleset in user.rulesets:
-            session.delete(ruleset)
-
-        for user2device in user.devices:
-            session.delete(user2device)
-
-        session.delete(user)
-        session.commit()
-        session.close()
-        self.clear_cache()
 
     def delete_user2device(self, p_user2device_id):
 

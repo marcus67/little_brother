@@ -24,10 +24,11 @@ from little_brother import client_device_handler
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import persistence
+from little_brother import persistent_user_entity_manager
 from little_brother.test import test_data
 from little_brother.test import test_persistence
-from python_base_app.test import base_test
 from python_base_app import pinger
+from python_base_app.test import base_test
 
 
 class TestClientDeviceHandler(base_test.BaseTestCase):
@@ -53,8 +54,13 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
         device_configs = {device_config.section_name: device_config}
 
         dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
         session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+
+        user_entity_manager.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_client_device_configs(device_configs)
         a_pinger = pinger.Pinger()
@@ -88,7 +94,9 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         session_context = persistence.SessionContext(p_persistence=dummy_persistence)
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_client_device_configs(device_configs)

@@ -340,7 +340,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for ruleset in user.rulesets:
                     form = p_forms[ruleset.html_key]
-                    a_persistent_ruleset = self._rule_set_entity_manager.get_by_id(p_session=session, p_id=ruleset.id)
+                    a_persistent_ruleset = self._rule_set_entity_manager.get_by_id(
+                        p_session_context=session_context, p_id=ruleset.id)
 
                     if a_persistent_ruleset is not None and form.differs_from_model(p_model=a_persistent_ruleset):
                         form.save_to_model(p_model=a_persistent_ruleset)
