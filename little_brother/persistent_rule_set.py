@@ -100,7 +100,7 @@ class RuleSet(persistence_base.Base):
     @property
     def can_move_up(self):
 
-        return 1 < self.priority < len(self.user.rulesets)
+        return 1 < self.priority < self.user.maximum_rule_priority
 
     @property
     def can_move_down(self):

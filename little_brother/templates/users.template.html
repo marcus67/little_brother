@@ -157,24 +157,33 @@
 									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1">
 										<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
 										<!-- {{ _('Edit ruleset details') }} -->
-										{% call accordion.toggle_begin(tooltip="Edit ruleset details") %}{{ruleset.html_key}}{% endcall %}
-											{{ _(ruleset.label) }}
+										{% call accordion.toggle_begin(tooltip="Edit ruleset details")
+										%}{{ruleset.html_key}}{% endcall %}
+										{{ _(ruleset.label) }}
 										{{ accordion.toggle_end() }}
 									</DIV>
-									<DIV CLASS="col-xs-5  col-sm-7  col-md-8  col-lg-9  localetext">
+									<DIV CLASS="col-xs-5  col-sm-7  col-md-8  col-lg-8  localetext">
 										{{ ruleset.summary|format_text_array|safe }}
 									</DIV>
-									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  text-right">
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  text-right">
 										{% if not ruleset.fixed_context %}
-										<BUTTON id="{{ ruleset.delete_html_key }}" class="btn" title="{{_('Remove ruleset')}}"><I class="fas fa-trash"></I></BUTTON>
+										<BUTTON id="{{ ruleset.delete_html_key }}" class="btn"
+												title="{{_('Remove ruleset')}}"><I class="fas fa-trash"></I></BUTTON>
 										{% endif %}
 										{% if ruleset.can_move_up %}
-										<BUTTON type="submit" name="submit" class="btn" value="{{ ruleset.move_up_html_key }}" title="{{ _('Move ruleset up')}}"><I class="fas fa-arrow-up"></I></BUTTON>
+										<BUTTON type="submit" name="submit" class="btn"
+												value="{{ ruleset.move_up_html_key }}"
+												title="{{ _('Move ruleset up')}}"><I class="fas fa-arrow-up"></I>
+										</BUTTON>
 										{% endif %}
 										{% if ruleset.can_move_down %}
-										<BUTTON type="submit" name="submit" class="btn" value="{{ ruleset.move_down_html_key }}" title="{{ _('Move ruleset down')}}"><I class="fas fa-arrow-down"></I></BUTTON>
+										<BUTTON type="submit" name="submit" class="btn"
+												value="{{ ruleset.move_down_html_key }}"
+												title="{{ _('Move ruleset down')}}"><I class="fas fa-arrow-down"></I>
+										</BUTTON>
 										{% endif %}
-										<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
+										<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I
+												class="fas fa-save"></I></BUTTON>
 									</DIV>
 								</DIV>
 							{% call accordion.details() %}{{ruleset.html_key}}{% endcall %}

@@ -67,14 +67,11 @@ msgstr ""
 "Per favore, disconnettersi."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, hai solo {minutes_left_before_logout} minuti rimanenti oggi.\n"
-"Per favore, disconnettersi."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
@@ -228,7 +225,6 @@ msgid "Free Play"
 msgstr "Gioco libero"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-#, fuzzy
 msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 

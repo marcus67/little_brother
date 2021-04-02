@@ -71,14 +71,11 @@ msgstr ""
 "প্লিজ, লগ আউট করো."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, আজ তোমার শুধু {minutes_left_before_logout} মিনিট বাকী আছে।\n"
-"প্লিজ, লগ আউট করো."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""

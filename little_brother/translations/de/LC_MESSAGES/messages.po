@@ -36,12 +36,10 @@ msgid "username '{username}' not being monitored"
 msgstr "Benutzer '{username}' wird nicht überwacht"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
-#, fuzzy
 msgid "Master"
 msgstr "Master"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
-#, fuzzy
 msgid "Slave"
 msgstr "Slave"
 
@@ -83,8 +81,6 @@ msgid ""
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, du hast nur noch {minutes_left_before_logout} Minuten in "
-"Deiner Zeitverlängerung übrig. Bitte logge Dich aus."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
@@ -651,14 +647,12 @@ msgid "Node Name"
 msgstr "Knotenname"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
-#, fuzzy
 msgid "App Version"
-msgstr "Version"
+msgstr "App Version"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
-#, fuzzy
 msgid "Revision"
-msgstr "Version"
+msgstr "Revision"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
 msgid "Python Version"

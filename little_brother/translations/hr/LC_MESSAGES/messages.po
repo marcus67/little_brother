@@ -72,14 +72,11 @@ msgstr ""
 "Molim te, odjavi se.\""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, ti imas jos samo {minutes_left_before_logout} minuta za danas.\n"
-"Molim te, odjavi se.\""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""

@@ -73,15 +73,11 @@ msgstr ""
 "Пожалуйста, покинте систему."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, сегодня у вас осталось только {minutes_left_before_logout} "
-"минут/минуты.\n"
-"Пожалуйста, покинте систему."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
@@ -248,7 +244,6 @@ msgid "Free Play"
 msgstr "Неограниченная игра"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-#, fuzzy
 msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 

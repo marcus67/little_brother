@@ -69,14 +69,11 @@ msgstr ""
 "Log venligst af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, du har kun {minutes_left_before_logout} minuttter tilbage i dag. "
-"Log venligst af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
@@ -230,7 +227,6 @@ msgid "Free Play"
 msgstr "Frit spil"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-#, fuzzy
 msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 
@@ -637,14 +633,12 @@ msgid "Node Name"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:57
-#, fuzzy
 msgid "App Version"
-msgstr "Version"
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:58
-#, fuzzy
 msgid "Revision"
-msgstr "Version"
+msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/topology.template.html:59
 msgid "Python Version"

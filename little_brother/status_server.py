@@ -41,6 +41,7 @@ from little_brother import persistent_rule_set_entity_manager
 from little_brother import persistent_time_extension_entity_manager
 from little_brother import persistent_user
 from little_brother import persistent_user_2_device
+from little_brother import persistent_user_entity_manager
 from little_brother import rule_override
 from little_brother import settings
 from python_base_app import base_web_server
@@ -145,23 +146,25 @@ class StatusServer(base_web_server.BaseWebServer):
             p_login_view=self.login_view,
             p_logged_out_endpoint=BLUEPRINT_NAME + '.' + INDEX_VIEW_NAME)
 
-        self._blueprint : blueprint_adapter.BlueprintAdapter = None
-        self._is_master : bool = p_is_master
-        self._appcontrol : app_control.AppControl = p_app_control
+        self._blueprint: blueprint_adapter.BlueprintAdapter = None
+        self._is_master: bool = p_is_master
+        self._appcontrol: app_control.AppControl = p_app_control
         self._master_connector = p_master_connector
-        self._persistence : persistence.Persistence = p_persistence
+        self._persistence: persistence.Persistence = p_persistence
         self._time_extension_entity_manager = \
             dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
+        self._user_entity_manager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
         self._stat_dict = {}
-        self._server_exception : Exception = None
-        self._locale_helper : locale_helper.LocaleHelper = p_locale_helper
+        self._server_exception: Exception = None
+        self._locale_helper: locale_helper.LocaleHelper = p_locale_helper
         self._languages = p_languages
         self._base_gettext = p_base_gettext
         self._langs = {}
         self._localedir = os.path.join(os.path.dirname(__file__), "translations")
 
         container = lagom.Container()
-        self._rule_set_entity_manager : persistent_rule_set_entity_manager.RuleSetEntityManager= \
+        self._rule_set_entity_manager: persistent_rule_set_entity_manager.RuleSetEntityManager = \
             container[persistent_rule_set_entity_manager.RuleSetEntityManager]
 
         if self._languages is None:
@@ -528,7 +531,8 @@ class StatusServer(base_web_server.BaseWebServer):
                         else:
                             for user in users:
                                 if request.form['submit'] == user.delete_html_key:
-                                    self._persistence.delete_user(user.username)
+                                    self._user_entity_manager.delete_user(
+                                        p_session_context=session_context, p_username=user.username)
                                     self._persistence.clear_cache()
                                     self._appcontrol.send_config_to_all_slaves()
 

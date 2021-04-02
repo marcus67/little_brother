@@ -27,12 +27,10 @@ msgid "username '{username}' not being monitored"
 msgstr "nombre de usuario '{username}' no está observado"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
-#, fuzzy
 msgid "Master"
 msgstr "Usuario"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
-#, fuzzy
 msgid "Slave"
 msgstr "Asegura"
 
@@ -71,14 +69,11 @@ msgstr ""
 "Por favor, cierre la sesión."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, hoy solo te quedan {minutes_left_before_logout} minutos.\n"
-"Por favor, cierre la sesión."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
@@ -242,7 +237,6 @@ msgid "Free Play"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-#, fuzzy
 msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 

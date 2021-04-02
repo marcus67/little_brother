@@ -71,14 +71,11 @@ msgstr ""
 "กรุณาออกจากระบบ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
-#, fuzzy
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
-"{user}, สำหรับวันนี้ คุณมีเวลาเหลืออีก {minutes_left_before_logout} นาที\n"
-"กรุณาออกจากระบบ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""

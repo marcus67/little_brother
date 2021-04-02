@@ -136,6 +136,10 @@ class User(persistence_base.Base):
         return sorted(self.rulesets, key=lambda ruleset: -ruleset.priority)
 
     @property
+    def maximum_rule_priority(self):
+        return max([rule_set.priority for rule_set in self.rulesets])
+
+    @property
     def sorted_user2devices(self):
         return sorted(self.devices, key=lambda user2device: (-user2device.percent, user2device.device.device_name))
 
