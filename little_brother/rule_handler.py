@@ -389,13 +389,22 @@ class RuleHandler(object):
             return
 
         p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_TIME_EXTENSION
+        seconds_in_extension = \
+            (p_active_time_extension.end_datetime - p_active_time_extension.start_datetime).total_seconds()
         p_rule_result_info.applying_rule_text_templates.append(
-            (_("Active time extension until {hh_mm}"),
-             {"hh_mm": p_active_time_extension.end_datetime.strftime("%H:%M")}))
+            (_("Active time extension ({duration}) until {hh_mm}"),
+             {
+                 "duration": tools.get_duration_as_string(p_seconds=seconds_in_extension, p_include_seconds=False),
+                 "hh_mm": p_active_time_extension.end_datetime.strftime("%H:%M")
+             }))
         time_left_in_seconds = (p_active_time_extension.end_datetime - p_reference_time).total_seconds()
         time_left_in_minutes = max(int((time_left_in_seconds + 30) / 60), 0)
         p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
         p_rule_result_info.args['minutes_left_before_logout'] = time_left_in_minutes
+
+        if time_left_in_minutes <= self._config.warning_before_logout:
+            p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_EXTENSION,
+                                                           p_minutes_left=time_left_in_minutes)
 
     def check_time_of_day(self, p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
                           p_rule_result_info: RuleResultInfo):
@@ -427,9 +436,9 @@ class RuleHandler(object):
             if not p_rule_result_info.activity_granted():
                 p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
-            if time_left_in_minutes <= self._config.warning_before_logout:
-                p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TOO_LATE,
-                                                               p_minutes_left=time_left_in_minutes)
+                if time_left_in_minutes <= self._config.warning_before_logout:
+                    p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TOO_LATE,
+                                                                   p_minutes_left=time_left_in_minutes)
 
     def check_time_per_day(self, p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
                            p_rule_result_info: RuleResultInfo):
@@ -464,14 +473,15 @@ class RuleHandler(object):
                 if not p_rule_result_info.activity_granted():
                     p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
+                    if time_left_in_minutes <= self._config.warning_before_logout:
+                        p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_PER_DAY,
+                                                                       p_minutes_left=time_left_in_minutes)
+
                 if p_stat_info.current_activity_start_time is not None:
                     session_end_datetime = \
                         p_stat_info.current_activity_start_time + datetime.timedelta(seconds=time_left_in_seconds)
                     p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
 
-                if time_left_in_minutes <= self._config.warning_before_logout:
-                    p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_PER_DAY,
-                                                                   p_minutes_left=time_left_in_minutes)
 
     def check_activity_duration(self, p_rule_set: RuleSetConfigModel,
                                 p_stat_info: process_statistics.ProcessStatisticsInfo,
@@ -500,14 +510,15 @@ class RuleHandler(object):
                     if not p_rule_result_info.activity_granted():
                         p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
+                        if time_left_in_minutes <= self._config.warning_before_logout:
+                            p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION,
+                                                                           p_minutes_left=time_left_in_minutes)
+
                     if p_stat_info.current_activity_start_time is not None:
                         session_end_datetime = \
                             p_stat_info.current_activity_start_time + datetime.timedelta(seconds=time_left_in_seconds)
                         p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
 
-                    if time_left_in_minutes <= self._config.warning_before_logout:
-                        p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION,
-                                                                       p_minutes_left=time_left_in_minutes)
 
     @staticmethod
     def check_min_break(p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,

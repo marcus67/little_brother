@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LittleBrother 0.2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-01 01:21+0200\n"
+"POT-Creation-Date: 2021-04-02 19:38+0200\n"
 "PO-Revision-Date: 2020-04-14 20:21+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -27,41 +27,41 @@ msgstr "gebruikersnaam '{username}'niet gespecificeerd"
 msgid "username '{username}' not being monitored"
 msgstr "gebruikersnaam '{username}' niet gecontroleerd worden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Master"
 msgstr "Gebruikers"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Slave"
 msgstr "Opslaan"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:266
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:267
 msgid "n/a"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:273
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
 msgid "{days} days ago"
 msgstr "{days} geleden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Today"
 msgstr "vandaag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:277
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
 msgid "Yesterday"
 msgstr "gisteren"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
 msgstr "{user}, je hebt vandaag geen computertijd. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -69,25 +69,35 @@ msgstr ""
 "{user}, je hebt nog maar {minutes_left_before_logout} minuten over "
 "vandaag."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#, fuzzy
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"time extension.\n"
+"Please, log out."
+msgstr ""
+"{user}, je hebt nog maar {minutes_left_before_logout} minuten over "
+"vandaag."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
 msgstr "{user}, je hebt vandaag geen computertijd. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, het is te vroeg om de computer te gebruiken. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:284
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:289
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, het is te laat om de computer te gebruiken. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -96,13 +106,13 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} minuten zal het te laat zijn om "
 "de computer te gebruiken. Alsjeblieft, log uit."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr "{user}, je moet een pauze nemen. Je wordt uitgelogd."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -111,13 +121,13 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} minuten moet je een pauze nemen. "
 "Alsjeblieft, log uit."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:297
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -126,31 +136,31 @@ msgstr ""
 "Hallo {user}, je mag spelen voor {minutes_left_in_session} minuten in "
 "deze sessie."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:294
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:299
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Hallo {user}, je hebt onbeperkte speeltijd in deze sessie."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1419
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1440
 msgid "'Today ('EEE')'"
 msgstr "'Vandaag ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1441
 msgid "'Today'"
 msgstr "'Vandaag'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1423
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1444
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Morgen ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1424
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1445
 msgid "'Tomorrow'"
 msgstr "'Morgen'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1427
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1448
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd.MM.yyyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1428
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1449
 msgid "EEE"
 msgstr "EEE"
 
@@ -212,7 +222,7 @@ msgstr ""
 msgid "Shared with"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:383
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:381
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:144
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:196
 msgid "Free Play"
@@ -220,38 +230,38 @@ msgstr "Vrij spel"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
-msgid "Active time extension until {hh_mm}"
+msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
 msgid "No activity before {hh_mm} hours"
 msgstr "Geen activiteit voor {hh_mm}ure"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:427
 msgid "No activity after {hh_mm} hours"
 msgstr "Geen activiteit naar {hh_mm}uren"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:450
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:457
 msgid "Day blocked: no activity permitted"
 msgstr "Dag geblokkeerd: geen activiteit toegestaan"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:456
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:463
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Activiteit beperkt tot {hh_mm} per dag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:493
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:501
 msgid "No activity exceeding {hh_mm}"
 msgstr "Geen enkele activiteit overschrijdt {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:536
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:545
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "Minimale rusttijd {hh_mm} niet bereikt"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:558
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:567
 msgid "Remaining play time today: {hh_mm}"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:568
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:577
 msgid "Remaining play time in current session: {hh_mm}"
 msgstr ""
 
@@ -311,7 +321,7 @@ msgstr ""
 msgid "Selected Days"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:604
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:623
 msgid "New device {id}"
 msgstr ""
 

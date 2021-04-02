@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  little-brother\n"
 "Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
-"POT-Creation-Date: 2021-04-01 01:21+0200\n"
+"POT-Creation-Date: 2021-04-02 19:38+0200\n"
 "PO-Revision-Date: 2019-02-27 23:25+0100\n"
 "Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
 "Language: de\n"
@@ -35,41 +35,41 @@ msgstr "Benutzer '{username}' nicht spezifiziert"
 msgid "username '{username}' not being monitored"
 msgstr "Benutzer '{username}' wird nicht überwacht"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Master"
 msgstr "Master"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Slave"
 msgstr "Slave"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:266
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:267
 msgid "n/a"
 msgstr "Nicht relevant"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:273
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
 msgid "{days} days ago"
 msgstr "Vor {days} Tagen"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Today"
 msgstr "Heute"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:277
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
 msgstr "{user}, Du hast heute keine Spielzeit mehr. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -77,25 +77,34 @@ msgstr ""
 "{user}, du hast heute nur noch {minutes_left_before_logout} Minuten "
 "Spielzeit übrig. Bitte logge Dich aus."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"time extension.\n"
+"Please, log out."
+msgstr ""
+"{user}, du hast heute nur noch {minutes_left_before_logout} Minuten in "
+"Deiner Zeitverlängerung übrig. Bitte logge Dich aus."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
 msgstr "{user}, Du hast heute überhaupt keine Spielzeit. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, es ist zu früh, um den Computer zu benutzen. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:284
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:289
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr "{user}, es ist zu spät, um den Computer zu benutzen. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -104,13 +113,13 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} Minuten ist es zu spät, um den "
 "Computer zu benutzen. Bitte logge Dich aus."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr "{user}, Du musst eine Pause machen. Du wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -119,7 +128,7 @@ msgstr ""
 "{user}, in {minutes_left_before_logout} Minuten musst Du eine Pause "
 "machen. Bitte logge Dich aus."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -127,7 +136,7 @@ msgstr ""
 "{user}, Deine Pause ist erst in {break_minutes_left} Minuten vorbei. Du "
 "wirst ausgeloggt."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:297
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -136,31 +145,31 @@ msgstr ""
 "Hallo {user}, Du darfst in dieser Sitzung {minutes_left_in_session} "
 "Minuten lang spielen."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:294
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:299
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Hallo {user}, Du darfst in dieser Sitzung unbegrenzt lange spielen."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1419
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1440
 msgid "'Today ('EEE')'"
 msgstr "'Heute ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1441
 msgid "'Today'"
 msgstr "'Heute'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1423
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1444
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Morgen ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1424
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1445
 msgid "'Tomorrow'"
 msgstr "'Morgen'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1427
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1448
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd.MM.yyyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1428
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1449
 msgid "EEE"
 msgstr "EEE"
 
@@ -224,46 +233,45 @@ msgstr "Lokalisierung"
 msgid "Shared with"
 msgstr "Geteilt mit"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:383
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:381
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:144
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:196
 msgid "Free Play"
 msgstr "Freies Spiel"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
-#, fuzzy
-msgid "Active time extension until {hh_mm}"
-msgstr "Aktive Zeitverlängerung bis {hh_mm}"
+msgid "Active time extension ({duration}) until {hh_mm}"
+msgstr "Aktive Zeitverlängerung ({duration}) bis {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
 msgid "No activity before {hh_mm} hours"
 msgstr "Keine Aktivität vor {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:427
 msgid "No activity after {hh_mm} hours"
 msgstr "Keine Aktivität nach {hh_mm} Uhr"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:450
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:457
 msgid "Day blocked: no activity permitted"
 msgstr "Keine Aktivität an diesem Tag"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:456
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:463
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Aktivität auf {hh_mm} pro Tag beschränkt"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:493
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:501
 msgid "No activity exceeding {hh_mm}"
 msgstr "Nicht mehr als {hh_mm} Aktivität am Stück"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:536
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:545
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "Minimale Pause von {hh_mm} nicht erreicht"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:558
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:567
 msgid "Remaining play time today: {hh_mm}"
 msgstr "Verbleibende Spielzeit heute: {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:568
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:577
 msgid "Remaining play time in current session: {hh_mm}"
 msgstr "Verbleibende Spielzeit in der aktuellen Sitzung: {hh_mm}"
 
@@ -328,7 +336,7 @@ msgstr ""
 msgid "Selected Days"
 msgstr "Ausgesuchte Tage"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:604
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:623
 msgid "New device {id}"
 msgstr "Neues Gerät {id}"
 

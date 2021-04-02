@@ -282,6 +282,8 @@ class AppControl(object):
         self.text_no_time_left = _("{user}, you do not have computer time left today.\nYou will be logged out.")
         self.text_no_time_left_approaching = _(
             "{user}, you only have {minutes_left_before_logout} minutes left today.\nPlease, log out.")
+        self.text_no_time_left_in_time_extension = _(
+            "{user}, you only have {minutes_left_before_logout} minutes left in your time extension.\nPlease, log out.")
         self.text_no_time_today = _("{user}, you do not have any computer time today.\nYou will be logged out.")
         self.text_too_early = _("{user}, it is too early to use the computer.\nYou will be logged out.")
         self.text_too_late = _("{user}, it is too late to use the computer.\nYou will be logged out.")
@@ -983,9 +985,12 @@ class AppControl(object):
         elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
             return t.gettext(self.text_no_time_left_approaching).format(**p_rule_result_info.args)
 
+        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_EXTENSION:
+            return t.gettext(self.text_no_time_left_in_time_extension).format(**p_rule_result_info.args)
+
         else:
-            fmt = "pick_text_for_approaching_logout(): cannot derive text for rule result %d" % p_rule_result_info.approaching_logout_rules
-            self._logger.warning(fmt)
+            fmt = "pick_text_for_approaching_logout(): cannot derive text for rule result {mask}"
+            self._logger.warning(fmt.format(mask=p_rule_result_info.approaching_logout_rules))
             return ""
 
     def get_current_rule_result_info(self, p_reference_time, p_username):

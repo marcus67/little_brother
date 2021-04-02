@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-01 01:21+0200\n"
+"POT-Creation-Date: 2021-04-02 19:38+0200\n"
 "PO-Revision-Date: 2020-09-06 22:56+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: hr\n"
@@ -27,35 +27,35 @@ msgstr "Ime korisnika '{username}' nije poznato"
 msgid "username '{username}' not being monitored"
 msgstr "Korisnik '{username}' se ne nadzire"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Master"
 msgstr "Korisnik"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Slave"
 msgstr "Spremiti"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:266
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:267
 msgid "n/a"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:273
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
 msgid "{days} days ago"
 msgstr "Prije {days} dana"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Today"
 msgstr "Danas"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:277
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
 msgid "Yesterday"
 msgstr "Jucer"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
@@ -63,7 +63,7 @@ msgstr ""
 "{user}, vrijeme za kompjuter je danas proslo.\n"
 "Sad cemo te odjaviti."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
@@ -71,7 +71,17 @@ msgstr ""
 "{user}, ti imas jos samo {minutes_left_before_logout} minuta za danas.\n"
 "Molim te, odjavi se.\""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#, fuzzy
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"time extension.\n"
+"Please, log out."
+msgstr ""
+"{user}, ti imas jos samo {minutes_left_before_logout} minuta za danas.\n"
+"Molim te, odjavi se.\""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
@@ -79,7 +89,7 @@ msgstr ""
 "{user}, danas nemas nimalo vremena za kompjuter.\n"
 "Sad cemo te odjaviti."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
@@ -87,7 +97,7 @@ msgstr ""
 "{user}, prerano je za koristenje kompjutera.\n"
 "Sad cemo te odjaviti."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:284
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:289
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
@@ -95,7 +105,7 @@ msgstr ""
 "{user}, prekasno je za koristenje kompjutera.\n"
 "Sad cemo te odjaviti."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -105,7 +115,7 @@ msgstr ""
 "koristenje kompjutera.\n"
 "Molim te, odjavi se."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
@@ -113,7 +123,7 @@ msgstr ""
 "{user}, vrijeme je za pauzu.\n"
 "Sad cemo te odjaviti."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -122,7 +132,7 @@ msgstr ""
 "{user}, za {minutes_left_before_logout} minuta morat ces napravit pauzu.\n"
 "Molim te, odjavi se."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -130,7 +140,7 @@ msgstr ""
 "{user}, tvoja pauza ce se zavrsiti za samo {break_minutes_left} minuta.\n"
 "Sad cemo te odjaviti."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:297
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
@@ -140,31 +150,31 @@ msgstr ""
 "minuta\n"
 "ovaj put."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:294
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:299
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "Pozdrav {user}, ovaj put imas neograniceno vrijeme igranja."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1419
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1440
 msgid "'Today ('EEE')'"
 msgstr "'Danas ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1441
 msgid "'Today'"
 msgstr "'Danas'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1423
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1444
 msgid "'Tomorrow ('EEE')'"
 msgstr "'Sutra ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1424
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1445
 msgid "'Tomorrow'"
 msgstr "'Sutra'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1427
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1448
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "dd-MM-yyyy' ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1428
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1449
 msgid "EEE"
 msgstr "EEE"
 
@@ -226,7 +236,7 @@ msgstr ""
 msgid "Shared with"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:383
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:381
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:144
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:196
 msgid "Free Play"
@@ -234,38 +244,38 @@ msgstr "Slobodno igranje"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
-msgid "Active time extension until {hh_mm}"
+msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
 msgid "No activity before {hh_mm} hours"
 msgstr "Ne mozes koristiti kompjuter prije {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:427
 msgid "No activity after {hh_mm} hours"
 msgstr "Ne mozes koristiti kompjuter iza {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:450
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:457
 msgid "Day blocked: no activity permitted"
 msgstr "Dan zabrane: ne smijes se igrati."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:456
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:463
 msgid "Activity limited to {hh_mm} per day"
 msgstr "Koristenje je ograniceno na {hh_mm} po danu"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:493
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:501
 msgid "No activity exceeding {hh_mm}"
 msgstr "No activity exceeding {hh_mm}"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:536
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:545
 msgid "Minimum break time {hh_mm} not reached"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:558
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:567
 msgid "Remaining play time today: {hh_mm}"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:568
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:577
 msgid "Remaining play time in current session: {hh_mm}"
 msgstr ""
 
@@ -325,7 +335,7 @@ msgstr ""
 msgid "Selected Days"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:604
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:623
 msgid "New device {id}"
 msgstr ""
 

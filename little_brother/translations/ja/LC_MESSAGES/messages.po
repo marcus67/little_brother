@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-01 01:21+0200\n"
+"POT-Creation-Date: 2021-04-02 19:38+0200\n"
 "PO-Revision-Date: 2020-04-20 09:49+0200\n"
 "Last-Translator: Arik Mahbub <arikmahbub@gmail.com>\n"
 "Language: ja\n"
@@ -26,35 +26,35 @@ msgstr "ユーザー名 '{username}' は特定していません"
 msgid "username '{username}' not being monitored"
 msgstr "ユーザー名 '{username}' は監視されていません"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Master"
 msgstr "ユーザー"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:133
 #, fuzzy
 msgid "Slave"
 msgstr "セーブ"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:147
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:266
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:148
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:267
 msgid "n/a"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:273
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
 msgid "{days} days ago"
 msgstr "{days} 日前"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:276
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/index.template.html:61
 msgid "Today"
 msgstr "今日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:277
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
 msgid "Yesterday"
 msgstr "昨日"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:279
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
 msgid ""
 "{user}, you do not have computer time left today.\n"
 "You will be logged out."
@@ -62,13 +62,21 @@ msgstr ""
 "{user} さん,今日のコンピューター時間は残っていません.\n"
 "ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:280
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
 "{user}, you only have {minutes_left_before_logout} minutes left today.\n"
 "Please, log out."
 msgstr "{user} さん,今日はたった{minutes_left_before_logout}分が残ります.ログアウトして下さい."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:282
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#, fuzzy
+msgid ""
+"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"time extension.\n"
+"Please, log out."
+msgstr "{user} さん,今日はたった{minutes_left_before_logout}分が残ります.ログアウトして下さい."
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
 "{user}, you do not have any computer time today.\n"
 "You will be logged out."
@@ -76,19 +84,19 @@ msgstr ""
 "{user} さん,今日のコンピューター時間が終わりました.\n"
 "ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
 msgid ""
 "{user}, it is too early to use the computer.\n"
 "You will be logged out."
 msgstr "{user} さん,コンピューターを使用するにはまだ早いです.ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:284
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:289
 msgid ""
 "{user}, it is too late to use the computer.\n"
 "You will be logged out."
 msgstr "{user} さん,コンピューターを使用するにはもう遅くなりました.ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes it will be too late to "
 "use the computer.\n"
@@ -97,13 +105,13 @@ msgstr ""
 "{user} さん,{minutes_left_before_logout}\"分掛かるとコンピューターを使うには遅くなります.\n"
 "ログアウトしてください."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
 msgid ""
 "{user}, you have to take a break.\n"
 "You will be logged out."
 msgstr "{user} さん,休まなければ行けません.ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:288
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
 "{user}, in {minutes_left_before_logout} minutes you will have to take a "
 "break.\n"
@@ -112,7 +120,7 @@ msgstr ""
 "{user} さん,{minutes_left_before_logout}\"分には休憩を取らければ行けません.\n"
 "ログアウトしてください."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295
 msgid ""
 "{user}, your break will only be over in {break_minutes_left} minutes.\n"
 "You will be logged out."
@@ -120,38 +128,38 @@ msgstr ""
 "{user}さん, 君の休憩はただ{break_minutes_left}分に終わります.\n"
 "ログアウトされます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:297
 msgid ""
 "Hello {user}, you will be allowed to play for {minutes_left_in_session} "
 "minutes\n"
 "in this session."
 msgstr "こんにちは{user}さん,このセッションでは {minutes_left_in_session} 分の間プレイが許可されています.\n"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:294
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:299
 msgid "Hello {user}, you have unlimited playtime in this session."
 msgstr "こんにちは {user} さん,このセッションでは無制限にプレイできます."
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1419
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1440
 msgid "'Today ('EEE')'"
 msgstr "'今日('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1441
 msgid "'Today'"
 msgstr "'今日'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1423
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1444
 msgid "'Tomorrow ('EEE')'"
 msgstr "明日('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1424
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1445
 msgid "'Tomorrow'"
 msgstr "'明日'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1427
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1448
 msgid "yyyy-MM-dd' ('EEE')'"
 msgstr "yyyy'年'MM'月'dd'日 ('EEE')'"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1428
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:1449
 msgid "EEE"
 msgstr "EEE"
 
@@ -213,7 +221,7 @@ msgstr ""
 msgid "Shared with"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:383
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:381
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:144
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:196
 msgid "Free Play"
@@ -221,38 +229,38 @@ msgstr "自由な遊び"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:395
 #, fuzzy
-msgid "Active time extension until {hh_mm}"
+msgid "Active time extension ({duration}) until {hh_mm}"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:413
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
 msgid "No activity before {hh_mm} hours"
 msgstr "{hh_mm} 時間前は活動なし"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:420
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:427
 msgid "No activity after {hh_mm} hours"
 msgstr "{hh_mm} 時間後は活動なし"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:450
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:457
 msgid "Day blocked: no activity permitted"
 msgstr "ブロックされた日:活動は禁止"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:456
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:463
 msgid "Activity limited to {hh_mm} per day"
 msgstr "活動は１日 {hh_mm} 時間に制限された"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:493
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:501
 msgid "No activity exceeding {hh_mm}"
 msgstr "{hh_mm} 超過活動なし"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:536
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:545
 msgid "Minimum break time {hh_mm} not reached"
 msgstr "最小休憩時間 {hh_mm} に達していません"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:558
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:567
 msgid "Remaining play time today: {hh_mm}"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:568
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:577
 msgid "Remaining play time in current session: {hh_mm}"
 msgstr ""
 
@@ -312,7 +320,7 @@ msgstr ""
 msgid "Selected Days"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:604
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/status_server.py:623
 msgid "New device {id}"
 msgstr ""
 
