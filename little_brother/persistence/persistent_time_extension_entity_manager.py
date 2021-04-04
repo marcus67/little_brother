@@ -19,24 +19,24 @@ import datetime
 
 from sqlalchemy.sql.expression import and_
 
-from little_brother import base_entity_manager
-from little_brother import persistent_time_extension
+from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistent_time_extension import TimeExtension
 
 
-class TimeExtensionEntityManager(base_entity_manager.BaseEntityManager):
+class TimeExtensionEntityManager(BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(p_entity_class=TimeExtension)
 
     @classmethod
     def get_active_time_extensions(cls, p_session_context, p_reference_datetime):
 
         session = p_session_context.get_session()
 
-        result = session.query(persistent_time_extension.TimeExtension).filter(
+        result = session.query(TimeExtension).filter(
             and_(
-                (p_reference_datetime >= persistent_time_extension.TimeExtension.reference_datetime),
-                (p_reference_datetime < persistent_time_extension.TimeExtension.end_datetime)
+                (p_reference_datetime >= TimeExtension.reference_datetime),
+                (p_reference_datetime < TimeExtension.end_datetime)
             )
         ).all()
 
@@ -46,16 +46,16 @@ class TimeExtensionEntityManager(base_entity_manager.BaseEntityManager):
     def set_time_extension(cls, p_session_context, p_username, p_reference_datetime, p_start_datetime, p_time_delta):
 
         session = p_session_context.get_session()
-        result = session.query(persistent_time_extension.TimeExtension).filter(
+        result = session.query(TimeExtension).filter(
             and_(
-                (p_reference_datetime >= persistent_time_extension.TimeExtension.reference_datetime),
-                (p_reference_datetime < persistent_time_extension.TimeExtension.end_datetime),
-                (p_username == persistent_time_extension.TimeExtension.username)
+                (p_reference_datetime >= TimeExtension.reference_datetime),
+                (p_reference_datetime < TimeExtension.end_datetime),
+                (p_username == TimeExtension.username)
             )
         ).all()
 
         if len(result) == 0:
-            time_extension = persistent_time_extension.TimeExtension()
+            time_extension = TimeExtension()
             session.add(time_extension)
             time_extension.username = p_username
             time_extension.reference_datetime = p_reference_datetime

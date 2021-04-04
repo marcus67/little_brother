@@ -19,7 +19,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from little_brother import constants
-from little_brother import persistence_base
+from little_brother.persistence import persistence_base
 from python_base_app import tools
 
 _ = lambda x: x

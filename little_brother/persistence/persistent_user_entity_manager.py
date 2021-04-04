@@ -14,19 +14,19 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import little_brother.session_context
-from little_brother import base_entity_manager
+
+import little_brother.persistence.session_context
 from little_brother import constants
 from little_brother import dependency_injection
+from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
+from little_brother.persistence.persistent_user import User
 
-from little_brother import persistent_rule_set_entity_manager
-from little_brother.persistent_user import User
 
-
-class UserEntityManager(base_entity_manager.BaseEntityManager):
+class UserEntityManager(BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(p_entity_class=User)
 
         self._users = None
         self._rule_set_entity_manager = None
@@ -35,12 +35,12 @@ class UserEntityManager(base_entity_manager.BaseEntityManager):
     def rule_set_entity_manager(self):
 
         if self._rule_set_entity_manager is None:
-            self._rule_set_entity_manager: persistent_rule_set_entity_manager.RuleSetEntityManager = \
-                dependency_injection.container[persistent_rule_set_entity_manager.RuleSetEntityManager]
+            self._rule_set_entity_manager: RuleSetEntityManager = dependency_injection.container[RuleSetEntityManager]
 
         return self._rule_set_entity_manager
 
-    def get_by_username(self, p_session_context: little_brother.session_context.SessionContext, p_username: str):
+    def get_by_username(self, p_session_context: little_brother.persistence.session_context.SessionContext,
+                        p_username: str):
         session = p_session_context.get_session()
         query = session.query(User).filter(User.username == p_username)
 

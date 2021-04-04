@@ -17,20 +17,19 @@
 
 from sqlalchemy import Column, Integer, String, DateTime
 
-from little_brother import persistence_base
+from little_brother.persistence import persistence_base
 
 
-class ProcessInfo(persistence_base.Base):
-    __tablename__ = 'process_info'
+class AdminEvent(persistence_base.Base):
+    __tablename__ = 'admin_event'
 
     id = Column(Integer, primary_key=True)
-    key = Column(String(256))
     hostname = Column(String(256))
     username = Column(String(256))
     pid = Column(Integer)
     processhandler = Column(String(1024))
     processname = Column(String(1024))
-    start_time = Column(DateTime)
-    end_time = Column(DateTime)
+    event_type = Column(String(256))
+    event_time = Column(DateTime)
+    process_start_time = Column(DateTime)
     downtime = Column(Integer, server_default="0")
-    percent = Column(Integer, server_default="100")

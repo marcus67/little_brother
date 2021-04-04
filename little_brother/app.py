@@ -22,22 +22,22 @@ import alembic.util.messaging
 import psutil
 
 from little_brother import app_control
-from little_brother import persistent_user
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import db_migrations
 from little_brother import dependency_injection
-from little_brother import persistent_rule_set_entity_manager
-from little_brother import persistent_time_extension_entity_manager
 from little_brother import login_mapping
 from little_brother import master_connector
-from little_brother import persistence
 from little_brother import popup_handler
 from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother import status_server
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
+from little_brother.persistence import persistence
+from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
+from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistence.persistent_user import User
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
@@ -175,7 +175,7 @@ class App(base_app.BaseApp):
 
         if db_mig.check_if_version_is_active(p_version=alembic_version_gui.revision):
             session = self._persistence.get_session()
-            rows = session.query(persistent_user.User).count()
+            rows = session.query(User).count()
 
             if rows == 0:
                 # if there are no users in the database yet we assume that the migration has never run yet
@@ -206,15 +206,13 @@ class App(base_app.BaseApp):
         self._persistence = persistence.Persistence(
             p_config=self._config[persistence.SECTION_NAME])
 
-
         if not p_full_startup:
             return
 
+        # Define dependency injection
         dependency_injection.container[persistence.Persistence] = self._persistence
-        dependency_injection.container[persistent_rule_set_entity_manager.RuleSetEntityManager] = \
-            persistent_rule_set_entity_manager.RuleSetEntityManager()
-        dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager] = \
-            persistent_time_extension_entity_manager.TimeExtensionEntityManager()
+        dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
+        dependency_injection.container[TimeExtensionEntityManager] = TimeExtensionEntityManager()
 
         if self.is_master():
             self._rule_handler = rule_handler.RuleHandler(

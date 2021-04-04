@@ -32,6 +32,10 @@ class SessionContext(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close_session()
+
+        if exc_val is not None:
+            raise exc_val
+
         return True
 
     def get_cache(self, p_name):

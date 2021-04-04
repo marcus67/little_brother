@@ -21,11 +21,11 @@ import alembic
 import alembic.config
 
 from little_brother import constants
-from little_brother import persistent_device
-from little_brother import persistent_rule_set
-from little_brother import persistent_user
-from little_brother import persistent_user_2_device
 from little_brother import simple_context_rule_handlers
+from little_brother.persistence.persistent_device import Device
+from little_brother.persistence.persistent_rule_set import RuleSet
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.persistent_user_2_device import User2Device
 from python_base_app import tools
 
 
@@ -74,7 +74,7 @@ class DatabaseMigrations(object):
             msg = "Migrating username '{username}..."
             self._logger.info(msg.format(username=username))
 
-            user = persistent_user.User()
+            user = User()
             session.add(user)
 
             user.username = username
@@ -83,7 +83,7 @@ class DatabaseMigrations(object):
             locale = None
 
             for old_ruleset in configs:
-                ruleset = persistent_rule_set.RuleSet()
+                ruleset = RuleSet()
                 session.add(ruleset)
                 ruleset.user = user
                 tools.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
@@ -120,17 +120,17 @@ class DatabaseMigrations(object):
             msg = "Migrating device '{device_name}..."
             self._logger.info(msg.format(device_name=device_name))
 
-            device = persistent_device.Device()
+            device = Device()
             session.add(device)
             device.device_name = device_name
             tools.copy_attributes(p_from=old_device, p_to=device, p_only_existing=True)
 
             if old_device.username is not None:
-                query = session.query(persistent_user.User).filter(persistent_user.User.username == old_device.username)
+                query = session.query(User).filter(User.username == old_device.username)
 
                 if query.count() == 1:
                     user = query.one()
-                    user2device = persistent_user_2_device.User2Device()
+                    user2device = User2Device()
                     user2device.device = device
                     user2device.percent = constants.DEFAULT_USER2DEVICE_PERCENT
                     user2device.active = True

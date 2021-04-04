@@ -24,7 +24,7 @@ import re
 from little_brother import login_mapping
 from little_brother import process_info
 from little_brother import rule_handler
-from little_brother.persistent_user import User
+from little_brother.persistence.persistent_user import User
 
 USER_1 = "user1"
 UID_1 = 123
@@ -90,7 +90,7 @@ LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
 
 
 def get_PROCESS_REGEX_MAP_1():
-    return {get_USER_OBJECT_1(): get_PROCESS_PATTERN_REGEX()}
+    return {USER_1: get_PROCESS_PATTERN_REGEX()}
 
 
 def get_PROCESS_PATH_REGEX_MAP_1():
@@ -98,11 +98,11 @@ def get_PROCESS_PATH_REGEX_MAP_1():
 
 
 def get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1():
-    return {get_USER_OBJECT_1(): get_CMD_LINE_OPTION_REGEX()}
+    return {USER_1: get_CMD_LINE_OPTION_REGEX()}
 
 
 def get_PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1():
-    return {get_USER_OBJECT_1(): get_CMD_LINE_OPTION_REGEX_PART_OF_PATH()}
+    return {USER_1: get_CMD_LINE_OPTION_REGEX_PART_OF_PATH()}
 
 
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,

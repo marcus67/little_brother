@@ -22,9 +22,8 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 from sqlalchemy.exc import ProgrammingError
 
-from little_brother import persistence_base
-# from little_brother import persistent_process_info
-from little_brother.session_context import SessionContext
+from little_brother.persistence import persistence_base
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -230,9 +229,6 @@ class Persistence(object):
 
         if p_create_tables:
             persistence_base.Base.metadata.create_all(self._engine)
-
-    def init_mysql(self):
-        pass
 
     def create_postgresql(self, p_create_tables):
 

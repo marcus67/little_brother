@@ -19,18 +19,18 @@ import datetime
 
 import sqlalchemy
 
-from little_brother import base_entity_manager
 from little_brother import dependency_injection
-from little_brother.persistent_device_entity_manager import DeviceEntityManager
-from little_brother.persistent_process_info import ProcessInfo
-from little_brother.session_context import SessionContext
+from little_brother.persistence import base_entity_manager
+from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistence.persistent_process_info import ProcessInfo
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 
 class ProcessInfoEntityManager(base_entity_manager.BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(p_entity_class=ProcessInfo)
 
         self._process_infos = None
         self._device_entity_manager = None

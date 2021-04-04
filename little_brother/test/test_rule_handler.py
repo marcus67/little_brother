@@ -21,18 +21,17 @@
 import datetime
 import os.path
 
-import little_brother.session_context
+import little_brother.persistence.session_context
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
-from little_brother import persistent_user
-from little_brother import persistent_user_entity_manager
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
-from little_brother.test import test_persistence
+from little_brother.persistence import persistent_user, persistent_user_entity_manager
+from little_brother.test.persistence import test_persistence
 from python_base_app import configuration
 from python_base_app.test import base_test
 
@@ -68,7 +67,7 @@ class TestRuleHandler(base_test.BaseTestCase):
     @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_priority(self):
         dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        session_context = little_brother.session_context.SessionContext(p_persistence=dummy_persistence)
+        session_context = little_brother.persistence.session_context.SessionContext(p_persistence=dummy_persistence)
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence)
 
         user_entity_manager = dependency_injection.container[persistent_user_entity_manager.UserEntityManager]

@@ -17,28 +17,16 @@
 
 import datetime
 
-from little_brother import base_entity_manager
-from little_brother.persistent_rule_override import RuleOverride
-from little_brother.session_context import SessionContext
+from little_brother.persistence import base_entity_manager
+from little_brother.persistence.persistent_rule_override import RuleOverride
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 
 class RuleOverrideEntityManager(base_entity_manager.BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
-
-    @classmethod
-    def get_by_id(cls, p_session_context: SessionContext, p_id: int) -> RuleOverride:
-
-        session = p_session_context.get_session()
-        query = session.query(RuleOverride).filter(RuleOverride.id == p_id)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
+        super().__init__(p_entity_class=RuleOverride)
 
     def update_rule_override(self, p_session_context: SessionContext, p_rule_override):
 

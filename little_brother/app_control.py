@@ -33,7 +33,6 @@ from little_brother import constants
 from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
-from little_brother import persistence
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
@@ -41,14 +40,15 @@ from little_brother import rule_override
 from little_brother import settings
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
-from little_brother.persistent_admin_event_entity_manager import AdminEventEntityManager
-from little_brother.persistent_device_entity_manager import DeviceEntityManager
-from little_brother.persistent_process_info_entity_manager import ProcessInfoEntityManager
-from little_brother.persistent_rule_override_entity_manager import RuleOverrideEntityManager
-from little_brother.persistent_time_extension_entity_manager import TimeExtensionEntityManager
-from little_brother.persistent_user import User
-from little_brother.persistent_user_entity_manager import UserEntityManager
-from little_brother.session_context import SessionContext
+from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
+from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistence.persistent_process_info_entity_manager import ProcessInfoEntityManager
+from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
+from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -208,7 +208,7 @@ class AppControl(object):
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
         self._device_handler = p_device_handler
-        self._persistence: persistence.Persistence = p_persistence
+        self._persistence: Persistence = p_persistence
 
         # Dependency injection
         self._time_extension_entity_manager: TimeExtensionEntityManager = \
@@ -877,11 +877,11 @@ class AppControl(object):
                 p_process_regex_map=self.process_regex_map,
                 p_reference_time=p_reference_time)
 
-        if p_queue_events:
-            self.queue_events(p_events=events, p_to_master=True)
+            if p_queue_events:
+                self.queue_events(p_events=events, p_to_master=True)
 
-            if not self.is_master():
-                self.queue_events_locally(p_events=events)
+                if not self.is_master():
+                    self.queue_events_locally(p_events=events)
 
     def get_process_infos(self):
 

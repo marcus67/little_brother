@@ -29,7 +29,7 @@ import humanize
 import lagom
 
 import little_brother
-import little_brother.session_context
+import little_brother.persistence.session_context
 from little_brother import api_view_handler
 from little_brother import app_control
 from little_brother import constants
@@ -37,14 +37,16 @@ from little_brother import dependency_injection
 from little_brother import entity_forms
 from little_brother import git
 from little_brother import persistence
-from little_brother import persistent_device
-from little_brother import persistent_rule_set_entity_manager
-from little_brother import persistent_time_extension_entity_manager
-from little_brother import persistent_user
-from little_brother import persistent_user_2_device
-from little_brother import persistent_user_entity_manager
 from little_brother import rule_override
 from little_brother import settings
+from little_brother.persistence import persistence
+from little_brother.persistence.persistent_device import Device
+from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
+from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.persistent_user_2_device import User2Device
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from python_base_app import base_web_server
 from python_base_app import custom_fields
 from python_base_app import locale_helper
@@ -152,10 +154,17 @@ class StatusServer(base_web_server.BaseWebServer):
         self._appcontrol: app_control.AppControl = p_app_control
         self._master_connector = p_master_connector
         self._persistence: persistence.Persistence = p_persistence
-        self._time_extension_entity_manager = \
-            dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
-        self._user_entity_manager = \
-            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
+        # Dependency injection 
+        self._time_extension_entity_manager: TimeExtensionEntityManager = \
+            dependency_injection.container[TimeExtensionEntityManager]
+        self._user_entity_manager: UserEntityManager = \
+            dependency_injection.container[UserEntityManager]
+        self._rule_set_entity_manager: RuleSetEntityManager = \
+            dependency_injection.container[RuleSetEntityManager]
+        self._device_entity_manager: DeviceEntityManager = \
+            dependency_injection.container[DeviceEntityManager]
+
         self._stat_dict = {}
         self._server_exception: Exception = None
         self._locale_helper: locale_helper.LocaleHelper = p_locale_helper
@@ -165,8 +174,6 @@ class StatusServer(base_web_server.BaseWebServer):
         self._localedir = os.path.join(os.path.dirname(__file__), "translations")
 
         container = lagom.Container()
-        self._rule_set_entity_manager: persistent_rule_set_entity_manager.RuleSetEntityManager = \
-            container[persistent_rule_set_entity_manager.RuleSetEntityManager]
 
         if self._languages is None:
             self._languages = {'en': "English"}
@@ -330,13 +337,14 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def save_users_data(self, p_users, p_forms):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             session = session_context.get_session()
             changed = False
 
             for user in p_users:
                 form = p_forms[user.html_key]
-                a_persistent_user = persistent_user.User.get_by_username(p_session=session, p_username=user.username)
+                a_persistent_user = User.get_by_username(p_session=session, p_username=user.username)
 
                 if a_persistent_user is not None and form.differs_from_model(p_model=a_persistent_user):
                     form.save_to_model(p_model=a_persistent_user)
@@ -353,8 +361,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for user2device in user.devices:
                     form = p_forms[user2device.html_key]
-                    a_persistent_user_2_device = persistent_user_2_device.User2Device.get_by_id(p_session=session,
-                                                                                                p_id=user2device.id)
+                    a_persistent_user_2_device = User2Device.get_by_id(p_session=session, p_id=user2device.id)
 
                     if a_persistent_user_2_device is not None and form.differs_from_model(
                             p_model=a_persistent_user_2_device):
@@ -370,14 +377,14 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def save_devices_data(self, p_devices, p_forms):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             session = session_context.get_session()
             changed = False
 
             for device in p_devices:
                 form = p_forms[device.device_name]
-                device = persistent_device.Device.get_by_device_name(p_session=session,
-                                                                     p_device_name=device.device_name)
+                device = Device.get_by_device_name(p_session=session, p_device_name=device.device_name)
 
                 if device is not None and form.differs_from_model(p_model=device):
                     form.save_to_model(p_model=device)
@@ -397,7 +404,8 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
-            with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+            with little_brother.persistence.session_context.SessionContext(
+                    p_persistence=self._persistence) as session_context:
 
                 try:
                     admin_infos = self._appcontrol.get_admin_infos(p_session_context=session_context)
@@ -477,7 +485,8 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
-            with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+            with little_brother.persistence.session_context.SessionContext(
+                    p_persistence=self._persistence) as session_context:
                 try:
                     topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
                     page = flask.render_template(
@@ -500,7 +509,8 @@ class StatusServer(base_web_server.BaseWebServer):
     @flask_login.login_required
     def users_view(self):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             request = flask.request
 
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
@@ -543,7 +553,9 @@ class StatusServer(base_web_server.BaseWebServer):
 
                                 elif request.form['submit'] == user.new_device_html_key:
                                     device_id = int(forms[user.new_device_html_key].device_id.data)
-                                    self._persistence.add_device(p_device_id=device_id, p_username=user.username)
+                                    self._device_entity_manager.add_device(
+                                        p_session_context=session_context, p_device_id=device_id,
+                                        p_username=user.username)
 
                                 else:
                                     for ruleset in user.rulesets:
@@ -600,7 +612,8 @@ class StatusServer(base_web_server.BaseWebServer):
     @flask_login.login_required
     def devices_view(self):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             request = flask.request
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
@@ -624,13 +637,14 @@ class StatusServer(base_web_server.BaseWebServer):
                         self.save_devices_data(devices, forms)
 
                         if request.form['submit'] == HTML_KEY_NEW_DEVICE:
-                            self._persistence.add_new_device(p_session_context=session_context,
-                                                             p_name_pattern=self.gettext("New device {id}"))
+                            self._device_entity_manager.add_new_device(p_session_context=session_context,
+                                                                       p_name_pattern=self.gettext("New device {id}"))
                             # TODO: after adding new device Devices window should be opened for new device
                         else:
                             for device in devices:
                                 if request.form['submit'] == device.delete_html_key:
-                                    self._persistence.delete_device(device.id)
+                                    self._device_entity_manager.delete_device(
+                                        p_session_context=session_context, p_id=device.id)
 
                         return flask.redirect(flask.url_for("little_brother.devices"))
 
@@ -679,7 +693,8 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
-            with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+            with little_brother.persistence.session_context.SessionContext(
+                    p_persistence=self._persistence) as session_context:
                 try:
                     user_infos = self._appcontrol.get_user_status_infos(p_session_context=session_context)
                     page = flask.render_template(
@@ -701,7 +716,8 @@ class StatusServer(base_web_server.BaseWebServer):
     @BLUEPRINT_ADAPTER.route_method("/about", endpoint="about")
     def about_view(self):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             request = flask.request
 
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,

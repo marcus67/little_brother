@@ -23,11 +23,11 @@ import datetime
 from little_brother import client_device_handler
 from little_brother import db_migrations
 from little_brother import dependency_injection
-from little_brother.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler import ProcessHandler
-from little_brother.session_context import SessionContext
 from little_brother.test import test_data
-from little_brother.test import test_persistence
+from little_brother.test.persistence import test_persistence
 from python_base_app import pinger
 from python_base_app.test import base_test
 

@@ -20,11 +20,11 @@
 
 import datetime
 
-import little_brother.session_context
+import little_brother.persistence.session_context
 from little_brother import dependency_injection
-from little_brother import persistent_time_extension
-from little_brother import persistent_time_extension_entity_manager
-from little_brother.test import test_persistence
+from little_brother.persistence.persistent_time_extension import TimeExtension
+from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
 
 
@@ -39,39 +39,43 @@ class TestPersistentTimeExtension(base_test.BaseTestCase):
 
         reference_time = datetime.datetime.utcnow()
 
-        time_extension = persistent_time_extension.TimeExtension()
+        time_extension = TimeExtension()
+        time_extension.username = "USER"
         time_extension.reference_datetime = reference_time
         time_extension.start_datetime = reference_time + datetime.timedelta(seconds=600)
         time_extension.end_datetime = reference_time + datetime.timedelta(seconds=1200)
 
-        time_extension_entity_manager: persistent_time_extension_entity_manager.TimeExtensionEntityManager = \
-            dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
+        time_extension_entity_manager: TimeExtensionEntityManager = \
+            dependency_injection.container[TimeExtensionEntityManager]
 
-        with little_brother.session_context.SessionContext(p_persistence=dummy_persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=dummy_persistence) as session_context:
             time_extension_entity_manager.set_time_extension(
                 p_session_context=session_context, p_reference_datetime=reference_time,
                 p_start_datetime=reference_time + datetime.timedelta(seconds=600),
-                p_time_delta=600, p_username="USER")
+                p_time_delta=10, p_username="USER")
 
             test_config = (
-                (-1, False, "inactive before reference time and start time"),
-                (0, True, "active at the beginning of reference time"),
-                (599, True, "active just before start time"),
-                (600, True, "active just at the beginning of start time"),
-                (1199, True, "active just before end time"),
-                (1200, False, "inactive after end time"),
+                (-1, 0, "inactive before reference time and start time"),
+                (0, 1, "active at the beginning of reference time"),
+                (599, 1, "active just before start time"),
+                (600, 1, "active just at the beginning of start time"),
+                (1199, 1, "active just before end time"),
+                (1200, 0, "inactive after end time"),
             )
 
-            for delta_time, is_active, message in test_config:
+            for delta_time, expected_count, message in test_config:
 
-                active_time_extension: persistent_time_extension.TimeExtension = \
+                active_time_extensions: TimeExtension = \
                     time_extension_entity_manager.get_active_time_extensions(
                         p_session_context=session_context,
                         p_reference_datetime=reference_time + datetime.timedelta(seconds=delta_time))
 
-                self.assertEqual(True if active_time_extension is not None else False, is_active, message)
+                self.assertEqual(len(active_time_extensions), expected_count, message)
 
-                if active_time_extension is not None:
+                if len(active_time_extensions) > 0:
+                    active_time_extension = active_time_extensions.get("USER")
+                    self.assertIsNotNone(active_time_extension)
                     self.assertEqual(active_time_extension.username, time_extension.username)
                     self.assertEqual(active_time_extension.reference_datetime, time_extension.reference_datetime)
                     self.assertEqual(active_time_extension.start_datetime, time_extension.start_datetime)

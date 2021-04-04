@@ -15,24 +15,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import lagom
+from sqlalchemy import Column, Integer, String, DateTime
 
-from little_brother import dependency_injection
-from little_brother import persistence
-from python_base_app import log_handling
+from little_brother.persistence import persistence_base
 
 
-class BaseEntityManager(object):
+class TimeExtension(persistence_base.Base):
+    __tablename__ = 'time_extension'
 
-    def __init__(self):
-        container = lagom.Container()
-        self._logger = log_handling.get_logger(self.__class__.__name__)
-        self._persistence: persistence.Persistence = None
-
-    @property
-    def persistence(self):
-
-        if self._persistence is None:
-            self._persistence = dependency_injection.container[persistence.Persistence]
-
-        return self._persistence
+    id = Column(Integer, primary_key=True)
+    username = Column(String(256))
+    reference_datetime = Column(DateTime)
+    start_datetime = Column(DateTime)
+    end_datetime = Column(DateTime)

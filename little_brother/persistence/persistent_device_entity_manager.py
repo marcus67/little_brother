@@ -14,21 +14,21 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import little_brother.session_context
-from little_brother import base_entity_manager
+
 from little_brother import constants
 from little_brother import dependency_injection
-
-from little_brother import persistent_rule_set_entity_manager
-from little_brother.persistent_device import Device
-
+from little_brother.persistence import persistent_rule_set_entity_manager, base_entity_manager
+from little_brother.persistence.persistent_device import Device
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.persistent_user_2_device import User2Device
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 
 class DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(p_entity_class=Device)
 
         self._devices = None
 
@@ -41,7 +41,7 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         return self._rule_set_entity_manager
 
-    def get_by_device_name(self, p_session_context: little_brother.session_context.SessionContext, p_device_name: str):
+    def get_by_device_name(self, p_session_context: SessionContext, p_device_name: str):
 
         session = p_session_context.get_session()
         query = session.query(Device).filter(Device.device_name == p_device_name)
@@ -52,17 +52,7 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
         else:
             return None
 
-    def get_by_id(self, p_session_context: little_brother.session_context.SessionContext, p_id: int):
-        session = p_session_context.get_session()
-        query = session.query(Device).filter(Device.id == p_id)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
-
-    def devices(self, p_session_context: little_brother.session_context.SessionContext):
+    def devices(self, p_session_context: SessionContext):
 
         current_devices = p_session_context.get_cache("devices")
 
@@ -73,15 +63,15 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         return current_devices
 
-    def hostname_device_map(self, p_session_context: little_brother.session_context.SessionContext):
+    def hostname_device_map(self, p_session_context: SessionContext):
 
         return {device.hostname: device for device in self.devices(p_session_context=p_session_context)}
 
-    def device_map(self, p_session_context: little_brother.session_context.SessionContext):
+    def device_map(self, p_session_context: SessionContext):
 
         return {device.device_name: device for device in self.devices(p_session_context=p_session_context)}
 
-    def add_new_device(self, p_session_context: little_brother.session_context.SessionContext, p_name_pattern: str):
+    def add_new_device(self, p_session_context: SessionContext, p_name_pattern: str):
 
         session = p_session_context.get_session()
         new_device = Device()
@@ -96,7 +86,37 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def delete_device(self, p_session_context: little_brother.session_context.SessionContext, p_id: int):
+    def add_device(self, p_session_context, p_username, p_device_id):
+
+        session = p_session_context.get_session()
+        user = User.get_by_username(p_session=session, p_username=p_username)
+
+        if user is None:
+            msg = "Cannot add device to user {username}. Not in database!"
+            self._logger.warning(msg.format(username=p_username))
+            session.close()
+            return
+
+        device = Device.get_by_id(p_session=session, p_id=p_device_id)
+
+        if device is None:
+            msg = "Cannot add device id {id} to user {username}. Not in database!"
+            self._logger.warning(msg.format(id=p_device_id, username=p_username))
+            session.close()
+            return
+
+        user2device = User2Device()
+        user2device.user = user
+        user2device.device = device
+        user2device.active = False
+        user2device.percent = 100
+
+        session.add(user2device)
+
+        session.commit()
+        self.persistence.clear_cache()
+
+    def delete_device(self, p_session_context: SessionContext, p_id: int):
 
         session = p_session_context.get_session()
         device = self.get_by_id(p_session_context=p_session_context, p_id=p_id)

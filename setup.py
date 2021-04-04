@@ -34,7 +34,10 @@ setup_params = {
 
     "install_requires": install_requires,
 
-    "packages": ['little_brother', 'little_brother.test'],
+    "packages": ['little_brother',
+                 'little_brother.persistence',
+                 'little_brother.test',
+                 'little_brother.test.persistence'],
 
     "include_package_data": True,
 

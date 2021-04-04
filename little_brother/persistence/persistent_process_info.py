@@ -15,21 +15,22 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from sqlalchemy import Column, Integer, String, Boolean, Date, Time
+from sqlalchemy import Column, Integer, String, DateTime
 
-from little_brother import persistence_base
+from little_brother.persistence import persistence_base
 
 
-class RuleOverride(persistence_base.Base):
-    __tablename__ = 'rule_override'
+class ProcessInfo(persistence_base.Base):
+    __tablename__ = 'process_info'
 
     id = Column(Integer, primary_key=True)
     key = Column(String(256))
+    hostname = Column(String(256))
     username = Column(String(256))
-    reference_date = Column(Date)
-    max_time_per_day = Column(Integer)
-    min_time_of_day = Column(Time)
-    max_time_of_day = Column(Time)
-    min_break = Column(Integer)
-    free_play = Column(Boolean)
-    max_activity_duration = Column(Integer)
+    pid = Column(Integer)
+    processhandler = Column(String(1024))
+    processname = Column(String(1024))
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    downtime = Column(Integer, server_default="0")
+    percent = Column(Integer, server_default="100")

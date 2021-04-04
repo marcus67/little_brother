@@ -16,6 +16,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #136, see [here](https://github.com/marcus67/little_brother/issues/136)
 *   Closes #124, see [here](https://github.com/marcus67/little_brother/issues/124)
 *   Closes #137, see [here](https://github.com/marcus67/little_brother/issues/137)
+*   Introduce base class `BasePersistentEntityManagerTest`
+*   Move all persistence modules to a folder of their own 
 
 ## Version 0.3.14 Revision 86 (March 25th, 2021)
 

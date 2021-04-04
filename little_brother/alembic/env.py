@@ -2,7 +2,17 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from little_brother import persistence_base
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
+from little_brother.persistence import persistent_user_2_device, persistent_device, persistent_process_info, \
+    persistent_user, persistent_rule_set, persistent_rule_override, persistent_time_extension, persistence_base, \
+    persistent_admin_event
 
 # *************************************************************************************************
 # IMPORTANT
@@ -11,23 +21,6 @@ from little_brother import persistence_base
 # ALL modules having a reference to the declarative_base() have to be imported!
 # See https://stackoverflow.com/questions/15660676/alembic-autogenerate-producing-empty-migration
 # *************************************************************************************************
-
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_admin_event
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_device
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_time_extension
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_process_info
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_rule_override
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_rule_set
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_user
-# noinspection PyUnresolvedReferences
-from little_brother import persistent_user_2_device
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -25,8 +25,8 @@ from little_brother import client_stats
 from little_brother import dependency_injection
 from little_brother import master_connector
 from little_brother import prometheus
-from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
+from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
 
 HOSTNAME = "hostname"

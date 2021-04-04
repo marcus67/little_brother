@@ -15,16 +15,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, Date, Time
 
-from little_brother import persistence_base
+from little_brother.persistence import persistence_base
 
 
-class TimeExtension(persistence_base.Base):
-    __tablename__ = 'time_extension'
+class RuleOverride(persistence_base.Base):
+    __tablename__ = 'rule_override'
 
     id = Column(Integer, primary_key=True)
+    key = Column(String(256))
     username = Column(String(256))
-    reference_datetime = Column(DateTime)
-    start_datetime = Column(DateTime)
-    end_datetime = Column(DateTime)
+    reference_date = Column(Date)
+    max_time_per_day = Column(Integer)
+    min_time_of_day = Column(Time)
+    max_time_of_day = Column(Time)
+    min_break = Column(Integer)
+    free_play = Column(Boolean)
+    max_activity_duration = Column(Integer)

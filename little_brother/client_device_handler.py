@@ -15,12 +15,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import little_brother.session_context
+import little_brother.persistence.session_context
 from little_brother import admin_event
 from little_brother import dependency_injection
-from little_brother import persistence
 from little_brother import process_handler
-from little_brother.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistence import persistence
+from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import stats
@@ -186,7 +186,7 @@ class DeviceInfo(object):
         if not self.is_up:
             return False
 
-        return (p_reference_time - self._up_start_time).total_seconds() > self._min_activity_duration
+        return (p_reference_time - self._up_start_time).total_seconds() >= self._min_activity_duration
 
 
 class ClientDeviceHandler(process_handler.ProcessHandler):
@@ -213,7 +213,8 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_device_info(self, p_device_name):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             device_info = self._device_infos.get(p_device_name)
             device = self._device_entity_manager.device_map(session_context).get(p_device_name)
 
@@ -272,7 +273,8 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
 
     def get_number_of_monitored_devices(self):
 
-        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.persistence.session_context.SessionContext(
+                p_persistence=self._persistence) as session_context:
             return len(self._device_entity_manager.devices(session_context))
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,

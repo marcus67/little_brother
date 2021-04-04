@@ -25,10 +25,10 @@ from little_brother import admin_event
 from little_brother import client_process_handler
 from little_brother import dependency_injection
 from little_brother import login_mapping
-from little_brother.session_context import SessionContext
+from little_brother.persistence.session_context import SessionContext
 from little_brother.test import dummy_process_iterator
 from little_brother.test import test_data
-from little_brother.test import test_persistence
+from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
 
 
@@ -98,7 +98,6 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             process_handler = self.get_dummy_process_handler()
 
-            session_context = object()
             events = process_handler.scan_processes(p_session_context=session_context,
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
@@ -251,7 +250,6 @@ class TestClientProcessHandler(base_test.BaseTestCase):
             config = client_process_handler.ClientProcessHandlerConfigModel()
             process_handler = client_process_handler.ClientProcessHandler(
                 p_config=config, p_process_iterator_factory=process_iterator_factory)
-            session_context = object()
             process_iterator_factory.set_reference_time(
                 p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=1))
             events = process_handler.scan_processes(p_session_context=session_context,

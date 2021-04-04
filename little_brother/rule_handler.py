@@ -20,9 +20,9 @@ import datetime
 import re
 
 from little_brother import constants
-from little_brother import persistence
-from little_brother import persistent_time_extension
 from little_brother import process_statistics
+from little_brother.persistence import persistence
+from little_brother.persistence.persistent_time_extension import TimeExtension
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -382,7 +382,7 @@ class RuleHandler(object):
             )
 
     def check_active_time_extension(self, p_reference_time: datetime.datetime,
-                                    p_active_time_extension: persistent_time_extension.TimeExtension,
+                                    p_active_time_extension: TimeExtension,
                                     p_rule_result_info: RuleResultInfo):
 
         if p_active_time_extension is None:
@@ -482,7 +482,6 @@ class RuleHandler(object):
                         p_stat_info.current_activity_start_time + datetime.timedelta(seconds=time_left_in_seconds)
                     p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
 
-
     def check_activity_duration(self, p_rule_set: RuleSetConfigModel,
                                 p_stat_info: process_statistics.ProcessStatisticsInfo,
                                 p_rule_result_info: RuleResultInfo):
@@ -518,7 +517,6 @@ class RuleHandler(object):
                         session_end_datetime = \
                             p_stat_info.current_activity_start_time + datetime.timedelta(seconds=time_left_in_seconds)
                         p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
-
 
     @staticmethod
     def check_min_break(p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,

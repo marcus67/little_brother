@@ -18,28 +18,16 @@
 import datetime
 
 from little_brother import admin_event
-from little_brother import base_entity_manager
-from little_brother.persistent_admin_event import AdminEvent
-from little_brother.session_context import SessionContext
+from little_brother.persistence import base_entity_manager
+from little_brother.persistence.persistent_admin_event import AdminEvent
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 
 class AdminEventEntityManager(base_entity_manager.BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
-
-    @classmethod
-    def get_by_id(cls, p_session_context: SessionContext, p_id: int) -> AdminEvent:
-
-        session = p_session_context.get_session()
-        query = session.query(AdminEvent).filter(AdminEvent.id == p_id)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
+        super().__init__(p_entity_class=AdminEvent)
 
     def log_admin_event(self, p_session_context: SessionContext, p_admin_event: admin_event.AdminEvent):
 

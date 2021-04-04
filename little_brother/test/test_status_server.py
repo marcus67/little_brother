@@ -34,8 +34,8 @@ from little_brother import settings
 from little_brother import status_server
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
-from little_brother.test import test_persistence
 from little_brother.test import test_rule_handler
+from little_brother.test.persistence import test_persistence
 from python_base_app import locale_helper
 from python_base_app import unix_user_handler
 from python_base_app.test import base_test

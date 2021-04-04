@@ -14,18 +14,19 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import little_brother.session_context
-from little_brother import base_entity_manager
+import little_brother.persistence.session_context
 from little_brother import dependency_injection
-from little_brother.persistent_device_entity_manager import DeviceEntityManager
-from little_brother.persistent_user_2_device import User2Device
-from little_brother.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence import base_entity_manager
+from little_brother.persistence.persistent_device import Device
+from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistence.persistent_user_2_device import User2Device
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 
 
 class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(p_entity_class=User2Device)
 
         self._user_2_devices = None
         self._user_entity_manager = None
@@ -49,7 +50,7 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         return self._device_entity_manager
 
-    def get_by_id(self, p_session_context: little_brother.session_context.SessionContext, p_id: int):
+    def get_by_id(self, p_session_context: little_brother.persistence.session_context.SessionContext, p_id: int):
         session = p_session_context.get_session()
         query = session.query(User2Device).filter(User2Device.id == p_id)
 
@@ -59,7 +60,7 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         else:
             return None
 
-    def delete_user2device(self, p_session_context: little_brother.session_context.SessionContext,
+    def delete_user2device(self, p_session_context: little_brother.persistence.session_context.SessionContext,
                            p_user2device_id: int):
 
         session = p_session_context.get_session()
@@ -75,27 +76,25 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def add_device(self, p_session_context: little_brother.session_context.SessionContext, p_username: str,
+    def add_device(self, p_session_context: little_brother.persistence.session_context.SessionContext, p_username: str,
                    p_device_id: int):
 
-        session = p_session_context.get_session()
-        user = self.user_entity_manager.get_by_username(p_session_=session, p_username=p_username)
+        user = self.user_entity_manager.get_by_username(p_session_context=p_session_context, p_username=p_username)
 
         if user is None:
             msg = "Cannot add device to user {username}. Not in database!"
             self._logger.warning(msg.format(username=p_username))
-            session.close()
             return
 
-        device = persistent_device.Device.get_by_id(p_session=session, p_id=p_device_id)
+        device: Device = self.device_entity_manager.get_by_id(p_session_context=p_session_context, p_id=p_device_id)
 
         if device is None:
             msg = "Cannot add device id {id} to user {username}. Not in database!"
             self._logger.warning(msg.format(id=p_device_id, username=p_username))
-            session.close()
             return
 
-        user2device = persistent_user_2_device.User2Device()
+        session = p_session_context.get_session()
+        user2device = User2Device()
         user2device.user = user
         user2device.device = device
         user2device.active = False
@@ -104,5 +103,4 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         session.add(user2device)
 
         session.commit()
-        session.close()
-        self.clear_cache()
+        self.persistence.clear_cache()
