@@ -50,16 +50,6 @@ class User2Device(persistence_base.Base):
 
         return texts
 
-    @staticmethod
-    def get_by_id(p_session, p_id):
-        query = p_session.query(User2Device).filter(User2Device.id == p_id)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
-
     @property
     def html_key(self):
         return "user2device_{id}".format(id=self.id)

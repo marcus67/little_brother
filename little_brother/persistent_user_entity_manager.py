@@ -14,13 +14,13 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
+import little_brother.session_context
 from little_brother import base_entity_manager
 from little_brother import constants
 from little_brother import dependency_injection
 
 from little_brother import persistent_rule_set_entity_manager
-from little_brother import persistent_user
+from little_brother.persistent_user import User
 
 
 class UserEntityManager(base_entity_manager.BaseEntityManager):
@@ -40,13 +40,23 @@ class UserEntityManager(base_entity_manager.BaseEntityManager):
 
         return self._rule_set_entity_manager
 
+    def get_by_username(self, p_session_context: little_brother.session_context.SessionContext, p_username: str):
+        session = p_session_context.get_session()
+        query = session.query(User).filter(User.username == p_username)
+
+        if query.count() == 1:
+            return query.one()
+
+        else:
+            return None
+
     def users(self, p_session_context):
 
         current_users = p_session_context.get_cache("users")
 
         if current_users is None:
             session = p_session_context.get_session()
-            current_users = session.query(persistent_user.User).all()
+            current_users = session.query(User).all()
             p_session_context.set_cache(p_name="users", p_object=current_users)
 
         return current_users
@@ -63,7 +73,7 @@ class UserEntityManager(base_entity_manager.BaseEntityManager):
             return
 
         session = p_session_context.get_session()
-        new_user = persistent_user.User()
+        new_user = User()
         new_user.username = p_username
         new_user.locale = p_locale
         new_user.process_name_pattern = constants.DEFAULT_PROCESS_NAME_PATTERN
@@ -79,7 +89,7 @@ class UserEntityManager(base_entity_manager.BaseEntityManager):
     def delete_user(self, p_session_context, p_username):
 
         session = p_session_context.get_session()
-        user = persistent_user.User.get_by_username(p_session=session, p_username=p_username)
+        user = self.get_by_username(p_session_context=p_session_context, p_username=p_username)
 
         if user is None:
             msg = "Cannot delete user {username}. Not in database!"

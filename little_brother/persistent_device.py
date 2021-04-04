@@ -44,26 +44,6 @@ class Device(persistence_base.Base):
         self.max_active_ping_delay = None
         self.sample_size = None
 
-    @staticmethod
-    def get_by_device_name(p_session, p_device_name):
-        query = p_session.query(Device).filter(Device.device_name == p_device_name)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
-
-    @staticmethod
-    def get_by_id(p_session, p_id):
-        query = p_session.query(Device).filter(Device.id == p_id)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
-
     @property
     def html_key(self):
         return "device_{id}".format(id=self.id)

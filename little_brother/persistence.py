@@ -15,7 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import datetime
 import os.path
 import urllib.parse
 
@@ -23,14 +22,9 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 from sqlalchemy.exc import ProgrammingError
 
-from little_brother import constants
 from little_brother import persistence_base
-from little_brother import persistent_admin_event
-from little_brother import persistent_device
-from little_brother import persistent_process_info
-from little_brother import persistent_rule_override
-from little_brother import persistent_user
-from little_brother import persistent_user_2_device
+# from little_brother import persistent_process_info
+from little_brother.session_context import SessionContext
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -40,19 +34,6 @@ SECTION_NAME = "Persistence"
 
 def _(x):
     return x
-
-
-def copy_attributes(p_from, p_to, p_only_existing=False):
-    for (key, value) in p_from.__dict__.items():
-        if not key.startswith('_'):
-            if key in p_to.__dict__ or not p_only_existing:
-                setattr(p_to, key, value)
-
-
-def create_class_instance(p_class, p_initial_values):
-    instance = p_class()
-    copy_attributes(p_from=p_initial_values, p_to=instance)
-    return instance
 
 
 class PersistenceConfigModel(configuration.ConfigModel):
@@ -80,67 +61,6 @@ class PersistenceConfigModel(configuration.ConfigModel):
 
         self.pool_size = 10
         self.max_overflow = 20
-
-
-class SessionContext(object):
-    _session_registry = []
-
-    def __init__(self, p_persistence, p_register=False):
-
-        self._persistence = p_persistence
-        self._session = None
-        self._caches = {}
-
-        if p_register:
-            SessionContext._session_registry.append(self)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close_session()
-        return True
-
-    def get_cache(self, p_name):
-
-        # result =
-        # print(str(self) + " get_cache " + p_name + " " + str(result if result is not None else "NONE"))
-        return self._caches.get(p_name)
-
-    def clear_cache(self):
-
-        # print(str(self) + "clear_cache " + str(self._caches))
-
-        #        if self._session is not None:
-        #            self._session.close()
-        #            self._session = None
-
-        self._caches = {}
-
-    def get_session(self):
-
-        if self._session is None:
-            self._session = self._persistence.get_session()
-
-        return self._session
-
-    def close_session(self):
-        if self._session is not None:
-            self._session.close()
-            self._session = None
-
-    def set_cache(self, p_name, p_object):
-
-        # print(str(self) + " set_cache " + p_name + " " + str(p_object))
-
-        if self._persistence.enable_caching():
-            self._caches[p_name] = p_object
-
-    @classmethod
-    def clear_caches(cls):
-
-        for context in cls._session_registry:
-            context.clear_cache()
 
 
 class Persistence(object):
@@ -382,130 +302,6 @@ class Persistence(object):
                 fmt.format(driver=self._config.database_driver,
                            drivers="'" + "', '".join(persistence_base.DATABASE_DRIVERS) + "'"))
 
-    def log_admin_event(self, p_admin_event):
-
-        session = self.get_session()
-        event = create_class_instance(persistent_admin_event.AdminEvent, p_initial_values=p_admin_event)
-        session.add(event)
-        session.commit()
-        session.close()
-
-    def write_process_info(self, p_process_info):
-
-        session = self.get_session()
-        exists = session.query(sqlalchemy.exists().where(
-            persistent_process_info.ProcessInfo.key == p_process_info.get_key())).scalar()
-
-        if not exists:
-            pinfo = create_class_instance(persistent_process_info.ProcessInfo, p_initial_values=p_process_info)
-            pinfo.key = p_process_info.get_key()
-            session.add(pinfo)
-
-        session.commit()
-        session.close()
-
-    def update_process_info(self, p_process_info):
-
-        session = self.get_session()
-        pinfo = session.query(persistent_process_info.ProcessInfo).filter(
-            persistent_process_info.ProcessInfo.key == p_process_info.get_key()).one()
-        pinfo.end_time = p_process_info.end_time
-        pinfo.downtime = p_process_info.downtime
-        session.commit()
-        session.close()
-
-    def update_rule_override(self, p_rule_override):
-
-        session = self.get_session()
-        query = session.query(persistent_rule_override.RuleOverride).filter(
-            persistent_rule_override.RuleOverride.key == p_rule_override.get_key())
-
-        if query.count() == 1:
-            override = query.one()
-            override.min_time_of_day = p_rule_override.min_time_of_day
-            override.max_time_of_day = p_rule_override.max_time_of_day
-            override.max_time_per_day = p_rule_override.max_time_per_day
-            override.min_break = p_rule_override.min_break
-            override.free_play = p_rule_override.free_play
-            override.max_activity_duration = p_rule_override.max_activity_duration
-
-        else:
-            override = create_class_instance(persistent_rule_override.RuleOverride, p_initial_values=p_rule_override)
-            override.key = p_rule_override.get_key()
-            session.add(override)
-
-        session.commit()
-        session.close()
-
-    def load_process_infos(self, p_lookback_in_days):
-
-        with SessionContext(self) as session_context:
-            #            session_context = SessionContext(self)
-            session = session_context.get_session()
-            reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
-
-            result = session.query(persistent_process_info.ProcessInfo).filter(
-                persistent_process_info.ProcessInfo.start_time > reference_time).all()
-
-            for pinfo in result:
-                device = self.hostname_device_map(session_context).get(pinfo.hostname)
-
-                if device is not None:
-                    pinfo.hostlabel = device.device_name
-
-                else:
-                    pinfo.hostlabel = None
-
-        return result
-
-    def delete_historic_entries(self, p_history_length_in_days):
-
-        msg = "Deleting historic entries older than {days} days..."
-        self._logger.info(msg.format(days=p_history_length_in_days))
-
-        with SessionContext(self) as session_context:
-            session = session_context.get_session()
-            reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_history_length_in_days)
-            reference_date = reference_time.date()
-
-            result = session.query(persistent_rule_override.RuleOverride).filter(
-                persistent_rule_override.RuleOverride.reference_date < reference_date).all()
-
-            msg = "Deleting {count} rule override entries..."
-            self._logger.info(msg.format(count=len(result)))
-
-            for override in result:
-                session.delete(override)
-
-            result = session.query(persistent_admin_event.AdminEvent).filter(
-                persistent_admin_event.AdminEvent.event_time < reference_time).all()
-
-            msg = "Deleting {count} admin events..."
-            self._logger.info(msg.format(count=len(result)))
-
-            for event in result:
-                session.delete(event)
-
-            result = session.query(persistent_process_info.ProcessInfo).filter(
-                persistent_process_info.ProcessInfo.start_time < reference_time).all()
-
-            msg = "Deleting {count} process infos..."
-            self._logger.info(msg.format(count=len(result)))
-
-            for pinfo in result:
-                session.delete(pinfo)
-
-            session.commit()
-
-    def load_rule_overrides(self, p_lookback_in_days):
-
-        session = self.get_session()
-        reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
-        result = session.query(persistent_rule_override.RuleOverride).filter(
-            persistent_rule_override.RuleOverride.reference_date > reference_time).all()
-        session.close()
-        return result
-
     def truncate_table(self, p_entity):
 
         session = self.get_session()
@@ -513,107 +309,5 @@ class Persistence(object):
         session.commit()
         session.close()
 
-    def devices(self, p_session_context):
-
-        current_devices = p_session_context.get_cache("devices")
-
-        if current_devices is None:
-            session = p_session_context.get_session()
-            current_devices = session.query(persistent_device.Device).options().all()
-            p_session_context.set_cache(p_name="devices", p_object=current_devices)
-
-        return current_devices
-
-    def device_map(self, p_session_context):
-
-        return {device.device_name: device for device in self.devices(p_session_context=p_session_context)}
-
-    def hostname_device_map(self, p_session_context):
-
-        return {device.hostname: device for device in self.devices(p_session_context=p_session_context)}
-
     def clear_cache(self):
         SessionContext.clear_caches()
-
-    def add_new_device(self, p_session_context, p_name_pattern):
-
-        session = self.get_session()
-        new_device = persistent_device.Device()
-        new_device.device_name = tools.get_new_object_name(
-            p_name_pattern=p_name_pattern,
-            p_existing_names=[device.device_name for device in self.devices(p_session_context)])
-        new_device.sample_size = constants.DEFAULT_DEVICE_SAMPLE_SIZE
-        new_device.min_activity_duration = constants.DEFAULT_DEVICE_MIN_ACTIVITY_DURATION
-        new_device.max_active_ping_delay = constants.DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY
-        session.add(new_device)
-
-        session.commit()
-        session.close()
-        self.clear_cache()
-
-
-    def delete_user2device(self, p_user2device_id):
-
-        session = self.get_session()
-        user2device = persistent_user_2_device.User2Device.get_by_id(p_session=session, p_id=p_user2device_id)
-
-        if user2device is None:
-            msg = "Cannot delete user2device {id}. Not in database!"
-            self._logger.warning(msg.format(id=p_user2device_id))
-            session.close()
-            return
-
-        session.delete(user2device)
-        session.commit()
-        session.close()
-        self.clear_cache()
-
-    def delete_device(self, p_id):
-
-        session = self.get_session()
-        device = persistent_device.Device.get_by_id(p_session=session, p_id=p_id)
-
-        if device is None:
-            msg = "Cannot delete device {id}. Not in database!"
-            self._logger.warning(msg.format(id=p_id))
-            session.close()
-            return
-
-        for user2device in device.users:
-            session.delete(user2device)
-
-        session.delete(device)
-        session.commit()
-        session.close()
-        self.clear_cache()
-
-    def add_device(self, p_username, p_device_id):
-
-        session = self.get_session()
-        user = persistent_user.User.get_by_username(p_session=session, p_username=p_username)
-
-        if user is None:
-            msg = "Cannot add device to user {username}. Not in database!"
-            self._logger.warning(msg.format(username=p_username))
-            session.close()
-            return
-
-        device = persistent_device.Device.get_by_id(p_session=session, p_id=p_device_id)
-
-        if device is None:
-            msg = "Cannot add device id {id} to user {username}. Not in database!"
-            self._logger.warning(msg.format(id=p_device_id, username=p_username))
-            session.close()
-            return
-
-        user2device = persistent_user_2_device.User2Device()
-        user2device.user = user
-        user2device.device = device
-        user2device.active = False
-        user2device.percent = 100
-
-        session.add(user2device)
-
-        session.commit()
-        session.close()
-        self.clear_cache()

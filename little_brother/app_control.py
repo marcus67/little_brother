@@ -34,9 +34,6 @@ from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
 from little_brother import persistence
-from little_brother import persistent_time_extension_entity_manager
-from little_brother import persistent_user
-from little_brother import persistent_user_entity_manager
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
@@ -44,6 +41,14 @@ from little_brother import rule_override
 from little_brother import settings
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
+from little_brother.persistent_admin_event_entity_manager import AdminEventEntityManager
+from little_brother.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistent_process_info_entity_manager import ProcessInfoEntityManager
+from little_brother.persistent_rule_override_entity_manager import RuleOverrideEntityManager
+from little_brother.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistent_user import User
+from little_brother.persistent_user_entity_manager import UserEntityManager
+from little_brother.session_context import SessionContext
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -204,10 +209,22 @@ class AppControl(object):
         self._process_handlers = p_process_handlers
         self._device_handler = p_device_handler
         self._persistence: persistence.Persistence = p_persistence
-        self._time_extension_entity_manager: persistent_time_extension_entity_manager.TimeExtensionEntityManager = \
-            dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
-        self._user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
-            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
+        # Dependency injection
+        self._time_extension_entity_manager: TimeExtensionEntityManager = \
+            dependency_injection.container[TimeExtensionEntityManager]
+        self._user_entity_manager: UserEntityManager = \
+            dependency_injection.container[UserEntityManager]
+        self._process_info_entity_manager: ProcessInfoEntityManager = \
+            dependency_injection.container[ProcessInfoEntityManager]
+        self._admin_event_entity_manager: AdminEventEntityManager = \
+            dependency_injection.container[AdminEventEntityManager]
+        self._device_entity_manager: DeviceEntityManager = \
+            dependency_injection.container[DeviceEntityManager]
+
+        self._rule_override_entity_manager: RuleOverrideEntityManager = dependency_injection.container[
+            RuleOverrideEntityManager]
+
         self._rule_handler: rule_handler.RuleHandler = p_rule_handler
         self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
@@ -233,7 +250,7 @@ class AppControl(object):
         if self._rule_handler is not None:
             self.register_rule_context_handlers()
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             self.reset_users(p_session_context=session_context)
 
         self._event_queue = queue.Queue()
@@ -314,7 +331,7 @@ class AppControl(object):
 
     def set_user_configs(self, p_user_configs):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
 
             session = session_context.get_session()
 
@@ -326,10 +343,10 @@ class AppControl(object):
             session.commit()
 
             for username, user_config in p_user_configs.items():
-                user = persistent_user.User.get_by_username(p_session=session, p_username=username)
+                user = User.get_by_username(p_session=session, p_username=username)
 
                 if user is None:
-                    user = persistent_user.User()
+                    user = User()
                     user.username = username
                     session.add(user)
 
@@ -349,7 +366,7 @@ class AppControl(object):
     @property
     def process_regex_map(self):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             if self._process_regex_map is None:
                 self._process_regex_map = {}
 
@@ -416,7 +433,7 @@ class AppControl(object):
 
         count = 0
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             for user in self._user_entity_manager.users(session_context):
                 if user.active and user.username in self._usernames:
                     count += 1
@@ -425,7 +442,7 @@ class AppControl(object):
 
     def set_metrics(self):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             if self._prometheus_client is not None:
                 self._prometheus_client.set_uptime(p_hostname="master", p_uptime=time.time() - self._start_time)
 
@@ -527,7 +544,19 @@ class AppControl(object):
             self.send_events()
 
     def clean_history(self):
-        self._persistence.delete_historic_entries(p_history_length_in_days=self._config.history_length_in_days)
+
+        history_length_in_days = self._config.history_length_in_days
+
+        msg = "Deleting historic entries older than {days} days..."
+        self._logger.info(msg.format(days=history_length_in_days))
+
+        with SessionContext(self) as session_context:
+            self._rule_override_entity_manager.delete_historic_entries(p_session_context=session_context,
+                                                                       p_history_length_in_days=history_length_in_days)
+            self._process_info_entity_manager.delete_historic_entries(p_session_context=session_context,
+                                                                      p_history_length_in_days=history_length_in_days)
+            self._admin_event_entity_manager.delete_historic_entries(p_session_context=session_context,
+                                                                     p_history_length_in_days=history_length_in_days)
 
     def queue_event(self, p_event, p_to_master=False, p_is_action=False):
 
@@ -593,7 +622,9 @@ class AppControl(object):
         pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_downtime(p_event)
 
         if self._persistence is not None and updated:
-            self._persistence.update_process_info(p_process_info=pinfo)
+            with SessionContext(p_persistence=self._persistence) as session_context:
+                self._process_info_entity_manager.update_process_info(
+                    p_session_context=session_context, p_process_info=pinfo)
 
     def handle_event_process_start(self, p_event):
 
@@ -608,11 +639,15 @@ class AppControl(object):
 
         if updated:
             if self._persistence is not None:
-                self._persistence.update_process_info(p_process_info=pinfo)
+                with SessionContext(p_persistence=self._persistence) as session_context:
+                    self._process_info_entity_manager.update_process_info(
+                        p_session_context=session_context, p_process_info=pinfo)
 
         else:
             if self._persistence is not None:
-                self._persistence.write_process_info(p_process_info=pinfo)
+                with SessionContext(p_persistence=self._persistence) as session_context:
+                    self._process_info_entity_manager.write_process_info(
+                        p_session_context=session_context, p_process_info=pinfo)
 
         if self.is_master():
             rule_result_info = self.get_current_rule_result_info(p_reference_time=datetime.datetime.now(),
@@ -641,7 +676,9 @@ class AppControl(object):
             return
 
         if self._persistence is not None:
-            self._persistence.update_process_info(p_process_info=pinfo)
+            with SessionContext(p_persistence=self._persistence) as session_context:
+                self._process_info_entity_manager.update_process_info(
+                    p_session_context=session_context, p_process_info=pinfo)
 
     def handle_event_kill_process(self, p_event):
 
@@ -651,7 +688,7 @@ class AppControl(object):
 
     def handle_event_speak(self, p_event):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             if p_event.locale is None:
                 user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_event.username)
 
@@ -734,7 +771,7 @@ class AppControl(object):
 
         config = {}
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             user_config = {
                 user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
                                 constants.JSON_ACTIVE: user.active}
@@ -793,7 +830,9 @@ class AppControl(object):
             raise Exception("Invalid event type '%s' found" % p_event.event_type)
 
         if self._persistence is not None:
-            self._persistence.log_admin_event(p_event)
+            with SessionContext(p_persistence=self._persistence) as session_context:
+                self._admin_event_entity_manager.log_admin_event(p_session_context=session_context,
+                                                                 p_admin_event=p_event)
 
         return new_events
 
@@ -830,7 +869,7 @@ class AppControl(object):
         if p_reference_time is None:
             p_reference_time = datetime.datetime.now()
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             events = p_process_handler.scan_processes(
                 p_session_context=session_context,
                 p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
@@ -855,7 +894,9 @@ class AppControl(object):
 
     def load_historic_process_infos(self):
 
-        pinfos = self._persistence.load_process_infos(p_lookback_in_days=self._config.process_lookback_in_days + 1)
+        with SessionContext(p_persistence=self._persistence) as session_context:
+            pinfos = self._process_info_entity_manager.load_process_infos(
+                p_session_context=session_context, p_lookback_in_days=self._config.process_lookback_in_days + 1)
 
         counter_open_end_time = 0
 
@@ -916,12 +957,15 @@ class AppControl(object):
 
         self._rule_overrides[p_rule_override.get_key()] = p_rule_override
 
-        if self._persistence is not None:
-            self._persistence.update_rule_override(p_rule_override=p_rule_override)
+        with SessionContext(p_persistence=self._persistence) as session_context:
+            self._rule_override_entity_manager.update_rule_override(
+                p_session_context=session_context, p_rule_override=p_rule_override)
 
     def load_rule_overrides(self):
 
-        overrides = self._persistence.load_rule_overrides(p_lookback_in_days=self._config.process_lookback_in_days + 1)
+        with SessionContext(p_persistence=self._persistence) as session_context:
+            overrides = self._rule_override_entity_manager.load_rule_overrides(
+                p_session_context=session_context, p_lookback_in_days=self._config.process_lookback_in_days + 1)
 
         for override in overrides:
             new_override = rule_override.RuleOverride(
@@ -997,7 +1041,7 @@ class AppControl(object):
 
         rule_result_info = None
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             users_stat_infos = process_statistics.get_process_statistics(
                 p_process_infos=self.get_process_infos(),
                 p_reference_time=p_reference_time,
@@ -1009,7 +1053,7 @@ class AppControl(object):
                 p_session_context=session_context, p_reference_datetime=tools.get_current_time())
 
             user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_username)
-            user: persistent_user.User = \
+            user: User = \
                 self._user_entity_manager.user_map(p_session_context=session_context).get(p_username)
 
             if user is not None:
@@ -1053,7 +1097,7 @@ class AppControl(object):
         current_user_status.warning_time_without_send_events = self._config.warning_time_without_send_events
         current_user_status.maximum_time_without_send_events = self._config.maximum_time_without_send_events
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             current_user_status.locale = self.get_user_locale(p_session_context=session_context,
                                                               p_username=p_username)
 
@@ -1064,7 +1108,7 @@ class AppControl(object):
         fmt = "Processing rules START..."
         self._logger.debug(fmt)
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             users_stat_infos = process_statistics.get_process_statistics(
                 p_process_infos=self.get_process_infos(),
                 p_reference_time=p_reference_time,
@@ -1204,7 +1248,7 @@ class AppControl(object):
 
         current_user_status.notification = p_text
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with SessionContext(p_persistence=self._persistence) as session_context:
             locale = self.get_user_locale(p_username=p_username, p_session_context=session_context)
 
         event = admin_event.AdminEvent(
@@ -1290,7 +1334,8 @@ class AppControl(object):
 
     def get_sorted_devices(self, p_session_context):
 
-        return sorted(self._persistence.devices(p_session_context), key=lambda device: device.device_name)
+        return sorted(self._device_entity_manager.devices(p_session_context=p_session_context),
+                      key=lambda device: device.device_name)
 
     def get_sorted_users(self, p_session_context):
 
@@ -1304,7 +1349,7 @@ class AppControl(object):
     def get_unmonitored_devices(self, p_user, p_session_context):
 
         monitored_devices = [user2device.device.device_name for user2device in p_user.devices]
-        return [device for device in self._persistence.devices(p_session_context)
+        return [device for device in self._device_entity_manager.devices(p_session_context)
                 if device.device_name not in monitored_devices]
 
     def get_context_rule_handler_names(self):
@@ -1332,7 +1377,7 @@ class AppControl(object):
             p_min_activity_duration=self._config.min_activity_duration)
 
         for username in self._user_entity_manager.user_map(p_session_context).keys():
-            user: persistent_user.User = self._user_entity_manager.user_map(p_session_context).get(username)
+            user: User = self._user_entity_manager.user_map(p_session_context).get(username)
 
             if user is not None:
                 rule_set = self._rule_handler.get_active_ruleset(
@@ -1553,10 +1598,11 @@ class AppControl(object):
 
         events = [e for e in self._outgoing_events if e.hostname == p_hostname]
 
-        for event in events:
-            if self._persistence is not None:
-                self._persistence.log_admin_event(p_admin_event=event)
-            self._outgoing_events.remove(event)
+        with SessionContext(p_persistence=self._persistence) as session_context:
+            for event in events:
+                self._admin_event_entity_manager.log_admin_event(
+                    p_session_context=session_context, p_admin_event=event)
+                self._outgoing_events.remove(event)
 
         return events
 
@@ -1569,7 +1615,7 @@ class AppControl(object):
 
     def get_user_status(self, p_username):
 
-        user = self._user_entity_manager.user_map(p_session_context=persistence.SessionContext(self._persistence)).get(
+        user = self._user_entity_manager.user_map(p_session_context=SessionContext(self._persistence)).get(
             p_username)
 
         if user is not None and user.active:

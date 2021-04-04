@@ -20,14 +20,13 @@ import os.path
 import alembic
 import alembic.config
 
-from little_brother import persistent_user
-from little_brother import persistent_rule_set
-from little_brother import persistent_device
-from little_brother import persistent_user_2_device
 from little_brother import constants
-from little_brother import persistence
-from little_brother import rule_handler
+from little_brother import persistent_device
+from little_brother import persistent_rule_set
+from little_brother import persistent_user
+from little_brother import persistent_user_2_device
 from little_brother import simple_context_rule_handlers
+from python_base_app import tools
 
 
 class DatabaseMigrations(object):
@@ -87,7 +86,7 @@ class DatabaseMigrations(object):
                 ruleset = persistent_rule_set.RuleSet()
                 session.add(ruleset)
                 ruleset.user = user
-                persistence.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
+                tools.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
 
                 if ruleset.priority is None:
                     ruleset.priority = constants.DEFAULT_RULE_SET_PRIORITY
@@ -124,7 +123,7 @@ class DatabaseMigrations(object):
             device = persistent_device.Device()
             session.add(device)
             device.device_name = device_name
-            persistence.copy_attributes(p_from=old_device, p_to=device, p_only_existing=True)
+            tools.copy_attributes(p_from=old_device, p_to=device, p_only_existing=True)
 
             if old_device.username is not None:
                 query = session.query(persistent_user.User).filter(persistent_user.User.username == old_device.username)

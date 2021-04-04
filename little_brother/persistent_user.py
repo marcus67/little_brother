@@ -52,16 +52,6 @@ class User(persistence_base.Base):
 
         self.init_on_load()
 
-    @staticmethod
-    def get_by_username(p_session, p_username):
-        query = p_session.query(User).filter(User.username == p_username)
-
-        if query.count() == 1:
-            return query.one()
-
-        else:
-            return None
-
     @property
     def notification_name(self):
         if self.first_name is not None and self.first_name != '':

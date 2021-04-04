@@ -29,6 +29,7 @@ import humanize
 import lagom
 
 import little_brother
+import little_brother.session_context
 from little_brother import api_view_handler
 from little_brother import app_control
 from little_brother import constants
@@ -329,7 +330,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def save_users_data(self, p_users, p_forms):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
             session = session_context.get_session()
             changed = False
 
@@ -369,7 +370,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
     def save_devices_data(self, p_devices, p_forms):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
             session = session_context.get_session()
             changed = False
 
@@ -396,7 +397,7 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
-            with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
 
                 try:
                     admin_infos = self._appcontrol.get_admin_infos(p_session_context=session_context)
@@ -476,7 +477,7 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
-            with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
                 try:
                     topology_infos = self._appcontrol.get_topology_infos(p_session_context=session_context)
                     page = flask.render_template(
@@ -499,7 +500,7 @@ class StatusServer(base_web_server.BaseWebServer):
     @flask_login.login_required
     def users_view(self):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
 
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
@@ -599,7 +600,7 @@ class StatusServer(base_web_server.BaseWebServer):
     @flask_login.login_required
     def devices_view(self):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
@@ -678,7 +679,7 @@ class StatusServer(base_web_server.BaseWebServer):
         with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
-            with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+            with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
                 try:
                     user_infos = self._appcontrol.get_user_status_infos(p_session_context=session_context)
                     page = flask.render_template(
@@ -700,7 +701,7 @@ class StatusServer(base_web_server.BaseWebServer):
     @BLUEPRINT_ADAPTER.route_method("/about", endpoint="about")
     def about_view(self):
 
-        with persistence.SessionContext(p_persistence=self._persistence) as session_context:
+        with little_brother.session_context.SessionContext(p_persistence=self._persistence) as session_context:
             request = flask.request
 
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,

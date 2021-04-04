@@ -23,13 +23,19 @@ import datetime
 
 from little_brother import admin_event
 from little_brother import client_process_handler
+from little_brother import dependency_injection
 from little_brother import login_mapping
+from little_brother.session_context import SessionContext
 from little_brother.test import dummy_process_iterator
 from little_brother.test import test_data
+from little_brother.test import test_persistence
 from python_base_app.test import base_test
 
 
 class TestClientProcessHandler(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
 
     def check_list_has_n_elements(self, p_list, p_n):
 
@@ -49,8 +55,8 @@ class TestClientProcessHandler(base_test.BaseTestCase):
             p_processes=test_data.PROCESSES_1, p_login_mapping=test_data.LOGIN_MAPPING)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
-        process_handler = client_process_handler.ClientProcessHandler(p_config=config,
-                                                                      p_process_iterator_factory=process_iterator_factory)
+        process_handler = client_process_handler.ClientProcessHandler(
+            p_config=config, p_process_iterator_factory=process_iterator_factory)
         session_context = object()
         process_iterator_factory.set_reference_time(
             p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=-1))
@@ -58,7 +64,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
+                                                p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -78,90 +84,102 @@ class TestClientProcessHandler(base_test.BaseTestCase):
         if p_config is None:
             p_config = client_process_handler.ClientProcessHandlerConfigModel()
 
-        process_handler = client_process_handler.ClientProcessHandler(p_config=p_config,
-                                                                      p_process_iterator_factory=process_iterator_factory)
+        process_handler = client_process_handler.ClientProcessHandler(
+            p_config=p_config, p_process_iterator_factory=process_iterator_factory)
         process_iterator_factory.set_reference_time(p_reference_time=p_reference_time)
 
         return process_handler
 
     def test_single_process_active(self):
 
-        process_handler = self.get_dummy_process_handler()
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        session_context = object()
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
-                                                p_reference_time=datetime.datetime.now())
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            process_handler = self.get_dummy_process_handler()
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+            session_context = object()
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                    p_login_mapping=test_data.LOGIN_MAPPING,
+                                                    p_host_name=test_data.HOSTNAME_1,
+                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_reference_time=datetime.datetime.now())
 
-        event = events[0]
+            self.check_list_has_n_elements(p_list=events, p_n=1)
 
-        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
-        self.assertEqual(event.processhandler, process_handler.id)
-        self.check_default_data(p_event=event)
+            event = events[0]
+
+            self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
+            self.assertEqual(event.processhandler, process_handler.id)
+            self.check_default_data(p_event=event)
 
     def test_single_process_active_process_as_pattern(self):
 
-        process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_PATH_1)
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        session_context = object()
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
-                                                p_reference_time=datetime.datetime.now())
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_PATH_1)
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                    p_login_mapping=test_data.LOGIN_MAPPING,
+                                                    p_host_name=test_data.HOSTNAME_1,
+                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_reference_time=datetime.datetime.now())
 
-        event = events[0]
+            self.check_list_has_n_elements(p_list=events, p_n=1)
 
-        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
-        self.assertEqual(event.processhandler, process_handler.id)
-        self.check_default_data(p_event=event)
+            event = events[0]
+
+            self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
+            self.assertEqual(event.processhandler, process_handler.id)
+            self.check_default_data(p_event=event)
 
     def test_single_process_active_long_pattern(self):
 
         process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_PATH_1)
 
-        session_context = object()
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_PATH_REGEX_MAP_1,
-                                                p_reference_time=datetime.datetime.now())
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        self.check_list_has_n_elements(p_list=events, p_n=0)
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                    p_login_mapping=test_data.LOGIN_MAPPING,
+                                                    p_host_name=test_data.HOSTNAME_1,
+                                                    p_process_regex_map=test_data.get_PROCESS_PATH_REGEX_MAP_1(),
+                                                    p_reference_time=datetime.datetime.now())
 
+            self.check_list_has_n_elements(p_list=events, p_n=0)
 
     def test_single_process_active_command_line_options_active(self):
 
-        config = client_process_handler.ClientProcessHandlerConfigModel()
-        config.scan_command_line_options = True
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_CMD_LINE_1,
-                                                         p_config=config)
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            config = client_process_handler.ClientProcessHandlerConfigModel()
+            config.scan_command_line_options = True
 
-        session_context = object()
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_REGEX_MAP_1,
-                                                p_reference_time=datetime.datetime.now())
+            process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_CMD_LINE_1,
+                                                             p_config=config)
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                    p_login_mapping=test_data.LOGIN_MAPPING,
+                                                    p_host_name=test_data.HOSTNAME_1,
+                                                    p_process_regex_map=test_data.get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1(),
+                                                    p_reference_time=datetime.datetime.now())
 
-        event = events[0]
+            self.check_list_has_n_elements(p_list=events, p_n=1)
 
-        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
-        self.assertEqual(event.processhandler, process_handler.id)
-        self.check_default_data(p_event=event)
+            event = events[0]
+
+            self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
+            self.assertEqual(event.processhandler, process_handler.id)
+            self.check_default_data(p_event=event)
 
     def test_single_process_active_command_line_options_inactive(self):
 
@@ -176,7 +194,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_REGEX_MAP_1,
+                                                p_process_regex_map=test_data.get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1(),
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -190,12 +208,13 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                          p_config=config)
 
         session_context = object()
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1,
-                                                p_reference_time=datetime.datetime.now())
+        events = process_handler.scan_processes(
+            p_session_context=session_context,
+            p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+            p_login_mapping=test_data.LOGIN_MAPPING,
+            p_host_name=test_data.HOSTNAME_1,
+            p_process_regex_map=test_data.get_PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1(),
+            p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
 
@@ -204,8 +223,8 @@ class TestClientProcessHandler(base_test.BaseTestCase):
             p_processes=test_data.PROCESSES_2, p_login_mapping=test_data.LOGIN_MAPPING)
 
         config = client_process_handler.ClientProcessHandlerConfigModel()
-        process_handler = client_process_handler.ClientProcessHandler(p_config=config,
-                                                                      p_process_iterator_factory=process_iterator_factory)
+        process_handler = client_process_handler.ClientProcessHandler(
+            p_config=config, p_process_iterator_factory=process_iterator_factory)
         session_context = object()
         process_iterator_factory.set_reference_time(
             p_reference_time=test_data.END_TIME_1 + datetime.timedelta(seconds=1))
@@ -213,57 +232,63 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
+                                                p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
 
     def test_single_process_active_and_inactive(self):
-        processes = copy.deepcopy(test_data.PROCESSES_1)
 
-        process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
-            p_processes=processes, p_login_mapping=test_data.LOGIN_MAPPING)
+        dummy_persistence: test_persistence.TestPersistence = \
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        config = client_process_handler.ClientProcessHandlerConfigModel()
-        process_handler = client_process_handler.ClientProcessHandler(p_config=config,
-                                                                      p_process_iterator_factory=process_iterator_factory)
-        session_context = object()
-        process_iterator_factory.set_reference_time(
-            p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=1))
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_REGEX_MAP_1,
-                                                p_reference_time=datetime.datetime.now())
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            processes = copy.deepcopy(test_data.PROCESSES_1)
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+            process_iterator_factory = dummy_process_iterator.DummyProcessFactory(
+                p_processes=processes, p_login_mapping=test_data.LOGIN_MAPPING)
 
-        event = events[0]
+            config = client_process_handler.ClientProcessHandlerConfigModel()
+            process_handler = client_process_handler.ClientProcessHandler(
+                p_config=config, p_process_iterator_factory=process_iterator_factory)
+            session_context = object()
+            process_iterator_factory.set_reference_time(
+                p_reference_time=test_data.START_TIME_1 + datetime.timedelta(seconds=1))
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                    p_login_mapping=test_data.LOGIN_MAPPING,
+                                                    p_host_name=test_data.HOSTNAME_1,
+                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_reference_time=datetime.datetime.now())
 
-        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
-        self.assertEqual(event.processhandler, process_handler.id)
-        self.check_default_data(p_event=event)
+            self.check_list_has_n_elements(p_list=events, p_n=1)
 
-        process_handler.handle_event_process_start(p_event=event)
+            event = events[0]
 
-        processes[0].end_time = test_data.END_TIME_1
+            self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_START)
+            self.assertEqual(event.processhandler, process_handler.id)
+            self.check_default_data(p_event=event)
 
-        now = datetime.datetime.now()
-        process_iterator_factory.set_reference_time(
-            p_reference_time=test_data.END_TIME_1 + datetime.timedelta(seconds=1))
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.PROCESS_REGEX_MAP_1, p_reference_time=now)
+            process_handler.handle_event_process_start(p_event=event)
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+            processes[0].end_time = test_data.END_TIME_1
 
-        event = events[0]
+            now = datetime.datetime.now()
+            process_iterator_factory.set_reference_time(
+                p_reference_time=test_data.END_TIME_1 + datetime.timedelta(seconds=1))
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                                                    p_login_mapping=test_data.LOGIN_MAPPING,
+                                                    p_host_name=test_data.HOSTNAME_1,
+                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_reference_time=now)
 
-        self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_END)
-        self.assertEqual(event.event_time, now)
-        self.assertEqual(event.processhandler, process_handler.id)
+            self.check_list_has_n_elements(p_list=events, p_n=1)
 
-        self.check_default_data(p_event=event)
+            event = events[0]
+
+            self.assertEqual(event.event_type, admin_event.EVENT_TYPE_PROCESS_END)
+            self.assertEqual(event.event_time, now)
+            self.assertEqual(event.processhandler, process_handler.id)
+
+            self.check_default_data(p_event=event)

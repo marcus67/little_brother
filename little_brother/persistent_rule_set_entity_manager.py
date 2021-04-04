@@ -14,10 +14,9 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
+import little_brother.session_context
 from little_brother import base_entity_manager
 from little_brother import constants
-from little_brother import persistence
 from little_brother import persistent_rule_set
 from little_brother import persistent_user
 from little_brother import simple_context_rule_handlers
@@ -29,7 +28,8 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         super().__init__()
 
     @classmethod
-    def get_by_id(cls, p_session_context: persistence.SessionContext, p_id: int) -> persistent_rule_set.RuleSet:
+    def get_by_id(cls, p_session_context: little_brother.session_context.SessionContext,
+                  p_id: int) -> persistent_rule_set.RuleSet:
 
         session = p_session_context.get_session()
         query = session.query(persistent_rule_set.RuleSet).filter(persistent_rule_set.RuleSet.id == p_id)
@@ -48,7 +48,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         default_ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
         return default_ruleset
 
-    def add_ruleset(self, p_session_context: persistence.SessionContext, p_username: str) -> None:
+    def add_ruleset(self, p_session_context: little_brother.session_context.SessionContext, p_username: str) -> None:
 
         session = p_session_context.get_session()
         user = persistent_user.User.get_by_username(p_session=session, p_username=p_username)
@@ -68,7 +68,7 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
 
         self.persistence.clear_cache()
 
-    def delete_ruleset(self, p_session_context: persistence.SessionContext, p_ruleset_id) -> None:
+    def delete_ruleset(self, p_session_context: little_brother.session_context.SessionContext, p_ruleset_id) -> None:
 
         session = p_session_context.get_session()
         ruleset = self.get_by_id(p_session_context=p_session_context, p_id=p_ruleset_id)
@@ -83,7 +83,8 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def move_up_ruleset(self, p_session_context: persistence.SessionContext, p_ruleset_id: int) -> None:
+    def move_up_ruleset(self, p_session_context: little_brother.session_context.SessionContext,
+                        p_ruleset_id: int) -> None:
 
         session = p_session_context.get_session()
 
@@ -94,7 +95,8 @@ class RuleSetEntityManager(base_entity_manager.BaseEntityManager):
 
         self.persistence.clear_cache()
 
-    def move_down_ruleset(self, p_session_context: persistence.SessionContext, p_ruleset_id: int) -> None:
+    def move_down_ruleset(self, p_session_context: little_brother.session_context.SessionContext,
+                          p_ruleset_id: int) -> None:
 
         session = p_session_context.get_session()
 

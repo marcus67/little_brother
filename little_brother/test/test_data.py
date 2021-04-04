@@ -22,18 +22,26 @@ import datetime
 import re
 
 from little_brother import login_mapping
-from little_brother import persistent_user
 from little_brother import process_info
 from little_brother import rule_handler
+from little_brother.persistent_user import User
 
 USER_1 = "user1"
 UID_1 = 123
 PROCESS_NAME_1 = "process1"
 
-USER_OBJECT_1 = persistent_user.User()
-USER_OBJECT_1.process_name_pattern = PROCESS_NAME_1
 
-PROCESS_PATTERN_REGEX = USER_OBJECT_1.regex_process_name_pattern
+def get_USER_OBJECT_1():
+    user = User()
+    user.process_name_pattern = PROCESS_NAME_1
+    return user
+
+
+def get_PROCESS_PATTERN_REGEX():
+    return get_USER_OBJECT_1().regex_process_name_pattern
+
+
+# PROCESS_PATTERN_REGEX = USER_OBJECT_1.regex_process_name_pattern
 
 PROCESS_PATH_1 = "/usr/bin/process1"
 PID_1 = 12345
@@ -41,13 +49,26 @@ PID_1 = 12345
 PROCESS_CMD_LINE_OPTION_1 = "Minecraft"
 PROCESS_CMD_LINE_1 = ["/usr/bin/process1", PROCESS_CMD_LINE_OPTION_1]
 
-USER_OBJECT_2 = persistent_user.User()
-USER_OBJECT_2.process_name_pattern = PROCESS_CMD_LINE_OPTION_1
-CMD_LINE_OPTION_REGEX = USER_OBJECT_2.regex_process_name_pattern
 
-USER_OBJECT_3 = persistent_user.User()
-USER_OBJECT_3.process_name_pattern = "bin"
-CMD_LINE_OPTION_REGEX_PART_OF_PATH = USER_OBJECT_3.regex_process_name_pattern
+def get_USER_OBJECT_2():
+    user = User()
+    user.process_name_pattern = PROCESS_CMD_LINE_OPTION_1
+    return user
+
+
+def get_CMD_LINE_OPTION_REGEX():
+    return get_USER_OBJECT_2().regex_process_name_pattern
+
+
+def get_USER_OBJECT_3():
+    user = User()
+    user.process_name_pattern = "bin"
+    return user
+
+
+def get_CMD_LINE_OPTION_REGEX_PART_OF_PATH():
+    return get_USER_OBJECT_3().regex_process_name_pattern
+
 
 HOSTNAME_1 = "host1"
 
@@ -67,13 +88,22 @@ LOGIN_UID_MAPPING_ENTRY = p_login_uid_mapping_entry = login_mapping.LoginUidMapp
 LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                         p_login_uid_mapping_entry=LOGIN_UID_MAPPING_ENTRY)
 
-PROCESS_REGEX_MAP_1 = {USER_1: PROCESS_PATTERN_REGEX}
 
-PROCESS_PATH_REGEX_MAP_1 = {USER_1: re.compile(PROCESS_PATH_1)}
+def get_PROCESS_REGEX_MAP_1():
+    return {get_USER_OBJECT_1(): get_PROCESS_PATTERN_REGEX()}
 
-PROCESS_CMD_LINE_OPTION_REGEX_MAP_1 = {USER_1: CMD_LINE_OPTION_REGEX}
 
-PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1 = {USER_1: CMD_LINE_OPTION_REGEX_PART_OF_PATH}
+def get_PROCESS_PATH_REGEX_MAP_1():
+    return {USER_1: re.compile(PROCESS_PATH_1)}
+
+
+def get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1():
+    return {get_USER_OBJECT_1(): get_CMD_LINE_OPTION_REGEX()}
+
+
+def get_PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1():
+    return {get_USER_OBJECT_1(): get_CMD_LINE_OPTION_REGEX_PART_OF_PATH()}
+
 
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,
                                    p_pid=PID_1, p_start_time=START_TIME_1)

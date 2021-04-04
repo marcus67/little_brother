@@ -20,8 +20,8 @@
 
 import datetime
 
+import little_brother.session_context
 from little_brother import dependency_injection
-from little_brother import persistence
 from little_brother import persistent_time_extension
 from little_brother import persistent_time_extension_entity_manager
 from little_brother.test import test_persistence
@@ -47,7 +47,7 @@ class TestPersistentTimeExtension(base_test.BaseTestCase):
         time_extension_entity_manager: persistent_time_extension_entity_manager.TimeExtensionEntityManager = \
             dependency_injection.container[persistent_time_extension_entity_manager.TimeExtensionEntityManager]
 
-        with persistence.SessionContext(p_persistence=dummy_persistence) as session_context:
+        with little_brother.session_context.SessionContext(p_persistence=dummy_persistence) as session_context:
             time_extension_entity_manager.set_time_extension(
                 p_session_context=session_context, p_reference_datetime=reference_time,
                 p_start_datetime=reference_time + datetime.timedelta(seconds=600),
