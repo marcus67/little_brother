@@ -23,9 +23,7 @@
 
 stages:
   - build
-  
   - analyze
-  
   - install_and_check
   - deploy
   
@@ -41,13 +39,6 @@ build_debian:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
-  
-analyze_sonarqube:
-  image:
-  stage: sonarsource/sonar-scanner-cli
-
-  
-
 test_debian:
   image: accso/docker-python-app:latest
   stage: install_and_check
@@ -58,8 +49,20 @@ test_debian:
   artifacts:
     paths:
       - htmlcov
+      - coverage.xml
   variables:
     # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+analyze:
+  image: accso/docker-python-app:latest
+  stage: analyze
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  variables:
+    # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
 build_pypi:

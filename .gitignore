@@ -15,3 +15,4 @@ debian
 .pytest_cache
 *.mo
 .scannerwork
+.dev-env-settings.sh
