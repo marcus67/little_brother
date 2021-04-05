@@ -1,4 +1,4 @@
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -23,8 +23,8 @@
 
 stages:
   - build
-  - analyze
   - install_and_check
+  - analyze
   - deploy
   
 build_debian:
@@ -54,17 +54,6 @@ test_debian:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
-analyze:
-  image: accso/docker-python-app:latest
-  stage: analyze
-  script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
-  after_script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
-  variables:
-    # Suppress automatic checkout for all sub modules
-    GIT_SUBMODULE_STRATEGY: recursive
-
 build_pypi:
   image: accso/docker-python-app:latest
   stage: build
@@ -92,6 +81,17 @@ install_pypi:
       when: always
       paths:
         - htmlcov
+  variables:
+    # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+analyze:
+  image: accso/docker-python-app:latest
+  stage: analyze
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
