@@ -22,10 +22,13 @@
 ##################################################################################
 
 stages:
-- build
-- install_and_check
-- deploy
-
+  - build
+  
+  - analyze
+  
+  - install_and_check
+  - deploy
+  
 build_debian:
   image: accso/docker-python-app:latest
   stage: build
@@ -37,6 +40,13 @@ build_debian:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
+
+  
+analyze_sonarqube:
+  image:
+  stage: sonarsource/sonar-scanner-cli
+
+  
 
 test_debian:
   image: accso/docker-python-app:latest
@@ -62,7 +72,7 @@ build_pypi:
   artifacts:
       when: always
       paths:
-        - dist/little-brother-0.4.0.tar.gz
+        - dist/little-brother-0.4.1.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
