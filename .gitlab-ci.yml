@@ -81,6 +81,7 @@ install_pypi:
       when: always
       paths:
         - htmlcov
+        - coverage.xml
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
