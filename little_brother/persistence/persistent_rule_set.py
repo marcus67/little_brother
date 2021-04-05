@@ -81,7 +81,6 @@ class RuleSet(Base, BaseEntity):
         self.min_break = None
         self.free_play = False
         self.priority = constants.DEFAULT_RULE_SET_PRIORITY
-        self._get_context_rule_handler = None
 
     @property
     def label(self):

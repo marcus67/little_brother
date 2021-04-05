@@ -57,6 +57,6 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
             saved_entity = self._entity_manager.get_by_id(p_session_context=session_context, p_id=id)
             self.assertIsNotNone(saved_entity)
 
-            result = tools.objects_are_equal(an_entity, saved_entity)
+            result = tools.objects_are_equal(an_entity, saved_entity, p_logger=self._logger)
 
             self.assertTrue(result)
