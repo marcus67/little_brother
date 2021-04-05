@@ -112,7 +112,7 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
   docker:
     docker:
-      - image: marcusrickert/docker-docker-ci:release-0.9
+      - image: marcusrickert/docker-docker-ci:release-0.9.1
     steps:
       - checkout
       - attach_workspace:
