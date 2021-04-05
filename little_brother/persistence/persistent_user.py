@@ -22,13 +22,15 @@ from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 
 from little_brother import constants
-from little_brother.persistence import persistence_base
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 _ = lambda x: x
 
 
-class User(persistence_base.Base):
+class User(Base, BaseEntity):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
@@ -43,6 +45,7 @@ class User(persistence_base.Base):
 
     def __init__(self):
 
+        super(BaseEntity).__init__()
         self.process_name_pattern = None
         self.username = None
         self.first_name = None
@@ -51,6 +54,14 @@ class User(persistence_base.Base):
         self.active = False
 
         self.init_on_load()
+
+    def populate_test_data(self, p_session_context: SessionContext):
+        self.process_name_pattern = None
+        self.username = "willi"
+        self.first_name = "Willi"
+        self.last_name = "Wusel"
+        self.locale = "de"
+        self.active = True
 
     @property
     def notification_name(self):

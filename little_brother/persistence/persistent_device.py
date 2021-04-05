@@ -19,13 +19,15 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from little_brother import constants
-from little_brother.persistence import persistence_base
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 _ = lambda x: x
 
 
-class Device(persistence_base.Base):
+class Device(Base, BaseEntity):
     __tablename__ = 'device'
 
     id = Column(Integer, primary_key=True)
@@ -37,12 +39,19 @@ class Device(persistence_base.Base):
     users = relationship("User2Device", back_populates="device", lazy="joined")
 
     def __init__(self):
-
+        super(BaseEntity).__init__()
         self.device_name = None
         self.hostname = None
         self.min_activity_duration = None
         self.max_active_ping_delay = None
         self.sample_size = None
+
+    def populate_test_data(self, p_session_context: SessionContext):
+        self.device_name = "SomeDeviceName"
+        self.hostname = "some.host.net"
+        self.min_activity_duration = 555
+        self.max_active_ping_delay = 111
+        self.sample_size = 23
 
     @property
     def html_key(self):

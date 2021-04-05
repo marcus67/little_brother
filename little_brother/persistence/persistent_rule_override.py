@@ -15,12 +15,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
+
 from sqlalchemy import Column, Integer, String, Boolean, Date, Time
 
-from little_brother.persistence import persistence_base
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
+from little_brother.persistence.session_context import SessionContext
 
 
-class RuleOverride(persistence_base.Base):
+class RuleOverride(Base, BaseEntity):
     __tablename__ = 'rule_override'
 
     id = Column(Integer, primary_key=True)
@@ -33,3 +37,14 @@ class RuleOverride(persistence_base.Base):
     min_break = Column(Integer)
     free_play = Column(Boolean)
     max_activity_duration = Column(Integer)
+
+    def populate_test_data(self, p_session_context: SessionContext):
+        self.key = "SomeKey"
+        self.username = "some_user"
+        self.reference_date = datetime.datetime.today()
+        self.max_time_per_day = 123
+        self.min_time_of_day = datetime.datetime.now().time()
+        self.max_time_of_day = datetime.datetime.now().time()
+        self.min_break = 456
+        self.free_play = True
+        self.max_activity_duration = 567

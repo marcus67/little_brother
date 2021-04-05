@@ -5,3 +5,4 @@ publish-debian-package.sh
 publish-pypi-package.sh
 build-docker-images.sh
 test-app.sh
+sonarqube.sh

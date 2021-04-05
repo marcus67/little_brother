@@ -20,6 +20,7 @@ import datetime
 import sqlalchemy
 
 from little_brother import dependency_injection
+from little_brother import process_info
 from little_brother.persistence import base_entity_manager
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_process_info import ProcessInfo
@@ -64,7 +65,7 @@ class ProcessInfoEntityManager(base_entity_manager.BaseEntityManager):
 
         return result
 
-    def write_process_info(self, p_session_context: SessionContext, p_process_info: ProcessInfo):
+    def write_process_info(self, p_session_context: SessionContext, p_process_info: process_info.ProcessInfo):
 
         session = p_session_context.get_session()
         exists = session.query(sqlalchemy.exists().where(
@@ -76,9 +77,8 @@ class ProcessInfoEntityManager(base_entity_manager.BaseEntityManager):
             session.add(pinfo)
 
         session.commit()
-        session.close()
 
-    def update_process_info(self, p_session_context: SessionContext, p_process_info: ProcessInfo):
+    def update_process_info(self, p_session_context: SessionContext, p_process_info: process_info.ProcessInfo):
 
         session = p_session_context.get_session()
         pinfo = session.query(ProcessInfo).filter(
@@ -86,7 +86,6 @@ class ProcessInfoEntityManager(base_entity_manager.BaseEntityManager):
         pinfo.end_time = p_process_info.end_time
         pinfo.downtime = p_process_info.downtime
         session.commit()
-        session.close()
 
     def delete_historic_entries(self, p_session_context: SessionContext, p_history_length_in_days: int):
 

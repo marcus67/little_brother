@@ -25,7 +25,6 @@ from little_brother.test import test_app_control
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_german_vacation_context_rule_handler
-from little_brother.test import test_popup_handler
 from little_brother.test import test_process_handler
 from little_brother.test import test_process_info
 from little_brother.test import test_process_statistics
@@ -33,8 +32,7 @@ from little_brother.test import test_prometheus
 from little_brother.test import test_rule_handler
 from little_brother.test import test_simple_weekday_context_rule_handler
 from little_brother.test import test_status_server
-from little_brother.test.persistence import test_persistence, test_persistent_time_extension
-from little_brother.test.persistence.test_persistent_time_extension_entity_manager import TestTimeExtensionEntityManager
+from little_brother.test.persistence import test_suite as persistence_test_suite
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
@@ -59,10 +57,6 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_process_handler.TestProcessHandler, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=test_popup_handler.TestPopupHandler, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
@@ -92,10 +86,6 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
-        p_test_unit_class=test_persistence.TestPersistence, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
         p_test_unit_class=test_status_server.TestStatusServer, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
@@ -106,21 +96,12 @@ def add_test_cases(p_test_suite, p_config_filename=None):
         p_test_suite=p_test_suite,
         p_test_unit_class=test_app_control.TestAppControl, p_config_filename=p_config_filename)
 
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=test_persistent_time_extension.TestPersistentTimeExtension,
-        p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=TestTimeExtensionEntityManager,
-        p_config_filename=p_config_filename)
-
 
 def main():
     log_handling.start_logging(p_use_filter=False)
     test_suite = unittest.TestSuite()
     add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+    persistence_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     base_test.run_test_suite(p_test_suite=test_suite)
 
 

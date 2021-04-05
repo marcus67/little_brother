@@ -19,6 +19,7 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from little_brother import dependency_injection
+from little_brother.persistence.base_entity import BaseEntity
 from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test.persistence import test_persistence
@@ -26,7 +27,7 @@ from python_base_app import tools
 from python_base_app.test import base_test
 
 
-class BasePersistentEntityManagerTest(base_test.BaseTestCase):
+class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -43,10 +44,9 @@ class BasePersistentEntityManagerTest(base_test.BaseTestCase):
     def test_save(self):
         dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        id = None
-        an_entity = self._entity_manager._entity_class()
-
         with SessionContext(p_persistence=dummy_persistence) as session_context:
+            an_entity: BaseEntity = self._entity_manager._entity_class()
+            an_entity.populate_test_data(p_session_context=session_context)
             self.assertIsNotNone(an_entity)
             session = session_context.get_session()
             session.add(an_entity)

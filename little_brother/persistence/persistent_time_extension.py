@@ -17,10 +17,11 @@
 
 from sqlalchemy import Column, Integer, String, DateTime
 
-from little_brother.persistence import persistence_base
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
 
 
-class TimeExtension(persistence_base.Base):
+class TimeExtension(Base, BaseEntity):
     __tablename__ = 'time_extension'
 
     id = Column(Integer, primary_key=True)

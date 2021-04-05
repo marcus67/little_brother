@@ -15,22 +15,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from sqlalchemy import Column, Integer, String, DateTime
-
-from little_brother.persistence.base_entity import BaseEntity
-from little_brother.persistence.persistence_base import Base
+from little_brother.persistence.session_context import SessionContext
+from python_base_app import log_handling
 
 
-class AdminEvent(Base, BaseEntity):
-    __tablename__ = 'admin_event'
+class BaseEntity():
 
-    id = Column(Integer, primary_key=True)
-    hostname = Column(String(256))
-    username = Column(String(256))
-    pid = Column(Integer)
-    processhandler = Column(String(1024))
-    processname = Column(String(1024))
-    event_type = Column(String(256))
-    event_time = Column(DateTime)
-    process_start_time = Column(DateTime)
-    downtime = Column(Integer, server_default="0")
+    def __init__(self):
+        self._logger = log_handling.get_logger(self.__class__.__name__)
+
+    def populate_test_data(self, p_session_context: SessionContext):
+        pass

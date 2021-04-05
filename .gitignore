@@ -12,6 +12,6 @@ workspace.xml
 *.log
 coverage.xml
 debian
-coverage.xml
 .pytest_cache
 *.mo
+.scannerwork

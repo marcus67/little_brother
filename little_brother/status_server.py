@@ -584,7 +584,7 @@ class StatusServer(base_web_server.BaseWebServer):
                             for ruleset in user.rulesets:
                                 forms[ruleset.html_key].load_from_model(p_model=ruleset)
                                 # provide a callback function so that the RuleSet can retrieve context summaries
-                                ruleset.get_context_rule_handler = self._appcontrol.get_context_rule_handler
+                                ruleset._get_context_rule_handler = self._appcontrol.get_context_rule_handler
 
                             for user2device in user.devices:
                                 forms[user2device.html_key].load_from_model(p_model=user2device)

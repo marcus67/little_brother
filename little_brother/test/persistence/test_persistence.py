@@ -22,11 +22,9 @@ import datetime
 import os.path
 import unittest
 
-from little_brother import admin_event
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import process_info
-from little_brother import rule_override
 from little_brother.persistence import persistence
 from little_brother.persistence import persistence_base
 from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
@@ -105,150 +103,6 @@ class TestPersistence(base_test.BaseTestCase):
                                         p_pid=test_data.PID_1, p_start_time=start_time,
                                         p_end_time=end_time)
 
-    def compare_pinfos(self, p_p_info, p_loaded_p_info):
-
-        self.assertEqual(p_p_info.start_time, p_loaded_p_info.start_time)
-        self.assertEqual(p_p_info.end_time, p_loaded_p_info.end_time)
-        self.assertEqual(p_p_info.hostname, p_loaded_p_info.hostname)
-        self.assertEqual(p_p_info.username, p_loaded_p_info.username)
-        self.assertEqual(p_p_info.processhandler, p_loaded_p_info.processhandler)
-        self.assertEqual(p_p_info.processname, p_loaded_p_info.processname)
-
-    def compare_rule_overrides(self, p_rule_override, p_loaded_rule_override):
-
-        self.assertEqual(p_rule_override.username, p_loaded_rule_override.username)
-        self.assertEqual(p_rule_override.reference_date, p_loaded_rule_override.reference_date)
-        self.assertEqual(p_rule_override.max_time_per_day, p_loaded_rule_override.max_time_per_day)
-        self.assertEqual(p_rule_override.min_time_of_day, p_loaded_rule_override.min_time_of_day)
-        self.assertEqual(p_rule_override.max_time_of_day, p_loaded_rule_override.max_time_of_day)
-
-    def check_list_length(self, p_list, p_length):
-
-        self.assertIsNotNone(p_list)
-        self.assertEqual(len(p_list), p_length)
-
-    def test_write_and_update_process_info(self):
-
-        a_persistence = self.create_dummy_persistence(self._logger)
-
-        process_info_entity_manager: ProcessInfoEntityManager = dependency_injection.container[ProcessInfoEntityManager]
-
-        self.assertIsNotNone(a_persistence)
-
-        with SessionContext(p_persistence=a_persistence) as session_context:
-            p_info = self.create_pinfo(p_age_in_days=3)
-            process_info_entity_manager.write_process_info(p_session_context=session_context, p_process_info=p_info)
-
-            p_infos = process_info_entity_manager.load_process_infos(
-                p_session_context=session_context, p_lookback_in_days=4)
-
-            self.check_list_length(p_list=p_infos, p_length=1)
-
-            loaded_p_info = p_infos[0]
-
-            self.compare_pinfos(p_p_info=p_info, p_loaded_p_info=loaded_p_info)
-
-            self.assertIsNotNone(loaded_p_info.id)
-
-            p_infos = process_info_entity_manager.load_process_infos(
-                p_session_context=session_context, p_lookback_in_days=2)
-
-            self.check_list_length(p_list=p_infos, p_length=0)
-
-            p_info.end_time = p_info.start_time + datetime.timedelta(minutes=5)
-
-            process_info_entity_manager.update_process_info(
-                p_session_context=session_context, p_process_info=p_info)
-
-            p_infos = process_info_entity_manager.load_process_infos(
-                p_session_context=session_context, p_lookback_in_days=4)
-
-            self.check_list_length(p_list=p_infos, p_length=1)
-
-            loaded_p_info = p_infos[0]
-
-            an_id = loaded_p_info.id
-
-            self.compare_pinfos(p_p_info=p_info, p_loaded_p_info=loaded_p_info)
-
-            self.assertEqual(an_id, loaded_p_info.id)
-
-    def test_update_rule_override(self):
-
-        a_persistence = self.create_dummy_persistence(self._logger)
-
-        self.assertIsNotNone(a_persistence)
-
-        rule_override_entity_manager: RuleOverrideEntityManager = \
-            dependency_injection.container[RuleOverrideEntityManager]
-
-        with SessionContext(p_persistence=a_persistence) as session_context:
-            reference_date = datetime.datetime.utcnow().date() + datetime.timedelta(days=-2)
-
-            a_rule_override = rule_override.RuleOverride(
-                p_username=test_data.USER_1,
-                p_reference_date=reference_date,
-                p_max_time_per_day=test_data.MAX_TIME_PER_DAY_1,
-                p_min_time_of_day=test_data.MIN_TIME_OF_DAY_1,
-                p_max_time_of_day=test_data.MAX_TIME_OF_DAY_1,
-                p_min_break=test_data.MIN_BREAK_1,
-                p_free_play=test_data.FREEPLAY_1)
-
-            rule_override_entity_manager.update_rule_override(
-                p_session_context=session_context, p_rule_override=a_rule_override)
-
-            rule_overrides = rule_override_entity_manager.load_rule_overrides(
-                p_session_context=session_context, p_lookback_in_days=1)
-
-            self.check_list_length(p_list=rule_overrides, p_length=0)
-
-            rule_overrides = rule_override_entity_manager.load_rule_overrides(
-                p_session_context=session_context, p_lookback_in_days=4)
-
-            self.check_list_length(p_list=rule_overrides, p_length=1)
-
-            loaded_rule_override = rule_overrides[0]
-
-            self.compare_rule_overrides(p_rule_override=a_rule_override, p_loaded_rule_override=loaded_rule_override)
-
-            a_rule_override.max_time_per_day = test_data.MAX_TIME_PER_DAY_2
-
-            rule_override_entity_manager.update_rule_override(
-                p_session_context=session_context, p_rule_override=a_rule_override)
-
-            rule_overrides = rule_override_entity_manager.load_rule_overrides(
-                p_session_context=session_context, p_lookback_in_days=4)
-
-            self.check_list_length(p_list=rule_overrides, p_length=1)
-
-            loaded_rule_override = rule_overrides[0]
-
-            self.compare_rule_overrides(p_rule_override=a_rule_override, p_loaded_rule_override=loaded_rule_override)
-
-    def test_log_admin_event(self):
-
-        a_persistence = self.create_dummy_persistence(self._logger)
-
-        self.assertIsNotNone(a_persistence)
-
-        admin_event_entity_manager: AdminEventEntityManager = dependency_injection.container[AdminEventEntityManager]
-
-        an_admin_event = admin_event.AdminEvent(
-            p_hostname=test_data.HOSTNAME_1,
-            p_username=test_data.USER_1,
-            p_pid=test_data.PID_1,
-            p_processhandler=None,
-            p_processname=None,
-            p_event_type=None,
-            p_event_time=None,
-            p_process_start_time=test_data.START_TIME_NOW,
-            p_text=None,
-            p_payload=None)
-
-        with SessionContext(p_persistence=a_persistence) as session_context:
-            admin_event_entity_manager.log_admin_event(
-                p_session_context=session_context, p_admin_event=an_admin_event)
-
     def test_truncate_table(self):
 
         a_persistence = self.create_dummy_persistence(self._logger)
@@ -259,8 +113,7 @@ class TestPersistence(base_test.BaseTestCase):
 
         with SessionContext(p_persistence=a_persistence) as session_context:
             p_info = self.create_pinfo(p_age_in_days=3)
-            process_info_entity_manager.write_process_info(
-                p_session_context=session_context, p_process_info=p_info)
+            process_info_entity_manager.write_process_info(p_session_context=session_context, p_process_info=p_info)
 
             p_infos = process_info_entity_manager.load_process_infos(
                 p_session_context=session_context, p_lookback_in_days=4)

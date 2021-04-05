@@ -19,13 +19,17 @@ from sqlalchemy import Column, Integer, String, Boolean, Time, ForeignKey
 from sqlalchemy.orm import relationship
 
 from little_brother import constants
-from little_brother.persistence import persistence_base
+from little_brother import simple_context_rule_handlers
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 _ = lambda x: x
 
 
-class RuleSet(persistence_base.Base):
+class RuleSet(Base, BaseEntity):
     __tablename__ = 'ruleset'
 
     id = Column(Integer, primary_key=True)
@@ -45,6 +49,7 @@ class RuleSet(persistence_base.Base):
 
     def __init__(self):
 
+        super(BaseEntity).__init__()
         self.context = None
         self.context_details = None
         self.context_label = None
@@ -55,7 +60,28 @@ class RuleSet(persistence_base.Base):
         self.min_break = None
         self.free_play = False
         self.priority = constants.DEFAULT_RULE_SET_PRIORITY
-        self.get_context_rule_handler = None
+        self._get_context_rule_handler = None
+
+    def populate_test_data(self, p_session_context: SessionContext):
+
+        session = p_session_context.get_session()
+
+        user = User()
+        user.populate_test_data(p_session_context=p_session_context)
+        session.add(user)
+
+        self.user = user
+        self.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
+        self.context_details = None
+        self.context_label = None
+        self.min_time_of_day = None
+        self.max_time_of_day = None
+        self.max_time_per_day = None
+        self.max_activity_duration = None
+        self.min_break = None
+        self.free_play = False
+        self.priority = constants.DEFAULT_RULE_SET_PRIORITY
+        self._get_context_rule_handler = None
 
     @property
     def label(self):
@@ -67,7 +93,7 @@ class RuleSet(persistence_base.Base):
 
     @property
     def summary(self):
-        context_handler = self.get_context_rule_handler(p_context_name=self.context)
+        context_handler = self._get_context_rule_handler(p_context_name=self.context)
 
         texts = []
 

@@ -19,13 +19,17 @@ from sqlalchemy import Column, Integer, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
 from little_brother import constants
-from little_brother.persistence import persistence_base
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
+from little_brother.persistence.persistent_device import Device
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 _ = lambda x: x
 
 
-class User2Device(persistence_base.Base):
+class User2Device(Base, BaseEntity):
     __tablename__ = 'user2device'
 
     id = Column(Integer, primary_key=True)
@@ -57,3 +61,17 @@ class User2Device(persistence_base.Base):
     @property
     def delete_html_key(self):
         return "delete_user2device_{id}".format(id=self.id)
+
+    def populate_test_data(self, p_session_context: SessionContext):
+        session = p_session_context.get_session()
+
+        self.active = True
+        self.percent = 11
+
+        self.user = User()
+        self.user.populate_test_data(p_session_context=p_session_context)
+        session.add(self.user)
+
+        self.device = Device()
+        self.device.populate_test_data(p_session_context=p_session_context)
+        session.add(self.device)
