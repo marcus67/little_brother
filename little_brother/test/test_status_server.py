@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -37,18 +37,14 @@ from little_brother.test import test_data
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
 from python_base_app import locale_helper
-from python_base_app import unix_user_handler
 from python_base_app.test import base_test
-
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "hello!"
+from python_base_app.test import test_unix_user_handler
 
 
 class TestStatusServer(base_test.BaseTestCase):
 
     def setUp(self):
         dependency_injection.reset()
-
 
     @staticmethod
     def get_dummy_process_handlers():
@@ -78,6 +74,8 @@ class TestStatusServer(base_test.BaseTestCase):
         master_connector_config = master_connector.MasterConnectorConfigModel()
         _master_connector = master_connector.MasterConnector(p_config=master_connector_config)
 
+        user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
+
         app_control_config = app_control.AppControlConfigModel()
         _app_control = app_control.AppControl(
             p_config=app_control_config,
@@ -90,20 +88,13 @@ class TestStatusServer(base_test.BaseTestCase):
             p_notification_handlers=[],
             p_master_connector=_master_connector,
             p_login_mapping=test_data.LOGIN_MAPPING,
-            p_locale_helper=locale_helper.LocaleHelper())
+            p_locale_helper=locale_helper.LocaleHelper(),
+            p_user_handler=user_handler)
 
         status_server_config = status_server.StatusServerConfigModel()
-        status_server_config.admin_username = ADMIN_USERNAME
-        status_server_config.admin_password = ADMIN_PASSWORD
-        status_server_config.app_secret = "secret!"
+        status_server_config.app_secret = "123456"
 
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
-
-        user_handler_config = unix_user_handler.UnixUserHandlerConfigModel()
-        user_handler_config.admin_username = ADMIN_USERNAME
-        user_handler_config.admin_password = ADMIN_PASSWORD
-
-        user_handler = unix_user_handler.UnixUserHandler(p_config=user_handler_config)
 
         _status_server = status_server.StatusServer(
             p_config=status_server_config,
@@ -152,6 +143,7 @@ class TestStatusServer(base_test.BaseTestCase):
             driver = self.get_selenium_driver()
             driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.ABOUT_REL_URL))
             assert "LittleBrother" in driver.title
+            assert "About" in driver.title
 
             xpath = "//DIV[DIV[1] = 'Version' and DIV[2] = '{version}']"
             driver.find_element_by_xpath(xpath.format(version=settings.settings['version']))
@@ -286,22 +278,16 @@ class TestStatusServer(base_test.BaseTestCase):
             assert "LittleBrother" in driver.title
 
             # ...we end up on the login page.
-            elem = driver.find_element_by_name("username")
-            elem.clear()
-            elem.send_keys(ADMIN_USERNAME)
-
-            elem = driver.find_element_by_name("password")
-            elem.clear()
-            elem.send_keys(ADMIN_PASSWORD)
-            elem.send_keys(Keys.RETURN)
+            self.login(p_driver=driver)
 
             # After logging in we are on the admin page
             xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
             driver.find_element_by_xpath(xpath)
 
-            # The second we call the admin page.
+            # The second time we call the admin page.
             driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
             assert "LittleBrother" in driver.title
+            assert "Administration" in driver.title
 
             # we are on the admin page right away...
             xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
@@ -315,6 +301,142 @@ class TestStatusServer(base_test.BaseTestCase):
         finally:
             _status_server.stop_server()
             _status_server.destroy()
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_users(self):
+
+        _status_server = None
+
+        try:
+            _status_server = self.create_dummy_status_server()
+            _status_server.start_server()
+
+            driver = self.get_selenium_driver()
+
+            # When we load the admin page the first time...
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.USERS_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            # ...we end up on the login page.
+            self.login(p_driver=driver)
+
+            # After logging in we are on the users page
+            xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
+            assert "User Configuration" in driver.title
+            driver.find_element_by_xpath(xpath)
+
+            # The second time we call the users page.
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.USERS_REL_URL))
+            assert "LittleBrother" in driver.title
+            assert "User Configuration" in driver.title
+
+            # we are on the users page right away...
+            xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
+            driver.find_element_by_xpath(xpath)
+
+            driver.close()
+
+        except Exception as e:
+            raise e
+
+        finally:
+            if _status_server is not None:
+                _status_server.stop_server()
+                _status_server.destroy()
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_devices(self):
+
+        _status_server = None
+
+        try:
+            _status_server = self.create_dummy_status_server()
+            _status_server.start_server()
+
+            driver = self.get_selenium_driver()
+
+            # When we load the admin page the first time...
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.DEVICES_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            # ...we end up on the login page.
+            self.login(p_driver=driver)
+
+            # After logging in we are on the users page
+            xpath = "//FORM/DIV/DIV[DIV[1] = 'Device' and DIV[2] = '']"
+            assert "Device Configuration" in driver.title
+            driver.find_element_by_xpath(xpath)
+
+            # The second time we call the users page.
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.DEVICES_REL_URL))
+            assert "LittleBrother" in driver.title
+            assert "Device Configuration" in driver.title
+
+            # we are on the users page right away...
+            xpath = "//FORM/DIV/DIV[DIV[1] = 'Device' and DIV[2] = '']"
+            driver.find_element_by_xpath(xpath)
+
+            driver.close()
+
+        except Exception as e:
+            raise e
+
+        finally:
+            if _status_server is not None:
+                _status_server.stop_server()
+                _status_server.destroy()
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_topology(self):
+
+        _status_server = None
+
+        try:
+            _status_server = self.create_dummy_status_server()
+            _status_server.start_server()
+
+            driver = self.get_selenium_driver()
+
+            # When we load the admin page the first time...
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.TOPOLOGY_REL_URL))
+            assert "LittleBrother" in driver.title
+
+            # ...we end up on the login page.
+            self.login(p_driver=driver)
+
+            # After logging in we are on the users page
+            xpath = "//DIV/DIV[DIV[1] = 'Node Type' and DIV[2] = 'Node Name']"
+            assert "Topology" in driver.title
+            driver.find_element_by_xpath(xpath)
+
+            # The second time we call the users page.
+            driver.get(_status_server.get_url(p_internal=False, p_rel_url=status_server.TOPOLOGY_REL_URL))
+            assert "LittleBrother" in driver.title
+            assert "Topology" in driver.title
+
+            # we are on the users page right away...
+            xpath = "//DIV/DIV[DIV[1] = 'Node Type' and DIV[2] = 'Node Name']"
+            driver.find_element_by_xpath(xpath)
+
+            driver.close()
+
+        except Exception as e:
+            raise e
+
+        finally:
+            if _status_server is not None:
+                _status_server.stop_server()
+                _status_server.destroy()
+
+    def login(self, p_driver):
+        elem = p_driver.find_element_by_name("username")
+        elem.clear()
+        elem.send_keys(test_unix_user_handler.ADMIN_USER)
+
+        elem = p_driver.find_element_by_name("password")
+        elem.clear()
+        elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
+        elem.send_keys(Keys.RETURN)
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_admin_with_process(self):
@@ -333,14 +455,7 @@ class TestStatusServer(base_test.BaseTestCase):
             assert "LittleBrother" in driver.title
 
             # ...we end up on the login page.
-            elem = driver.find_element_by_name("username")
-            elem.clear()
-            elem.send_keys(ADMIN_USERNAME)
-
-            elem = driver.find_element_by_name("password")
-            elem.clear()
-            elem.send_keys(ADMIN_PASSWORD)
-            elem.send_keys(Keys.RETURN)
+            self.login(p_driver=driver)
 
             # After logging in we are on the admin page
             xpath = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
