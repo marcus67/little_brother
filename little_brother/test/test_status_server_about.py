@@ -20,19 +20,31 @@
 
 import unittest
 
+from little_brother import constants
+from little_brother import settings
+from little_brother import status_server
 from little_brother.test.base_test_status_server import BaseTestStatusServer
+from python_base_app.test import base_test
 
 
-class TestStatusServer(BaseTestStatusServer):
+class TestStatusServerAbout(BaseTestStatusServer):
 
-    def test_start_and_stop(self):
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_about(self):
         self.create_dummy_status_server()
         self._status_server.start_server()
-        self._status_server.stop_server()
-        self._status_server.destroy()
 
-        # Prevent second stop_server() and destroy() in tearDown()
-        self._status_server = None
+        self.create_selenium_driver()
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ABOUT_REL_URL))
+        assert constants.APPLICATION_NAME in self._driver.title
+        assert "About" in self._driver.title
+
+        xpath = "//DIV[DIV[1] = 'Version' and DIV[2] = '{version}']"
+        self._driver.find_element_by_xpath(xpath.format(version=settings.settings['version']))
+
+        xpath = "//DIV[DIV[1] = 'Debian Package Revision' and DIV[2] = '{debian_package_revision}']"
+        self._driver.find_element_by_xpath(
+            xpath.format(debian_package_revision=settings.extended_settings['debian_package_revision']))
 
 
 if __name__ == "__main__":

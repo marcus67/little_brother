@@ -26,3 +26,15 @@ SONAR_LOGIN=TODO
 
 # Set the project key provided by SonarQube
 SONAR_PROJECT_KEY=TODO
+
+# Set status server port used in tests
+export STATUS_SERVER_PORT=5556
+
+# Set the Prometheus port used in tests
+export PROMETHEUS_SERVER_PORT=8890
+
+# Use Selenium Chrome driver in tests
+export SELENIUM_CHROME_DRIVER=1
+
+# Activate extra output in CI scripts
+export CI_DEBUG=1

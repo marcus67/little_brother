@@ -56,7 +56,7 @@
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
-	<FORM ACTION="{{ url_for('little_brother.users') }}" METHOD="POST" CLASS="form-horizontal">
+	<FORM ID="main_form" ACTION="{{ url_for('little_brother.users') }}" METHOD="POST" CLASS="form-horizontal">
 		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">
@@ -68,7 +68,7 @@
 					{% if forms[new_user_html_key] is defined %}
 	    				{{ _("Add to monitoring") }}:
 					    {{ forms[new_user_html_key].username(class_="form-control inline-field") }}
-			 			<BUTTON type="submit" name="submit" class="btn" title="{{_('Add User')}}"
+			 			<BUTTON id="add_user" type="submit" name="submit" class="btn" title="{{_('Add User')}}"
 								value="{{ new_user_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
 					{% endif %}
 					</SPAN>

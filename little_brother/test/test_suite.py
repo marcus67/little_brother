@@ -31,8 +31,14 @@ from little_brother.test import test_process_statistics
 from little_brother.test import test_prometheus
 from little_brother.test import test_rule_handler
 from little_brother.test import test_simple_weekday_context_rule_handler
-from little_brother.test import test_status_server
 from little_brother.test.persistence import test_suite as persistence_test_suite
+from little_brother.test.test_status_server import TestStatusServer
+from little_brother.test.test_status_server_about import TestStatusServerAbout
+from little_brother.test.test_status_server_admin import TestStatusServerAdmin
+from little_brother.test.test_status_server_devices import TestStatusServerDevices
+from little_brother.test.test_status_server_index import TestStatusServerIndex
+from little_brother.test.test_status_server_topology import TestStatusServerTopology
+from little_brother.test.test_status_server_users import TestStatusServerUsers
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
@@ -86,7 +92,35 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
-        p_test_unit_class=test_status_server.TestStatusServer, p_config_filename=p_config_filename)
+        p_test_unit_class=TestStatusServer, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerUsers, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerTopology, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerIndex, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerDevices, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerAdmin, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerAbout, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServer, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
@@ -95,6 +129,7 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_app_control.TestAppControl, p_config_filename=p_config_filename)
+
 
 
 def main():

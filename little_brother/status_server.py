@@ -29,7 +29,6 @@ import humanize
 import lagom
 
 import little_brother
-import little_brother.persistence.session_context
 from little_brother import api_view_handler
 from little_brother import app_control
 from little_brother import constants
@@ -44,9 +43,10 @@ from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
-from little_brother.persistence.persistent_user import User
 from little_brother.persistence.persistent_user_2_device import User2Device
+from little_brother.persistence.persistent_user_2_device_entity_manager import User2DeviceEntityManager
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import base_web_server
 from python_base_app import custom_fields
 from python_base_app import locale_helper
@@ -112,6 +112,7 @@ BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
 TIME_EXTENSION_SUBMIT_PATTERN = "time_extension_{username}_(off|-?[0-9]+)"
 
+
 class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
 
     def __init__(self):
@@ -164,6 +165,8 @@ class StatusServer(base_web_server.BaseWebServer):
             dependency_injection.container[RuleSetEntityManager]
         self._device_entity_manager: DeviceEntityManager = \
             dependency_injection.container[DeviceEntityManager]
+        self._user_2_device_entity_manager: User2DeviceEntityManager = \
+            dependency_injection.container[User2DeviceEntityManager]
 
         self._stat_dict = {}
         self._server_exception: Exception = None
@@ -344,7 +347,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
             for user in p_users:
                 form = p_forms[user.html_key]
-                a_persistent_user = User.get_by_username(p_session=session, p_username=user.username)
+                a_persistent_user = self._user_entity_manager.get_by_username(
+                    p_session_context=session_context, p_username=user.username)
 
                 if a_persistent_user is not None and form.differs_from_model(p_model=a_persistent_user):
                     form.save_to_model(p_model=a_persistent_user)
@@ -424,7 +428,6 @@ class StatusServer(base_web_server.BaseWebServer):
                     if valid_and_submitted:
                         self.save_admin_data(admin_infos, forms)
 
-
                         for admin_info in admin_infos:
 
                             username = admin_info.username
@@ -437,14 +440,14 @@ class StatusServer(base_web_server.BaseWebServer):
                                 reference_time = tools.get_current_time()
                                 start_datetime = reference_time
 
-                                session_active = admin_info.user_info["active_stat_info"].current_activity_start_time is not None
+                                session_active = admin_info.user_info[
+                                                     "active_stat_info"].current_activity_start_time is not None
 
                                 if session_active:
                                     active_rule_result_info = admin_info.user_info["active_rule_result_info"]
 
                                     if active_rule_result_info.session_end_datetime is not None:
                                         start_datetime = active_rule_result_info.session_end_datetime
-
 
                                 self._time_extension_entity_manager.set_time_extension(
                                     p_session_context=session_context,
@@ -462,13 +465,13 @@ class StatusServer(base_web_server.BaseWebServer):
                                 forms[day_info.html_key].load_from_model(p_model=day_info.override)
 
                     page = flask.render_template(
-                    ADMIN_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    admin_infos=admin_infos,
-                    authentication=self.get_authenication_info(),
-                    forms=forms,
-                    navigation={
-                        'current_view': ADMIN_VIEW_NAME})
+                        ADMIN_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                        admin_infos=admin_infos,
+                        authentication=self.get_authenication_info(),
+                        forms=forms,
+                        navigation={
+                            'current_view': ADMIN_VIEW_NAME})
 
                 except Exception as e:
 
@@ -573,7 +576,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
                                     for user2device in user.devices:
                                         if request.form['submit'] == user2device.delete_html_key:
-                                            self._persistence.delete_user2device(p_user2device_id=user2device.id)
+                                            self._user_2_device_entity_manager.delete_user2device(
+                                                p_session_context=session_context, p_user2device_id=user2device.id)
 
                         return flask.redirect(flask.url_for("little_brother.users"))
 
