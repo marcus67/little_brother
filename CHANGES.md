@@ -9,7 +9,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Introduce base class `BasePersistentEntityManagerTest`
 *   Move all persistence modules to a folder of their own 
 *   Split up test class `TestStatusServer`
-*   Add test cases for user pages: add and delete user
+*   Add test case for users page: add and delete user
+*   Add test case for devices page: add and delete device
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

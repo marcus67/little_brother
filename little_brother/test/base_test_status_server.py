@@ -41,6 +41,7 @@ from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
 XPATH_EMPTY_USER_LIST = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
+XPATH_EMPTY_DEVICE_LIST = "//FORM/DIV/DIV[DIV[1] = 'Device' and DIV[2] = '']"
 
 
 class BaseTestStatusServer(base_test.BaseTestCase):
@@ -166,8 +167,25 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         assert "User Configuration" in self._driver.title
         self.check_empty_user_list()
 
+    def login_devices(self):
+
+        # When we load the admin page the first time...
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.DEVICES_REL_URL))
+        assert constants.APPLICATION_NAME in self._driver.title
+
+        # ...we end up on the login page.
+        self.login()
+        # After logging in we are on the devices page
+        assert "Device Configuration" in self._driver.title
+        self.check_empty_device_list()
+
+
     def check_empty_user_list(self):
         self._driver.find_element_by_xpath(XPATH_EMPTY_USER_LIST)
+
+    def check_empty_device_list(self):
+        self._driver.find_element_by_xpath(XPATH_EMPTY_DEVICE_LIST)
+
 
 
     def login(self):

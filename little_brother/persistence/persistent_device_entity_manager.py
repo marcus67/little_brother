@@ -15,7 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from little_brother import constants
 from little_brother import dependency_injection
 from little_brother.persistence import persistent_rule_set_entity_manager, base_entity_manager
 from little_brother.persistence.persistent_device import Device
@@ -71,16 +70,18 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         return {device.device_name: device for device in self.devices(p_session_context=p_session_context)}
 
+    def get_new_device_name(self, p_session_context: SessionContext, p_name_pattern: str):
+
+        return tools.get_new_object_name(
+            p_name_pattern=p_name_pattern,
+            p_existing_names=[device.device_name for device in self.devices(p_session_context)])
+
     def add_new_device(self, p_session_context: SessionContext, p_name_pattern: str):
 
         session = p_session_context.get_session()
         new_device = Device()
-        new_device.device_name = tools.get_new_object_name(
-            p_name_pattern=p_name_pattern,
-            p_existing_names=[device.device_name for device in self.devices(p_session_context)])
-        new_device.sample_size = constants.DEFAULT_DEVICE_SAMPLE_SIZE
-        new_device.min_activity_duration = constants.DEFAULT_DEVICE_MIN_ACTIVITY_DURATION
-        new_device.max_active_ping_delay = constants.DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY
+        new_device.device_name = self.get_new_device_name(
+            p_session_context=p_session_context, p_name_pattern=p_name_pattern)
         session.add(new_device)
 
         session.commit()

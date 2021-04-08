@@ -53,7 +53,8 @@
 	    		<DIV CLASS="col-xs-2 localetext">{{_('Device')}}</DIV>
 				<DIV CLASS="col-xs-9 hidden-xs"></DIV>
 				<DIV CLASS="col-xs-1 hidden-xs text-right">
-						<BUTTON type="submit" name="submit" class="btn" title="{{_('Add device')}}" value="{{ new_device_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
+						<BUTTON id="add_device" type="submit" name="submit" class="btn" title="{{_('Add device')}}"
+								value="{{ new_device_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
 				</DIV>
 	    	</DIV>
 	    	{% for device in devices %}

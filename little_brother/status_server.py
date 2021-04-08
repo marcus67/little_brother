@@ -39,7 +39,6 @@ from little_brother import persistence
 from little_brother import rule_override
 from little_brother import settings
 from little_brother.persistence import persistence
-from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
@@ -388,7 +387,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
             for device in p_devices:
                 form = p_forms[device.device_name]
-                device = Device.get_by_device_name(p_session=session, p_device_name=device.device_name)
+                device = self._device_entity_manager.get_by_device_name(
+                    p_session_context=session_context, p_device_name=device.device_name)
 
                 if device is not None and form.differs_from_model(p_model=device):
                     form.save_to_model(p_model=device)
@@ -641,8 +641,9 @@ class StatusServer(base_web_server.BaseWebServer):
                         self.save_devices_data(devices, forms)
 
                         if request.form['submit'] == HTML_KEY_NEW_DEVICE:
-                            self._device_entity_manager.add_new_device(p_session_context=session_context,
-                                                                       p_name_pattern=self.gettext("New device {id}"))
+                            self._device_entity_manager.add_new_device(
+                                p_session_context=session_context,
+                                p_name_pattern=self.gettext(constants.DEFAULT_DEVICE_NEW_NAME_PATTERN))
                             # TODO: after adding new device Devices window should be opened for new device
                         else:
                             for device in devices:

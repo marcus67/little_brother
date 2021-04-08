@@ -41,10 +41,10 @@ class Device(Base, BaseEntity):
     def __init__(self):
         super(BaseEntity).__init__()
         self.device_name = None
-        self.hostname = None
-        self.min_activity_duration = None
-        self.max_active_ping_delay = None
-        self.sample_size = None
+        self.hostname = constants.DEFAULT_DEVICE_HOST_NAME
+        self.sample_size = constants.DEFAULT_DEVICE_SAMPLE_SIZE
+        self.min_activity_duration = constants.DEFAULT_DEVICE_MIN_ACTIVITY_DURATION
+        self.max_active_ping_delay = constants.DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY
 
     def populate_test_data(self, p_session_context: SessionContext):
         self.device_name = "SomeDeviceName"
@@ -62,7 +62,6 @@ class Device(Base, BaseEntity):
         return "delete_device_{id}".format(id=self.id)
 
     def list_of_users(self, p_exclude=None):
-
         return ", ".join(["{name} ({percent}%)".format(name=user2device.user.full_name, percent=user2device.percent)
                           for user2device in self.users
                           if p_exclude is None or not user2device.user is p_exclude])
