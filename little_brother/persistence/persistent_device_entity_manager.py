@@ -18,8 +18,6 @@
 from little_brother import dependency_injection
 from little_brother.persistence import persistent_rule_set_entity_manager, base_entity_manager
 from little_brother.persistence.persistent_device import Device
-from little_brother.persistence.persistent_user import User
-from little_brother.persistence.persistent_user_2_device import User2Device
 from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
@@ -83,36 +81,6 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
         new_device.device_name = self.get_new_device_name(
             p_session_context=p_session_context, p_name_pattern=p_name_pattern)
         session.add(new_device)
-
-        session.commit()
-        self.persistence.clear_cache()
-
-    def add_device(self, p_session_context, p_username, p_device_id):
-
-        session = p_session_context.get_session()
-        user = User.get_by_username(p_session=session, p_username=p_username)
-
-        if user is None:
-            msg = "Cannot add device to user {username}. Not in database!"
-            self._logger.warning(msg.format(username=p_username))
-            session.close()
-            return
-
-        device = Device.get_by_id(p_session=session, p_id=p_device_id)
-
-        if device is None:
-            msg = "Cannot add device id {id} to user {username}. Not in database!"
-            self._logger.warning(msg.format(id=p_device_id, username=p_username))
-            session.close()
-            return
-
-        user2device = User2Device()
-        user2device.user = user
-        user2device.device = device
-        user2device.active = False
-        user2device.percent = 100
-
-        session.add(user2device)
 
         session.commit()
         self.persistence.clear_cache()

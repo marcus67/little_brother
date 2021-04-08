@@ -556,7 +556,7 @@ class StatusServer(base_web_server.BaseWebServer):
 
                                 elif request.form['submit'] == user.new_device_html_key:
                                     device_id = int(forms[user.new_device_html_key].device_id.data)
-                                    self._device_entity_manager.add_device(
+                                    self._user_2_device_entity_manager.add_user2device(
                                         p_session_context=session_context, p_device_id=device_id,
                                         p_username=user.username)
 

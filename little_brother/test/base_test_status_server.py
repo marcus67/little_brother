@@ -122,7 +122,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             p_persistence=self._persistence,
             p_is_master=True,
             p_user_handler=self._user_handler,
-            p_locale_helper=locale_helper.LocaleHelper())
+            p_locale_helper=locale_helper.LocaleHelper(),
+            p_languages=constants.LANGUAGES)
 
     def create_selenium_driver(self):
 
@@ -139,7 +140,6 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         else:
             self._driver = selenium.webdriver.PhantomJS()
 
-
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs):
 
         process_handlers = self.get_dummy_process_handlers()
@@ -153,7 +153,6 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
         self._app_control.check()
         self._app_control.stop()
-
 
     def login_users(self):
 
@@ -179,14 +178,11 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         assert "Device Configuration" in self._driver.title
         self.check_empty_device_list()
 
-
     def check_empty_user_list(self):
         self._driver.find_element_by_xpath(XPATH_EMPTY_USER_LIST)
 
     def check_empty_device_list(self):
         self._driver.find_element_by_xpath(XPATH_EMPTY_DEVICE_LIST)
-
-
 
     def login(self):
         elem = self._driver.find_element_by_name("username")

@@ -14,13 +14,14 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import little_brother.persistence.session_context
+
 from little_brother import dependency_injection
 from little_brother.persistence import base_entity_manager
 from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_user_2_device import User2Device
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
 
 
 class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
@@ -50,7 +51,8 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         return self._device_entity_manager
 
-    def get_by_id(self, p_session_context: little_brother.persistence.session_context.SessionContext, p_id: int):
+    def get_by_id(self, p_session_context: SessionContext, p_id: int):
+
         session = p_session_context.get_session()
         query = session.query(User2Device).filter(User2Device.id == p_id)
 
@@ -60,8 +62,7 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         else:
             return None
 
-    def delete_user2device(self, p_session_context: little_brother.persistence.session_context.SessionContext,
-                           p_user2device_id: int):
+    def delete_user2device(self, p_session_context: SessionContext, p_user2device_id: int):
 
         session = p_session_context.get_session()
         user2device = self.get_by_id(p_session_context=p_session_context, p_id=p_user2device_id)
@@ -76,8 +77,7 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def add_device(self, p_session_context: little_brother.persistence.session_context.SessionContext, p_username: str,
-                   p_device_id: int):
+    def add_user2device(self, p_session_context: SessionContext, p_username: str, p_device_id: int):
 
         user = self.user_entity_manager.get_by_username(p_session_context=p_session_context, p_username=p_username)
 
