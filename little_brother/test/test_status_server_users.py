@@ -24,6 +24,8 @@ import selenium.webdriver.support.ui
 
 from little_brother import dependency_injection
 from little_brother import status_server
+from little_brother.persistence.persistent_rule_set import RuleSet
+from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
@@ -38,14 +40,6 @@ NEW_USER_ACTIVE = True
 NEW_USER_PROCESS_NAME_PATTERN = "bash"
 
 class TestStatusServerUsers(BaseTestStatusServer):
-
-    def call_user_page(self, p_driver):
-        # When we load the admin page the first time...
-        p_driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.USERS_REL_URL))
-        assert "LittleBrother" in self._driver.title
-
-        # ...we end up on the login page.
-        self.login()
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_users(self):
@@ -146,6 +140,145 @@ class TestStatusServerUsers(BaseTestStatusServer):
             self.assertEqual(NEW_USER_PROCESS_NAME_PATTERN, user.process_name_pattern)
             self.assertEqual(NEW_USER_ACTIVE, user.active)
             self.assertEqual(NEW_USER_LOCALE, user.locale)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_users_assign_rule_set(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+
+        user_id = self.add_new_user(user_entity_manager)
+
+        self.login_users()
+
+        elem_name = "new_ruleset_user_{id}".format(id=user_id)
+        add_button = self._driver.find_element_by_id(elem_name)
+        self.click(add_button)
+
+        with SessionContext(self._persistence) as session_context:
+            user: User = user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+
+            self.assertIsNotNone(user)
+            self.assertEqual(self.get_new_user_name(), user.username)
+            self.assertEqual(2, len(user.rulesets))
+
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_users_unassign_rule_set(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+
+        user_id = self.add_new_user(user_entity_manager)
+
+        with SessionContext(self._persistence) as session_context:
+            rule_set_id = user_entity_manager.assign_ruleset(p_session_context=session_context, p_username=self.get_new_user_name())
+
+        self.login_users()
+
+        elem_name = "delete_ruleset_{id}".format(id=rule_set_id)
+        add_button = self._driver.find_element_by_id(elem_name)
+        self.click(add_button)
+
+        confirm_button = self._driver.find_element_by_id(elem_name + "-modal-confirm")
+        self.click(confirm_button)
+
+        with SessionContext(self._persistence) as session_context:
+            user: User = user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+
+            self.assertIsNotNone(user)
+            self.assertEqual(self.get_new_user_name(), user.username)
+            self.assertEqual(1, len(user.rulesets))
+
+            rule_set = user.rulesets[0]
+            self.assertNotEqual(rule_set_id, rule_set.id)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_users_move_rule_set_down(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        rule_set_entity_manager: RuleSetEntityManager = dependency_injection.container[RuleSetEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        with SessionContext(self._persistence) as session_context:
+            rule_set_1_id = user_entity_manager.assign_ruleset(
+                p_session_context=session_context, p_username=self.get_new_user_name())
+            rule_set_2_id = user_entity_manager.assign_ruleset(
+                p_session_context=session_context, p_username=self.get_new_user_name())
+
+            rule_set_1:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_1_id)
+            rule_set_2:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_2_id)
+
+            self.assertGreater(rule_set_2.priority, rule_set_1.priority)
+
+
+        self.login_users()
+
+        elem_name = "move_down_ruleset_{id}".format(id=rule_set_2_id)
+        add_button = self._driver.find_element_by_id(elem_name)
+        self.click(add_button)
+
+        with SessionContext(self._persistence) as session_context:
+            rule_set_1:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_1_id)
+            rule_set_2:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_2_id)
+
+            self.assertLess(rule_set_2.priority, rule_set_1.priority)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_users_move_rule_set_up(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        rule_set_entity_manager: RuleSetEntityManager = dependency_injection.container[RuleSetEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        with SessionContext(self._persistence) as session_context:
+            rule_set_1_id = user_entity_manager.assign_ruleset(
+                p_session_context=session_context, p_username=self.get_new_user_name())
+            rule_set_2_id = user_entity_manager.assign_ruleset(
+                p_session_context=session_context, p_username=self.get_new_user_name())
+
+            rule_set_1:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_1_id)
+            rule_set_2:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_2_id)
+
+            self.assertGreater(rule_set_2.priority, rule_set_1.priority)
+
+        self.login_users()
+
+        elem_name = "move_up_ruleset_{id}".format(id=rule_set_1_id)
+        add_button = self._driver.find_element_by_id(elem_name)
+        self.click(add_button)
+
+        with SessionContext(self._persistence) as session_context:
+            rule_set_1:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_1_id)
+            rule_set_2:RuleSet = rule_set_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=rule_set_2_id)
+
+            self.assertLess(rule_set_2.priority, rule_set_1.priority)
+
+
 
 
 if __name__ == "__main__":

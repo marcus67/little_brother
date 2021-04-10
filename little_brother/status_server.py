@@ -546,7 +546,7 @@ class StatusServer(base_web_server.BaseWebServer):
                                     self._appcontrol.send_config_to_all_slaves()
 
                                 elif request.form['submit'] == user.new_ruleset_html_key:
-                                    self._rule_set_entity_manager.add_ruleset(
+                                    self._user_entity_manager.assign_ruleset(
                                         p_session_context=session_context, p_username=user.username)
 
                                 elif request.form['submit'] == user.new_device_html_key:

@@ -146,7 +146,8 @@
 								{{ accordion.toggle_end() }}
 							</DIV>
 							<DIV class="col-xs-2 text-right">
-								<BUTTON type="submit" name="submit" class="btn" title="{{_('Add ruleset')}}" value="{{ user.new_ruleset_html_key }}"><I class="fas fa-plus"></I></BUTTON>
+								<BUTTON id="{{ user.new_ruleset_html_key }}" type="submit" name="submit" class="btn"
+										title="{{_('Add ruleset')}}" value="{{ user.new_ruleset_html_key }}"><I class="fas fa-plus"></I></BUTTON>
 							</DIV>
 						</DIV>
     			    {% call accordion.details() %}{{user.rulesets_html_key}}{% endcall %}
@@ -171,13 +172,15 @@
 												title="{{_('Remove ruleset')}}"><I class="fas fa-trash"></I></BUTTON>
 										{% endif %}
 										{% if ruleset.can_move_up %}
-										<BUTTON type="submit" name="submit" class="btn"
+										<BUTTON id="{{ ruleset.move_up_html_key }}"
+												type="submit" name="submit" class="btn"
 												value="{{ ruleset.move_up_html_key }}"
 												title="{{ _('Move ruleset up')}}"><I class="fas fa-arrow-up"></I>
 										</BUTTON>
 										{% endif %}
 										{% if ruleset.can_move_down %}
-										<BUTTON type="submit" name="submit" class="btn"
+										<BUTTON id="{{ ruleset.move_down_html_key }}"
+												type="submit" name="submit" class="btn"
 												value="{{ ruleset.move_down_html_key }}"
 												title="{{ _('Move ruleset down')}}"><I class="fas fa-arrow-down"></I>
 										</BUTTON>

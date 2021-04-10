@@ -15,12 +15,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import little_brother.persistence.session_context
 from little_brother import constants
 from little_brother import simple_context_rule_handlers
 from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.persistent_rule_set import RuleSet
-from little_brother.persistence.persistent_user import User
+from little_brother.persistence.session_context import SessionContext
 
 
 class RuleSetEntityManager(BaseEntityManager):
@@ -36,29 +35,7 @@ class RuleSetEntityManager(BaseEntityManager):
         default_ruleset.context = simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME
         return default_ruleset
 
-    def add_ruleset(self, p_session_context: little_brother.persistence.session_context.SessionContext,
-                    p_username: str) -> None:
-
-        session = p_session_context.get_session()
-        user = User.get_by_username(p_session=session, p_username=p_username)
-
-        if user is None:
-            msg = "Cannot add rule set to user {username}. Not in database!"
-            self._logger.warning(msg.format(username=p_username))
-            session.close()
-            return
-
-        new_priority = max([ruleset.priority for ruleset in user.rulesets]) + 1
-
-        default_ruleset = self.get_default_ruleset(p_priority=new_priority)
-        default_ruleset.user = user
-        session.add(default_ruleset)
-        session.commit()
-
-        self.persistence.clear_cache()
-
-    def delete_ruleset(self, p_session_context: little_brother.persistence.session_context.SessionContext,
-                       p_ruleset_id) -> None:
+    def delete_ruleset(self, p_session_context: SessionContext, p_ruleset_id) -> None:
 
         session = p_session_context.get_session()
         ruleset = self.get_by_id(p_session_context=p_session_context, p_id=p_ruleset_id)
@@ -73,8 +50,7 @@ class RuleSetEntityManager(BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def move_up_ruleset(self, p_session_context: little_brother.persistence.session_context.SessionContext,
-                        p_ruleset_id: int) -> None:
+    def move_up_ruleset(self, p_session_context: SessionContext, p_ruleset_id: int) -> None:
 
         session = p_session_context.get_session()
 
@@ -85,8 +61,7 @@ class RuleSetEntityManager(BaseEntityManager):
 
         self.persistence.clear_cache()
 
-    def move_down_ruleset(self, p_session_context: little_brother.persistence.session_context.SessionContext,
-                          p_ruleset_id: int) -> None:
+    def move_down_ruleset(self, p_session_context: SessionContext, p_ruleset_id: int) -> None:
 
         session = p_session_context.get_session()
 

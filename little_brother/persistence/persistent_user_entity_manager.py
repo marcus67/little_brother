@@ -15,12 +15,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import little_brother.persistence.session_context
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_user import User
+from little_brother.persistence.session_context import SessionContext
 
 
 class UserEntityManager(BaseEntityManager):
@@ -39,8 +39,7 @@ class UserEntityManager(BaseEntityManager):
 
         return self._rule_set_entity_manager
 
-    def get_by_username(self, p_session_context: little_brother.persistence.session_context.SessionContext,
-                        p_username: str):
+    def get_by_username(self, p_session_context: SessionContext, p_username: str):
         session = p_session_context.get_session()
         query = session.query(User).filter(User.username == p_username)
 
@@ -107,3 +106,25 @@ class UserEntityManager(BaseEntityManager):
         session.delete(user)
         session.commit()
         self.persistence.clear_cache()
+
+    def assign_ruleset(self, p_session_context: SessionContext, p_username: str) -> int:
+
+        session = p_session_context.get_session()
+        user = self.get_by_username(p_session_context=p_session_context, p_username=p_username)
+
+        if user is None:
+            msg = "Cannot add rule set to user {username}. Not in database!"
+            self._logger.warning(msg.format(username=p_username))
+            session.close()
+            return None
+
+        new_priority = max([ruleset.priority for ruleset in user.rulesets]) + 1
+
+        default_ruleset = self.rule_set_entity_manager.get_default_ruleset(p_priority=new_priority)
+        default_ruleset.user = user
+        session.add(default_ruleset)
+        session.commit()
+
+        self.persistence.clear_cache()
+
+        return default_ruleset.id
