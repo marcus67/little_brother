@@ -251,7 +251,8 @@
 								{% if forms[user.new_device_html_key] is defined %}
 									{{ _("Add to monitoring") }}:
 									{{ forms[user.new_device_html_key].device_id(class_="form-control inline-field") }}
-									<BUTTON type="submit" name="submit" class="btn" title="{{_('Add device')}}"
+									<BUTTON id="{{ user.new_device_html_key }}" type="submit" name="submit"
+											class="btn" title="{{_('Add device')}}"
 											value="{{ user.new_device_html_key }}"><I class="fas fa-plus"></I></BUTTON>
 								{% endif %}
 							</DIV>

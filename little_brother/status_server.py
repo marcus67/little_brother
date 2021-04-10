@@ -42,7 +42,6 @@ from little_brother.persistence import persistence
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
-from little_brother.persistence.persistent_user_2_device import User2Device
 from little_brother.persistence.persistent_user_2_device_entity_manager import User2DeviceEntityManager
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
@@ -363,7 +362,8 @@ class StatusServer(base_web_server.BaseWebServer):
 
                 for user2device in user.devices:
                     form = p_forms[user2device.html_key]
-                    a_persistent_user_2_device = User2Device.get_by_id(p_session=session, p_id=user2device.id)
+                    a_persistent_user_2_device = self._user_2_device_entity_manager.get_by_id(
+                        p_session_context=session_context, p_id=user2device.id)
 
                     if a_persistent_user_2_device is not None and form.differs_from_model(
                             p_model=a_persistent_user_2_device):

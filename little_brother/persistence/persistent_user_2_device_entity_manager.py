@@ -77,7 +77,7 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         session.commit()
         self.persistence.clear_cache()
 
-    def add_user2device(self, p_session_context: SessionContext, p_username: str, p_device_id: int):
+    def add_user2device(self, p_session_context: SessionContext, p_username: str, p_device_id: int) -> int:
 
         user = self.user_entity_manager.get_by_username(p_session_context=p_session_context, p_username=p_username)
 
@@ -104,3 +104,5 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         session.commit()
         self.persistence.clear_cache()
+
+        return user2device.id
