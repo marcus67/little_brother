@@ -21,11 +21,23 @@
 import unittest
 
 from little_brother import constants
+from little_brother import dependency_injection
 from little_brother import status_server
+from little_brother.persistence.persistent_rule_override import RuleOverride
+from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_data
 from little_brother.test.base_test_status_server import BaseTestStatusServer
+from python_base_app import tools
 from python_base_app.test import base_test
 
+NEW_MAX_TIME_PER_DAY = "2h34m"
+NEW_MIN_TIME_OF_DAY = "12:34"
+NEW_MAX_TIME_OF_DAY = "13:45"
+NEW_MIN_BREAK = "12m"
+NEW_FREE_PLAY = True
+NEW_MAX_ACTIVITY_DURATION = "1h23m"
 
 class TestStatusServerAdmin(BaseTestStatusServer):
 
@@ -72,6 +84,63 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
         # we are on the admin page right away...
         self.check_empty_user_list()
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        reference_date = tools.get_current_time().date()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        rule_override_entity_manager: RuleOverrideEntityManager = \
+            dependency_injection.container[RuleOverrideEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        self.login_admin()
+
+        elem_name_prefix = tools.get_safe_attribute_name(
+            "{username}_{date_string}_".format(username=self.get_new_user_name(),
+                                               date_string=tools.get_simple_date_as_string(reference_date)))
+
+        elem = self._driver.find_element_by_id(elem_name_prefix + "min_time_of_day")
+        self.set_value(p_value=NEW_MIN_TIME_OF_DAY, p_elem=elem)
+
+        elem = self._driver.find_element_by_id(elem_name_prefix + "max_time_of_day")
+        self.set_value(p_value=NEW_MAX_TIME_OF_DAY, p_elem=elem)
+
+        elem = self._driver.find_element_by_id(elem_name_prefix + "max_time_per_day")
+        self.set_value(p_value=NEW_MAX_TIME_PER_DAY, p_elem=elem)
+
+        elem = self._driver.find_element_by_id(elem_name_prefix + "max_activity_duration")
+        self.set_value(p_value=NEW_MAX_ACTIVITY_DURATION, p_elem=elem)
+
+        elem = self._driver.find_element_by_id(elem_name_prefix + "min_break")
+        self.set_value(p_value=NEW_MIN_BREAK, p_elem=elem)
+
+        elem = self._driver.find_element_by_id(elem_name_prefix + "free_play")
+        self.click(elem)
+
+
+        save_button = self._driver.find_element_by_id("save")
+        self.click(save_button)
+
+        with SessionContext(self._persistence) as session_context:
+            rule_override:RuleOverride = rule_override_entity_manager.get_rule_override_by_username_and_date(
+                p_session_context=session_context, p_username=self.get_new_user_name(), p_date=reference_date)
+            self.assertIsNotNone(rule_override)
+            self.assertEqual(rule_override.reference_date, reference_date)
+            self.assertEqual(rule_override.username, self.get_new_user_name())
+
+            self.assertEqual(rule_override.min_break, tools.get_string_as_duration(NEW_MIN_BREAK))
+            self.assertEqual(rule_override.max_activity_duration, tools.get_string_as_duration(NEW_MAX_ACTIVITY_DURATION))
+            self.assertEqual(rule_override.max_time_per_day, tools.get_string_as_duration(NEW_MAX_TIME_PER_DAY))
+            self.assertEqual(rule_override.min_time_of_day, tools.get_string_as_time(NEW_MIN_TIME_OF_DAY))
+            self.assertEqual(rule_override.max_time_of_day, tools.get_string_as_time(NEW_MAX_TIME_OF_DAY))
+            self.assertEqual(rule_override.free_play, NEW_FREE_PLAY)
 
 
 if __name__ == "__main__":

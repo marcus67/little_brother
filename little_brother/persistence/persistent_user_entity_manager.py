@@ -65,12 +65,12 @@ class UserEntityManager(BaseEntityManager):
 
         return {user.username: user for user in self.users(p_session_context=p_session_context)}
 
-    def add_new_user(self, p_session_context, p_username, p_locale=None):
+    def add_new_user(self, p_session_context, p_username, p_locale=None) -> int:
 
         if p_username in self.user_map(p_session_context):
             msg = "Cannot create new user {username}. Already in database!"
             self._logger.warning(msg.format(username=p_username))
-            return
+            return None
 
         session = p_session_context.get_session()
         new_user = User()
@@ -85,6 +85,8 @@ class UserEntityManager(BaseEntityManager):
 
         session.commit()
         self.persistence.clear_cache()
+
+        return new_user.id
 
     def delete_user(self, p_session_context, p_username):
 

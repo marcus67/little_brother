@@ -10,7 +10,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Move all persistence modules to a folder of their own 
 *   Split up test class `TestStatusServer`
 *   Add test case for users page: add and delete user, edit user
-*   Add test case for devices page: add and delete device
+*   Add test case for devices page: add and delete device, edit device
+*   Add test case for admin page: edit rule override
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

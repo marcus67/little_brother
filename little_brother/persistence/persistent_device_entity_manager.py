@@ -74,7 +74,7 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
             p_name_pattern=p_name_pattern,
             p_existing_names=[device.device_name for device in self.devices(p_session_context)])
 
-    def add_new_device(self, p_session_context: SessionContext, p_name_pattern: str):
+    def add_new_device(self, p_session_context: SessionContext, p_name_pattern: str) -> int:
 
         session = p_session_context.get_session()
         new_device = Device()
@@ -84,6 +84,8 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         session.commit()
         self.persistence.clear_cache()
+
+        return new_device.id
 
     def delete_device(self, p_session_context: SessionContext, p_id: int):
 

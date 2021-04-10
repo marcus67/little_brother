@@ -31,6 +31,11 @@ from little_brother.test.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
+NEW_USER_FIRST_NAME = "Micky"
+NEW_USER_LAST_NAME = "Mouse"
+NEW_USER_LOCALE = "de"
+NEW_USER_ACTIVE = True
+NEW_USER_PROCESS_NAME_PATTERN = "bash"
 
 class TestStatusServerUsers(BaseTestStatusServer):
 
@@ -88,11 +93,10 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self._driver.find_element_by_xpath(xpath)
 
         delete_button = self._driver.find_element_by_id("delete_user_1")
-        delete_button.click()
+        self.click(delete_button)
 
         delete_button = self._driver.find_element_by_id("delete_user_1-modal-confirm")
-        # See https://stackoverflow.com/questions/56194094/how-to-fix-this-issue-element-not-interactable-selenium-python
-        self._driver.execute_script("arguments[0].click();", delete_button)
+        self.click(delete_button)
 
         with SessionContext(self._persistence) as session_context:
             user = user_entity_manager.get_by_id(
@@ -101,11 +105,6 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_users_edit_user(self):
-        NEW_USER_FIRST_NAME = "Micky"
-        NEW_USER_LAST_NAME = "Mouse"
-        NEW_USER_LOCALE = "de"
-        NEW_USER_ACTIVE = True
-        NEW_USER_PROCESS_NAME_PATTERN = "bash"
 
         self.create_dummy_status_server()
         self.create_selenium_driver()
@@ -114,30 +113,29 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
         user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
 
-        with SessionContext(self._persistence) as session_context:
-            user_entity_manager.add_new_user(
-                p_session_context=session_context, p_username=test_unix_user_handler.USER_2_UID, p_locale="en")
+        user_id = self.add_new_user(user_entity_manager)
 
         self.login_users()
+        
+        elem_prefix = "user_{id}_".format(id=user_id)
 
-        elem = self._driver.find_element_by_id("user_1_first_name")
-        # See https://stackoverflow.com/questions/22528456/how-to-replace-default-values-in-the-text-field-using-selenium-python/33361371
-        self._driver.execute_script("arguments[0].value = '{value}'".format(value=NEW_USER_FIRST_NAME), elem)
+        elem = self._driver.find_element_by_id(elem_prefix + "first_name")
+        self.set_value(p_elem=elem, p_value=NEW_USER_FIRST_NAME)
 
-        elem = self._driver.find_element_by_id("user_1_last_name")
-        self._driver.execute_script("arguments[0].value = '{value}'".format(value=NEW_USER_LAST_NAME), elem)
+        elem = self._driver.find_element_by_id(elem_prefix + "last_name")
+        self.set_value(p_elem=elem, p_value=NEW_USER_LAST_NAME)
 
-        elem = self._driver.find_element_by_id("user_1_process_name_pattern")
-        self._driver.execute_script("arguments[0].value = '{value}'".format(value=NEW_USER_PROCESS_NAME_PATTERN), elem)
+        elem = self._driver.find_element_by_id(elem_prefix + "process_name_pattern")
+        self.set_value(p_elem=elem, p_value=NEW_USER_PROCESS_NAME_PATTERN)
 
-        elem = self._driver.find_element_by_id("user_1_locale")
-        self._driver.execute_script("arguments[0].value = '{value}'".format(value=NEW_USER_LOCALE), elem)
+        elem = self._driver.find_element_by_id(elem_prefix + "locale")
+        self.set_value(p_elem=elem, p_value=NEW_USER_LOCALE)
 
-        check_box = self._driver.find_element_by_id("user_1_active")
-        self._driver.execute_script("arguments[0].click();", check_box)
+        check_box = self._driver.find_element_by_id(elem_prefix + "active")
+        self.click(check_box)
 
         save_button = self._driver.find_element_by_id("save")
-        self._driver.execute_script("arguments[0].click();", save_button)
+        self.click(save_button)
 
         with SessionContext(self._persistence) as session_context:
             user: User = user_entity_manager.get_by_username(

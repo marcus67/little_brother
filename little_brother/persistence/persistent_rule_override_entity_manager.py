@@ -17,6 +17,8 @@
 
 import datetime
 
+from sqlalchemy.sql.expression import and_
+
 from little_brother.persistence import base_entity_manager
 from little_brother.persistence.persistent_rule_override import RuleOverride
 from little_brother.persistence.session_context import SessionContext
@@ -56,6 +58,22 @@ class RuleOverrideEntityManager(base_entity_manager.BaseEntityManager):
         result = session.query(RuleOverride).filter(RuleOverride.reference_date > reference_time).all()
 
         return result
+
+    def get_rule_override_by_username_and_date(self, p_session_context: SessionContext,
+                                               p_username: str, p_date: datetime.date):
+
+        session = p_session_context.get_session()
+        result = session.query(RuleOverride).filter(
+         and_(RuleOverride.username == p_username, RuleOverride.reference_date == p_date))
+
+        for item in result:
+            print(str(item))
+
+        if result.count() == 1:
+            return result.one()
+
+        else:
+            return None
 
     def delete_historic_entries(self, p_session_context: SessionContext, p_history_length_in_days: int):
 

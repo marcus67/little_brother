@@ -24,6 +24,7 @@ import unittest
 
 import selenium
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.webelement import WebElement
 
 from little_brother import app
 from little_brother import app_control
@@ -32,6 +33,8 @@ from little_brother import constants
 from little_brother import dependency_injection
 from little_brother import master_connector
 from little_brother import status_server
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_rule_handler
@@ -178,6 +181,17 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         assert "Device Configuration" in self._driver.title
         self.check_empty_device_list()
 
+    def login_admin(self):
+
+        # When we load the admin page the first time...
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+        assert constants.APPLICATION_NAME in self._driver.title
+
+        # ...we end up on the login page.
+        self.login()
+        # After logging in we are on the devices page
+        assert "Administration" in self._driver.title
+
     def check_empty_user_list(self):
         self._driver.find_element_by_xpath(XPATH_EMPTY_USER_LIST)
 
@@ -193,6 +207,28 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         elem.clear()
         elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
         elem.send_keys(Keys.RETURN)
+
+    def click(self, delete_button):
+        # See https://stackoverflow.com/questions/56194094/how-to-fix-this-issue-element-not-interactable-selenium-python
+        self._driver.execute_script("arguments[0].click();", delete_button)
+
+    def set_value(self, p_elem, p_value):
+
+        self.assertIsInstance(p_elem, WebElement)
+        # See https://stackoverflow.com/questions/22528456/how-to-replace-default-values-in-the-text-field-using-selenium-python/33361371
+        self._driver.execute_script("arguments[0].value = '{value}'".format(value=p_value), p_elem)
+
+    def add_new_user(self, p_user_entity_manager:UserEntityManager) -> int:
+        with SessionContext(self._persistence) as session_context:
+            user_id = p_user_entity_manager.add_new_user(
+                p_session_context=session_context, p_username=self.get_new_user_name(), p_locale="en")
+        self._app_control.add_monitored_user(p_username=self.get_new_user_name())
+        self._app_control.retrieve_user_mappings()
+
+        return user_id
+
+    def get_new_user_name(self):
+        return test_unix_user_handler.USER_2_UID
 
 
 if __name__ == "__main__":
