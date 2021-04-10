@@ -208,9 +208,9 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
         elem.send_keys(Keys.RETURN)
 
-    def click(self, delete_button):
+    def click(self, p_elem):
         # See https://stackoverflow.com/questions/56194094/how-to-fix-this-issue-element-not-interactable-selenium-python
-        self._driver.execute_script("arguments[0].click();", delete_button)
+        self._driver.execute_script("arguments[0].click();", p_elem)
 
     def set_value(self, p_elem, p_value):
 

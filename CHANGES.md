@@ -11,7 +11,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Split up test class `TestStatusServer`
 *   Add test case for users page: add and delete user, edit user
 *   Add test case for devices page: add and delete device, edit device
-*   Add test case for admin page: edit rule override
+*   Add test case for admin page: edit rule override, add, extend, and delete time extension
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

@@ -15,6 +15,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
+
 from sqlalchemy import Column, Integer, String, DateTime
 
 from little_brother.persistence.base_entity import BaseEntity
@@ -29,3 +31,14 @@ class TimeExtension(Base, BaseEntity):
     reference_datetime = Column(DateTime)
     start_datetime = Column(DateTime)
     end_datetime = Column(DateTime)
+
+    def __init__(self):
+
+        self.username:str = None
+        self.reference_datetime:datetime.datetime = None
+        self.start_datetime:datetime.datetime = None
+        self.end_datetime:datetime.datetime = None
+
+    def get_length_in_minutes(self):
+
+        return int((self.end_datetime - self.start_datetime).total_seconds() / 60.0 + 0.5)

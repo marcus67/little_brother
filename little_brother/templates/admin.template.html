@@ -105,20 +105,23 @@
 								{% for period in admin_info.time_extension_periods %}
 								    {% if period == 0 %}
 										{% set period_string = - period %}
-										<BUTTON class="btn btn-time-extension-off" type="submit" name="submit"
+										<BUTTON id="time_extension_{{ admin_info.username }}_0"
+												class="btn btn-time-extension-off" type="submit" name="submit"
 												value="time_extension_{{ admin_info.username }}_0"
 												title="{{_('Deactivate time extension')}}">
 											<I class="fas fa-power-off"></I>
 										</BUTTON>
 								    {% elif period < 0 %}
 										{% set period_string = - period %}
-										<BUTTON class="btn btn-time-extension-minus" type="submit" name="submit"
+										<BUTTON id="time_extension_{{ admin_info.username }}_{{period}}"
+												class="btn btn-time-extension-minus" type="submit" name="submit"
 												value="time_extension_{{ admin_info.username }}_{{period}}"
 												title="{{_('Decrease time extension by {minutes} minutes')|format({'minutes':period_string})}}">
 											<I class="far fa-minus-square"></I> {{ period_string }}
 										</BUTTON>
 								    {% else %}
-										<BUTTON class="btn btn-time-extension-plus" type="submit" name="submit"
+										<BUTTON id="time_extension_{{ admin_info.username }}_{{period}}"
+												class="btn btn-time-extension-plus" type="submit" name="submit"
 												value="time_extension_{{ admin_info.username }}_{{period}}"
 												title="{{_('Increase time extension by {minutes} minutes')|format({'minutes':period})}}">
 											<I class="far fa-plus-square"></I> {{ period }}

@@ -19,12 +19,15 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import unittest
+from typing import List
 
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother import status_server
 from little_brother.persistence.persistent_rule_override import RuleOverride
 from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
+from little_brother.persistence.persistent_time_extension import TimeExtension
+from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_data
@@ -38,6 +41,10 @@ NEW_MAX_TIME_OF_DAY = "13:45"
 NEW_MIN_BREAK = "12m"
 NEW_FREE_PLAY = True
 NEW_MAX_ACTIVITY_DURATION = "1h23m"
+
+EXTENSION_IN_MINUTES = 30
+SECOND_EXTENSION_IN_MINUTES = 30
+
 
 class TestStatusServerAdmin(BaseTestStatusServer):
 
@@ -124,23 +131,129 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         elem = self._driver.find_element_by_id(elem_name_prefix + "free_play")
         self.click(elem)
 
-
         save_button = self._driver.find_element_by_id("save")
         self.click(save_button)
 
         with SessionContext(self._persistence) as session_context:
-            rule_override:RuleOverride = rule_override_entity_manager.get_rule_override_by_username_and_date(
+            rule_override: RuleOverride = rule_override_entity_manager.get_rule_override_by_username_and_date(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_date=reference_date)
             self.assertIsNotNone(rule_override)
             self.assertEqual(rule_override.reference_date, reference_date)
             self.assertEqual(rule_override.username, self.get_new_user_name())
 
             self.assertEqual(rule_override.min_break, tools.get_string_as_duration(NEW_MIN_BREAK))
-            self.assertEqual(rule_override.max_activity_duration, tools.get_string_as_duration(NEW_MAX_ACTIVITY_DURATION))
+            self.assertEqual(rule_override.max_activity_duration,
+                             tools.get_string_as_duration(NEW_MAX_ACTIVITY_DURATION))
             self.assertEqual(rule_override.max_time_per_day, tools.get_string_as_duration(NEW_MAX_TIME_PER_DAY))
             self.assertEqual(rule_override.min_time_of_day, tools.get_string_as_time(NEW_MIN_TIME_OF_DAY))
             self.assertEqual(rule_override.max_time_of_day, tools.get_string_as_time(NEW_MAX_TIME_OF_DAY))
             self.assertEqual(rule_override.free_play, NEW_FREE_PLAY)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_add_time_extension(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        time_extension_entity_manager: TimeExtensionEntityManager = \
+            dependency_injection.container[TimeExtensionEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        self.login_admin()
+
+        elem_name = "time_extension_{username}_{extension}".format(
+            username=self.get_new_user_name(), extension=EXTENSION_IN_MINUTES)
+
+        elem = self._driver.find_element_by_id(elem_name)
+        self.click(elem)
+
+        with SessionContext(self._persistence) as session_context:
+            time_extensions: List[TimeExtension] = time_extension_entity_manager.get_active_time_extensions(
+                p_session_context=session_context, p_reference_datetime=tools.get_current_time())
+            self.assertIsNotNone(time_extensions)
+            self.assertEqual(1, len(time_extensions))
+            self.assertIn(self.get_new_user_name(), time_extensions)
+
+            time_extension: TimeExtension = time_extensions[self.get_new_user_name()]
+            self.assertEqual(EXTENSION_IN_MINUTES, time_extension.get_length_in_minutes())
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_delete_time_extension(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        time_extension_entity_manager: TimeExtensionEntityManager = \
+            dependency_injection.container[TimeExtensionEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        reference_datetime = tools.get_current_time()
+
+        with SessionContext(self._persistence) as session_context:
+            time_extension_entity_manager.set_time_extension(p_session_context=session_context,
+                                                             p_username=self.get_new_user_name(),
+                                                             p_reference_datetime=reference_datetime,
+                                                             p_time_delta=EXTENSION_IN_MINUTES,
+                                                             p_start_datetime=reference_datetime)
+
+        self.login_admin()
+
+        elem_name = "time_extension_{username}_0".format(username=self.get_new_user_name())
+
+        elem = self._driver.find_element_by_id(elem_name)
+        self.click(elem)
+
+        with SessionContext(self._persistence) as session_context:
+            time_extensions: List[TimeExtension] = time_extension_entity_manager.get_active_time_extensions(
+                p_session_context=session_context, p_reference_datetime=tools.get_current_time())
+            self.assertIsNotNone(time_extensions)
+            self.assertEqual(0, len(time_extensions))
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_extend_time_extension(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        time_extension_entity_manager: TimeExtensionEntityManager = \
+            dependency_injection.container[TimeExtensionEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        reference_datetime = tools.get_current_time()
+
+        with SessionContext(self._persistence) as session_context:
+            time_extension_entity_manager.set_time_extension(p_session_context=session_context,
+                                                             p_username=self.get_new_user_name(),
+                                                             p_reference_datetime=reference_datetime,
+                                                             p_time_delta=EXTENSION_IN_MINUTES,
+                                                             p_start_datetime=reference_datetime)
+
+        self.login_admin()
+
+        elem_name = "time_extension_{username}_{extension}".format(username=self.get_new_user_name(),
+                                                                   extension=SECOND_EXTENSION_IN_MINUTES)
+
+        elem = self._driver.find_element_by_id(elem_name)
+        self.click(elem)
+
+        with SessionContext(self._persistence) as session_context:
+            time_extensions: List[TimeExtension] = time_extension_entity_manager.get_active_time_extensions(
+                p_session_context=session_context, p_reference_datetime=tools.get_current_time())
+            self.assertIsNotNone(time_extensions)
+            self.assertEqual(1, len(time_extensions))
+            self.assertIn(self.get_new_user_name(), time_extensions)
+
+            time_extension: TimeExtension = time_extensions[self.get_new_user_name()]
+            self.assertEqual(EXTENSION_IN_MINUTES + SECOND_EXTENSION_IN_MINUTES, time_extension.get_length_in_minutes())
 
 
 if __name__ == "__main__":
