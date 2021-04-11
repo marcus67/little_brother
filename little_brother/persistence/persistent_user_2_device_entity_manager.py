@@ -84,14 +84,14 @@ class User2DeviceEntityManager(base_entity_manager.BaseEntityManager):
         if user is None:
             msg = "Cannot add device to user {username}. Not in database!"
             self._logger.warning(msg.format(username=p_username))
-            return
+            return None
 
         device: Device = self.device_entity_manager.get_by_id(p_session_context=p_session_context, p_id=p_device_id)
 
         if device is None:
             msg = "Cannot add device id {id} to user {username}. Not in database!"
             self._logger.warning(msg.format(id=p_device_id, username=p_username))
-            return
+            return None
 
         session = p_session_context.get_session()
         user2device = User2Device()

@@ -9,13 +9,14 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Introduce base class `BasePersistentEntityManagerTest`
 *   Move all persistence modules to a folder of their own 
 *   Split up test class `TestStatusServer`
-*   Add test case for users page: 
+*   Add test cases for users page: 
     *   add and delete user, edit user,
     *   assign/unassign rule set, 
     *   move up/down rule set,
     *   assign/unassign device
-*   Add test case for devices page: add and delete device, edit device
-*   Add test case for admin page: edit rule override, add, extend, and delete time extension
+*   Add test cases for devices page: add and delete device, edit device
+*   Add test cases for admin page: edit rule override, add, extend, and delete time extension
+*   Add test cases for invalid data in rule override and device
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

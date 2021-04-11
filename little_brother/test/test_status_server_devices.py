@@ -35,6 +35,11 @@ NEW_DEVICE_MIN_ACTIVITY_DURATION = 321
 NEW_DEVICE_MAX_ACTIVE_PING_DELAY = 21
 NEW_DEVICE_SAMPLE_SIZE = 32
 
+NEW_INVALID_HOST_NAME = "xxx"
+NEW_INVALID_MIN_ACTIVITY_DURATION = constants.DEVICE_MAX_MIN_ACTIVITY_DURATION + 1
+NEW_INVALID_SAMPLE_SIZE = constants.DEVICE_MIN_SAMPLE_SIZE - 1
+NEW_INVALID_MAX_PING_DELAY = constants.DEVICE_MAX_MAX_ACTIVE_PING_DELAY + 1
+
 
 class TestStatusServerDevices(BaseTestStatusServer):
 
@@ -138,6 +143,61 @@ class TestStatusServerDevices(BaseTestStatusServer):
             self.assertEqual(NEW_DEVICE_MIN_ACTIVITY_DURATION, device.min_activity_duration)
             self.assertEqual(NEW_DEVICE_MAX_ACTIVE_PING_DELAY, device.max_active_ping_delay)
             self.assertEqual(NEW_DEVICE_SAMPLE_SIZE, device.sample_size)
+
+    def _test_page_devices_edit_invalid_data(self, p_elem_name: str, p_invalid_data: str):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        device_entity_manager: DeviceEntityManager = dependency_injection.container[DeviceEntityManager]
+
+        with SessionContext(self._persistence) as session_context:
+            device_id = device_entity_manager.add_new_device(
+                p_session_context=session_context, p_name_pattern=constants.DEFAULT_DEVICE_NEW_NAME_PATTERN)
+            device: Device = device_entity_manager.get_by_id(p_session_context=session_context, p_id=device_id)
+            self.assertIsNotNone(device)
+            old_value = getattr(device, p_elem_name)
+
+        self.login_devices()
+
+        elem_name_prefix = "device_{id}_".format(id=device_id)
+
+        elem_name = elem_name_prefix + p_elem_name
+        elem = self._driver.find_element_by_id(elem_name)
+        self.set_value(p_value=p_invalid_data, p_elem=elem)
+
+        save_button = self._driver.find_element_by_id("save")
+        self.click(save_button)
+
+        xpath = "//LABEL[@CLASS = 'error-label' and @FOR = '{elem_name}']".format(elem_name=elem_name)
+        self._driver.find_element_by_xpath(xpath)
+
+        # Data was not saved!
+        with SessionContext(self._persistence) as session_context:
+            device: Device = device_entity_manager.get_by_id(p_session_context=session_context, p_id=device_id)
+            self.assertIsNotNone(device)
+            self.assertEqual(old_value, getattr(device, p_elem_name))
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_devices_edit_invalid_hostname(self):
+        self._test_page_devices_edit_invalid_data(
+            p_elem_name="hostname", p_invalid_data=NEW_INVALID_HOST_NAME)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_devices_edit_invalid_min_activity_duration(self):
+        self._test_page_devices_edit_invalid_data(
+            p_elem_name="min_activity_duration", p_invalid_data=NEW_INVALID_MIN_ACTIVITY_DURATION)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_devices_edit_invalid_max_active_ping_delay(self):
+        self._test_page_devices_edit_invalid_data(
+            p_elem_name="max_active_ping_delay", p_invalid_data=NEW_INVALID_MAX_PING_DELAY)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_devices_edit_invalid_sample_size(self):
+        self._test_page_devices_edit_invalid_data(
+            p_elem_name="sample_size", p_invalid_data=NEW_INVALID_SAMPLE_SIZE)
 
 
 if __name__ == "__main__":

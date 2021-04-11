@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 
 import wtforms
 
+from little_brother import constants
 from python_base_app import custom_fields
 from python_base_app import custom_form
 from python_base_app import pinger
@@ -60,10 +61,17 @@ class DeviceForm(custom_form.ModelForm):
                                                dns_validator,
                                                custom_fields.Uniqueness()])
     min_activity_duration = wtforms.IntegerField("MinActivityDuration",
-                                                 validators=[wtforms.validators.NumberRange(min=1, max=1000)])
+                                                 validators=[wtforms.validators.NumberRange(
+                                                     min=constants.DEVICE_MIN_MIN_ACTIVITY_DURATION,
+                                                     max=constants.DEVICE_MAX_MIN_ACTIVITY_DURATION)])
     max_active_ping_delay = wtforms.IntegerField("MaxActivePingDelay",
-                                                 validators=[wtforms.validators.NumberRange(min=1, max=1000)])
-    sample_size = wtforms.IntegerField("SampleSize", validators=[wtforms.validators.NumberRange(min=5, max=100)])
+                                                 validators=[wtforms.validators.NumberRange(
+                                                     min=constants.DEVICE_MIN_MAX_ACTIVE_PING_DELAY,
+                                                     max=constants.DEVICE_MAX_MAX_ACTIVE_PING_DELAY)])
+    sample_size = wtforms.IntegerField("SampleSize",
+                                       validators=[wtforms.validators.NumberRange(
+                                           min=constants.DEVICE_MIN_SAMPLE_SIZE,
+                                           max=constants.DEVICE_MAX_SAMPLE_SIZE)])
 
 
 def create_rulesets_form(prefix, p_localized_context_details, p_context_choices, p_context_details_filters):

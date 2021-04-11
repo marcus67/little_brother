@@ -42,6 +42,9 @@ NEW_MIN_BREAK = "12m"
 NEW_FREE_PLAY = True
 NEW_MAX_ACTIVITY_DURATION = "1h23m"
 
+NEW_INVALID_DURATION = "1h23"
+NEW_INVALID_TIME_OF_DAY = "13:455"
+
 EXTENSION_IN_MINUTES = 30
 SECOND_EXTENSION_IN_MINUTES = 30
 
@@ -254,6 +257,105 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
             time_extension: TimeExtension = time_extensions[self.get_new_user_name()]
             self.assertEqual(EXTENSION_IN_MINUTES + SECOND_EXTENSION_IN_MINUTES, time_extension.get_length_in_minutes())
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit_invalid_duration_format(self):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        reference_date = tools.get_current_time().date()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        rule_override_entity_manager: RuleOverrideEntityManager = \
+            dependency_injection.container[RuleOverrideEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        self.login_admin()
+
+        elem_name_prefix = tools.get_safe_attribute_name(
+            "{username}_{date_string}_".format(username=self.get_new_user_name(),
+                                               date_string=tools.get_simple_date_as_string(reference_date)))
+
+        elem_name = elem_name_prefix + "max_activity_duration"
+        elem = self._driver.find_element_by_id(elem_name)
+        self.set_value(p_value=NEW_INVALID_DURATION, p_elem=elem)
+
+        save_button = self._driver.find_element_by_id("save")
+        self.click(save_button)
+
+        xpath = "//LABEL[@CLASS = 'error-label' and @FOR = '{elem_name}']".format(elem_name=elem_name)
+        self._driver.find_element_by_xpath(xpath)
+
+        # Data was not saved!
+        with SessionContext(self._persistence) as session_context:
+            rule_override: RuleOverride = rule_override_entity_manager.get_rule_override_by_username_and_date(
+                p_session_context=session_context, p_username=self.get_new_user_name(), p_date=reference_date)
+            self.assertIsNone(rule_override)
+
+    def _test_page_admin_edit_invalid_data(self, p_elem_name:str, p_invalid_data:str):
+        self.create_dummy_status_server()
+        self.create_selenium_driver()
+
+        self._status_server.start_server()
+
+        reference_date = tools.get_current_time().date()
+
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
+        rule_override_entity_manager: RuleOverrideEntityManager = \
+            dependency_injection.container[RuleOverrideEntityManager]
+
+        self.add_new_user(user_entity_manager)
+
+        self.login_admin()
+
+        elem_name_prefix = tools.get_safe_attribute_name(
+            "{username}_{date_string}_".format(username=self.get_new_user_name(),
+                                               date_string=tools.get_simple_date_as_string(reference_date)))
+
+        elem_name = elem_name_prefix + p_elem_name
+        elem = self._driver.find_element_by_id(elem_name)
+        self.set_value(p_value=p_invalid_data, p_elem=elem)
+
+        save_button = self._driver.find_element_by_id("save")
+        self.click(save_button)
+
+        xpath = "//LABEL[@CLASS = 'error-label' and @FOR = '{elem_name}']".format(elem_name=elem_name)
+        self._driver.find_element_by_xpath(xpath)
+
+        # Data was not saved!
+        with SessionContext(self._persistence) as session_context:
+            rule_override: RuleOverride = rule_override_entity_manager.get_rule_override_by_username_and_date(
+                p_session_context=session_context, p_username=self.get_new_user_name(), p_date=reference_date)
+            self.assertIsNone(rule_override)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit_invalid_min_time_of_day(self):
+        self._test_page_admin_edit_invalid_data(
+            p_elem_name="min_time_of_day", p_invalid_data=NEW_INVALID_TIME_OF_DAY)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit_invalid_max_time_of_day(self):
+        self._test_page_admin_edit_invalid_data(
+            p_elem_name="max_time_of_day", p_invalid_data=NEW_INVALID_TIME_OF_DAY)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit_invalid_max_time_per_day(self):
+        self._test_page_admin_edit_invalid_data(
+            p_elem_name="max_time_per_day", p_invalid_data=NEW_INVALID_DURATION)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit_invalid_min_break(self):
+        self._test_page_admin_edit_invalid_data(
+            p_elem_name="min_break", p_invalid_data=NEW_INVALID_DURATION)
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS")
+    def test_page_admin_edit_invalid_max_activity_duration(self):
+        self._test_page_admin_edit_invalid_data(
+            p_elem_name="max_activity_duration", p_invalid_data=NEW_INVALID_DURATION)
+
 
 
 if __name__ == "__main__":
