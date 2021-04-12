@@ -23,11 +23,15 @@ import unittest
 from little_brother import constants
 from little_brother import status_server
 from little_brother.test import test_data
-from little_brother.test.base_test_status_server import BaseTestStatusServer
+from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 
 
 class TestStatusServerIndex(BaseTestStatusServer):
+
+    def check_index_page_visible(self):
+        xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
+        self._driver.find_element_by_xpath(xpath)
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_with_process_no_restrictions(self):
@@ -35,13 +39,12 @@ class TestStatusServerIndex(BaseTestStatusServer):
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_NO_RESTRICTIONS)
         self.create_status_server_using_ruleset_configs(ruleset_configs)
 
-        driver = self.create_selenium_driver()
+        self.create_selenium_driver()
 
         self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
-        xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
-        self._driver.find_element_by_xpath(xpath)
+        self.check_index_page_visible()
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_with_process_all_restrictions(self):
@@ -54,8 +57,7 @@ class TestStatusServerIndex(BaseTestStatusServer):
         self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
-        xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
-        self._driver.find_element_by_xpath(xpath)
+        self.check_index_page_visible()
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_without_process(self):
@@ -67,8 +69,7 @@ class TestStatusServerIndex(BaseTestStatusServer):
         self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
-        xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
-        self._driver.find_element_by_xpath(xpath)
+        self.check_index_page_visible()
 
 
 if __name__ == "__main__":

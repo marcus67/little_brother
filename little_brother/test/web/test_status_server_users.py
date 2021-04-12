@@ -32,7 +32,7 @@ from little_brother.persistence.persistent_user import User
 from little_brother.persistence.persistent_user_2_device_entity_manager import User2DeviceEntityManager
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
-from little_brother.test.base_test_status_server import BaseTestStatusServer
+from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 

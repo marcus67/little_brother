@@ -31,7 +31,7 @@ from little_brother.persistence.persistent_time_extension_entity_manager import 
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_data
-from little_brother.test.base_test_status_server import BaseTestStatusServer
+from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app import tools
 from python_base_app.test import base_test
 
@@ -112,9 +112,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
         self.login_admin()
 
-        elem_name_prefix = tools.get_safe_attribute_name(
-            "{username}_{date_string}_".format(username=self.get_new_user_name(),
-                                               date_string=tools.get_simple_date_as_string(reference_date)))
+        elem_name_prefix = self.get_admin_elem_name_prefix(p_reference_date=reference_date)
 
         elem = self._driver.find_element_by_id(elem_name_prefix + "min_time_of_day")
         self.set_value(p_value=NEW_MIN_TIME_OF_DAY, p_elem=elem)
@@ -151,6 +149,12 @@ class TestStatusServerAdmin(BaseTestStatusServer):
             self.assertEqual(rule_override.min_time_of_day, tools.get_string_as_time(NEW_MIN_TIME_OF_DAY))
             self.assertEqual(rule_override.max_time_of_day, tools.get_string_as_time(NEW_MAX_TIME_OF_DAY))
             self.assertEqual(rule_override.free_play, NEW_FREE_PLAY)
+
+    def get_admin_elem_name_prefix(self, p_reference_date):
+        elem_name_prefix = tools.get_safe_attribute_name(
+            "{username}_{date_string}_".format(username=self.get_new_user_name(),
+                                               date_string=tools.get_simple_date_as_string(p_reference_date)))
+        return elem_name_prefix
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_add_time_extension(self):
@@ -275,9 +279,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
         self.login_admin()
 
-        elem_name_prefix = tools.get_safe_attribute_name(
-            "{username}_{date_string}_".format(username=self.get_new_user_name(),
-                                               date_string=tools.get_simple_date_as_string(reference_date)))
+        elem_name_prefix = self.get_admin_elem_name_prefix(p_reference_date=reference_date)
 
         elem_name = elem_name_prefix + "max_activity_duration"
         elem = self._driver.find_element_by_id(elem_name)
@@ -311,9 +313,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
         self.login_admin()
 
-        elem_name_prefix = tools.get_safe_attribute_name(
-            "{username}_{date_string}_".format(username=self.get_new_user_name(),
-                                               date_string=tools.get_simple_date_as_string(reference_date)))
+        elem_name_prefix = self.get_admin_elem_name_prefix(p_reference_date=reference_date)
 
         elem_name = elem_name_prefix + p_elem_name
         elem = self._driver.find_element_by_id(elem_name)

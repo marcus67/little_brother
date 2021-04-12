@@ -20,7 +20,7 @@
 
 import unittest
 
-from little_brother.test.base_test_status_server import BaseTestStatusServer
+from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 
 
 class TestStatusServer(BaseTestStatusServer):

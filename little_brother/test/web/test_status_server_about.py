@@ -23,7 +23,7 @@ import unittest
 from little_brother import constants
 from little_brother import settings
 from little_brother import status_server
-from little_brother.test.base_test_status_server import BaseTestStatusServer
+from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 
 

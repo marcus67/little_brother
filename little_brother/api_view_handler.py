@@ -16,18 +16,19 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import json
+
 import flask
 
 import little_brother
-from some_flask_helpers import blueprint_adapter
 from little_brother import constants
 from python_base_app import log_handling
 from python_base_app import tools
+from some_flask_helpers import blueprint_adapter
 
 API_BLUEPRINT_NAME = "API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
-# Dummy function to trigger extraction by pybabel...F
+# Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
 
 class ApiViewHandler(object):

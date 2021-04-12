@@ -17,6 +17,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Add test cases for devices page: add and delete device, edit device
 *   Add test cases for admin page: edit rule override, add, extend, and delete time extension
 *   Add test cases for invalid data in rule override and device
+*   Move web test cases to a folder of their own    
+*   Closes #133, see [here](https://github.com/marcus67/little_brother/issues/133)
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

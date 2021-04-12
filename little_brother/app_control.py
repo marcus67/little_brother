@@ -221,9 +221,8 @@ class AppControl(object):
             dependency_injection.container[AdminEventEntityManager]
         self._device_entity_manager: DeviceEntityManager = \
             dependency_injection.container[DeviceEntityManager]
-
-        self._rule_override_entity_manager: RuleOverrideEntityManager = dependency_injection.container[
-            RuleOverrideEntityManager]
+        self._rule_override_entity_manager: RuleOverrideEntityManager = \
+            dependency_injection.container[RuleOverrideEntityManager]
 
         self._rule_handler: rule_handler.RuleHandler = p_rule_handler
         self._notification_handlers = p_notification_handlers

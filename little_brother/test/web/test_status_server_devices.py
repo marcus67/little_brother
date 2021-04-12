@@ -26,7 +26,7 @@ from little_brother import status_server
 from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.session_context import SessionContext
-from little_brother.test.base_test_status_server import BaseTestStatusServer
+from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 
 NEW_DEVICE_NAME = "Some Device"

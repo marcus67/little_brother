@@ -29,7 +29,6 @@ from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import login_mapping
 from little_brother import master_connector
-from little_brother import popup_handler
 from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother import status_server
@@ -111,9 +110,6 @@ class App(base_app.BaseApp):
         audio_handler_section = audio_handler.AudioHandlerConfigModel()
         audio_handler_section.spool_dir = os.path.join("/var/spool", constants.DIR_NAME)
         p_configuration.add_section(audio_handler_section)
-
-        popup_handler_section = popup_handler.PopupHandlerConfigModel()
-        p_configuration.add_section(popup_handler_section)
 
         persistence_section = persistence.PersistenceConfigModel()
         persistence_section.sqlite_dir = os.path.join("/var/spool", constants.DIR_NAME)
@@ -226,11 +222,6 @@ class App(base_app.BaseApp):
 
         if config.is_active():
             self._notification_handlers.append(audio_handler.AudioHandler(p_config=config))
-
-        config = self._config[popup_handler.SECTION_NAME]
-
-        if config.is_active():
-            self._notification_handlers.append(popup_handler.PopupHandler(p_config=config))
 
         self.check_migrations()
 
