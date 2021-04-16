@@ -86,3 +86,37 @@ JSON_MAXIMUM_TIME_WITHOUT_SEND = "config:maximum_time_without_send"
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_UNAUTHORIZED = 401
 HTTP_STATUS_CODE_NOT_FOUND = 404
+
+ABOUT_BLUEPRINT_NAME = "about"
+ABOUT_HTML_TEMPLATE = "about.template.html"
+ABOUT_REL_URL = "about"
+ABOUT_VIEW_NAME = "main_view"
+
+ADMIN_BLUEPRINT_NAME = "admin"
+ADMIN_HTML_TEMPLATE = "admin.template.html"
+ADMIN_REL_URL = "admin"
+ADMIN_VIEW_NAME = "main_view"
+
+DEVICES_BLUEPRINT_NAME = "devices"
+DEVICES_HTML_TEMPLATE = "devices.template.html"
+DEVICES_REL_URL = "devices"
+DEVICES_VIEW_NAME = "main_view"
+
+LOGIN_BLUEPRINT_NAME = "login"
+LOGIN_HTML_TEMPLATE = "login.template.html"
+
+STATUS_BLUEPRINT_NAME = "status"
+STATUS_HTML_TEMPLATE = "status.template.html"
+STATUS_REL_URL = "status"
+STATUS_VIEW_NAME = "main_view"
+
+TOPOLOGY_BLUEPRINT_NAME = "topology"
+TOPOLOGY_HTML_TEMPLATE = "topology.template.html"
+TOPOLOGY_REL_URL = "topology"
+TOPOLOGY_VIEW_NAME = "main_view"
+
+USERS_BLUEPRINT_NAME = "users"
+USERS_HTML_TEMPLATE = "users.template.html"
+USERS_REL_URL = "users"
+USERS_VIEW_NAME = "main_view"
+

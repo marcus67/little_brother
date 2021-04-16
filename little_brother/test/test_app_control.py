@@ -25,6 +25,7 @@ from little_brother import client_stats
 from little_brother import dependency_injection
 from little_brother import master_connector
 from little_brother import prometheus
+from little_brother.persistence.persistence import Persistence
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
@@ -43,9 +44,9 @@ class TestAppControl(base_test.BaseTestCase):
     def test_constructor(self):
         config = app_control.AppControlConfigModel()
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False, p_persistence=dummy_persistence)
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertIsNotNone(ac)
 
@@ -53,14 +54,15 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         config.hostname = HOSTNAME
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
 
         # rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_rule_handler=test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
-                                        p_persistence=dummy_persistence),
-                                    p_persistence=dummy_persistence)
+                                        p_persistence=dummy_persistence))
 
         self.assertIsNotNone(ac)
 
@@ -76,11 +78,11 @@ class TestAppControl(base_test.BaseTestCase):
         self.assertEqual(ci.client_stats, some_client_stats)
 
     def test_get_number_of_monitored_users_function(self):
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
         config = app_control.AppControlConfigModel()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False, p_persistence=dummy_persistence)
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         func = ac.get_number_of_monitored_users_function()
         self.assertIsNotNone(func)
@@ -90,9 +92,9 @@ class TestAppControl(base_test.BaseTestCase):
     def test_retrieve_user_mappings(self):
         config = app_control.AppControlConfigModel()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         ac.retrieve_user_mappings()
 
@@ -101,12 +103,12 @@ class TestAppControl(base_test.BaseTestCase):
         mc_config.host_url = "http://master.domain/"
         config = app_control.AppControlConfigModel()
 
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         mc = master_connector.MasterConnector(p_config=mc_config)
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_master_connector=mc,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+                                    p_master_connector=mc)
 
         self.assertFalse(ac.is_master())
 
@@ -114,12 +116,12 @@ class TestAppControl(base_test.BaseTestCase):
         mc_config = master_connector.MasterConnectorConfigModel()
         config = app_control.AppControlConfigModel()
 
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         mc = master_connector.MasterConnector(p_config=mc_config)
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_master_connector=mc,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+                                    p_master_connector=mc)
 
         self.assertTrue(ac.is_master())
 
@@ -130,10 +132,10 @@ class TestAppControl(base_test.BaseTestCase):
 
         pc = prometheus.PrometheusClient(p_logger=self._logger, p_config=pc_config)
 
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_prometheus_client=pc,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+                                    p_prometheus_client=pc)
 
         ac.set_prometheus_http_requests_summary(p_duration=1.0, p_hostname=HOSTNAME, p_service="/app")
         ac.set_metrics()
@@ -144,9 +146,9 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
         config.check_interval = 123
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertIsNotNone(ac)
 

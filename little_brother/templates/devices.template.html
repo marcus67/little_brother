@@ -45,7 +45,7 @@
     {{ helper.fontawesome_script() }}
 	{% include 'navbar.include.html' %}
 
-	<FORM ACTION="{{ url_for('little_brother.devices') }}" METHOD="POST" CLASS="form-horizontal">
+	<FORM ACTION="{{ url_for('devices.main_view') }}" METHOD="POST" CLASS="form-horizontal">
 		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">

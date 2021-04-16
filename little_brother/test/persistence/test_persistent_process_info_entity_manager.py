@@ -22,6 +22,7 @@ import datetime
 
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_process_info_entity_manager import ProcessInfoEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test.persistence.base_test_case_persistent_entity_manager import BaseTestCasePersistentEntityManager
@@ -47,7 +48,10 @@ class TestProcessInfoEntityManager(BaseTestCasePersistentEntityManager):
         self.assertEqual(p_p_info.processname, p_loaded_p_info.processname)
 
     def test_write_and_update_process_info(self):
-        a_persistence = TestPersistence.create_dummy_persistence(self._logger)
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
+        self.assertIsNotNone(a_persistence)
 
         process_info_entity_manager: ProcessInfoEntityManager = dependency_injection.container[ProcessInfoEntityManager]
 

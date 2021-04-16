@@ -21,7 +21,6 @@
 import unittest
 
 from little_brother import constants
-from little_brother import status_server
 from little_brother.test import test_data
 from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
@@ -41,7 +40,7 @@ class TestStatusServerIndex(BaseTestStatusServer):
 
         self.create_selenium_driver()
 
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.STATUS_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         self.check_index_page_visible()
@@ -54,7 +53,7 @@ class TestStatusServerIndex(BaseTestStatusServer):
 
         self.create_selenium_driver()
 
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.STATUS_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         self.check_index_page_visible()
@@ -66,7 +65,7 @@ class TestStatusServerIndex(BaseTestStatusServer):
 
         self.create_selenium_driver()
 
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.INDEX_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.STATUS_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         self.check_index_page_visible()

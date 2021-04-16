@@ -17,10 +17,9 @@
 
 import little_brother.persistence.session_context
 from little_brother import admin_event
-from little_brother import dependency_injection
-from little_brother import process_handler
-from little_brother.persistence import persistence
-from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
+from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.process_handler import ProcessHandler
+from little_brother.process_handler import ProcessHandlerConfigModel
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import stats
@@ -37,7 +36,7 @@ DEFAULT_SAMPLE_SIZE = 8
 DEFAULT_SERVER_GROUP = "default-group"
 
 
-class ClientDeviceHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
+class ClientDeviceHandlerConfigModel(ProcessHandlerConfigModel):
 
     def __init__(self):
         super(ClientDeviceHandlerConfigModel, self).__init__(p_section_name=SECTION_NAME)
@@ -62,7 +61,7 @@ class ClientDeviceConfigModel(configuration.ConfigModel):
         return "ClientDevice (name=%s, user=%s, host=%s)" % (self.name, self.username, self.hostname)
 
 
-class ClientDeviceSectionHandler(configuration.ConfigurationSectionHandler):
+class ClientDeviceSectionHandler(configuration.ConfigurationSectionHandler, PersistenceDependencyInjectionMixIn):
 
     def __init__(self):
         super(ClientDeviceSectionHandler, self).__init__(p_section_prefix=CLIENT_DEVICE_SECTION_PREFIX)
@@ -189,18 +188,13 @@ class DeviceInfo(object):
         return (p_reference_time - self._up_start_time).total_seconds() >= self._min_activity_duration
 
 
-class ClientDeviceHandler(process_handler.ProcessHandler):
+class ClientDeviceHandler(PersistenceDependencyInjectionMixIn, ProcessHandler):
 
-    def __init__(self, p_config, p_persistence, p_pinger=None):
+    def __init__(self, p_config, p_pinger=None):
 
         super().__init__(p_config=p_config)
-        self._persistence: persistence.Persistence = p_persistence
-
-        # Dependency injection
-        self._device_entity_manager: DeviceEntityManager = dependency_injection.container[DeviceEntityManager]
 
         self._pinger = p_pinger
-        # self._session_context = persistence.SessionContext(p_persistence=self._persistence, p_register=True)
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -214,9 +208,9 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
     def get_device_info(self, p_device_name):
 
         with little_brother.persistence.session_context.SessionContext(
-                p_persistence=self._persistence) as session_context:
+                p_persistence=self.persistence) as session_context:
             device_info = self._device_infos.get(p_device_name)
-            device = self._device_entity_manager.device_map(session_context).get(p_device_name)
+            device = self.device_entity_manager.device_map(session_context).get(p_device_name)
 
             if device is not None:
                 if device_info is None:
@@ -274,24 +268,25 @@ class ClientDeviceHandler(process_handler.ProcessHandler):
     def get_number_of_monitored_devices(self):
 
         with little_brother.persistence.session_context.SessionContext(
-                p_persistence=self._persistence) as session_context:
-            return len(self._device_entity_manager.devices(session_context))
+                p_persistence=self.persistence) as session_context:
+            return len(self.device_entity_manager.devices(session_context))
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
                        p_process_regex_map):
 
         events = []
 
-        for device in self._device_entity_manager.devices(p_session_context):
-            self.ping_device(p_reference_time=p_reference_time, p_device=device)
+        for device in self.device_entity_manager.devices(p_session_context):
+            if device.hostname is not None:
+                self.ping_device(p_reference_time=p_reference_time, p_device=device)
 
         for device_info in self._device_infos.values():
-            if device_info.device_name not in self._device_entity_manager.device_map(
+            if device_info.device_name not in self.device_entity_manager.device_map(
                     p_session_context=p_session_context):
                 # Clear statistics for old device names so that they are correctly reported in Prometheus
                 device_info.clear_moving_average()
 
-        for device in self._device_entity_manager.devices(p_session_context=p_session_context):
+        for device in self.device_entity_manager.devices(p_session_context=p_session_context):
             device_info = self.get_device_info(p_device_name=device.device_name)
 
             if device_info.requires_process_start_event(p_reference_time=p_reference_time):

@@ -22,7 +22,6 @@ import unittest
 
 from little_brother import constants
 from little_brother import dependency_injection
-from little_brother import status_server
 from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.session_context import SessionContext
@@ -53,7 +52,7 @@ class TestStatusServerDevices(BaseTestStatusServer):
         self.login_devices()
 
         # The second time we call the device page.
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.DEVICES_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.DEVICES_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
         assert "Device Configuration" in self._driver.title
 

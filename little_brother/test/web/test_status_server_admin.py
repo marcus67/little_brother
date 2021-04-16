@@ -23,7 +23,6 @@ from typing import List
 
 from little_brother import constants
 from little_brother import dependency_injection
-from little_brother import status_server
 from little_brother.persistence.persistent_rule_override import RuleOverride
 from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
 from little_brother.persistence.persistent_time_extension import TimeExtension
@@ -59,14 +58,14 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         self._status_server.start_server()
 
         # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ADMIN_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # ...we end up on the login page.
         self.login()
 
         # The second time we call the admin page.
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ADMIN_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
         assert "Administration" in self._driver.title
 
@@ -82,14 +81,14 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         self.create_selenium_driver()
 
         # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ADMIN_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # ...we end up on the login page.
         self.login()
 
         # The second we call the admin page.
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ADMIN_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # we are on the admin page right away...
@@ -297,7 +296,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_date=reference_date)
             self.assertIsNone(rule_override)
 
-    def _test_page_admin_edit_invalid_data(self, p_elem_name:str, p_invalid_data:str):
+    def _test_page_admin_edit_invalid_data(self, p_elem_name: str, p_invalid_data: str):
         self.create_dummy_status_server()
         self.create_selenium_driver()
 
@@ -355,7 +354,6 @@ class TestStatusServerAdmin(BaseTestStatusServer):
     def test_page_admin_edit_invalid_max_activity_duration(self):
         self._test_page_admin_edit_invalid_data(
             p_elem_name="max_activity_duration", p_invalid_data=NEW_INVALID_DURATION)
-
 
 
 if __name__ == "__main__":

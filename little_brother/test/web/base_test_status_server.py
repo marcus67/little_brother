@@ -27,18 +27,19 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 
 from little_brother import app
-from little_brother import app_control
 from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother import master_connector
-from little_brother import status_server
+from little_brother.app_control import AppControl, AppControlConfigModel
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
+from little_brother.web import web_server
 from python_base_app import locale_helper
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
@@ -88,7 +89,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         if p_process_handlers is None:
             p_process_handlers = {}
 
-        self._persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        self._persistence = dependency_injection.container[Persistence]
         self._rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
             p_persistence=self._persistence)
 
@@ -97,14 +99,13 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         self._user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
 
-        app_control_config = app_control.AppControlConfigModel()
-        self._app_control = app_control.AppControl(
+        app_control_config = AppControlConfigModel()
+        self._app_control = AppControl(
             p_config=app_control_config,
             p_debug_mode=False,
             p_process_handlers=p_process_handlers,
             p_device_handler=None,
             p_prometheus_client=None,
-            p_persistence=self._persistence,
             p_rule_handler=self._rule_handler,
             p_notification_handlers=[],
             p_master_connector=self._master_connector,
@@ -112,17 +113,18 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             p_locale_helper=locale_helper.LocaleHelper(),
             p_user_handler=self._user_handler)
 
-        status_server_config = status_server.StatusServerConfigModel()
+        dependency_injection.container[AppControl] = self._app_control
+
+        status_server_config = web_server.StatusServerConfigModel()
         status_server_config.app_secret = "123456"
 
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
-        self._status_server = status_server.StatusServer(
+        self._status_server = web_server.StatusServer(
             p_config=status_server_config,
             p_package_name=app.PACKAGE_NAME,
             p_app_control=self._app_control,
             p_master_connector=self._master_connector,
-            p_persistence=self._persistence,
             p_is_master=True,
             p_user_handler=self._user_handler,
             p_locale_helper=locale_helper.LocaleHelper(),
@@ -160,7 +162,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
     def login_users(self):
 
         # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.USERS_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.USERS_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # ...we end up on the login page.
@@ -172,7 +174,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
     def login_devices(self):
 
         # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.DEVICES_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.DEVICES_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # ...we end up on the login page.
@@ -184,7 +186,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
     def login_admin(self):
 
         # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ADMIN_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ADMIN_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # ...we end up on the login page.
@@ -218,7 +220,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         # See https://stackoverflow.com/questions/22528456/how-to-replace-default-values-in-the-text-field-using-selenium-python/33361371
         self._driver.execute_script("arguments[0].value = '{value}'".format(value=p_value), p_elem)
 
-    def add_new_user(self, p_user_entity_manager:UserEntityManager) -> int:
+    def add_new_user(self, p_user_entity_manager: UserEntityManager) -> int:
         with SessionContext(self._persistence) as session_context:
             user_id = p_user_entity_manager.add_new_user(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_locale="en")

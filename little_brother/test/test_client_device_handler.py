@@ -23,6 +23,7 @@ import datetime
 from little_brother import client_device_handler
 from little_brother import db_migrations
 from little_brother import dependency_injection
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler import ProcessHandler
@@ -54,7 +55,9 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
 
@@ -65,7 +68,7 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
             migrator.migrate_client_device_configs(device_configs)
             a_pinger = pinger.Pinger()
             process_handler: ProcessHandler = client_device_handler.ClientDeviceHandler(
-                p_config=config, p_persistence=dummy_persistence, p_pinger=a_pinger)
+                p_config=config, p_pinger=a_pinger)
 
             events = process_handler.scan_processes(p_session_context=session_context,
                                                     p_server_group=None,
@@ -86,15 +89,16 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
             migrator.migrate_client_device_configs(device_configs)
             a_pinger = pinger.Pinger()
             process_handler: ProcessHandler = client_device_handler.ClientDeviceHandler(
-                p_config=config, p_persistence=dummy_persistence, p_pinger=a_pinger)
+                p_config=config, p_pinger=a_pinger)
 
             events = process_handler.scan_processes(p_session_context=session_context,
                                                     p_server_group=None,

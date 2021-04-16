@@ -21,6 +21,7 @@
 from little_brother import dependency_injection
 from little_brother.admin_event import AdminEvent
 from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_data
@@ -39,8 +40,9 @@ class TestAdminEventEntityManager(BaseTestCasePersistentEntityManager):
         dependency_injection.reset()
 
     def test_log_admin_event(self):
-        a_persistence = TestPersistence.create_dummy_persistence(self._logger)
+        TestPersistence.create_dummy_persistence(self._logger)
 
+        a_persistence = dependency_injection.container[Persistence]
         self.assertIsNotNone(a_persistence)
 
         admin_event_entity_manager: AdminEventEntityManager = dependency_injection.container[AdminEventEntityManager]

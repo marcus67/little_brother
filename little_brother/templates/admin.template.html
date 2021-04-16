@@ -50,7 +50,7 @@
 	{{ helper.fontawesome_script() }}
 	{% include 'navbar.include.html' %}
 
-	<FORM ACTION="{{ url_for('little_brother.admin') }}" METHOD="POST" CLASS="form-horizontal">
+	<FORM ACTION="{{ url_for('admin.main_view') }}" METHOD="POST" CLASS="form-horizontal">
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">
 	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">

@@ -22,7 +22,6 @@ import unittest
 
 from little_brother import constants
 from little_brother import settings
-from little_brother import status_server
 from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 
@@ -35,7 +34,7 @@ class TestStatusServerAbout(BaseTestStatusServer):
         self._status_server.start_server()
 
         self.create_selenium_driver()
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.ABOUT_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ABOUT_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
         assert "About" in self._driver.title
 

@@ -21,7 +21,6 @@
 import unittest
 
 from little_brother import constants
-from little_brother import status_server
 from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 from python_base_app.test import base_test
 
@@ -36,7 +35,7 @@ class TestStatusServerTopology(BaseTestStatusServer):
         self.create_selenium_driver()
 
         # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.TOPOLOGY_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.TOPOLOGY_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
 
         # ...we end up on the login page.
@@ -48,7 +47,7 @@ class TestStatusServerTopology(BaseTestStatusServer):
         self._driver.find_element_by_xpath(xpath)
 
         # The second time we call the users page.
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.TOPOLOGY_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.TOPOLOGY_REL_URL))
         assert constants.APPLICATION_NAME in self._driver.title
         assert "Topology" in self._driver.title
 

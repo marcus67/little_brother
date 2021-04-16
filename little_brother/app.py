@@ -21,7 +21,6 @@ import alembic.config
 import alembic.util.messaging
 import psutil
 
-from little_brother import app_control
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import constants
@@ -31,19 +30,20 @@ from little_brother import login_mapping
 from little_brother import master_connector
 from little_brother import prometheus
 from little_brother import rule_handler
-from little_brother import status_server
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
+from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
+from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import ldap_user_handler
-from python_base_app import locale_helper
 from python_base_app import pinger
 from python_base_app import unix_user_handler
+from python_base_app.locale_helper import LocaleHelper
 
 APP_NAME = 'LittleBrother'
 DIR_NAME = 'little-brother'
@@ -104,7 +104,7 @@ class App(base_app.BaseApp):
 
     def prepare_configuration(self, p_configuration):
 
-        app_control_section = app_control.AppControlConfigModel()
+        app_control_section = AppControlConfigModel()
         p_configuration.add_section(app_control_section)
 
         audio_handler_section = audio_handler.AudioHandlerConfigModel()
@@ -130,7 +130,7 @@ class App(base_app.BaseApp):
         self._client_device_section_handler = client_device_handler.ClientDeviceSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._client_device_section_handler)
 
-        status_server_section = status_server.StatusServerConfigModel()
+        status_server_section = web_server.StatusServerConfigModel()
         p_configuration.add_section(status_server_section)
 
         master_connector_section = master_connector.MasterConnectorConfigModel()
@@ -234,7 +234,6 @@ class App(base_app.BaseApp):
 
         self._client_device_handler = client_device_handler.ClientDeviceHandler(
             p_config=self._config[client_device_handler.SECTION_NAME],
-            p_persistence=self._persistence,
             p_pinger=self._pinger)
 
         self._process_handlers = {
@@ -250,14 +249,15 @@ class App(base_app.BaseApp):
 
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
         ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
-        status_server_config = self._config[status_server.SECTION_NAME]
+        status_server_config = self._config[web_server.SECTION_NAME]
 
         self.init_babel(p_localeselector=self.get_request_locale)
 
         localedir = os.path.join(os.path.dirname(__file__), "translations")
-        a_locale_helper = locale_helper.LocaleHelper(p_locale_selector=self.get_request_locale,
-                                                     p_locale_dir=localedir)
+        a_locale_helper = LocaleHelper(p_locale_selector=self.get_request_locale, p_locale_dir=localedir)
         self.add_locale_helper(a_locale_helper)
+
+        dependency_injection.container[LocaleHelper] = self.locale_helper
 
         if self.is_master():
             if status_server_config.is_active():
@@ -289,12 +289,11 @@ class App(base_app.BaseApp):
         self._login_mapping = login_mapping.LoginMapping()
         self._login_mapping.read_from_configuration(p_login_mapping_section_handler=self._login_mapping_section_handler)
 
-        self._app_control = app_control.AppControl(
-            p_config=self._config[app_control.SECTION_NAME],
+        self._app_control = AppControl(
+            p_config=self._config[APP_CONTROL_SECTION_NAME],
             p_debug_mode=self._app_config.debug_mode,
             p_process_handlers=self._process_handlers,
             p_device_handler=self._client_device_handler,
-            p_persistence=self._persistence,
             p_rule_handler=self._rule_handler,
             p_notification_handlers=self._notification_handlers,
             p_master_connector=self._master_connector,
@@ -303,7 +302,9 @@ class App(base_app.BaseApp):
             p_locale_helper=self.locale_helper,
             p_login_mapping=self._login_mapping)
 
-        if self._config[app_control.SECTION_NAME].scan_active:
+        dependency_injection.container[AppControl] = self._app_control
+
+        if self._config[APP_CONTROL_SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
                                           p_handler_method=lambda: self._app_control.scan_processes(
                                               p_process_handler=process_handler),
@@ -330,12 +331,11 @@ class App(base_app.BaseApp):
             self.add_recurring_task(p_recurring_task=task)
 
         if status_server_config.is_active():
-            self._status_server = status_server.StatusServer(
-                p_config=self._config[status_server.SECTION_NAME],
+            self._status_server = web_server.StatusServer(
+                p_config=self._config[web_server.SECTION_NAME],
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
-                p_persistence=self._persistence,
                 p_is_master=self.is_master(),
                 p_locale_helper=self._locale_helper,
                 p_base_gettext=self.gettext,

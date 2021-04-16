@@ -31,6 +31,7 @@ from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import simple_context_rule_handlers
 from little_brother.persistence import persistent_user, persistent_user_entity_manager
+from little_brother.persistence.persistence import Persistence
 from little_brother.test.persistence import test_persistence
 from python_base_app import configuration
 from python_base_app.test import base_test
@@ -66,7 +67,10 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_priority(self):
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
+
         session_context = little_brother.persistence.session_context.SessionContext(p_persistence=dummy_persistence)
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence)
 
@@ -202,7 +206,10 @@ class TestRuleHandler(base_test.BaseTestCase):
         stat_info.last_inactivity_start_time = activity_start_time
         rule_set.min_break = 300
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
+
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
         rule_set.free_play = True
@@ -289,7 +296,9 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_session_duration(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -328,7 +337,9 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_session_duration_with_downtime(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -368,7 +379,9 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_time_per_day(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -407,7 +420,9 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_time_per_day_with_downtime(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -447,7 +462,9 @@ class TestRuleHandler(base_test.BaseTestCase):
 
     def test_max_time_per_day_with_downtime_and_previous_activity(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 

@@ -27,6 +27,7 @@ from little_brother import dependency_injection
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother.persistence import persistent_user_entity_manager
+from little_brother.persistence.persistence import Persistence
 from little_brother.test import test_data
 from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
@@ -250,9 +251,11 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
             dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
 
@@ -272,8 +275,11 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
+
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
         dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+            dependency_injection.container[Persistence]
+
         user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
             dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
 

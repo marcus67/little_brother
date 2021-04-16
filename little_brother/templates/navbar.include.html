@@ -39,12 +39,12 @@
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
 
 	      <ul class="nav navbar-nav localetext">
-	        <li {% if navigation.current_view == "index" %}class="active"{% endif %}><a href="{{ url_for('little_brother.index') }}">{{_('Status')}} <span class="sr-only">(current)</span></a></li>
-	        <li {% if navigation.current_view == "admin" %}class="active"{% endif %}><a href="{{ url_for('little_brother.admin') }}">{{_('Admin')}} <span class="sr-only">(current)</span></a></li>
-	        <li {% if navigation.current_view == "users" %}class="active"{% endif %}><a href="{{ url_for('little_brother.users') }}">{{_('Users')}} <span class="sr-only">(current)</span></a></li>
-	        <li {% if navigation.current_view == "devices" %}class="active"{% endif %}><a href="{{ url_for('little_brother.devices') }}">{{_('Devices')}} <span class="sr-only">(current)</span></a></li>
-	        <li {% if navigation.current_view == "topology" %}class="active"{% endif %}><a href="{{ url_for('little_brother.topology') }}">{{_('Topology')}} <span class="sr-only">(current)</span></a></li>
-	        <li {% if navigation.current_view == "about" %}class="active"{% endif %}><a href="{{ url_for('little_brother.about') }}">{{_('About')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "status.main_view" %}class="active"{% endif %}><a href="{{ url_for('status.main_view') }}">{{_('Status')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "admin.main_view" %}class="active"{% endif %}><a href="{{ url_for('admin.main_view') }}">{{_('Admin')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "users.main_view" %}class="active"{% endif %}><a href="{{ url_for('users.main_view') }}">{{_('Users')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "devices.main_view" %}class="active"{% endif %}><a href="{{ url_for('devices.main_view') }}">{{_('Devices')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "topology.main_view" %}class="active"{% endif %}><a href="{{ url_for('topology.main_view') }}">{{_('Topology')}} <span class="sr-only">(current)</span></a></li>
+	        <li {% if navigation.current_view == "about.main_view" %}class="active"{% endif %}><a href="{{ url_for('about.main_view') }}">{{_('About')}} <span class="sr-only">(current)</span></a></li>
 	      </ul>
 	      {% if authentication.is_authenticated %}
     	  <p class="navbar-text localetext">{{_('Signed in as')}} <SPAN CLASS="nonlocaletext"><CODE>{{ authentication.username }}</CODE></SPAN></p>

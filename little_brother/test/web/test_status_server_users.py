@@ -24,7 +24,6 @@ import selenium.webdriver.support.ui
 
 from little_brother import constants
 from little_brother import dependency_injection
-from little_brother import status_server
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
@@ -55,7 +54,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         # The second time we call the users page.
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=status_server.USERS_REL_URL))
+        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.USERS_REL_URL))
         assert "LittleBrother" in self._driver.title
         assert "User Configuration" in self._driver.title
 

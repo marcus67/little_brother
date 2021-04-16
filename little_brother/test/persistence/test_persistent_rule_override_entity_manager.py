@@ -22,6 +22,7 @@ import datetime
 
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.rule_override import RuleOverride
@@ -48,8 +49,10 @@ class TestRuleOverrideEntityManager(BaseTestCasePersistentEntityManager):
         self.assertEqual(p_rule_override.max_time_of_day, p_loaded_rule_override.max_time_of_day)
 
     def test_update_rule_override(self):
-        a_persistence = TestPersistence.create_dummy_persistence(self._logger)
 
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
         self.assertIsNotNone(a_persistence)
 
         rule_override_entity_manager: RuleOverrideEntityManager = \

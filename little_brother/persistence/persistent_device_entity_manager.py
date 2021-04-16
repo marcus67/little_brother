@@ -28,6 +28,7 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
         super().__init__(p_entity_class=Device)
 
         self._devices = None
+        self._rule_set_entity_manager = None
 
     @property
     def rule_set_entity_manager(self):

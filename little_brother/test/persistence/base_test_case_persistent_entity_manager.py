@@ -21,6 +21,7 @@
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity import BaseEntity
 from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test.persistence import test_persistence
 from python_base_app import tools
@@ -42,7 +43,8 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
         self.assertIsNotNone(str(an_entity))
 
     def test_save(self):
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             an_entity: BaseEntity = self._entity_manager._entity_class()

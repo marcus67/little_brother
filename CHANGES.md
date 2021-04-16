@@ -17,8 +17,10 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Add test cases for devices page: add and delete device, edit device
 *   Add test cases for admin page: edit rule override, add, extend, and delete time extension
 *   Add test cases for invalid data in rule override and device
-*   Move web test cases to a folder of their own    
+*   Move web test cases to a folder of their own
 *   Closes #133, see [here](https://github.com/marcus67/little_brother/issues/133)
+*   Create mix in class `PersistenceDependencyInjectionMixIn`
+*   Split up class `StatusServer` and move to new sub folder
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 
@@ -312,7 +314,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Support for `playsound` as audio engine (rewritten as engine)
 *   Support for `pyglet` as audio engine (new)
 *   Correct handling of default locale on slave device
-*   Distribution of login mappings from master to slave (for Docker containers and MacOS)
+*   Distribution of login mappings from master to slave (for Docker containers and macOS)
 *   New CI stage to build docker images
 *   Consistent hiding of sensitive variable values in logging
 *   Packages `sudo` and `procps` added to the Debian package dependencies
@@ -325,23 +327,23 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Fixed problem with generated kill command under Linux
 *   Fixed several issues reported by Codacy
-*   Turned CI status into a table (including MacOS branch)
+*   Turned CI status into a table (including macOS branch)
 
 ## Version 0.1 Revision 46 (October 25th, 2019)
 
 *   Generate script for building Docker images
 *   Add list typed option values to configuration files
 *   Improve test coverage of Configuration.py
-*   Provide initial Docker images for little-brother servers (non functional)
+*   Provide initial Docker images for little-brother servers (non-functional)
 
 ## Version 0.1 Revision 45 (October 21st, 2019)
 
 *   Closes #60, see [here](https://github.com/marcus67/little_brother/issues/60)
 *   Make ProcessControl an abstract base class
-*   Use launchctl to terminate login process under MacOs
+*   Use launchctl to terminate login process under macOS
 *   Remove duplicate PopupHandler section in minimal-master.config
 *   Switch to effective user id in process infos
-*   Add missing -SIGHUP for MacOs kill command
+*   Add missing -SIGHUP for macOS kill command
 *   Use ConfigurationException
 
 ## Version 0.1 Revision 44 (October 9th, 2019)
@@ -440,7 +442,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #5, see [here](https://github.com/marcus67/little_brother/issues/5)
 *   Closes #10, see [here](https://github.com/marcus67/little_brother/issues/10)
 *   Closes #14, see [here](https://github.com/marcus67/little_brother/issues/10)
-*   Round remaining play times to nearest minute in notifications.
+*   Round remaining play times to the nearest minute in notifications.
 *   Instantiate flask_wtf.FlaskForm instead of flask_wtf.Form (obsolete).
 *   Several changes proposed by codacy.
   

@@ -25,8 +25,8 @@ import unittest
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import process_info
-from little_brother.persistence import persistence
 from little_brother.persistence import persistence_base
+from little_brother.persistence.persistence import Persistence, PersistenceConfigModel
 from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_process_info import ProcessInfo
@@ -49,28 +49,28 @@ class TestPersistence(base_test.BaseTestCase):
         dependency_injection.reset()
 
     @staticmethod
-    def create_dummy_persistence(p_logger):
+    def create_dummy_persistence(p_logger) -> None:
 
         sqlite_file = os.path.join(SQLITE_DIR, SQLITE_FILE)
 
         if os.path.exists(sqlite_file):
             os.unlink(sqlite_file)
 
-        config = persistence.PersistenceConfigModel()
+        config = PersistenceConfigModel()
         config.sqlite_filename = SQLITE_FILE
         config.sqlite_dir = SQLITE_DIR
         config.database_driver = persistence_base.DATABASE_DRIVER_SQLITE
         config.database_user = None
         config.database_admin = None
 
-        a_persistence = persistence.Persistence(p_config=config, p_reuse_session=False)
+        a_persistence = Persistence(p_config=config, p_reuse_session=False)
         a_persistence.check_schema(p_create_tables=False)
 
         db_mig = db_migrations.DatabaseMigrations(p_logger, p_persistence=a_persistence)
         db_mig.upgrade_databases()
 
         # Dependency injection
-        dependency_injection.container[persistence.Persistence] = a_persistence
+        dependency_injection.container[Persistence] = a_persistence
 
         dependency_injection.container[TimeExtensionEntityManager] = TimeExtensionEntityManager()
         dependency_injection.container[UserEntityManager] = UserEntityManager()
@@ -80,13 +80,11 @@ class TestPersistence(base_test.BaseTestCase):
         dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
         dependency_injection.container[DeviceEntityManager] = DeviceEntityManager()
 
-        return a_persistence
-
     def test_create_database(self):
 
-        a_persistence = self.create_dummy_persistence(self._logger)
+        self.create_dummy_persistence(self._logger)
 
-        self.assertIsNotNone(a_persistence)
+        self.assertIsNotNone(dependency_injection.container[Persistence])
 
     @staticmethod
     def create_pinfo(p_age_in_days, p_include_end_time=False):
@@ -105,7 +103,9 @@ class TestPersistence(base_test.BaseTestCase):
 
     def test_truncate_table(self):
 
-        a_persistence = self.create_dummy_persistence(self._logger)
+        self.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
 
         self.assertIsNotNone(a_persistence)
 
