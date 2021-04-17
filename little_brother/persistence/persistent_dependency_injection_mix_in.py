@@ -37,7 +37,7 @@ class PersistenceDependencyInjectionMixIn():
         return self._persistence
 
     @property
-    def time_extension_entity_manager(self):
+    def time_extension_entity_manager(self) -> TimeExtensionEntityManager:
 
         if self._time_extension_entity_manager is None:
             self._time_extension_entity_manager = dependency_injection.container[TimeExtensionEntityManager]
@@ -45,14 +45,14 @@ class PersistenceDependencyInjectionMixIn():
         return self._time_extension_entity_manager
 
     @property
-    def user_entity_manager(self):
+    def user_entity_manager(self) -> UserEntityManager:
 
         if self._user_entity_manager is None:
             self._user_entity_manager = dependency_injection.container[UserEntityManager]
         return self._user_entity_manager
 
     @property
-    def device_entity_manager(self):
+    def device_entity_manager(self) -> DeviceEntityManager:
 
         if self._device_entity_manager is None:
             self._device_entity_manager = dependency_injection.container[DeviceEntityManager]
@@ -60,7 +60,7 @@ class PersistenceDependencyInjectionMixIn():
         return self._device_entity_manager
 
     @property
-    def process_info_entity_manager(self):
+    def process_info_entity_manager(self) -> ProcessInfoEntityManager:
 
         if self._process_info_entity_manager is None:
             self._process_info_entity_manager = dependency_injection.container[ProcessInfoEntityManager]
@@ -68,7 +68,7 @@ class PersistenceDependencyInjectionMixIn():
         return self._process_info_entity_manager
 
     @property
-    def admin_event_entity_manager(self):
+    def admin_event_entity_manager(self) -> AdminEventEntityManager:
 
         if self._admin_event_entity_manager is None:
             self._admin_event_entity_manager = dependency_injection.container[AdminEventEntityManager]
@@ -76,7 +76,7 @@ class PersistenceDependencyInjectionMixIn():
         return self._admin_event_entity_manager
 
     @property
-    def rule_set_entity_manager(self):
+    def rule_set_entity_manager(self) -> RuleSetEntityManager:
 
         if self._rule_set_entity_manager is None:
             self._rule_set_entity_manager = dependency_injection.container[RuleSetEntityManager]
@@ -84,7 +84,7 @@ class PersistenceDependencyInjectionMixIn():
         return self._rule_set_entity_manager
 
     @property
-    def rule_override_entity_manager(self):
+    def rule_override_entity_manager(self) -> RuleOverrideEntityManager:
 
         if self._rule_override_entity_manager is None:
             self._rule_override_entity_manager = dependency_injection.container[RuleOverrideEntityManager]
@@ -92,7 +92,7 @@ class PersistenceDependencyInjectionMixIn():
         return self._rule_override_entity_manager
 
     @property
-    def user_2_device_entity_manager(self):
+    def user_2_device_entity_manager(self) -> User2DeviceEntityManager:
 
         if self._user_2_device_entity_manager is None:
             self._user_2_device_entity_manager = dependency_injection.container[User2DeviceEntityManager]

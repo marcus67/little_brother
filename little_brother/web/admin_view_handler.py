@@ -55,7 +55,12 @@ class AdminViewHandler(BaseViewHandler):
             with SessionContext(p_persistence=self.persistence) as session_context:
 
                 try:
-                    admin_infos = self.app_control.get_admin_infos(p_session_context=session_context)
+                    admin_infos = self.admin_data_handler.get_admin_infos(
+                        p_session_context=session_context,
+                        p_process_infos=self.app_control.get_process_infos(),
+                        p_user_names=self.app_control.usernames)
+
+
                     forms = self.get_admin_forms(p_admin_infos=admin_infos)
 
                     valid_and_submitted = True
@@ -145,4 +150,4 @@ class AdminViewHandler(BaseViewHandler):
 
                 if form.differs_from_model(p_model=day_info.override):
                     form.save_to_model(p_model=day_info.override)
-                    self.app_control.update_rule_override(day_info.override)
+                    self.admin_data_handler.update_rule_override(day_info.override)

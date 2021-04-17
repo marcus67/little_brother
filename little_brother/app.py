@@ -36,6 +36,7 @@ from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
+from little_brother.rule_handler import RuleHandler
 from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
@@ -211,9 +212,11 @@ class App(base_app.BaseApp):
         dependency_injection.container[TimeExtensionEntityManager] = TimeExtensionEntityManager()
 
         if self.is_master():
-            self._rule_handler = rule_handler.RuleHandler(
+            self._rule_handler = RuleHandler(
                 p_config=self._config[rule_handler.SECTION_NAME],
                 p_persistence=self._persistence)
+            
+            dependency_injection.container[RuleHandler] = self._rule_handler
 
         self._master_connector = master_connector.MasterConnector(
             p_config=self._config[master_connector.SECTION_NAME])

@@ -17,7 +17,6 @@
 
 import datetime
 import gettext
-import locale
 import os.path
 import queue
 import socket
@@ -25,11 +24,11 @@ import sys
 import time
 
 import prometheus_client
-from packaging import version
 
 from little_brother import admin_event
 from little_brother import client_stats
 from little_brother import constants
+from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
 from little_brother import process_info
@@ -39,13 +38,15 @@ from little_brother import rule_override
 from little_brother import settings
 from little_brother import simple_context_rule_handlers
 from little_brother import user_status
+from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.app_control_config_model import AppControlConfigModel
+from little_brother.client_info import ClientInfo
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
-from python_base_app import configuration
+from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
-from python_base_app import view_info
 
 DEFAULT_SCAN_ACTIVE = True
 DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS = 7  # days
@@ -55,7 +56,6 @@ DEFAULT_MIN_ACTIVITY_DURATION = 60  # seconds
 DEFAULT_CHECK_INTERVAL = 5  # seconds
 DEFAULT_INDEX_REFRESH_INTERVAL = 60  # seconds
 DEFAULT_TOPOLOGY_REFRESH_INTERVAL = 60  # seconds
-DEFAULT_LOCALE = "en_US"
 DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL = 60  # seconds
 DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL  # seconds
 DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS = 10 * DEFAULT_CHECK_INTERVAL  # minutes
@@ -74,112 +74,6 @@ CSS_CLASS_SLAVE_VERSION_OUTDATED = "node_outdated"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x, y=None: x
-
-
-class AppControlConfigModel(configuration.ConfigModel):
-
-    def __init__(self):
-        super().__init__(p_section_name=SECTION_NAME)
-
-        self.process_lookback_in_days = DEFAULT_PROCESS_LOOKUP_IN_DAYS
-        self.history_length_in_days = DEFAULT_HISTORY_LENGTH_IN_DAYS
-        self.admin_lookahead_in_days = DEFAULT_ADMIN_LOOKAHEAD_IN_DAYS
-        self.server_group = login_mapping.DEFAULT_SERVER_GROUP
-        self.hostname = configuration.NONE_STRING
-        self.scan_active = DEFAULT_SCAN_ACTIVE
-        self.check_interval = DEFAULT_CHECK_INTERVAL
-        self.min_activity_duration = DEFAULT_MIN_ACTIVITY_DURATION
-        self.user_mappings = [configuration.NONE_STRING]
-        self.index_refresh_interval = DEFAULT_INDEX_REFRESH_INTERVAL
-        self.topology_refresh_interval = DEFAULT_TOPOLOGY_REFRESH_INTERVAL
-        self.maximum_client_ping_interval = DEFAULT_MAXIMUM_CLIENT_PING_INTERVAL
-        self.maximum_time_without_send_events = DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS
-        self.warning_time_without_send_events = DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS
-        self.kill_process_delay = DEFAULT_KILL_PROCESS_DELAY
-        self.time_extension_periods = DEFAULT_TIME_EXTENSION_PERIODS
-
-        self._time_extension_periods_list = None
-
-    @property
-    def time_extension_periods_list(self):
-
-        if self._time_extension_periods_list is None:
-            try:
-                self._time_extension_periods_list = [int(entry) for entry in self.time_extension_periods.split(",")]
-
-            except Exception as e:
-                msg = "Invalid list of time extension periods '{periods}' (Exception: {exception})"
-                raise configuration.ConfigurationException(
-                    msg.format(periods=self.time_extension_periods, exception=str(e)))
-
-        return self._time_extension_periods_list
-
-
-class ClientInfo(object):
-
-    def __init__(self, p_is_master, p_host_name, p_client_stats, p_maximum_client_ping_interval=None,
-                 p_master_version=None):
-        self.is_master = p_is_master
-        self.host_name = p_host_name
-        self.client_stats = p_client_stats
-        self.maximum_client_ping_interval = p_maximum_client_ping_interval
-        self.last_message = None
-        self.master_version = p_master_version
-
-    @property
-    def node_type(self):
-        return _("Master") if self.is_master else _("Slave")
-
-    @property
-    def seconds_without_ping(self):
-        if self.last_message is None:
-            return None
-
-        return (tools.get_current_time() - self.last_message).seconds
-
-    @property
-    def last_message_string(self):
-
-        some_seconds_without_ping = self.seconds_without_ping
-
-        if some_seconds_without_ping is None:
-            return _("n/a")
-
-        return tools.get_duration_as_string(some_seconds_without_ping)
-
-    @property
-    def last_message_class(self):
-        if self.last_message is None:
-            return ""
-
-        if self.maximum_client_ping_interval is not None:
-            seconds_without_ping = (tools.get_current_time() - self.last_message).seconds
-
-            if seconds_without_ping > self.maximum_client_ping_interval:
-                return CSS_CLASS_MAXIMUM_PING_EXCEEDED
-
-        return ""
-
-    @property
-    def version_string(self):
-        if self.client_stats is not None and self.client_stats.version is not None:
-            return self.client_stats.version
-
-        return "<" + MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT
-
-    @property
-    def version_class(self):
-        if self.master_version is not None:
-            if self.client_stats is not None and self.client_stats.version is not None:
-                client_version = self.client_stats.version
-
-            else:
-                client_version = LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT
-
-            if version.parse(client_version) < version.parse(self.master_version):
-                return CSS_CLASS_SLAVE_VERSION_OUTDATED
-
-        return ""
 
 
 class AppControl(PersistenceDependencyInjectionMixIn):
@@ -203,20 +97,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._process_handlers = p_process_handlers
         self._device_handler = p_device_handler
 
-        # Dependency injection
-        # self.time_extension_entity_manager: TimeExtensionEntityManager = \
-        #     dependency_injection.container[TimeExtensionEntityManager]
-        # self.user_entity_manager: UserEntityManager = \
-        #     dependency_injection.container[UserEntityManager]
-        # self.process_info_entity_manager: ProcessInfoEntityManager = \
-        #     dependency_injection.container[ProcessInfoEntityManager]
-        # self.admin_event_entity_manager: AdminEventEntityManager = \
-        #     dependency_injection.container[AdminEventEntityManager]
-        # self.device_entity_manager: DeviceEntityManager = \
-        #     dependency_injection.container[DeviceEntityManager]
-        # self.rule_override_entity_manager: RuleOverrideEntityManager = \
-        #     dependency_injection.container[RuleOverrideEntityManager]
-
         self._rule_handler: rule_handler.RuleHandler = p_rule_handler
         self._notification_handlers = p_notification_handlers
         self._master_connector = p_master_connector
@@ -224,6 +104,11 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._user_handler = p_user_handler
         self._locale_helper = p_locale_helper
         self._time_last_successful_send_events = tools.get_current_time()
+        self._user_locale_handler = UserLocaleHandler()
+        self._admin_data_handler = AdminDataHandler(p_config=self._config)
+
+        dependency_injection.container[AdminDataHandler] = self._admin_data_handler
+
         # self._session_context = persistence.SessionContext(p_persistence=self.persistence, p_register=True)
 
         if p_login_mapping is None:
@@ -250,7 +135,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._could_not_send = False
 
         self._client_infos = {}
-        self._rule_overrides = {}
         self._user_status = {}
 
         if self._config.hostname is None:
@@ -277,16 +161,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         return lambda: self.get_number_of_monitored_users()
 
     @property
+    def usernames(self):
+        return self._usernames
+
+    @property
     def check_interval(self):
         return self._config.check_interval
 
     def init_labels_and_notifications(self):
-
-        self.history_labels = [(_('{days} days ago'), {"days": day}) for day in
-                               range(0, self._config.process_lookback_in_days + 1)]
-
-        self.history_labels[0] = (_('Today'), {"days": 0})
-        self.history_labels[1] = (_('Yesterday'), {"days": 1})
 
         self.text_no_time_left = _("{user}, you do not have computer time left today.\nYou will be logged out.")
         self.text_no_time_left_approaching = _(
@@ -508,7 +390,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
             self.load_historic_process_infos()
             self.send_historic_process_infos()
-            self.load_rule_overrides()
+            self._admin_data_handler.load_rule_overrides()
         #             self.queue_broadcast_event_start_master()
 
         else:
@@ -642,8 +524,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                         p_session_context=session_context, p_process_info=pinfo)
 
         if self.is_master():
-            rule_result_info = self.get_current_rule_result_info(p_reference_time=datetime.datetime.now(),
-                                                                 p_username=p_event.username)
+            rule_result_info = self._admin_data_handler.get_current_rule_result_info(
+                p_reference_time=datetime.datetime.now(), p_process_infos=self.get_process_infos(),
+                p_username=p_event.username)
 
             if rule_result_info.activity_allowed():
                 if rule_result_info.limited_session_time():
@@ -682,29 +565,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         with SessionContext(p_persistence=self.persistence) as session_context:
             if p_event.locale is None:
-                user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_event.username)
+                user_locale = self._user_locale_handler.get_user_locale(p_session_context=session_context,
+                                                                        p_username=p_event.username)
 
             else:
                 user_locale = p_event.locale
 
             for notification_handler in self._notification_handlers:
                 notification_handler.notify(p_text=p_event.text, p_locale=user_locale)
-
-    def get_user_locale(self, p_session_context, p_username):
-
-        user = self.user_entity_manager.user_map(p_session_context).get(p_username)
-
-        if user is not None and user.locale is not None:
-            return user.locale
-
-        default_locale = locale.getdefaultlocale()
-
-        if default_locale is not None:
-            # The first entry of the tuple is the language code
-            # See https://docs.python.org/3.6/library/locale.html
-            return default_locale[0]
-
-        return DEFAULT_LOCALE
 
     def handle_event_update_config(self, p_event):
 
@@ -942,40 +810,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         fmt = "Sent %d historic process infos to slaves" % counter
         self._logger.info(fmt)
 
-    def update_rule_override(self, p_rule_override):
-
-        fmt = "Updating '{override}'"
-        self._logger.debug(fmt.format(override=str(p_rule_override)))
-
-        self._rule_overrides[p_rule_override.get_key()] = p_rule_override
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            self.rule_override_entity_manager.update_rule_override(
-                p_session_context=session_context, p_rule_override=p_rule_override)
-
-    def load_rule_overrides(self):
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            overrides = self.rule_override_entity_manager.load_rule_overrides(
-                p_session_context=session_context, p_lookback_in_days=self._config.process_lookback_in_days + 1)
-
-        for override in overrides:
-            new_override = rule_override.RuleOverride(
-                p_username=override.username,
-                p_reference_date=override.reference_date,
-                p_max_time_per_day=override.max_time_per_day,
-                p_min_time_of_day=override.min_time_of_day,
-                p_max_time_of_day=override.max_time_of_day,
-                p_min_break=override.min_break,
-                p_max_activity_duration=override.max_activity_duration,
-                p_free_play=override.free_play)
-
-            self._rule_overrides[new_override.get_key()] = new_override
-
-        fmt = "Loaded %d rule overrides from database looking back %s days" % (
-            len(overrides), self._config.process_lookback_in_days)
-        self._logger.info(fmt)
-
     def pick_text_for_ruleset(self, p_rule_result_info, p_text=None):
 
         t = gettext.translation('messages', localedir=self._locale_dir,
@@ -1029,55 +863,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             self._logger.warning(fmt.format(mask=p_rule_result_info.approaching_logout_rules))
             return ""
 
-    def get_current_rule_result_info(self, p_reference_time, p_username):
-
-        rule_result_info = None
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            users_stat_infos = process_statistics.get_process_statistics(
-                p_process_infos=self.get_process_infos(),
-                p_reference_time=p_reference_time,
-                p_max_lookback_in_days=1,
-                p_user_map=self.user_entity_manager.user_map(session_context),
-                p_min_activity_duration=self._config.min_activity_duration)
-
-            active_time_extensions = self.time_extension_entity_manager.get_active_time_extensions(
-                p_session_context=session_context, p_reference_datetime=tools.get_current_time())
-
-            user_locale = self.get_user_locale(p_session_context=session_context, p_username=p_username)
-            user: User = \
-                self.user_entity_manager.user_map(p_session_context=session_context).get(p_username)
-
-            if user is not None:
-                rule_set = self._rule_handler.get_active_ruleset(p_rule_sets=user.rulesets,
-                                                                 p_reference_date=p_reference_time.date())
-
-            stat_infos = users_stat_infos.get(p_username)
-            active_time_extension = active_time_extensions.get(p_username)
-
-            if stat_infos is not None:
-                stat_info = stat_infos.get(rule_set.context)
-
-                if stat_info is not None:
-                    self._logger.debug(str(stat_info))
-
-                    key_rule_override = rule_override.get_key(p_username=p_username,
-                                                              p_reference_date=p_reference_time.date())
-                    override = self._rule_overrides.get(key_rule_override)
-
-                    active_rule_set = self._rule_handler.get_active_ruleset(
-                        p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
-
-                    rule_result_info = self._rule_handler.process_ruleset(
-                        p_active_rule_set=active_rule_set,
-                        p_stat_info=stat_info,
-                        p_reference_time=p_reference_time,
-                        p_active_time_extension=active_time_extension,
-                        p_rule_override=override,
-                        p_locale=user_locale)
-
-        return rule_result_info
-
     def get_current_user_status(self, p_username):
 
         current_user_status = self._user_status.get(p_username)
@@ -1090,8 +875,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         current_user_status.maximum_time_without_send_events = self._config.maximum_time_without_send_events
 
         with SessionContext(p_persistence=self.persistence) as session_context:
-            current_user_status.locale = self.get_user_locale(p_session_context=session_context,
-                                                              p_username=p_username)
+            current_user_status.locale = self._user_locale_handler.get_user_locale(
+                p_session_context=session_context, p_username=p_username)
 
         return current_user_status
 
@@ -1116,7 +901,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
                     user_active = False
 
-                    user_locale = self.get_user_locale(p_username=user.username, p_session_context=session_context)
+                    user_locale = self._user_locale_handler.get_user_locale(
+                        p_username=user.username, p_session_context=session_context)
 
                     rule_set = self._rule_handler.get_active_ruleset(
                         p_rule_sets=user.rulesets, p_reference_date=p_reference_time.date())
@@ -1131,7 +917,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
                             key_rule_override = rule_override.get_key(p_username=user.username,
                                                                       p_reference_date=p_reference_time.date())
-                            override = self._rule_overrides.get(key_rule_override)
+                            override = self._admin_data_handler.rule_overrides.get(key_rule_override)
 
                             if rule_override is not None:
                                 self._logger.debug(str(override))
@@ -1241,7 +1027,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         current_user_status.notification = p_text
 
         with SessionContext(p_persistence=self.persistence) as session_context:
-            locale = self.get_user_locale(p_username=p_username, p_session_context=session_context)
+            locale = self._user_locale_handler.get_user_locale(p_username=p_username, p_session_context=session_context)
 
         event = admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_SPEAK,
@@ -1351,151 +1137,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     def get_context_rule_handler(self, p_context_name):
 
         return self._rule_handler.get_context_rule_handler(p_context_name)
-
-    def get_user_status_infos(self, p_session_context, p_include_history=True, ):
-
-        user_infos = {}
-
-        reference_time = datetime.datetime.now()
-
-        active_time_extensions = self.time_extension_entity_manager.get_active_time_extensions(
-            p_session_context=p_session_context, p_reference_datetime=reference_time)
-
-        users_stat_infos = process_statistics.get_process_statistics(
-            p_process_infos=self.get_process_infos(),
-            p_reference_time=reference_time,
-            p_user_map=self.user_entity_manager.user_map(p_session_context),
-            p_max_lookback_in_days=self._config.process_lookback_in_days if p_include_history else 1,
-            p_min_activity_duration=self._config.min_activity_duration)
-
-        for username in self.user_entity_manager.user_map(p_session_context).keys():
-            user: User = self.user_entity_manager.user_map(p_session_context).get(username)
-
-            if user is not None:
-                rule_set = self._rule_handler.get_active_ruleset(
-                    p_rule_sets=user.rulesets, p_reference_date=reference_time.date())
-                stat_infos = users_stat_infos.get(username)
-                active_time_extension = active_time_extensions.get(username)
-                user_locale = self.get_user_locale(p_session_context=p_session_context, p_username=username)
-
-                if stat_infos is not None:
-                    stat_info = stat_infos.get(rule_set.context)
-
-                    if stat_info is not None:
-                        self._logger.debug(str(stat_info))
-
-                        key_rule_override = rule_override.get_key(p_username=username,
-                                                                  p_reference_date=reference_time.date())
-                        override = self._rule_overrides.get(key_rule_override)
-
-                        active_rule_set = self._rule_handler.get_active_ruleset(
-                            p_reference_date=reference_time, p_rule_sets=user.rulesets)
-
-                        rule_result_info = self._rule_handler.process_ruleset(
-                            p_active_rule_set=active_rule_set, p_stat_info=stat_info,
-                            p_active_time_extension=active_time_extension,
-                            p_reference_time=reference_time, p_rule_override=override,
-                            p_locale=user_locale)
-
-                        activity_permitted = rule_result_info.activity_allowed()
-
-                        user_infos[username] = {
-                            'active_rule_set': rule_set,
-                            'active_stat_info': stat_info,
-                            'active_rule_result_info': rule_result_info,
-                            'max_lookback_in_days': self._config.process_lookback_in_days,
-                            'activity_permitted': activity_permitted,
-                            'history_labels': self.history_labels
-                        }
-
-        return user_infos
-
-    def get_admin_infos(self, p_session_context):
-
-        admin_infos = []
-
-        user_infos = self.get_user_status_infos(p_session_context=p_session_context, p_include_history=False)
-        time_extensions = self.time_extension_entity_manager.get_active_time_extensions(
-            p_session_context=p_session_context, p_reference_datetime=tools.get_current_time())
-
-        days = [datetime.date.today() + datetime.timedelta(days=i) for i in
-                range(0, self._config.admin_lookahead_in_days + 1)]
-
-        for override in self._rule_overrides.values():
-            if not override.reference_date in days and override.reference_date >= datetime.date.today():
-                days.append(override.reference_date)
-
-        for username in self._usernames:
-            admin_info = view_info.ViewInfo(p_html_key=username)
-            admin_info.username = username
-            admin_info.full_name = username
-
-            admin_info.time_extension = time_extensions.get(username)
-            admin_info.time_extension_periods = []
-
-            if admin_info.time_extension is not None:
-                # add special value 0 for "off"
-                admin_info.time_extension_periods.append(0)
-
-            for period in self._config.time_extension_periods_list:
-                if period > 0:
-                    admin_info.time_extension_periods.append(period)
-
-                else:
-                    if admin_info.time_extension is not None:
-                        if admin_info.time_extension.end_datetime + datetime.timedelta(
-                                minutes=period) >= admin_info.time_extension.start_datetime:
-                            admin_info.time_extension_periods.append(period)
-
-            user = self.user_entity_manager.user_map(p_session_context).get(username)
-
-            if user is not None:
-                admin_info.full_name = user.full_name
-
-            admin_info.user_info = user_infos.get(username)
-
-            if admin_info.user_info is not None:
-                admin_info.day_infos = []
-
-                for reference_date in sorted(days):
-                    rule_set = self._rule_handler.get_active_ruleset(
-                        p_rule_sets=user.rulesets, p_reference_date=reference_date)
-
-                    if rule_set is not None:
-                        key_rule_override = rule_override.get_key(p_username=username, p_reference_date=reference_date)
-                        override = self._rule_overrides.get(key_rule_override)
-
-                        if override is None:
-                            override = rule_override.RuleOverride(p_reference_date=reference_date, p_username=username)
-
-                        effective_ruleset = rule_handler.apply_override(p_rule_set=rule_set, p_rule_override=override)
-
-                        day_info = view_info.ViewInfo(p_parent=admin_info,
-                                                      p_html_key=tools.get_simple_date_as_string(p_date=reference_date))
-
-                        if reference_date == datetime.date.today():
-                            day_info.long_format = _("'Today ('EEE')'", 'long')
-                            day_info.short_format = _("'Today'", 'short')
-
-                        elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-                            day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
-                            day_info.short_format = _("'Tomorrow'", 'short')
-
-                        else:
-                            day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
-                            day_info.short_format = _("EEE")
-
-                        admin_info.day_infos.append(day_info)
-
-                        day_info.reference_date = reference_date
-                        day_info.rule_set = rule_set
-                        day_info.override = override
-                        day_info.effective_rule_set = effective_ruleset
-                        day_info.max_lookahead_in_days = self._config.admin_lookahead_in_days
-
-                admin_infos.append(admin_info)
-
-        return sorted(admin_infos, key=lambda info: info.full_name)
 
     def get_topology_infos(self, p_session_context):
 

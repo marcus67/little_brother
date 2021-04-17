@@ -34,7 +34,7 @@ BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
 class AboutViewHandler(BaseViewHandler):
 
-    def __init__(self, p_package,p_languages):
+    def __init__(self, p_package, p_languages):
 
         super().__init__(p_blueprint_name=constants.ABOUT_BLUEPRINT_NAME, p_blueprint_adapter=BLUEPRINT_ADAPTER,
                          p_package=p_package)
@@ -54,7 +54,6 @@ class AboutViewHandler(BaseViewHandler):
                     page = flask.render_template(
                         constants.ABOUT_HTML_TEMPLATE,
                         rel_font_size=self.get_rel_font_size(),
-                        user_infos=self.app_control.get_user_status_infos(session_context),
                         settings=settings.settings,
                         extended_settings=settings.extended_settings,
                         git_metadata=git.git_metadata,
@@ -62,11 +61,15 @@ class AboutViewHandler(BaseViewHandler):
                         languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
                         navigation={
                             'current_view': constants.ABOUT_BLUEPRINT_NAME + "." + constants.ABOUT_VIEW_NAME}
-
                     )
 
                 except Exception as e:
                     msg = "Exception '{exception}' while generating about page"
                     self._logger.exception(msg.format(exception=str(e)))
+
+                    return flask.render_template(
+                        constants.INTERNAL_ERROR_HTML_TEMPLATE,
+                        rel_font_size=self.get_rel_font_size(),
+                    )
 
                 return page

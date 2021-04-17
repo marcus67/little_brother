@@ -35,6 +35,7 @@ from little_brother.app_control import AppControl, AppControlConfigModel
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
+from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_rule_handler
@@ -91,8 +92,10 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
         self._persistence = dependency_injection.container[Persistence]
+
         self._rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
             p_persistence=self._persistence)
+        dependency_injection.container[RuleHandler] = self._rule_handler
 
         master_connector_config = master_connector.MasterConnectorConfigModel()
         self._master_connector = master_connector.MasterConnector(p_config=master_connector_config)

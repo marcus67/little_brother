@@ -53,7 +53,9 @@ class StatusViewHandler(BaseViewHandler):
                                                                p_duration=duration)):
             with SessionContext(p_persistence=self.persistence) as session_context:
                 try:
-                    user_infos = self.app_control.get_user_status_infos(p_session_context=session_context)
+                    process_infos = self.app_control.get_process_infos()
+                    user_infos = self.admin_data_handler.get_user_status_infos(p_session_context=session_context,
+                                                                               p_process_infos=process_infos)
                     page = flask.render_template(
                         constants.STATUS_HTML_TEMPLATE,
                         rel_font_size=self.get_rel_font_size(),

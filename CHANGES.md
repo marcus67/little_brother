@@ -21,6 +21,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #133, see [here](https://github.com/marcus67/little_brother/issues/133)
 *   Create mix in class `PersistenceDependencyInjectionMixIn`
 *   Split up class `StatusServer` and move to new sub folder
+*   Created classes `AdminDataHandler` and `UserLocaleHandler`
+*   Error page for internal errors during HTML template evaluation  
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 
