@@ -164,7 +164,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         self._app_control.retrieve_user_mappings()
         self._app_control.start()
-        self._app_control.scan_processes(
+        self._app_control._process_handler_manager.scan_processes(
             p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
         self._app_control.check()
         self._app_control.stop()

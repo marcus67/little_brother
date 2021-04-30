@@ -22,8 +22,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Create mix in class `PersistenceDependencyInjectionMixIn`
 *   Split up class `StatusServer` and move to new sub folder
 *   Created classes `AdminDataHandler` and `UserLocaleHandler`
-*   Error page for internal errors during HTML template evaluation  
+*   Error page for internal errors during HTML template evaluation
 *   Created class `EventHandler`
+*   Created classes `ProcessHandlerManager` and `Language` 
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

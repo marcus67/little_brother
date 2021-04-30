@@ -46,7 +46,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._rule_handler = None
-        self._user_locale_handler = None
+        self._user_locale_handler = UserLocaleHandler()
         self._rule_overrides = {}
 
         self.history_labels = [(_('{days} days ago'), {"days": day}) for day in
@@ -277,8 +277,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
             user_locale = self._user_locale_handler.get_user_locale(p_session_context=session_context,
                                                                     p_username=p_username)
-            user: User = \
-                self.user_entity_manager.user_map(p_session_context=session_context).get(p_username)
+            user: User = self.user_entity_manager.user_map(p_session_context=session_context).get(p_username)
 
             if user is not None:
                 rule_set = self._rule_handler.get_active_ruleset(p_rule_sets=user.rulesets,

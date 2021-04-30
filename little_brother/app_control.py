@@ -16,8 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
-import gettext
-import os.path
 import socket
 import sys
 import time
@@ -29,9 +27,7 @@ from little_brother import client_stats
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother import login_mapping
-from little_brother import process_info
 from little_brother import process_statistics
-from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import settings
 from little_brother import user_status
@@ -39,10 +35,12 @@ from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.app_control_config_model import AppControlConfigModel
 from little_brother.client_info import ClientInfo
 from little_brother.event_handler import EventHandler
+from little_brother.language import Language
 from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
+from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_handler import RuleHandler
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
@@ -90,6 +88,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         super().__init__()
 
+        self._logger = log_handling.get_logger(self.__class__.__name__)
+
         self._config: AppControlConfigModel = p_config
         self._debug_mode = p_debug_mode
         self._process_handlers = p_process_handlers
@@ -115,14 +115,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         dependency_injection.container[EventHandler] = self._event_handler
 
-        self._event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
-        self._event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME, p_handler=self.handle_event_process_downtime)
-        self._event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_PROCESS_END, p_handler=self.handle_event_process_end)
-        self._event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
+        # self._event_handler.register_event_handler(
+        #     p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
+        # self._event_handler.register_event_handler(
+        #     p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME, p_handler=self.handle_event_process_downtime)
+        # self._event_handler.register_event_handler(
+        #     p_event_type=admin_event.EVENT_TYPE_PROCESS_END, p_handler=self.handle_event_process_end)
+        # self._event_handler.register_event_handler(
+        #     p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
         self._event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_SPEAK, p_handler=self.handle_event_speak)
         self._event_handler.register_event_handler(
@@ -139,7 +139,13 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         if p_login_mapping is None:
             p_login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
 
-        self._logger = log_handling.get_logger(self.__class__.__name__)
+        self._login_mapping = p_login_mapping
+
+        self._language = Language()
+
+        self._process_handler_manager = ProcessHandlerManager(
+            p_config=self._config, p_process_handlers=self._process_handlers, p_is_master=self.is_master(),
+            p_login_mapping=self._login_mapping, p_language=self._language)
 
         self._usernames_not_found = []
         self._usernames = []
@@ -157,9 +163,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._client_infos = {}
         self._user_status = {}
 
-        self.init_labels_and_notifications()
-        self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
-        self._login_mapping = p_login_mapping
         self._login_mapping_received = self.is_master()
 
         self._start_time = time.time()
@@ -205,27 +208,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     @property
     def check_interval(self):
         return self._config.check_interval
-
-    def init_labels_and_notifications(self):
-
-        self.text_no_time_left = _("{user}, you do not have computer time left today.\nYou will be logged out.")
-        self.text_no_time_left_approaching = _(
-            "{user}, you only have {minutes_left_before_logout} minutes left today.\nPlease, log out.")
-        self.text_no_time_left_in_time_extension = _(
-            "{user}, you only have {minutes_left_before_logout} minutes left in your time extension.\nPlease, log out.")
-        self.text_no_time_today = _("{user}, you do not have any computer time today.\nYou will be logged out.")
-        self.text_too_early = _("{user}, it is too early to use the computer.\nYou will be logged out.")
-        self.text_too_late = _("{user}, it is too late to use the computer.\nYou will be logged out.")
-        self.text_too_late_approaching = _(
-            "{user}, in {minutes_left_before_logout} minutes it will be too late to use the computer.\nPlease, log out.")
-        self.text_need_break = _("{user}, you have to take a break.\nYou will be logged out.")
-        self.text_need_break_approaching = _(
-            "{user}, in {minutes_left_before_logout} minutes you will have to take a break.\nPlease, log out.")
-        self.text_min_break = _(
-            "{user}, your break will only be over in {break_minutes_left} minutes.\nYou will be logged out.")
-        self.text_limited_session_start = _(
-            "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes\nin this session.")
-        self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
 
     def set_user_configs(self, p_user_configs):
 
@@ -409,8 +391,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             fmt = "Starting application in MASTER mode"
             self._logger.info(fmt)
 
-            self.load_historic_process_infos()
-            self.send_historic_process_infos()
+            self._process_handler_manager.load_historic_process_infos()
+            self._process_handler_manager.send_historic_process_infos()
             self.admin_data_handler.load_rule_overrides()
         #             self.queue_broadcast_event_start_master()
 
@@ -452,86 +434,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                                                      p_history_length_in_days=history_length_in_days)
             self.admin_event_entity_manager.delete_historic_entries(p_session_context=session_context,
                                                                     p_history_length_in_days=history_length_in_days)
-
-    def get_process_handler(self, p_id, p_raise_exception=False):
-
-        handler = self._process_handlers.get(p_id)
-
-        if handler is None and p_raise_exception:
-            fmt = "Unknown process handler '{handler_id}'"
-            raise Exception(fmt.format(handler_id=p_id))
-
-        return handler
-
-    def handle_event_process_downtime(self, p_event):
-
-        pinfo, updated = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_downtime(p_event)
-
-        if self.persistence is not None and updated:
-            with SessionContext(p_persistence=self.persistence) as session_context:
-                self.process_info_entity_manager.update_process_info(
-                    p_session_context=session_context, p_process_info=pinfo)
-
-    def handle_event_process_start(self, p_event):
-
-        process_handler = self.get_process_handler(p_id=p_event.processhandler)
-
-        if process_handler is None:
-            msg = "Received event for process handler of type id '{id}' which is not registered -> discarding event"
-            self._logger.warning(msg.format(id=p_event.processhandler))
-            return
-
-        pinfo, updated = process_handler.handle_event_process_start(p_event)
-
-        if updated:
-            if self.persistence is not None:
-                with SessionContext(p_persistence=self.persistence) as session_context:
-                    self.process_info_entity_manager.update_process_info(
-                        p_session_context=session_context, p_process_info=pinfo)
-
-        else:
-            if self.persistence is not None:
-                with SessionContext(p_persistence=self.persistence) as session_context:
-                    self.process_info_entity_manager.write_process_info(
-                        p_session_context=session_context, p_process_info=pinfo)
-
-        if self.is_master():
-            rule_result_info = self.admin_data_handler.get_current_rule_result_info(
-                p_reference_time=datetime.datetime.now(), p_process_infos=self.get_process_infos(),
-                p_username=p_event.username)
-
-            if rule_result_info.activity_allowed():
-                if rule_result_info.limited_session_time():
-                    self.queue_event_speak(
-                        p_hostname=p_event.hostname,
-                        p_username=p_event.username,
-                        p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
-                                                          p_text=self.text_limited_session_start))
-
-                else:
-                    self.queue_event_speak(
-                        p_hostname=p_event.hostname,
-                        p_username=p_event.username,
-                        p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info,
-                                                          p_text=self.text_unlimited_session_start))
-
-    def handle_event_process_end(self, p_event):
-
-        pinfo = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_end(p_event)
-
-        if pinfo is None:
-            return
-
-        if self.persistence is not None:
-            with SessionContext(p_persistence=self.persistence) as session_context:
-                self.process_info_entity_manager.update_process_info(
-                    p_session_context=session_context, p_process_info=pinfo)
-
-    def handle_event_kill_process(self, p_event):
-
-        return self.get_process_handler(
-            p_id=p_event.processhandler).handle_event_kill_process(p_event, p_server_group=self._config.server_group,
-                                                                   p_login_mapping=self._login_mapping)
 
     def handle_event_speak(self, p_event):
 
@@ -593,7 +495,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self.update_client_info(p_event.hostname)
         self.send_config_to_slave(p_event.hostname)
         self.send_login_mapping_to_slave(p_event.hostname)
-        self.send_historic_process_infos()
+        self._process_handler_manager.send_historic_process_infos()
 
     def handle_event_start_master(self):
 
@@ -625,68 +527,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self.queue_event_update_login_mapping(p_hostname=p_hostname,
                                               p_login_mapping=self._login_mapping.to_json())
 
-    def process_event(self, p_event):
-
-        new_events = []
-        fmt = "Processing {event}"
-        self._logger.debug(fmt.format(event=p_event))
-
-        if p_event.event_type == admin_event.EVENT_TYPE_PROCESS_START:
-            self.handle_event_process_start(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_PROCESS_DOWNTIME:
-            self.handle_event_process_downtime(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_PROCESS_END:
-            self.handle_event_process_end(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_KILL_PROCESS:
-            new_events = self.handle_event_kill_process(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_SPEAK:
-            self.handle_event_speak(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_START_CLIENT:
-            self.handle_event_start_client(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_START_MASTER:
-            self.handle_event_start_master()
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_UPDATE_CONFIG:
-            self.handle_event_update_config(p_event=p_event)
-
-        elif p_event.event_type == admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING:
-            self.handle_event_update_login_mapping(p_event=p_event)
-
-        else:
-            raise Exception("Invalid event type '%s' found" % p_event.event_type)
-
-        if self.persistence is not None:
-            with SessionContext(p_persistence=self.persistence) as session_context:
-                self.admin_event_entity_manager.log_admin_event(p_session_context=session_context,
-                                                                p_admin_event=p_event)
-
-        return new_events
-
-    def scan_processes(self, p_process_handler, p_reference_time=None, p_queue_events=True):  # @DontTrace
-
-        if p_reference_time is None:
-            p_reference_time = datetime.datetime.now()
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            events = p_process_handler.scan_processes(
-                p_session_context=session_context,
-                p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
-                p_host_name=self._host_name,
-                p_process_regex_map=self.process_regex_map,
-                p_reference_time=p_reference_time)
-
-            if p_queue_events:
-                self._event_handler.queue_events(p_events=events, p_to_master=True)
-
-                if not self.is_master():
-                    self._event_handler.queue_events_locally(p_events=events)
-
     def get_process_infos(self):
 
         process_infos = {}
@@ -695,117 +535,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             process_infos.update(handler.process_infos)
 
         return process_infos
-
-    def load_historic_process_infos(self):
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            pinfos = self.process_info_entity_manager.load_process_infos(
-                p_session_context=session_context, p_lookback_in_days=self._config.process_lookback_in_days + 1)
-
-        counter_open_end_time = 0
-
-        for pinfo in pinfos:
-
-            if pinfo.end_time is None:
-                end_time = None
-
-            else:
-                end_time = pinfo.end_time
-
-            new_pinfo = process_info.ProcessInfo(
-                p_hostname=pinfo.hostname,
-                p_hostlabel=pinfo.hostlabel,
-                p_pid=pinfo.pid,
-                p_processhandler=pinfo.processhandler,
-                p_username=pinfo.username,
-                p_processname=pinfo.processname,
-                p_start_time=pinfo.start_time,
-                p_downtime=pinfo.downtime,
-                p_percent=pinfo.percent,
-                p_end_time=end_time)
-
-            if not new_pinfo.is_valid():
-                fmt = "Loaded {process_info} is invalid -> ignore"
-                self._logger.warning(fmt.format(process_info=str(new_pinfo)))
-                continue
-
-            if new_pinfo.end_time is None:
-                counter_open_end_time = counter_open_end_time + 1
-
-            process_handler = self.get_process_handler(p_id=new_pinfo.processhandler, p_raise_exception=False)
-
-            if process_handler is not None:
-                process_handler.add_historic_process(p_process_info=new_pinfo)
-
-        fmt = "Loaded %d historic process infos from database looking back %s days (%d of which had no end time)" % (
-            len(pinfos), self._config.process_lookback_in_days, counter_open_end_time)
-        self._logger.info(fmt)
-
-    def send_historic_process_infos(self):
-
-        counter = 0
-
-        for pinfo in self.get_process_infos().values():
-            if pinfo.end_time is None:
-                if pinfo.hostname != self._host_name:
-                    self.queue_event_historic_process_start(p_pinfo=pinfo)
-                    counter = counter + 1
-
-        fmt = "Sent %d historic process infos to slaves" % counter
-        self._logger.info(fmt)
-
-    def pick_text_for_ruleset(self, p_rule_result_info, p_text=None):
-
-        t = gettext.translation('messages', localedir=self._locale_dir,
-                                languages=[p_rule_result_info.locale], fallback=True)
-
-        if p_text is not None:
-            return t.gettext(p_text).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY:
-            return t.gettext(self.text_no_time_left).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_DAY_BLOCKED:
-            return t.gettext(self.text_no_time_today).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_TOO_EARLY:
-            return t.gettext(self.text_too_early).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_TOO_LATE:
-            return t.gettext(self.text_too_late).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION:
-            return t.gettext(self.text_need_break).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK:
-            return t.gettext(self.text_min_break).format(**p_rule_result_info.args)
-
-        else:
-            fmt = "pick_text_for_ruleset(): cannot derive text for rule result %d" % p_rule_result_info.applying_rules
-            self._logger.warning(fmt)
-            return ""
-
-    def pick_text_for_approaching_logout(self, p_rule_result_info):
-
-        t = gettext.translation('messages', localedir=self._locale_dir,
-                                languages=[p_rule_result_info.locale], fallback=True)
-
-        if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_ACTIVITY_DURATION:
-            return t.gettext(self.text_need_break_approaching).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TOO_LATE:
-            return t.gettext(self.text_too_late_approaching).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
-            return t.gettext(self.text_no_time_left_approaching).format(**p_rule_result_info.args)
-
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_EXTENSION:
-            return t.gettext(self.text_no_time_left_in_time_extension).format(**p_rule_result_info.args)
-
-        else:
-            fmt = "pick_text_for_approaching_logout(): cannot derive text for rule result {mask}"
-            self._logger.warning(fmt.format(mask=p_rule_result_info.approaching_logout_rules))
-            return ""
 
     def get_current_user_status(self, p_username):
 
@@ -917,10 +646,11 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                             process_killed = True
 
                                     if process_killed:
-                                        self.queue_event_speak(
+                                        self._process_handler_manager.queue_event_speak(
                                             p_hostname=hostname,
                                             p_username=user.username,
-                                            p_text=self.pick_text_for_ruleset(p_rule_result_info=rule_result_info))
+                                            p_text=self._language.pick_text_for_ruleset(
+                                                p_rule_result_info=rule_result_info))
 
                                         self.reset_logout_warning(p_username=user.username)
 
@@ -950,10 +680,10 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         if issue_warning:
             self._logout_warnings[p_username] = p_rule_result_info.minutes_left_before_logout
-            self.queue_event_speak(
+            self._process_handler_manager.queue_event_speak(
                 p_hostname=p_hostname,
                 p_username=p_username,
-                p_text=self.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
+                p_text=self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
 
     def reset_logout_warning(self, p_username):
 
@@ -963,23 +693,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     ################################################################################################################################
     ################################################################################################################################
     ################################################################################################################################
-
-    def queue_event_speak(self, p_hostname, p_username, p_text):
-
-        current_user_status = self.get_current_user_status(p_username=p_username)
-
-        current_user_status.notification = p_text
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            locale = self._user_locale_handler.get_user_locale(p_username=p_username, p_session_context=session_context)
-
-        event = admin_event.AdminEvent(
-            p_event_type=admin_event.EVENT_TYPE_SPEAK,
-            p_hostname=p_hostname,
-            p_username=p_username,
-            p_text=p_text,
-            p_locale=locale)
-        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_start_client(self):
 

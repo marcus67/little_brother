@@ -204,7 +204,6 @@ class App(base_app.BaseApp):
         p_rule_handler.register_context_rule_handler(WeekplanContextRuleHandler())
         p_rule_handler.register_context_rule_handler(GermanVacationContextRuleHandler())
 
-
     def prepare_services(self, p_full_startup=True):
 
         super().prepare_services(p_full_startup=p_full_startup)
@@ -225,7 +224,7 @@ class App(base_app.BaseApp):
             self._rule_handler = RuleHandler(
                 p_config=self._config[rule_handler.SECTION_NAME],
                 p_persistence=self._persistence)
-            
+
             dependency_injection.container[RuleHandler] = self._rule_handler
 
             self.register_rule_context_handlers(p_rule_handler=self._rule_handler)
@@ -324,7 +323,7 @@ class App(base_app.BaseApp):
 
         if self._config[APP_CONTROL_SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
-                                          p_handler_method=lambda: self._app_control.scan_processes(
+                                          p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
                                               p_process_handler=process_handler),
                                           p_interval=process_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
@@ -336,7 +335,7 @@ class App(base_app.BaseApp):
         if self._client_device_handler:
             task = base_app.RecurringTask(
                 p_name="app_control.scan_processes(DeviceHandler)",
-                p_handler_method=lambda: self._app_control.scan_processes(
+                p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
                     p_process_handler=self._client_device_handler),
                 p_interval=self._client_device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
