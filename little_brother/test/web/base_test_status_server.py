@@ -31,7 +31,9 @@ from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother import master_connector
+from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.app_control import AppControl, AppControlConfigModel
+from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
@@ -100,18 +102,23 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         master_connector_config = master_connector.MasterConnectorConfigModel()
         self._master_connector = master_connector.MasterConnector(p_config=master_connector_config)
 
+        dependency_injection.container[MasterConnector] = self._master_connector
+
         self._user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
 
         app_control_config = AppControlConfigModel()
+
+        self._admin_data_handler = AdminDataHandler(p_config=app_control_config)
+
+        dependency_injection.container[AdminDataHandler] = self._admin_data_handler
+
         self._app_control = AppControl(
             p_config=app_control_config,
             p_debug_mode=False,
             p_process_handlers=p_process_handlers,
             p_device_handler=None,
             p_prometheus_client=None,
-            p_rule_handler=self._rule_handler,
             p_notification_handlers=[],
-            p_master_connector=self._master_connector,
             p_login_mapping=test_data.LOGIN_MAPPING,
             p_locale_helper=locale_helper.LocaleHelper(),
             p_user_handler=self._user_handler)

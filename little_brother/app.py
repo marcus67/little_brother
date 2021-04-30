@@ -27,16 +27,20 @@ from little_brother import constants
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import login_mapping
-from little_brother import master_connector
 from little_brother import prometheus
 from little_brother import rule_handler
+from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
 from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
+from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
+from little_brother.master_connector import MasterConnector, MasterConnectorConfigModel, \
+    SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
 from little_brother.rule_handler import RuleHandler
+from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
 from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
@@ -134,7 +138,7 @@ class App(base_app.BaseApp):
         status_server_section = web_server.StatusServerConfigModel()
         p_configuration.add_section(status_server_section)
 
-        master_connector_section = master_connector.MasterConnectorConfigModel()
+        master_connector_section = MasterConnectorConfigModel()
         p_configuration.add_section(master_connector_section)
 
         prometheus_client_section = prometheus.PrometheusClientConfigModel()
@@ -159,7 +163,7 @@ class App(base_app.BaseApp):
 
     def is_master(self):
 
-        return self._config[master_connector.SECTION_NAME].host_url is None
+        return self._config[MASTER_CONNECTOR_SECTION_NAME].host_url is None
 
     def check_migrations(self):
 
@@ -195,6 +199,12 @@ class App(base_app.BaseApp):
 
             session.close()
 
+    def register_rule_context_handlers(self, p_rule_handler):
+        p_rule_handler.register_context_rule_handler(DefaultContextRuleHandler(), p_default=True)
+        p_rule_handler.register_context_rule_handler(WeekplanContextRuleHandler())
+        p_rule_handler.register_context_rule_handler(GermanVacationContextRuleHandler())
+
+
     def prepare_services(self, p_full_startup=True):
 
         super().prepare_services(p_full_startup=p_full_startup)
@@ -218,8 +228,11 @@ class App(base_app.BaseApp):
             
             dependency_injection.container[RuleHandler] = self._rule_handler
 
-        self._master_connector = master_connector.MasterConnector(
-            p_config=self._config[master_connector.SECTION_NAME])
+            self.register_rule_context_handlers(p_rule_handler=self._rule_handler)
+
+        self._master_connector = MasterConnector(p_config=self._config[MASTER_CONNECTOR_SECTION_NAME])
+
+        dependency_injection.container[MasterConnector] = self._master_connector
 
         config = self._config[audio_handler.SECTION_NAME]
 
@@ -292,14 +305,16 @@ class App(base_app.BaseApp):
         self._login_mapping = login_mapping.LoginMapping()
         self._login_mapping.read_from_configuration(p_login_mapping_section_handler=self._login_mapping_section_handler)
 
+        self._admin_data_handler = AdminDataHandler(p_config=self._config[APP_CONTROL_SECTION_NAME])
+
+        dependency_injection.container[AdminDataHandler] = self._admin_data_handler
+
         self._app_control = AppControl(
             p_config=self._config[APP_CONTROL_SECTION_NAME],
             p_debug_mode=self._app_config.debug_mode,
             p_process_handlers=self._process_handlers,
             p_device_handler=self._client_device_handler,
-            p_rule_handler=self._rule_handler,
             p_notification_handlers=self._notification_handlers,
-            p_master_connector=self._master_connector,
             p_prometheus_client=self._prometheus_client,
             p_user_handler=self._user_handler,
             p_locale_helper=self.locale_helper,

@@ -56,7 +56,7 @@ class UsersViewHandler(BaseViewHandler):
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
                 try:
-                    users = self.app_control.get_sorted_users(session_context)
+                    users = self.user_entity_manager.get_sorted_users(session_context)
                     forms = self.get_users_forms(p_users=users, p_session_context=session_context)
 
                     valid_and_submitted = True
@@ -124,7 +124,7 @@ class UsersViewHandler(BaseViewHandler):
                             for ruleset in user.rulesets:
                                 forms[ruleset.html_key].load_from_model(p_model=ruleset)
                                 # provide a callback function so that the RuleSet can retrieve context summaries
-                                ruleset._get_context_rule_handler = self.app_control.get_context_rule_handler
+                                ruleset._get_context_rule_handler = self.rule_handler.get_context_rule_handler
 
                             for user2device in user.devices:
                                 forms[user2device.html_key].load_from_model(p_model=user2device)
@@ -167,13 +167,13 @@ class UsersViewHandler(BaseViewHandler):
 
             for ruleset in user.rulesets:
                 localized_values = [(value, self.gettext(value))
-                                    for value in self.app_control.get_context_rule_handler_choices()]
+                                    for value in self.rule_handler.get_context_rule_handler_choices()]
 
                 if ruleset.fixed_context:
                     choices = self.add_labels([ruleset.context])
 
                 else:
-                    choices = self.add_labels(self.app_control.get_context_rule_handler_names())
+                    choices = self.add_labels(self.rule_handler.get_context_rule_handler_names())
 
                 context_details_filters = [
                     lambda x: custom_fields.unlocalize(p_localized_values=localized_values, p_value=x)]
@@ -185,7 +185,7 @@ class UsersViewHandler(BaseViewHandler):
                 forms[ruleset.html_key] = form
 
                 form.context_details.validators = [
-                    lambda a_form, a_field: self.app_control.validate_context_rule_handler_details(
+                    lambda a_form, a_field: self.rule_handler.validate_context_rule_handler_details(
                         p_context_name=a_form.context.data, p_context_details=a_field.data)]
 
             unmonitored_devices = self.app_control.get_unmonitored_devices(p_user=user,

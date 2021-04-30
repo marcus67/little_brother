@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.1 Revision 90 (April 2nd, 2021)
+## Version 0.4.1 Revision 91 (April 30th, 2021)
 
 *   Introduce base class `BasePersistentEntityManagerTest`
 *   Move all persistence modules to a folder of their own 
@@ -23,6 +23,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Split up class `StatusServer` and move to new sub folder
 *   Created classes `AdminDataHandler` and `UserLocaleHandler`
 *   Error page for internal errors during HTML template evaluation  
+*   Created class `EventHandler`
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

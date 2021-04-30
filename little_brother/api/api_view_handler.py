@@ -21,6 +21,10 @@ import flask
 
 import little_brother
 from little_brother import constants
+from little_brother.app_control import AppControl
+from little_brother.dependency_injection import container
+from little_brother.event_handler import EventHandler
+from little_brother.master_connector import MasterConnector
 from python_base_app import log_handling
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
@@ -33,9 +37,10 @@ _ = lambda x: x
 
 class ApiViewHandler(object):
 
-    def __init__(self, p_app, p_app_control, p_master_connector):
-        self._appcontrol = p_app_control
-        self._master_connector = p_master_connector
+    def __init__(self, p_app):
+        self._appcontrol = None
+        self._master_connector = None
+        self._event_handler = None
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._blueprint = flask.Blueprint(API_BLUEPRINT_NAME, little_brother.__name__)
@@ -44,9 +49,34 @@ class ApiViewHandler(object):
         API_BLUEPRINT_ADAPTER.check_view_methods()
         p_app.register_blueprint(self._blueprint)
 
+    @property
+    def app_control(self) -> AppControl:
+        
+        if self._appcontrol is None:
+            self._appcontrol = container[AppControl]
+            
+        return self._appcontrol
+
+    @property
+    def master_connector(self) -> MasterConnector:
+
+        if self._master_connector is None:
+            self._master_connector = container[MasterConnector]
+
+        return self._master_connector
+
+    @property
+    def event_handler(self) -> EventHandler:
+
+        if self._event_handler is None:
+            self._event_handler = container[EventHandler]
+
+        return self._event_handler
+
+
     def measure(self, p_hostname, p_service, p_duration):
 
-        self._appcontrol.set_prometheus_http_requests_summary(p_hostname=p_hostname,
+        self.app_control.set_prometheus_http_requests_summary(p_hostname=p_hostname,
                                                               p_service=p_service,
                                                               p_duration=p_duration)
 
@@ -58,7 +88,7 @@ class ApiViewHandler(object):
                                                          p_service=request.url_rule, p_duration=duration)):
             data = request.get_json()
 
-            event_info = self._master_connector.receive_events(p_json_data=data)
+            event_info = self.master_connector.receive_events(p_json_data=data)
 
             if event_info is None:
                 return flask.Response("{error: invalid access code}", status=constants.HTTP_STATUS_CODE_UNAUTHORIZED,
@@ -69,7 +99,7 @@ class ApiViewHandler(object):
             if len(event_info) > 2:
                 # new format: 3 entries including client statistics
                 (hostname, json_events, json_client_stats) = event_info
-                client_stats = self._appcontrol.receive_client_stats(p_json_data=json_client_stats)
+                client_stats = self.app_control.receive_client_stats(p_json_data=json_client_stats)
 
             else:
                 # old format: 2 entries without slave statistics
@@ -78,10 +108,10 @@ class ApiViewHandler(object):
             msg = "Received {count} events from host '{hostname}'"
             self._logger.debug(msg.format(count=len(json_events), hostname=hostname))
 
-            self._appcontrol.update_client_info(p_hostname=hostname, p_client_stats=client_stats)
-            self._appcontrol.receive_events(p_json_data=json_events)
+            self.app_control.update_client_info(p_hostname=hostname, p_client_stats=client_stats)
+            self.event_handler.receive_events(p_json_data=json_events)
 
-            return_events = self._appcontrol.get_return_events(p_hostname=hostname)
+            return_events = self.event_handler.get_return_events(p_hostname=hostname)
             msg = "Sending {count} events back to host '{hostname}'"
             self._logger.debug(msg.format(count=len(return_events), hostname=hostname))
 
@@ -102,7 +132,7 @@ class ApiViewHandler(object):
                                       status=constants.HTTP_STATUS_CODE_NOT_FOUND,
                                       mimetype='application/json')
 
-            user_status = self._appcontrol.get_user_status(p_username=username)
+            user_status = self.app_control.get_user_status(p_username=username)
 
             if user_status is None:
                 msg = _("username '{username}' not being monitored")

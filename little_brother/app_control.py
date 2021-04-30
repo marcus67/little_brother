@@ -18,7 +18,6 @@
 import datetime
 import gettext
 import os.path
-import queue
 import socket
 import sys
 import time
@@ -29,21 +28,22 @@ from little_brother import admin_event
 from little_brother import client_stats
 from little_brother import constants
 from little_brother import dependency_injection
-from little_brother import german_vacation_context_rule_handler
 from little_brother import login_mapping
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
 from little_brother import rule_override
 from little_brother import settings
-from little_brother import simple_context_rule_handlers
 from little_brother import user_status
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.app_control_config_model import AppControlConfigModel
 from little_brother.client_info import ClientInfo
+from little_brother.event_handler import EventHandler
+from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
+from little_brother.rule_handler import RuleHandler
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
@@ -82,9 +82,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                  p_debug_mode,
                  p_process_handlers=None,
                  p_device_handler=None,
-                 p_rule_handler=None,
                  p_notification_handlers=None,
-                 p_master_connector=None,
                  p_prometheus_client=None,
                  p_user_handler=None,
                  p_login_mapping=None,
@@ -97,17 +95,44 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._process_handlers = p_process_handlers
         self._device_handler = p_device_handler
 
-        self._rule_handler: rule_handler.RuleHandler = p_rule_handler
+        self._rule_handler = None
         self._notification_handlers = p_notification_handlers
-        self._master_connector = p_master_connector
+        self._master_connector = None
         self._prometheus_client = p_prometheus_client
         self._user_handler = p_user_handler
         self._locale_helper = p_locale_helper
         self._time_last_successful_send_events = tools.get_current_time()
         self._user_locale_handler = UserLocaleHandler()
-        self._admin_data_handler = AdminDataHandler(p_config=self._config)
+        self._admin_data_handler = None
 
-        dependency_injection.container[AdminDataHandler] = self._admin_data_handler
+        if self._config.hostname is None:
+            self._host_name = socket.getfqdn()
+
+        else:
+            self._host_name = self._config.hostname
+
+        self._event_handler = EventHandler(p_host_name=self._host_name, p_is_master=self.is_master())
+
+        dependency_injection.container[EventHandler] = self._event_handler
+
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME, p_handler=self.handle_event_process_downtime)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_END, p_handler=self.handle_event_process_end)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_SPEAK, p_handler=self.handle_event_speak)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_START_CLIENT, p_handler=self.handle_event_start_client)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_START_MASTER, p_handler=self.handle_event_start_master)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_UPDATE_CONFIG, p_handler=self.handle_event_update_config)
+        self._event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING, p_handler=self.handle_event_update_login_mapping)
 
         # self._session_context = persistence.SessionContext(p_persistence=self.persistence, p_register=True)
 
@@ -124,24 +149,13 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         self._logout_warnings = {}
 
-        if self._rule_handler is not None:
-            self.register_rule_context_handlers()
-
         with SessionContext(p_persistence=self.persistence) as session_context:
             self.reset_users(p_session_context=session_context)
 
-        self._event_queue = queue.Queue()
-        self._outgoing_events = []
         self._could_not_send = False
 
         self._client_infos = {}
         self._user_status = {}
-
-        if self._config.hostname is None:
-            self._host_name = socket.getfqdn()
-
-        else:
-            self._host_name = self._config.hostname
 
         self.init_labels_and_notifications()
         self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
@@ -149,6 +163,30 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._login_mapping_received = self.is_master()
 
         self._start_time = time.time()
+
+    @property
+    def rule_handler(self) -> RuleHandler:
+
+        if self._rule_handler is None:
+            self._rule_handler = dependency_injection.container[RuleHandler]
+
+        return self._rule_handler
+
+    @property
+    def admin_data_handler(self) -> AdminDataHandler:
+
+        if self._admin_data_handler is None:
+            self._admin_data_handler = dependency_injection.container[AdminDataHandler]
+
+        return self._admin_data_handler
+
+    @property
+    def master_connector(self) -> MasterConnector:
+
+        if self._master_connector is None:
+            self._master_connector = dependency_injection.container[MasterConnector]
+
+        return self._master_connector
 
     def reset_users(self, p_session_context):
         self._process_regex_map = None
@@ -189,20 +227,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes\nin this session.")
         self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
 
-    def register_rule_context_handlers(self):
-
-        self._rule_handler.register_context_rule_handler(
-            simple_context_rule_handlers.DefaultContextRuleHandler(p_locale_helper=self._locale_helper),
-            p_default=True)
-        self._rule_handler.register_context_rule_handler(
-            simple_context_rule_handlers.WeekplanContextRuleHandler(p_locale_helper=self._locale_helper))
-        self._rule_handler.register_context_rule_handler(
-            german_vacation_context_rule_handler.GermanVacationContextRuleHandler(p_locale_helper=self._locale_helper))
-
-    def validate_context_rule_handler_details(self, p_context_name, p_context_details):
-
-        self._rule_handler.validate_context_rule_handler_details(p_context_name, p_context_details)
-
     def set_user_configs(self, p_user_configs):
 
         with SessionContext(p_persistence=self.persistence) as session_context:
@@ -217,7 +241,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             session.commit()
 
             for username, user_config in p_user_configs.items():
-                user = User.get_by_username(p_session=session, p_username=username)
+                user = self.user_entity_manager.get_by_username(p_session_context=session_context, p_username=username)
 
                 if user is None:
                     user = User()
@@ -232,10 +256,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
             session.commit()
             self.reset_users(p_session_context=session_context)
-
-    def get_context_rule_handler_choices(self):
-
-        return self._rule_handler.get_context_rule_handler_choices()
 
     @property
     def process_regex_map(self):
@@ -287,12 +307,12 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
     def is_master(self):
 
-        if self._master_connector is None:
+        if self.master_connector is None:
             # This is for test cases which do not instantiate a master connector
             return True
 
         else:
-            return self._master_connector._config.host_url is None
+            return self.master_connector._config.host_url is None
 
     def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
 
@@ -350,8 +370,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                     self._prometheus_client.set_number_of_monitored_devices(0)
 
                 for client_info in self._client_infos.values():
-                    self._prometheus_client.set_client_stats(p_hostname=client_info.host_name,
-                                                             p_client_stats=client_info.client_stats)
+                    if client_info.client_stats is not None:
+                        self._prometheus_client.set_client_stats(p_hostname=client_info.host_name,
+                                                                 p_client_stats=client_info.client_stats)
 
     def check(self):
 
@@ -359,17 +380,17 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         reference_time = datetime.datetime.now()
 
-        self.process_queue()
+        self._event_handler.process_queue()
 
         if self.is_master():
             self.process_rules(p_reference_time=reference_time)
-            self.process_queue()
+            self._event_handler.process_queue()
             self.set_metrics()
 
         else:
             self.send_events()
             self.check_network()
-            self.process_queue()
+            self._event_handler.process_queue()
 
     def check_network(self):
 
@@ -390,12 +411,12 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
             self.load_historic_process_infos()
             self.send_historic_process_infos()
-            self._admin_data_handler.load_rule_overrides()
+            self.admin_data_handler.load_rule_overrides()
         #             self.queue_broadcast_event_start_master()
 
         else:
             fmt = "Starting application in SLAVE mode communication with master at URL {master_url}"
-            self._logger.info(fmt.format(master_url=self._master_connector._get_api_url()))
+            self._logger.info(fmt.format(master_url=self.master_connector._get_api_url()))
 
             self.queue_event_start_client()
 
@@ -410,9 +431,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             fmt = "Artificially terminating {process_count} active processes on {handler_id}"
             self._logger.info(fmt.format(process_count=len(events), handler_id=handler.id))
 
-            self.queue_events(p_events=events, p_to_master=True)
+            self._event_handler.queue_events(p_events=events, p_to_master=True)
 
-        self.process_queue()
+        self._event_handler.process_queue()
 
         if not self.is_master():
             self.send_events()
@@ -431,55 +452,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                                                      p_history_length_in_days=history_length_in_days)
             self.admin_event_entity_manager.delete_historic_entries(p_session_context=session_context,
                                                                     p_history_length_in_days=history_length_in_days)
-
-    def queue_event(self, p_event, p_to_master=False, p_is_action=False):
-
-        if p_is_action:
-            if p_event.hostname == self._host_name:
-                self.queue_event_locally(p_event=p_event)
-
-            else:
-                self.queue_event_for_send(p_event=p_event)
-
-        else:
-            if p_to_master == self.is_master():
-                self.queue_event_locally(p_event=p_event)
-
-            else:
-                self.queue_event_for_send(p_event=p_event)
-
-    def queue_event_locally(self, p_event):
-
-        fmt = "Queue locally: {event}"
-        self._logger.debug(fmt.format(event=p_event))
-
-        self._event_queue.put(p_event)
-
-    def queue_event_for_send(self, p_event):
-
-        if p_event in self._outgoing_events:
-            fmt = "Already in outgoing queue: {event}"
-            self._logger.info(fmt.format(event=p_event))
-            return
-
-        fmt = "Queue for send: {event}"
-        self._logger.debug(fmt.format(event=p_event))
-
-        self._outgoing_events.append(p_event)
-
-    def queue_events(self, p_events, p_to_master=False, p_is_action=False):
-
-        for event in p_events:
-            self.queue_event(p_event=event, p_to_master=p_to_master, p_is_action=p_is_action)
-
-    def queue_events_locally(self, p_events):
-
-        for event in p_events:
-            self.queue_event_locally(p_event=event)
-
-    def queue_outgoing_event(self, p_event):
-
-        self._outgoing_events.append(p_event)
 
     def get_process_handler(self, p_id, p_raise_exception=False):
 
@@ -524,7 +496,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                         p_session_context=session_context, p_process_info=pinfo)
 
         if self.is_master():
-            rule_result_info = self._admin_data_handler.get_current_rule_result_info(
+            rule_result_info = self.admin_data_handler.get_current_rule_result_info(
                 p_reference_time=datetime.datetime.now(), p_process_infos=self.get_process_infos(),
                 p_username=p_event.username)
 
@@ -696,34 +668,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         return new_events
 
-    def delay_event(self, p_event):
-
-        msg = "Delaying execution of event {event} for {secs} seconds..."
-        self._logger.debug(msg.format(event=str(p_event), secs=p_event.delay))
-
-        time.sleep(p_event.delay)
-        new_events = self.process_event(p_event=p_event)
-        self.queue_events(p_events=new_events, p_to_master=True, p_is_action=False)
-
-    def process_queue(self):
-
-        while (self._event_queue.qsize() > 0):
-            try:
-                event = self._event_queue.get(block=False)
-
-            except queue.Empty:
-                return
-
-            if event.delay > 0:
-                tools.start_simple_thread(lambda: self.delay_event(p_event=event))
-                new_events = None
-
-            else:
-                new_events = self.process_event(p_event=event)
-
-            if new_events is not None:
-                self.queue_events(p_events=new_events, p_to_master=True, p_is_action=False)
-
     def scan_processes(self, p_process_handler, p_reference_time=None, p_queue_events=True):  # @DontTrace
 
         if p_reference_time is None:
@@ -738,10 +682,10 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                 p_reference_time=p_reference_time)
 
             if p_queue_events:
-                self.queue_events(p_events=events, p_to_master=True)
+                self._event_handler.queue_events(p_events=events, p_to_master=True)
 
                 if not self.is_master():
-                    self.queue_events_locally(p_events=events)
+                    self._event_handler.queue_events_locally(p_events=events)
 
     def get_process_infos(self):
 
@@ -904,7 +848,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                     user_locale = self._user_locale_handler.get_user_locale(
                         p_username=user.username, p_session_context=session_context)
 
-                    rule_set = self._rule_handler.get_active_ruleset(
+                    rule_set = self.rule_handler.get_active_ruleset(
                         p_rule_sets=user.rulesets, p_reference_date=p_reference_time.date())
 
                     stat_infos = users_stat_infos.get(user.username)
@@ -917,15 +861,15 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
                             key_rule_override = rule_override.get_key(p_username=user.username,
                                                                       p_reference_date=p_reference_time.date())
-                            override = self._admin_data_handler.rule_overrides.get(key_rule_override)
+                            override = self.admin_data_handler.rule_overrides.get(key_rule_override)
 
                             if rule_override is not None:
                                 self._logger.debug(str(override))
 
-                            active_rule_set = self._rule_handler.get_active_ruleset(
+                            active_rule_set = self.rule_handler.get_active_ruleset(
                                 p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
 
-                            rule_result_info = self._rule_handler.process_ruleset(
+                            rule_result_info = self.rule_handler.process_ruleset(
                                 p_active_rule_set=active_rule_set,
                                 p_stat_info=stat_info,
                                 p_active_time_extension=active_time_extensions.get(user.username),
@@ -1035,14 +979,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_username=p_username,
             p_text=p_text,
             p_locale=locale)
-        self.queue_event(p_event=event, p_is_action=True)
+        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_start_client(self):
 
         event = admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_START_CLIENT,
             p_hostname=self._host_name)
-        self.queue_event(p_event=event, p_to_master=True)
+        self._event_handler.queue_event(p_event=event, p_to_master=True)
 
     #     def queue_broadcast_event_start_master(self):
     #
@@ -1050,7 +994,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     #             event = admin_event.AdminEvent(
     #                 p_event_type=admin_event.EVENT_TYPE_START_MASTER,
     #                 p_hostname=hostname)
-    #             self.queue_event(p_event=event, p_is_action=True)
+    #             self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_kill_process(self, p_hostname, p_username, p_processhandler, p_pid, p_process_start_time):
 
@@ -1062,7 +1006,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_pid=p_pid,
             p_process_start_time=p_process_start_time,
             p_delay=self._config.kill_process_delay)
-        self.queue_event(p_event=event, p_is_action=True)
+        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_update_config(self, p_hostname, p_config):
 
@@ -1070,7 +1014,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_event_type=admin_event.EVENT_TYPE_UPDATE_CONFIG,
             p_hostname=p_hostname,
             p_payload=p_config)
-        self.queue_event(p_event=event, p_is_action=True)
+        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_update_login_mapping(self, p_hostname, p_login_mapping):
 
@@ -1078,7 +1022,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_event_type=admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING,
             p_hostname=p_hostname,
             p_payload=p_login_mapping)
-        self.queue_event(p_event=event, p_is_action=True)
+        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_historic_process_start(self, p_pinfo):
 
@@ -1088,7 +1032,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_pid=p_pinfo.pid,
             p_username=p_pinfo.username,
             p_process_start_time=p_pinfo.start_time)
-        self.queue_event(p_event=event, p_is_action=True)
+        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_artificial_activation_events(self):
 
@@ -1098,7 +1042,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             fmt = "Artificially activating {process_count} active processes on handler {handler_id}"
             self._logger.info(fmt.format(process_count=len(events), handler_id=handler.id))
 
-            self.queue_events(p_events=events, p_to_master=True)
+            self._event_handler.queue_events(p_events=events, p_to_master=True)
 
     def queue_artificial_kill_events(self):
 
@@ -1108,16 +1052,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             fmt = "Artificially killing {process_count} active processes on handler {handler_id}"
             self._logger.info(fmt.format(process_count=len(events), handler_id=handler.id))
 
-            self.queue_events(p_events=events, p_to_master=False)
-
-    def get_sorted_devices(self, p_session_context):
-
-        return sorted(self.device_entity_manager.devices(p_session_context=p_session_context),
-                      key=lambda device: device.device_name)
-
-    def get_sorted_users(self, p_session_context):
-
-        return sorted(self.user_entity_manager.users(p_session_context), key=lambda user: user.full_name)
+            self._event_handler.queue_events(p_events=events, p_to_master=False)
 
     def get_unmonitored_users(self, p_session_context):
 
@@ -1129,14 +1064,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         monitored_devices = [user2device.device.device_name for user2device in p_user.devices]
         return [device for device in self.device_entity_manager.devices(p_session_context)
                 if device.device_name not in monitored_devices]
-
-    def get_context_rule_handler_names(self):
-
-        return self._rule_handler.get_context_rule_handler_names()
-
-    def get_context_rule_handler(self, p_context_name):
-
-        return self._rule_handler.get_context_rule_handler(p_context_name)
 
     def get_topology_infos(self, p_session_context):
 
@@ -1186,9 +1113,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     def send_events(self):
 
         try:
-            result = self._master_connector.send_events(p_hostname=self._host_name, p_events=self._outgoing_events,
-                                                        p_client_stats=self.get_client_stats())
-            self._outgoing_events = []
+            result = self.master_connector.send_events(p_hostname=self._host_name,
+                                                       p_events=self._event_handler.get_outgoing_events(),
+                                                       p_client_stats=self.get_client_stats())
             self._time_last_successful_send_events = tools.get_current_time()
 
             if self._could_not_send:
@@ -1196,8 +1123,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                 self._could_not_send = False
 
             if result is not None:
-                self.receive_events(p_json_data=result)
-
+                self._event_handler.receive_events(p_json_data=result)
 
         except Exception as e:
 
@@ -1213,38 +1139,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
     def receive_client_stats(self, p_json_data):
 
-        return tools.objectify_dict(p_dict=p_json_data,
-                                    p_class=client_stats.ClientStats)
-
-    def receive_events(self, p_json_data):
-
-        for json_event in p_json_data:
-            event = tools.objectify_dict(p_dict=json_event,
-                                         p_class=admin_event.AdminEvent,
-                                         p_attribute_classes={
-                                             "process_start_time": datetime.datetime,
-                                             "event_time": datetime.datetime
-                                         })
-            self.queue_event_locally(p_event=event)
-
-    def get_return_events(self, p_hostname):
-
-        events = [e for e in self._outgoing_events if e.hostname == p_hostname]
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            for event in events:
-                self.admin_event_entity_manager.log_admin_event(
-                    p_session_context=session_context, p_admin_event=event)
-                self._outgoing_events.remove(event)
-
-        return events
+        return tools.objectify_dict(p_dict=p_json_data, p_class=client_stats.ClientStats)
 
     def handle_downtime(self, p_downtime):
 
         for process_handler in self._process_handlers.values():
             events = process_handler.get_downtime_corrected_admin_events(p_downtime=p_downtime)
 
-            self.queue_events(p_events=events, p_to_master=True)
+            self._event_handler.queue_events(p_events=events, p_to_master=True)
 
     def get_user_status(self, p_username):
 

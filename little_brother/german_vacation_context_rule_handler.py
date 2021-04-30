@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@ import json
 import requests
 import wtforms
 
-from little_brother import context_rule_handler
+from little_brother.context_rule_handler import AbstractContextRuleHandler
 from python_base_app import configuration
 from python_base_app import log_handling
 
@@ -68,11 +68,11 @@ class GermanVacationContextRuleHandlerConfig(configuration.ConfigModel):
         self.date_format = "%Y-%m-%d"
 
 
-class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
+class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
-    def __init__(self, p_locale_helper=None):
+    def __init__(self):
 
-        super().__init__(p_context_name=CALENDAR_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
+        super().__init__(p_context_name=CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
@@ -100,7 +100,8 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             try:
                 result = json.loads(request.content.decode("UTF-8"))
                 vacation_types = result['data']
-                self._vacation_type_map = { vacation_type['id']: vacation_type['name'] for vacation_type in vacation_types}
+                self._vacation_type_map = {vacation_type['id']: vacation_type['name'] for vacation_type in
+                                           vacation_types}
 
             except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
@@ -127,7 +128,8 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
                 fmt = "downloaded {count} locations of Germany"
                 self._logger.info(fmt.format(count=len(locations)))
 
-                self._federal_state_map = {location['name']: location['id'] for location in locations if location['is_federal_state']}
+                self._federal_state_map = {location['name']: location['id'] for location in locations if
+                                           location['is_federal_state']}
 
             except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
@@ -135,7 +137,6 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
 
             fmt = "downloaded index metadata for {count} federal states of Germany"
             self._logger.info(fmt.format(count=len(self._federal_state_map)))
-
 
     def check_vacation_data(self):
 
@@ -147,9 +148,8 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
                 fmt = "HTTP code {error_code} while downloading {url}"
                 raise Exception(fmt.format(error_code=request.status_code, url=url))
 
-            selected_vacation_types = [ type_id for (type_id, type_name) in self._vacation_type_map.items() if
-                                        type_name in ENTRY_FILTER ]
-
+            selected_vacation_types = [type_id for (type_id, type_name) in self._vacation_type_map.items() if
+                                       type_name in ENTRY_FILTER]
 
             count = 0
 
@@ -178,13 +178,11 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             fmt = "downloaded {count} vacation entries for Germany"
             self._logger.info(fmt.format(count=count))
 
-
     def check_data(self):
 
         self.check_vacation_type_map()
         self.check_locations()
         self.check_vacation_data()
-
 
     def is_active(self, p_reference_date, p_details):
 
@@ -238,7 +236,7 @@ class GermanVacationContextRuleHandler(context_rule_handler.AbstractContextRuleH
             choices = "'" + "', '".join(sorted(self._vacation_data.keys()))
 
             fmt = _("Invalid state '{detail}'. Must be one of {choices}")
-            fmt = self._locale_helper.gettext(fmt)
+            fmt = self.locale_helper.gettext(fmt)
             msg = fmt.format(detail=p_context_detail, choices=choices)
 
             raise wtforms.validators.ValidationError(message=str(msg))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 
 import wtforms
 
-from little_brother import context_rule_handler
+from little_brother.context_rule_handler import AbstractContextRuleHandler
 from python_base_app import configuration
 
 # Dummy function to trigger extraction by pybabel...
@@ -42,20 +42,20 @@ WEEKPLAN_PREDEFINED_DETAILS = {
 }
 
 
-class DefaultContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
+class DefaultContextRuleHandler(AbstractContextRuleHandler):
 
-    def __init__(self, p_locale_helper=None):
-        super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
+    def __init__(self):
+        super().__init__(p_context_name=DEFAULT_CONTEXT_RULE_HANDLER_NAME)
 
     def is_active(self, p_reference_date, p_details):
         return True
 
 
-class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler):
+class WeekplanContextRuleHandler(AbstractContextRuleHandler):
 
-    def __init__(self, p_locale_helper=None):
+    def __init__(self):
 
-        super().__init__(p_context_name=WEEKPLAN_CONTEXT_RULE_HANDLER_NAME, p_locale_helper=p_locale_helper)
+        super().__init__(p_context_name=WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
     def is_active(self, p_reference_date, p_details):
 
@@ -99,13 +99,13 @@ class WeekplanContextRuleHandler(context_rule_handler.AbstractContextRuleHandler
 
         if invalid:
             localized_choices = "'" + "', '".join(
-                [self._locale_helper.gettext(p_text=choice) for choice in WEEKPLAN_PREDEFINED_DETAILS.keys()]) + "'"
+                [self.locale_helper.gettext(p_text=choice) for choice in WEEKPLAN_PREDEFINED_DETAILS.keys()]) + "'"
 
             fmt = _("Invalid detail '{detail}'. Must be one of {choices} or " \
                     "have length seven characters denoting the days of the week (starting with Monday) and " \
                     "consist of active letters '{valid_active_characters}' " \
                     "and inactive letters '{valid_inactive_characters}'")
-            fmt = self._locale_helper.gettext(fmt)
+            fmt = self.locale_helper.gettext(fmt)
             msg = fmt.format(detail=p_context_detail, choices=localized_choices,
                              valid_active_characters=VALID_ACTIVE_DAY_CHARACTERS,
                              valid_inactive_characters=VALID_INACTIVE_DAY_CHARACTERS)

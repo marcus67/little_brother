@@ -21,6 +21,7 @@ from little_brother import dependency_injection
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.app_control import AppControl
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.rule_handler import RuleHandler
 from python_base_app import log_handling
 from python_base_app.locale_helper import LocaleHelper
 from some_flask_helpers import blueprint_adapter
@@ -45,8 +46,9 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
         p_blueprint_adapter.assign_view_handler_instance(p_blueprint=self._blueprint, p_view_handler_instance=self)
         p_blueprint_adapter.check_view_methods()
 
-        self._app_control: AppControl = None
-        self._admin_data_handler: AdminDataHandler = None
+        self._app_control = None
+        self._admin_data_handler = None
+        self._rule_handler = None
         self._locale_helper = None
 
 
@@ -71,6 +73,13 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
             self._locale_helper = dependency_injection.container[LocaleHelper]
 
         return self._locale_helper
+
+    @property
+    def rule_handler(self) -> RuleHandler:
+        if self._rule_handler is None:
+            self._rule_handler = dependency_injection.container[RuleHandler]
+
+        return self._rule_handler
 
     def register(self, p_app, p_url_prefix:str=None):
 

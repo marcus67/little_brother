@@ -61,6 +61,12 @@ class DeviceEntityManager(base_entity_manager.BaseEntityManager):
 
         return current_devices
 
+    def get_sorted_devices(self, p_session_context):
+
+        return sorted(self.devices(p_session_context=p_session_context),
+                      key=lambda device: device.device_name)
+
+
     def hostname_device_map(self, p_session_context: SessionContext):
 
         return {device.hostname: device for device in self.devices(p_session_context=p_session_context)}

@@ -119,8 +119,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             self._base_gettext = lambda text: text
 
         if self._is_master:
-            self._api_view_handler = api_view_handler.ApiViewHandler(
-                p_app=self._app, p_app_control=self.app_control, p_master_connector=self._master_connector)
+            self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time

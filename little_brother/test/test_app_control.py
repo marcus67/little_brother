@@ -25,7 +25,10 @@ from little_brother import client_stats
 from little_brother import dependency_injection
 from little_brother import master_connector
 from little_brother import prometheus
+from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
+from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
@@ -41,10 +44,12 @@ class TestAppControl(base_test.BaseTestCase):
     def setUp(self):
         dependency_injection.reset()
 
+
     def test_constructor(self):
         config = app_control.AppControlConfigModel()
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dependency_injection.container[MasterConnector] = None
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
@@ -55,14 +60,16 @@ class TestAppControl(base_test.BaseTestCase):
 
         config.hostname = HOSTNAME
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dependency_injection.container[MasterConnector] = None
         dummy_persistence: test_persistence.TestPersistence = \
             dependency_injection.container[Persistence]
 
         # rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_rule_handler=test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
-                                        p_persistence=dummy_persistence))
+        dependency_injection.container[RuleHandler] = \
+            test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_persistence=dummy_persistence)
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertIsNotNone(ac)
 
@@ -79,6 +86,7 @@ class TestAppControl(base_test.BaseTestCase):
 
     def test_get_number_of_monitored_users_function(self):
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dependency_injection.container[MasterConnector] = None
 
         config = app_control.AppControlConfigModel()
 
@@ -94,6 +102,9 @@ class TestAppControl(base_test.BaseTestCase):
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = None
+
         ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         ac.retrieve_user_mappings()
@@ -105,10 +116,10 @@ class TestAppControl(base_test.BaseTestCase):
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        mc = master_connector.MasterConnector(p_config=mc_config)
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = MasterConnector(p_config=mc_config)
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_master_connector=mc)
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertFalse(ac.is_master())
 
@@ -118,10 +129,10 @@ class TestAppControl(base_test.BaseTestCase):
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        mc = master_connector.MasterConnector(p_config=mc_config)
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = MasterConnector(p_config=mc_config)
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_master_connector=mc)
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertTrue(ac.is_master())
 
@@ -133,6 +144,9 @@ class TestAppControl(base_test.BaseTestCase):
         pc = prometheus.PrometheusClient(p_logger=self._logger, p_config=pc_config)
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = None
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False,
                                     p_prometheus_client=pc)
@@ -147,6 +161,8 @@ class TestAppControl(base_test.BaseTestCase):
         config.check_interval = 123
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dependency_injection.container[MasterConnector] = None
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 

@@ -60,6 +60,10 @@ class UserEntityManager(BaseEntityManager):
 
         return current_users
 
+    def get_sorted_users(self, p_session_context):
+
+        return sorted(self.users(p_session_context), key=lambda user: user.full_name)
+
     def user_map(self, p_session_context):
 
         return {user.username: user for user in self.users(p_session_context=p_session_context)}

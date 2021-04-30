@@ -90,7 +90,7 @@ class DevicesViewHandler(BaseViewHandler):
                                                                    p_duration=duration)):
 
                 try:
-                    devices = self.app_control.get_sorted_devices(session_context)
+                    devices = self.device_entity_manager.get_sorted_devices(session_context)
                     forms = self.get_devices_forms(p_devices=devices)
 
                     valid_and_submitted = True
