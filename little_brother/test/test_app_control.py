@@ -28,6 +28,7 @@ from little_brother import prometheus
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
+from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
@@ -147,9 +148,9 @@ class TestAppControl(base_test.BaseTestCase):
 
         dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
         dependency_injection.container[MasterConnector] = None
+        dependency_injection.container[PrometheusClient] = pc
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_prometheus_client=pc)
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         ac.set_prometheus_http_requests_summary(p_duration=1.0, p_hostname=HOSTNAME, p_service="/app")
         ac.set_metrics()

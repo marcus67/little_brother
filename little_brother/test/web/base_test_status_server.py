@@ -37,6 +37,7 @@ from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
+from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
@@ -103,6 +104,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         self._master_connector = master_connector.MasterConnector(p_config=master_connector_config)
 
         dependency_injection.container[MasterConnector] = self._master_connector
+        dependency_injection.container[PrometheusClient] = None
 
         self._user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
 
@@ -117,7 +119,6 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             p_debug_mode=False,
             p_process_handlers=p_process_handlers,
             p_device_handler=None,
-            p_prometheus_client=None,
             p_notification_handlers=[],
             p_login_mapping=test_data.LOGIN_MAPPING,
             p_locale_helper=locale_helper.LocaleHelper(),

@@ -81,7 +81,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                  p_process_handlers=None,
                  p_device_handler=None,
                  p_notification_handlers=None,
-                 p_prometheus_client=None,
                  p_user_handler=None,
                  p_login_mapping=None,
                  p_locale_helper=None):
@@ -98,7 +97,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._rule_handler = None
         self._notification_handlers = p_notification_handlers
         self._master_connector = None
-        self._prometheus_client = p_prometheus_client
+        self._prometheus_client = None
         self._user_handler = p_user_handler
         self._locale_helper = p_locale_helper
         self._time_last_successful_send_events = tools.get_current_time()
@@ -115,14 +114,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         dependency_injection.container[EventHandler] = self._event_handler
 
-        # self._event_handler.register_event_handler(
-        #     p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
-        # self._event_handler.register_event_handler(
-        #     p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME, p_handler=self.handle_event_process_downtime)
-        # self._event_handler.register_event_handler(
-        #     p_event_type=admin_event.EVENT_TYPE_PROCESS_END, p_handler=self.handle_event_process_end)
-        # self._event_handler.register_event_handler(
-        #     p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
         self._event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_SPEAK, p_handler=self.handle_event_speak)
         self._event_handler.register_event_handler(
@@ -133,8 +124,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_event_type=admin_event.EVENT_TYPE_UPDATE_CONFIG, p_handler=self.handle_event_update_config)
         self._event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING, p_handler=self.handle_event_update_login_mapping)
-
-        # self._session_context = persistence.SessionContext(p_persistence=self.persistence, p_register=True)
 
         if p_login_mapping is None:
             p_login_mapping = login_mapping.LoginMapping(p_default_server_group=self._config.server_group)
@@ -152,8 +141,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._process_regex_map = None
         # self._uid_map = {}
         # self._username_map = p_login_mapping
-
-        self._logout_warnings = {}
 
         with SessionContext(p_persistence=self.persistence) as session_context:
             self.reset_users(p_session_context=session_context)
@@ -618,77 +605,13 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                             user_active = stat_info.current_activity is not None
                             current_user_status.logged_in = user_active
 
-                            if not rule_result_info.activity_allowed():
-                                fmt = "Process %s" % str(rule_result_info.effective_rule_set)
-                                self._logger.debug(fmt)
-
-                                for (hostname, processes) in stat_info.currently_active_host_processes.items():
-
-                                    fmt = "User %s has %d active process(es) on host %s" % (
-                                        user.username, len(processes), hostname)
-                                    self._logger.debug(fmt)
-
-                                    process_killed = False
-
-                                    for processhandler_id, pid, process_start_time in processes:
-                                        processhandler = self._process_handlers.get(processhandler_id)
-
-                                        if processhandler is not None and processhandler.can_kill_processes():
-                                            if self._prometheus_client is not None:
-                                                self._prometheus_client.count_forced_logouts(p_username=user.username)
-
-                                            self.queue_event_kill_process(
-                                                p_hostname=hostname,
-                                                p_username=user.username,
-                                                p_processhandler=processhandler_id,
-                                                p_pid=pid,
-                                                p_process_start_time=process_start_time)
-                                            process_killed = True
-
-                                    if process_killed:
-                                        self._process_handler_manager.queue_event_speak(
-                                            p_hostname=hostname,
-                                            p_username=user.username,
-                                            p_text=self._language.pick_text_for_ruleset(
-                                                p_rule_result_info=rule_result_info))
-
-                                        self.reset_logout_warning(p_username=user.username)
-
-                            elif rule_result_info.approaching_logout_rules > 0:
-                                for (hostname, processes) in stat_info.currently_active_host_processes.items():
-                                    self.issue_logout_warning(p_hostname=hostname, p_username=user.username,
-                                                              p_rule_result_info=rule_result_info)
+                            self._process_handler_manager.handle_rule_result_info(rule_result_info, stat_info, user)
 
                     if self._prometheus_client is not None:
                         self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
 
         fmt = "Processing rules END..."
         self._logger.debug(fmt)
-
-    def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info):
-
-        current_warning = self._logout_warnings.get(p_username)
-        issue_warning = False
-
-        if current_warning is None:
-            current_warning = p_rule_result_info.minutes_left_before_logout
-            issue_warning = True
-            self._logout_warnings[p_username] = current_warning
-
-        if p_rule_result_info.minutes_left_before_logout < current_warning:
-            issue_warning = True
-
-        if issue_warning:
-            self._logout_warnings[p_username] = p_rule_result_info.minutes_left_before_logout
-            self._process_handler_manager.queue_event_speak(
-                p_hostname=p_hostname,
-                p_username=p_username,
-                p_text=self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
-
-    def reset_logout_warning(self, p_username):
-
-        if p_username in self._logout_warnings:
-            del self._logout_warnings[p_username]
 
     ################################################################################################################################
     ################################################################################################################################
@@ -708,18 +631,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     #                 p_event_type=admin_event.EVENT_TYPE_START_MASTER,
     #                 p_hostname=hostname)
     #             self._event_handler.queue_event(p_event=event, p_is_action=True)
-
-    def queue_event_kill_process(self, p_hostname, p_username, p_processhandler, p_pid, p_process_start_time):
-
-        event = admin_event.AdminEvent(
-            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS,
-            p_hostname=p_hostname,
-            p_username=p_username,
-            p_processhandler=p_processhandler,
-            p_pid=p_pid,
-            p_process_start_time=p_process_start_time,
-            p_delay=self._config.kill_process_delay)
-        self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_event_update_config(self, p_hostname, p_config):
 

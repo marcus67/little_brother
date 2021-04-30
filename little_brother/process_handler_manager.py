@@ -28,6 +28,7 @@ from little_brother.event_handler import EventHandler
 from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.session_context import SessionContext
+from little_brother.prometheus import PrometheusClient
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 
@@ -103,6 +104,10 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
         self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
 
+        self._logout_warnings = {}
+
+
+
     @property
     def admin_data_handler(self) -> AdminDataHandler:
 
@@ -110,6 +115,14 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             self._admin_data_handler = dependency_injection.container[AdminDataHandler]
 
         return self._admin_data_handler
+
+    @property
+    def prometheus_client(self) -> PrometheusClient:
+
+        if self._prometheus_client is None:
+            self._prometheus_client = dependency_injection.container[PrometheusClient]
+
+        return self._prometheus_client
 
     @property
     def master_connector(self) -> MasterConnector:
@@ -333,6 +346,18 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
             self._event_handler.queue_events(p_events=events, p_to_master=False)
 
+    def queue_event_kill_process(self, p_hostname, p_username, p_processhandler, p_pid, p_process_start_time):
+
+        event = admin_event.AdminEvent(
+            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS,
+            p_hostname=p_hostname,
+            p_username=p_username,
+            p_processhandler=p_processhandler,
+            p_pid=p_pid,
+            p_process_start_time=p_process_start_time,
+            p_delay=self._config.kill_process_delay)
+        self._event_handler.queue_event(p_event=event, p_is_action=True)
+
     def handle_downtime(self, p_downtime):
 
         for process_handler in self._process_handlers.values():
@@ -352,3 +377,70 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             p_text=p_text,
             p_locale=locale)
         self._event_handler.queue_event(p_event=event, p_is_action=True)
+
+    def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info):
+
+        current_warning = self._logout_warnings.get(p_username)
+        issue_warning = False
+
+        if current_warning is None:
+            current_warning = p_rule_result_info.minutes_left_before_logout
+            issue_warning = True
+            self._logout_warnings[p_username] = current_warning
+
+        if p_rule_result_info.minutes_left_before_logout < current_warning:
+            issue_warning = True
+
+        if issue_warning:
+            self._logout_warnings[p_username] = p_rule_result_info.minutes_left_before_logout
+            self.queue_event_speak(
+                p_hostname=p_hostname,
+                p_username=p_username,
+                p_text=self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
+
+    def reset_logout_warning(self, p_username):
+
+        if p_username in self._logout_warnings:
+            del self._logout_warnings[p_username]
+
+    def handle_rule_result_info(self, p_rule_result_info, p_stat_info, p_user):
+        if not p_rule_result_info.activity_allowed():
+            fmt = "Process %s" % str(p_rule_result_info.effective_rule_set)
+            self._logger.debug(fmt)
+
+            for (hostname, processes) in p_stat_info.currently_active_host_processes.items():
+
+                fmt = "User %s has %d active process(es) on host %s" % (
+                    p_user.username, len(processes), hostname)
+                self._logger.debug(fmt)
+
+                process_killed = False
+
+                for processhandler_id, pid, process_start_time in processes:
+                    processhandler = self._process_handlers.get(processhandler_id)
+
+                    if processhandler is not None and processhandler.can_kill_processes():
+                        if self._prometheus_client is not None:
+                            self._prometheus_client.count_forced_logouts(p_username=p_user.username)
+
+                        self.queue_event_kill_process(
+                            p_hostname=hostname,
+                            p_username=p_user.username,
+                            p_processhandler=processhandler_id,
+                            p_pid=pid,
+                            p_process_start_time=process_start_time)
+                        process_killed = True
+
+                if process_killed:
+                    self.queue_event_speak(
+                        p_hostname=hostname,
+                        p_username=p_user.username,
+                        p_text=self._language.pick_text_for_ruleset(
+                            p_rule_result_info=p_rule_result_info))
+
+                    self.reset_logout_warning(p_username=p_user.username)
+
+        elif p_rule_result_info.approaching_logout_rules > 0:
+            for (hostname, processes) in p_stat_info.currently_active_host_processes.items():
+                self.issue_logout_warning(p_hostname=hostname, p_username=p_user.username,
+                                          p_rule_result_info=p_rule_result_info)

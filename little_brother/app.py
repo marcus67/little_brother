@@ -27,7 +27,6 @@ from little_brother import constants
 from little_brother import db_migrations
 from little_brother import dependency_injection
 from little_brother import login_mapping
-from little_brother import prometheus
 from little_brother import rule_handler
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
@@ -39,6 +38,8 @@ from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
+from little_brother.prometheus import PrometheusClient, PrometheusClientConfigModel, \
+    SECTION_NAME as PROMETHEUS_SECTION_NAME
 from little_brother.rule_handler import RuleHandler
 from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
 from little_brother.web import web_server
@@ -141,7 +142,7 @@ class App(base_app.BaseApp):
         master_connector_section = MasterConnectorConfigModel()
         p_configuration.add_section(master_connector_section)
 
-        prometheus_client_section = prometheus.PrometheusClientConfigModel()
+        prometheus_client_section = PrometheusClientConfigModel()
         p_configuration.add_section(prometheus_client_section)
 
         self.app_config = AppConfigModel()
@@ -256,11 +257,13 @@ class App(base_app.BaseApp):
             self._client_device_handler.id: self._client_device_handler
         }
 
-        config = self._config[prometheus.SECTION_NAME]
+        config = self._config[PROMETHEUS_SECTION_NAME]
 
         if config.is_active():
-            self._prometheus_client = prometheus.PrometheusClient(
+            self._prometheus_client = PrometheusClient(
                 p_logger=self._logger, p_config=config)
+
+        dependency_injection.container[PrometheusClient] = self._prometheus_client
 
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
         ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
@@ -314,7 +317,6 @@ class App(base_app.BaseApp):
             p_process_handlers=self._process_handlers,
             p_device_handler=self._client_device_handler,
             p_notification_handlers=self._notification_handlers,
-            p_prometheus_client=self._prometheus_client,
             p_user_handler=self._user_handler,
             p_locale_helper=self.locale_helper,
             p_login_mapping=self._login_mapping)
