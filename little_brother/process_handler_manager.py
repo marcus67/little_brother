@@ -25,11 +25,13 @@ from little_brother import process_info
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.app_control_config_model import AppControlConfigModel
 from little_brother.event_handler import EventHandler
+from little_brother.language import Language
 from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.session_context import SessionContext
 from little_brother.prometheus import PrometheusClient
 from little_brother.user_locale_handler import UserLocaleHandler
+from little_brother.user_manager import UserManager
 from python_base_app import log_handling
 
 DEFAULT_SCAN_ACTIVE = True
@@ -66,10 +68,12 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                  p_config,
                  p_is_master,
                  p_login_mapping,
-                 p_language,
+                 p_language:Language,
                  p_process_handlers=None):
 
         super().__init__()
+
+        self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._config: AppControlConfigModel = p_config
         self._is_master = p_is_master
@@ -80,6 +84,8 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
         self._event_handler = None
         self._rule_handler = None
         self._master_connector = None
+        self._prometheus_client = None
+        self._user_manager = None
 
         self._user_locale_handler = UserLocaleHandler()
         self._admin_data_handler = None
@@ -90,23 +96,11 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
         else:
             self._host_name = self._config.hostname
 
-        self.event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
-        self.event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME, p_handler=self.handle_event_process_downtime)
-        self.event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_PROCESS_END, p_handler=self.handle_event_process_end)
-        self.event_handler.register_event_handler(
-            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
-
-        self._logger = log_handling.get_logger(self.__class__.__name__)
         self._process_regex_map = None
 
         self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
 
         self._logout_warnings = {}
-
-
 
     @property
     def admin_data_handler(self) -> AdminDataHandler:
@@ -141,6 +135,14 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
         return self._event_handler
 
     @property
+    def user_manager(self) -> UserManager:
+
+        if self._user_manager is None:
+            self._user_manager = dependency_injection.container[UserManager]
+
+        return self._user_manager
+
+    @property
     def process_regex_map(self):
 
         with SessionContext(p_persistence=self.persistence) as session_context:
@@ -151,6 +153,16 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                     self._process_regex_map[user.username] = user.regex_process_name_pattern
 
         return self._process_regex_map
+
+    def register_events(self):
+        self.event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
+        self.event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME, p_handler=self.handle_event_process_downtime)
+        self.event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROCESS_END, p_handler=self.handle_event_process_end)
+        self.event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
 
     def get_process_handler(self, p_id, p_raise_exception=False):
 
@@ -200,17 +212,24 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 p_username=p_event.username)
 
             if rule_result_info.activity_allowed():
-                if rule_result_info.limited_session_time():
-                    self.queue_event_speak(
-                        p_hostname=p_event.hostname,
-                        p_username=p_event.username,
-                        p_text=self._language.get_text_limited_session_start(p_locale=rule_result_info.locale))
 
-                else:
-                    self.queue_event_speak(
-                        p_hostname=p_event.hostname,
-                        p_username=p_event.username,
-                        p_text=self._language.get_text_unlimited_session_start(p_locale=rule_result_info.locale))
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    session_variables = self.user_manager.get_user_rule_variables(
+                        p_session_context=session_context, p_username=p_event.username)
+
+                    if rule_result_info.limited_session_time():
+                        self.user_manager.issue_notification(
+                            p_session_context=session_context,
+                            p_username=p_event.username,
+                            p_message=self._language.get_text_limited_session_start(p_locale=rule_result_info.locale,
+                                                                                    p_variables=session_variables))
+                    else:
+                        self.user_manager.issue_notification(
+                            p_session_context=session_context,
+                            p_username=p_event.username,
+                            p_message=self._language.get_text_unlimited_session_start(p_locale=rule_result_info.locale,
+                                                                                      p_variables=session_variables))
 
     def handle_event_process_end(self, p_event):
 
@@ -365,18 +384,20 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
             self._event_handler.queue_events(p_events=events, p_to_master=True)
 
-    def queue_event_speak(self, p_hostname, p_username, p_text):
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            locale = self._user_locale_handler.get_user_locale(p_username=p_username, p_session_context=session_context)
-
-        event = admin_event.AdminEvent(
-            p_event_type=admin_event.EVENT_TYPE_SPEAK,
-            p_hostname=p_hostname,
-            p_username=p_username,
-            p_text=p_text,
-            p_locale=locale)
-        self._event_handler.queue_event(p_event=event, p_is_action=True)
+    # def queue_event_speak(self, p_hostname, p_username, p_text):
+    #
+    #     with SessionContext(p_persistence=self.persistence) as session_context:
+    #         locale = self._user_locale_handler.get_user_locale(p_username=p_username, p_session_context=session_context)
+    #
+    #
+    #
+    #     event = admin_event.AdminEvent(
+    #         p_event_type=admin_event.EVENT_TYPE_SPEAK,
+    #         p_hostname=p_hostname,
+    #         p_username=p_username,
+    #         p_text=p_text,
+    #         p_locale=locale)
+    #     self._event_handler.queue_event(p_event=event, p_is_action=True)
 
     def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info):
 
@@ -393,10 +414,12 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
         if issue_warning:
             self._logout_warnings[p_username] = p_rule_result_info.minutes_left_before_logout
-            self.queue_event_speak(
-                p_hostname=p_hostname,
-                p_username=p_username,
-                p_text=self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
+
+            with SessionContext(p_persistence=self.persistence) as session_context:
+                self.user_manager.issue_notification(
+                    p_session_context=session_context,
+                    p_username=p_username,
+                    p_message=self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
 
     def reset_logout_warning(self, p_username):
 
@@ -420,8 +443,8 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                     processhandler = self._process_handlers.get(processhandler_id)
 
                     if processhandler is not None and processhandler.can_kill_processes():
-                        if self._prometheus_client is not None:
-                            self._prometheus_client.count_forced_logouts(p_username=p_user.username)
+                        if self.prometheus_client is not None:
+                            self.prometheus_client.count_forced_logouts(p_username=p_user.username)
 
                         self.queue_event_kill_process(
                             p_hostname=hostname,
@@ -432,11 +455,11 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                         process_killed = True
 
                 if process_killed:
-                    self.queue_event_speak(
-                        p_hostname=hostname,
-                        p_username=p_user.username,
-                        p_text=self._language.pick_text_for_ruleset(
-                            p_rule_result_info=p_rule_result_info))
+                    with SessionContext(p_persistence=self.persistence) as session_context:
+                        self.user_manager.issue_notification(
+                            p_session_context=session_context,
+                            p_username=p_user.username,
+                            p_message=self._language.pick_text_for_ruleset(p_rule_result_info=p_rule_result_info))
 
                     self.reset_logout_warning(p_username=p_user.username)
 

@@ -39,7 +39,7 @@ class UserEntityManager(BaseEntityManager):
 
         return self._rule_set_entity_manager
 
-    def get_by_username(self, p_session_context: SessionContext, p_username: str):
+    def get_by_username(self, p_session_context: SessionContext, p_username: str) -> User:
         session = p_session_context.get_session()
         query = session.query(User).filter(User.username == p_username)
 

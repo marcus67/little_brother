@@ -20,11 +20,14 @@ import json
 import flask
 
 import little_brother
-from little_brother import constants
+from little_brother import constants, dependency_injection
 from little_brother.app_control import AppControl
 from little_brother.dependency_injection import container
 from little_brother.event_handler import EventHandler
 from little_brother.master_connector import MasterConnector
+from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.persistence.session_context import SessionContext
+from little_brother.user_manager import UserManager
 from python_base_app import log_handling
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
@@ -35,12 +38,16 @@ API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
 
-class ApiViewHandler(object):
+class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
     def __init__(self, p_app):
+
+        super().__init__()
+
         self._appcontrol = None
         self._master_connector = None
         self._event_handler = None
+        self._user_manager = None
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._blueprint = flask.Blueprint(API_BLUEPRINT_NAME, little_brother.__name__)
@@ -73,6 +80,13 @@ class ApiViewHandler(object):
 
         return self._event_handler
 
+    @property
+    def user_manager(self) -> UserManager:
+
+        if self._user_manager is None:
+            self._user_manager = dependency_injection.container[UserManager]
+
+        return self._user_manager
 
     def measure(self, p_hostname, p_service, p_duration):
 
@@ -132,7 +146,9 @@ class ApiViewHandler(object):
                                       status=constants.HTTP_STATUS_CODE_NOT_FOUND,
                                       mimetype='application/json')
 
-            user_status = self.app_control.get_user_status(p_username=username)
+            with SessionContext(p_persistence=self.persistence) as session_context:
+                user_status = self.user_manager.get_current_user_status(
+                    p_session_context=session_context, p_username=username)
 
             if user_status is None:
                 msg = _("username '{username}' not being monitored")

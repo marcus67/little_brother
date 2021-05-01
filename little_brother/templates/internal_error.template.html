@@ -46,11 +46,14 @@
   <BODY>
 	  {{ helper.fontawesome_script() }}
 	  <CENTER>
-		  <img alt="Brand" src="{{ url_for('little_brother.static', filename='icons/baby-panda-sad-128x128.png') }}">
+		  <img alt="Brand" src="{{ url_for('little_brother.static', filename='icons/baby-panda-sad-256x256.png') }}">
     	  <BR>
     	  <H2>Little&nbsp;Brother</H2>
     	  <BR>
 		  <H3>An internal error occurred!</H3>
+          <CODE>
+              {{ error_message }}
+          </CODE>
 		  <BR>
 	  </CENTER>
 

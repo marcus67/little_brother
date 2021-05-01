@@ -53,7 +53,7 @@ class StatusViewHandler(BaseViewHandler):
                                                                p_duration=duration)):
             with SessionContext(p_persistence=self.persistence) as session_context:
                 try:
-                    process_infos = self.app_control.get_process_infos()
+                    process_infos = self.processs_handler_manager.get_process_infos()
                     user_infos = self.admin_data_handler.get_user_status_infos(p_session_context=session_context,
                                                                                p_process_infos=process_infos)
                     page = flask.render_template(
@@ -66,8 +66,8 @@ class StatusViewHandler(BaseViewHandler):
                         navigation={
                             'current_view': constants.STATUS_BLUEPRINT_NAME + "." + constants.STATUS_VIEW_NAME},
                     )
+
                 except Exception as e:
-                    msg = "Exception '{exception}' while generating index page"
-                    self._logger.exception(msg.format(exception=str(e)))
+                    return self.handle_rendering_exception(p_page_name="status page", p_exception=e)
 
                 return page

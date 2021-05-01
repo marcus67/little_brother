@@ -28,9 +28,7 @@ from python_base_app import tools
 
 class EventHandler(PersistenceDependencyInjectionMixIn):
 
-    def __init__(self,
-                 p_host_name,
-                 p_is_master):
+    def __init__(self, p_host_name, p_is_master):
 
         super().__init__()
 

@@ -49,6 +49,7 @@ from python_base_app import configuration
 from python_base_app import ldap_user_handler
 from python_base_app import pinger
 from python_base_app import unix_user_handler
+from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.locale_helper import LocaleHelper
 
 APP_NAME = 'LittleBrother'
@@ -304,6 +305,8 @@ class App(base_app.BaseApp):
         else:
             self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
 
+        dependency_injection.container[BaseUserHandler] = self._user_handler
+
         self._login_mapping = login_mapping.LoginMapping()
         self._login_mapping.read_from_configuration(p_login_mapping_section_handler=self._login_mapping_section_handler)
 
@@ -317,7 +320,6 @@ class App(base_app.BaseApp):
             p_process_handlers=self._process_handlers,
             p_device_handler=self._client_device_handler,
             p_notification_handlers=self._notification_handlers,
-            p_user_handler=self._user_handler,
             p_locale_helper=self.locale_helper,
             p_login_mapping=self._login_mapping)
 

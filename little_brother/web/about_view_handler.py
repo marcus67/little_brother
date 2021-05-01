@@ -64,12 +64,6 @@ class AboutViewHandler(BaseViewHandler):
                     )
 
                 except Exception as e:
-                    msg = "Exception '{exception}' while generating about page"
-                    self._logger.exception(msg.format(exception=str(e)))
-
-                    return flask.render_template(
-                        constants.INTERNAL_ERROR_HTML_TEMPLATE,
-                        rel_font_size=self.get_rel_font_size(),
-                    )
+                    return self.handle_rendering_exception(p_page_name="about page", p_exception=e)
 
                 return page

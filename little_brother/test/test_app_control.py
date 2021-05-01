@@ -32,6 +32,7 @@ from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
+from little_brother.user_manager import UserManager
 from python_base_app.test import base_test
 
 HOSTNAME = "hostname"
@@ -85,18 +86,18 @@ class TestAppControl(base_test.BaseTestCase):
         self.assertIsNone(ci.last_message)
         self.assertEqual(ci.client_stats, some_client_stats)
 
-    def test_get_number_of_monitored_users_function(self):
-        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        dependency_injection.container[MasterConnector] = None
-
-        config = app_control.AppControlConfigModel()
-
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
-
-        func = ac.get_number_of_monitored_users_function()
-        self.assertIsNotNone(func)
-
-        self.assertEqual(func(), 0)
+    # def test_get_number_of_monitored_users_function(self):
+    #     test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+    #     dependency_injection.container[MasterConnector] = None
+    #
+    #     config = app_control.AppControlConfigModel()
+    #
+    #     ac = app_control.AppControl(p_config=config, p_debug_mode=False)
+    #
+    #     func = ac.get_number_of_monitored_users_function()
+    #     self.assertIsNotNone(func)
+    #
+    #     self.assertEqual(func(), 0)
 
     def test_retrieve_user_mappings(self):
         config = app_control.AppControlConfigModel()
@@ -108,7 +109,9 @@ class TestAppControl(base_test.BaseTestCase):
 
         ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
-        ac.retrieve_user_mappings()
+        user_manager : UserManager = dependency_injection.container[UserManager]
+
+        user_manager.retrieve_user_mappings()
 
     def test_is_slave(self):
         mc_config = master_connector.MasterConnectorConfigModel()

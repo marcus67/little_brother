@@ -43,8 +43,10 @@ from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
+from little_brother.user_manager import UserManager
 from little_brother.web import web_server
 from python_base_app import locale_helper
+from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
@@ -102,16 +104,15 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         master_connector_config = master_connector.MasterConnectorConfigModel()
         self._master_connector = master_connector.MasterConnector(p_config=master_connector_config)
-
         dependency_injection.container[MasterConnector] = self._master_connector
+
         dependency_injection.container[PrometheusClient] = None
 
         self._user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
+        dependency_injection.container[BaseUserHandler] = self._user_handler
 
         app_control_config = AppControlConfigModel()
-
         self._admin_data_handler = AdminDataHandler(p_config=app_control_config)
-
         dependency_injection.container[AdminDataHandler] = self._admin_data_handler
 
         self._app_control = AppControl(
@@ -121,8 +122,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             p_device_handler=None,
             p_notification_handlers=[],
             p_login_mapping=test_data.LOGIN_MAPPING,
-            p_locale_helper=locale_helper.LocaleHelper(),
-            p_user_handler=self._user_handler)
+            p_locale_helper=locale_helper.LocaleHelper())
 
         dependency_injection.container[AppControl] = self._app_control
 
@@ -163,7 +163,9 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         self.create_dummy_status_server(p_process_handlers=process_handlers)
         self._status_server.start_server()
 
-        self._app_control.retrieve_user_mappings()
+        user_manager = dependency_injection.container[UserManager]
+
+        user_manager.retrieve_user_mappings()
         self._app_control.start()
         self._app_control._process_handler_manager.scan_processes(
             p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
@@ -235,8 +237,12 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         with SessionContext(self._persistence) as session_context:
             user_id = p_user_entity_manager.add_new_user(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_locale="en")
-        self._app_control.add_monitored_user(p_username=self.get_new_user_name())
-        self._app_control.retrieve_user_mappings()
+
+        user_manager : UserManager = dependency_injection.container[UserManager]
+
+
+        user_manager.add_monitored_user(p_username=self.get_new_user_name())
+        user_manager.retrieve_user_mappings()
 
         return user_id
 

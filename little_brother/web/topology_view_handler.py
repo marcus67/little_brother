@@ -61,7 +61,6 @@ class TopologyViewHandler(BaseViewHandler):
                     )
 
                 except Exception as e:
-                    msg = "Exception '{exception}' while generating about page"
-                    self._logger.exception(msg.format(exception=str(e)))
+                    return self.handle_rendering_exception(p_page_name="topology page", p_exception=e)
 
                 return page

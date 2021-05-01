@@ -54,17 +54,17 @@ class Language:
             "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes\nin this session.")
         self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
 
-    def get_text_limited_session_start(self, p_locale):
+    def get_text_limited_session_start(self, p_locale, p_variables):
 
         t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_locale], fallback=True)
-        return t.gettext(self.text_limited_session_start)
+        return t.gettext(self.text_limited_session_start).format(**p_variables)
 
-    def get_text_unlimited_session_start(self, p_locale):
+    def get_text_unlimited_session_start(self, p_locale, p_variables):
 
         t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_locale], fallback=True)
-        return t.gettext(self.text_unlimited_session_start)
+        return t.gettext(self.text_unlimited_session_start).format(**p_variables)
 
     def pick_text_for_ruleset(self, p_rule_result_info):
 

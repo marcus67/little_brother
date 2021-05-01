@@ -93,15 +93,7 @@ class DevicesViewHandler(BaseViewHandler):
                     devices = self.device_entity_manager.get_sorted_devices(session_context)
                     forms = self.get_devices_forms(p_devices=devices)
 
-                    valid_and_submitted = True
-                    submitted = False
-
-                    for form in forms.values():
-                        if not form.validate_on_submit():
-                            valid_and_submitted = False
-
-                        if form.is_submitted():
-                            submitted = True
+                    valid_and_submitted, submitted = self.validate(p_forms=forms)
 
                     if valid_and_submitted:
                         self.save_devices_data(devices, forms)
@@ -137,7 +129,6 @@ class DevicesViewHandler(BaseViewHandler):
                     )
 
                 except Exception as e:
-                    msg = "Exception '{exception}' while generating device page"
-                    self._logger.exception(msg.format(exception=str(e)))
+                    return self.handle_rendering_exception(p_page_name="devices page", p_exception=e)
 
             return page

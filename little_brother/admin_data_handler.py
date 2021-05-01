@@ -124,7 +124,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                 admin_info.day_infos = []
 
                 for reference_date in sorted(days):
-                    rule_set = self._rule_handler.get_active_ruleset(
+                    rule_set = self.rule_handler.get_active_ruleset(
                         p_rule_sets=user.rulesets, p_reference_date=reference_date)
 
                     if rule_set is not None:
@@ -215,10 +215,10 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                                   p_reference_date=reference_time.date())
                         override = self._rule_overrides.get(key_rule_override)
 
-                        active_rule_set = self._rule_handler.get_active_ruleset(
+                        active_rule_set = self.rule_handler.get_active_ruleset(
                             p_reference_date=reference_time, p_rule_sets=user.rulesets)
 
-                        rule_result_info = self._rule_handler.process_ruleset(
+                        rule_result_info = self.rule_handler.process_ruleset(
                             p_active_rule_set=active_rule_set, p_stat_info=stat_info,
                             p_active_time_extension=active_time_extension,
                             p_reference_time=reference_time, p_rule_override=override,
@@ -280,8 +280,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
             user: User = self.user_entity_manager.user_map(p_session_context=session_context).get(p_username)
 
             if user is not None:
-                rule_set = self._rule_handler.get_active_ruleset(p_rule_sets=user.rulesets,
-                                                                 p_reference_date=p_reference_time.date())
+                rule_set = self.rule_handler.get_active_ruleset(p_rule_sets=user.rulesets,
+                                                                p_reference_date=p_reference_time.date())
 
             stat_infos = users_stat_infos.get(p_username)
             active_time_extension = active_time_extensions.get(p_username)
@@ -296,10 +296,10 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                               p_reference_date=p_reference_time.date())
                     override = self._rule_overrides.get(key_rule_override)
 
-                    active_rule_set = self._rule_handler.get_active_ruleset(
+                    active_rule_set = self.rule_handler.get_active_ruleset(
                         p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
 
-                    rule_result_info = self._rule_handler.process_ruleset(
+                    rule_result_info = self.rule_handler.process_ruleset(
                         p_active_rule_set=active_rule_set,
                         p_stat_info=stat_info,
                         p_reference_time=p_reference_time,

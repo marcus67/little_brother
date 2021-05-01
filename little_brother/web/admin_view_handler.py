@@ -57,60 +57,20 @@ class AdminViewHandler(BaseViewHandler):
                 try:
                     admin_infos = self.admin_data_handler.get_admin_infos(
                         p_session_context=session_context,
-                        p_process_infos=self.app_control.get_process_infos(),
-                        p_user_names=self.app_control.usernames)
-
+                        p_process_infos=self.processs_handler_manager.get_process_infos(),
+                        p_user_names=self.user_manager.usernames)
 
                     forms = self.get_admin_forms(p_admin_infos=admin_infos)
 
-                    valid_and_submitted = True
-                    submitted = False
-
-                    for form in forms.values():
-                        if not form.validate_on_submit():
-                            valid_and_submitted = False
-
-                        if form.is_submitted():
-                            submitted = True
+                    valid_and_submitted, submitted = self.validate(p_forms=forms)
 
                     if valid_and_submitted:
                         self.save_admin_data(admin_infos, forms)
-
-                        for admin_info in admin_infos:
-
-                            username = admin_info.username
-                            submit_regex = re.compile(TIME_EXTENSION_SUBMIT_PATTERN.format(username=username))
-                            result = submit_regex.match(request.form['submit'])
-
-                            if result is not None:
-                                delta = int(result.group(1))
-
-                                reference_time = tools.get_current_time()
-                                start_datetime = reference_time
-
-                                session_active = admin_info.user_info[
-                                                     "active_stat_info"].current_activity_start_time is not None
-
-                                if session_active:
-                                    active_rule_result_info = admin_info.user_info["active_rule_result_info"]
-
-                                    if active_rule_result_info.session_end_datetime is not None:
-                                        start_datetime = active_rule_result_info.session_end_datetime
-
-                                self.time_extension_entity_manager.set_time_extension(
-                                    p_session_context=session_context,
-                                    p_username=username,
-                                    p_reference_datetime=reference_time,
-                                    p_start_datetime=start_datetime,
-                                    p_time_delta=delta
-                                )
-
+                        self.handle_button_press(admin_infos, request, session_context)
                         return flask.redirect(flask.url_for("admin.main_view"))
 
                     if not submitted:
-                        for admin_info in admin_infos:
-                            for day_info in admin_info.day_infos:
-                                forms[day_info.html_key].load_from_model(p_model=day_info.override)
+                        self.load_from_model(admin_infos, forms)
 
                     page = flask.render_template(
                         constants.ADMIN_HTML_TEMPLATE,
@@ -122,11 +82,37 @@ class AdminViewHandler(BaseViewHandler):
                             'current_view': constants.ADMIN_BLUEPRINT_NAME + "." + constants.ADMIN_VIEW_NAME})
 
                 except Exception as e:
-
-                    msg = "Exception '{exception}' while generating admin page"
-                    self._logger.exception(msg.format(exception=str(e)))
+                    return self.handle_rendering_exception(p_page_name="admin page", p_exception=e)
 
                 return page
+
+    def load_from_model(self, p_admin_infos, p_forms):
+
+        for admin_info in p_admin_infos:
+            for day_info in admin_info.day_infos:
+                p_forms[day_info.html_key].load_from_model(p_model=day_info.override)
+
+    def handle_button_press(self, p_admin_infos, p_request, p_session_context):
+
+        for admin_info in p_admin_infos:
+
+            username = admin_info.username
+            submit_regex = re.compile(TIME_EXTENSION_SUBMIT_PATTERN.format(username=username))
+            result = submit_regex.match(p_request.form['submit'])
+
+            if result is not None:
+                delta = int(result.group(1))
+
+                session_active = admin_info.user_info[
+                                     "active_stat_info"].current_activity_start_time is not None
+
+                active_rule_result_info = admin_info.user_info["active_rule_result_info"]
+                session_end_datetime = active_rule_result_info.session_end_datetime
+
+                self.time_extension_entity_manager.set_time_extension_for_session(
+                    p_session_context=p_session_context, p_user_name=username,
+                    p_session_active=session_active, p_delta=delta,
+                    p_session_end_datetime=session_end_datetime)
 
     @staticmethod
     def get_admin_forms(p_admin_infos):

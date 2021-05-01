@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2019-2021  Marcus Rickert
+#
+# See https://github.com/marcus67/little_brother
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 from little_brother import dependency_injection
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
@@ -10,23 +27,23 @@ from little_brother.persistence.persistent_user_2_device_entity_manager import U
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 
 
-class PersistenceDependencyInjectionMixIn():
+class PersistenceDependencyInjectionMixIn:
 
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
 
         # Dependency injection
-        self._persistence: Persistence = None
-        self._device_entity_manager: DeviceEntityManager = None
-        self._user_entity_manager: UserEntityManager = None
-        self._process_info_entity_manager: ProcessInfoEntityManager = None
-        self._admin_event_entity_manager: AdminEventEntityManager = None
-        self._rule_set_entity_manager: RuleSetEntityManager = None
-        self._rule_override_entity_manager: RuleOverrideEntityManager = None
-        self._device_entity_manager: DeviceEntityManager = None
-        self._user_2_device_entity_manager: User2DeviceEntityManager = None
-        self._time_extension_entity_manager: TimeExtensionEntityManager = None
+        self._persistence = None
+        self._device_entity_manager = None
+        self._user_entity_manager = None
+        self._process_info_entity_manager = None
+        self._admin_event_entity_manager = None
+        self._rule_set_entity_manager = None
+        self._rule_override_entity_manager = None
+        self._device_entity_manager = None
+        self._user_2_device_entity_manager = None
+        self._time_extension_entity_manager = None
 
     @property
     def persistence(self):

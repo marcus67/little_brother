@@ -17,11 +17,13 @@
 
 import flask
 
-from little_brother import dependency_injection
+from little_brother import dependency_injection, constants
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.app_control import AppControl
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_handler import RuleHandler
+from little_brother.user_manager import UserManager
 from python_base_app import log_handling
 from python_base_app.locale_helper import LocaleHelper
 from some_flask_helpers import blueprint_adapter
@@ -50,6 +52,8 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
         self._admin_data_handler = None
         self._rule_handler = None
         self._locale_helper = None
+        self._process_handler_manager = None
+        self._user_manager = None
 
 
     @property
@@ -66,7 +70,6 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
 
         return self._admin_data_handler
 
-
     @property
     def locale_helper(self) -> LocaleHelper:
         if self._locale_helper is None:
@@ -80,6 +83,37 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
             self._rule_handler = dependency_injection.container[RuleHandler]
 
         return self._rule_handler
+
+    @property
+    def processs_handler_manager(self) -> ProcessHandlerManager:
+        if self._process_handler_manager is None:
+            self._process_handler_manager = dependency_injection.container[ProcessHandlerManager]
+
+        return self._process_handler_manager
+
+    @property
+    def user_manager(self) -> UserManager:
+
+        if self._user_manager is None:
+            self._user_manager = dependency_injection.container[UserManager]
+
+        return self._user_manager
+
+
+    @classmethod
+    def validate(cls, p_forms):
+
+        valid_and_submitted = True
+        submitted = False
+
+        for form in p_forms.values():
+            if not form.validate_on_submit():
+                valid_and_submitted = False
+
+            if form.is_submitted():
+                submitted = True
+
+        return valid_and_submitted, submitted
 
     def register(self, p_app, p_url_prefix:str=None):
 
@@ -116,3 +150,15 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
 
     def gettext(self, p_text):
         return self.locale_helper.gettext(p_text=p_text)
+
+    def handle_rendering_exception(self, p_page_name, p_exception):
+
+        msg = "Exception '{exception}' while generating {page_name}"
+        self._logger.exception(msg.format(exception=str(p_exception), page_name=p_page_name))
+
+        return flask.render_template(
+            constants.INTERNAL_ERROR_HTML_TEMPLATE,
+            rel_font_size=self.get_rel_font_size(),
+            error_message=str(p_exception)
+        )
+

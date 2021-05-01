@@ -217,6 +217,7 @@ class RuleResultInfo(object):
         self.break_minutes_left = 0
         self.approaching_logout_rules = 0
         self.minutes_left_today = None
+        self.time_extension_only = True
         self.minutes_left_in_session = None
         self.minutes_left_before_logout = None
         self.default_rule_set = None
@@ -228,18 +229,26 @@ class RuleResultInfo(object):
 
         self.approaching_logout_rules = self.approaching_logout_rules | p_rule
 
-        if self.minutes_left_before_logout is None or p_minutes_left < self.minutes_left_before_logout:
-            self.minutes_left_before_logout = p_minutes_left
-            self.args['minutes_left_before_logout'] = p_minutes_left
+        # if self.minutes_left_before_logout is None or p_minutes_left < self.minutes_left_before_logout:
+        #     self.minutes_left_before_logout = p_minutes_left
+        #     self.args['minutes_left_before_logout'] = p_minutes_left
 
-    def set_minutes_left_in_session(self, p_minutes_left):
+    def set_minutes_left_in_session(self, p_minutes_left, p_is_time_extension=False):
 
         p_minutes_left = max(p_minutes_left, 0)
 
-        if self.minutes_left_in_session is None or p_minutes_left < self.minutes_left_in_session:
+        if self.minutes_left_in_session is None or \
+            (p_minutes_left < self.minutes_left_in_session and not self.time_extension_only) or \
+            (p_minutes_left > self.minutes_left_in_session and self.time_extension_only):
             self.minutes_left_in_session = p_minutes_left
+            self.minutes_left_before_logout = p_minutes_left
             self.args['minutes_left_in_session'] = p_minutes_left
             self.args['minutes_left_before_logout'] = p_minutes_left
+
+        if not p_is_time_extension:
+            self.time_extension_only = False
+
+        return self.args['minutes_left_in_session']
 
     def set_minutes_left_today(self, p_minutes_left):
 
@@ -399,8 +408,7 @@ class RuleHandler(object):
              }))
         time_left_in_seconds = (p_active_time_extension.end_datetime - p_reference_time).total_seconds()
         time_left_in_minutes = max(int((time_left_in_seconds + 30) / 60), 0)
-        p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
-        p_rule_result_info.args['minutes_left_before_logout'] = time_left_in_minutes
+        p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes, p_is_time_extension=True)
 
         if time_left_in_minutes <= self._config.warning_before_logout:
             p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_EXTENSION,
@@ -506,12 +514,13 @@ class RuleHandler(object):
                     time_left_in_seconds = p_rule_set.max_activity_duration - current_activity_duration
                     time_left_in_minutes = int((time_left_in_seconds + 30) / 60)
 
-                    if not p_rule_result_info.activity_granted():
+#                    if not p_rule_result_info.activity_granted():
+                    effective_time_left_in_minutes = \
                         p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
-                        if time_left_in_minutes <= self._config.warning_before_logout:
-                            p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION,
-                                                                           p_minutes_left=time_left_in_minutes)
+                    if effective_time_left_in_minutes <= self._config.warning_before_logout:
+                        p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION,
+                                                                       p_minutes_left=effective_time_left_in_minutes)
 
                     if p_stat_info.current_activity_start_time is not None:
                         session_end_datetime = \

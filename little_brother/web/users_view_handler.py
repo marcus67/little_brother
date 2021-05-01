@@ -59,75 +59,16 @@ class UsersViewHandler(BaseViewHandler):
                     users = self.user_entity_manager.get_sorted_users(session_context)
                     forms = self.get_users_forms(p_users=users, p_session_context=session_context)
 
-                    valid_and_submitted = True
-                    submitted = False
-
-                    for form in forms.values():
-                        if not form.validate_on_submit():
-                            valid_and_submitted = False
-
-                        if form.is_submitted():
-                            submitted = True
+                    valid_and_submitted, submitted = self.validate(p_forms=forms)
 
                     if valid_and_submitted:
-                        self.save_users_data(users, forms)
-
-                        if request.form['submit'] == HTML_KEY_NEW_USER:
-                            username = forms[HTML_KEY_NEW_USER].username.data
-                            self.app_control.add_new_user(p_session_context=session_context,
-                                                          p_username=username, p_locale=self._locale_helper.locale)
-                            # TODO: after adding new user Users window should be opened for new user
-
-                        else:
-                            for user in users:
-                                if request.form['submit'] == user.delete_html_key:
-                                    self.user_entity_manager.delete_user(
-                                        p_session_context=session_context, p_username=user.username)
-                                    self.persistence.clear_cache()
-                                    self.app_control.send_config_to_all_slaves()
-
-                                elif request.form['submit'] == user.new_ruleset_html_key:
-                                    self.user_entity_manager.assign_ruleset(
-                                        p_session_context=session_context, p_username=user.username)
-
-                                elif request.form['submit'] == user.new_device_html_key:
-                                    device_id = int(forms[user.new_device_html_key].device_id.data)
-                                    self.user_2_device_entity_manager.add_user2device(
-                                        p_session_context=session_context, p_device_id=device_id,
-                                        p_username=user.username)
-
-                                else:
-                                    for ruleset in user.rulesets:
-                                        if request.form['submit'] == ruleset.delete_html_key:
-                                            self.rule_set_entity_manager.delete_ruleset(
-                                                p_session_context=session_context, p_ruleset_id=ruleset.id)
-
-                                        elif request.form['submit'] == ruleset.move_down_html_key:
-                                            self.rule_set_entity_manager.move_down_ruleset(
-                                                p_session_context=session_context, p_ruleset_id=ruleset.id)
-
-                                        elif request.form['submit'] == ruleset.move_up_html_key:
-                                            self.rule_set_entity_manager.move_up_ruleset(
-                                                p_session_context=session_context, p_ruleset_id=ruleset.id)
-
-                                    for user2device in user.devices:
-                                        if request.form['submit'] == user2device.delete_html_key:
-                                            self.user_2_device_entity_manager.delete_user2device(
-                                                p_session_context=session_context, p_user2device_id=user2device.id)
-
+                        self.save_users_data(p_users=users, p_forms=forms)
+                        self.handle_button_press(p_forms=forms, p_request=request, p_session_context=session_context,
+                                                 p_users=users)
                         return flask.redirect(flask.url_for("users.main_view"))
 
                     if not submitted:
-                        for user in users:
-                            forms[user.html_key].load_from_model(p_model=user)
-
-                            for ruleset in user.rulesets:
-                                forms[ruleset.html_key].load_from_model(p_model=ruleset)
-                                # provide a callback function so that the RuleSet can retrieve context summaries
-                                ruleset._get_context_rule_handler = self.rule_handler.get_context_rule_handler
-
-                            for user2device in user.devices:
-                                forms[user2device.html_key].load_from_model(p_model=user2device)
+                        self.load_from_model(p_forms=forms, p_users=users)
 
                     page = flask.render_template(
                         constants.USERS_HTML_TEMPLATE,
@@ -143,10 +84,67 @@ class UsersViewHandler(BaseViewHandler):
                     )
 
                 except Exception as e:
-                    msg = "Exception '{exception}' while generating user page"
-                    self._logger.exception(msg.format(exception=str(e)))
+                    return self.handle_rendering_exception(p_page_name="users page", p_exception=e)
 
             return page
+
+    def load_from_model(self, p_forms, p_users):
+
+        for user in p_users:
+            p_forms[user.html_key].load_from_model(p_model=user)
+
+            for ruleset in user.rulesets:
+                p_forms[ruleset.html_key].load_from_model(p_model=ruleset)
+                # provide a callback function so that the RuleSet can retrieve context summaries
+                ruleset._get_context_rule_handler = self.rule_handler.get_context_rule_handler
+
+            for user2device in user.devices:
+                p_forms[user2device.html_key].load_from_model(p_model=user2device)
+
+    def handle_button_press(self, p_forms, p_request, p_session_context, p_users):
+
+        if p_request.form['submit'] == HTML_KEY_NEW_USER:
+            username = p_forms[HTML_KEY_NEW_USER].username.data
+            self.app_control.add_new_user(p_session_context=p_session_context,
+                                          p_username=username, p_locale=self._locale_helper.locale)
+            # TODO: after adding new user Users window should be opened for new user
+
+        else:
+            for user in p_users:
+                if p_request.form['submit'] == user.delete_html_key:
+                    self.user_entity_manager.delete_user(
+                        p_session_context=p_session_context, p_username=user.username)
+                    self.persistence.clear_cache()
+                    self.app_control.send_config_to_all_slaves()
+
+                elif p_request.form['submit'] == user.new_ruleset_html_key:
+                    self.user_entity_manager.assign_ruleset(
+                        p_session_context=p_session_context, p_username=user.username)
+
+                elif p_request.form['submit'] == user.new_device_html_key:
+                    device_id = int(p_forms[user.new_device_html_key].device_id.data)
+                    self.user_2_device_entity_manager.add_user2device(
+                        p_session_context=p_session_context, p_device_id=device_id,
+                        p_username=user.username)
+
+                else:
+                    for ruleset in user.rulesets:
+                        if p_request.form['submit'] == ruleset.delete_html_key:
+                            self.rule_set_entity_manager.delete_ruleset(
+                                p_session_context=p_session_context, p_ruleset_id=ruleset.id)
+
+                        elif p_request.form['submit'] == ruleset.move_down_html_key:
+                            self.rule_set_entity_manager.move_down_ruleset(
+                                p_session_context=p_session_context, p_ruleset_id=ruleset.id)
+
+                        elif p_request.form['submit'] == ruleset.move_up_html_key:
+                            self.rule_set_entity_manager.move_up_ruleset(
+                                p_session_context=p_session_context, p_ruleset_id=ruleset.id)
+
+                    for user2device in user.devices:
+                        if p_request.form['submit'] == user2device.delete_html_key:
+                            self.user_2_device_entity_manager.delete_user2device(
+                                p_session_context=p_session_context, p_user2device_id=user2device.id)
 
     def get_users_forms(self, p_session_context, p_users):
 
@@ -244,7 +242,7 @@ class UsersViewHandler(BaseViewHandler):
 
                 self._persistence.clear_cache()
                 self.app_control.send_config_to_all_slaves()
-                self.app_control.reset_users(p_session_context=session_context)
+                self.user_manager.reset_users(p_session_context=session_context)
 
     def add_labels(self, p_value_list):
 

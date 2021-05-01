@@ -24,7 +24,10 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Created classes `AdminDataHandler` and `UserLocaleHandler`
 *   Error page for internal errors during HTML template evaluation
 *   Created class `EventHandler`
-*   Created classes `ProcessHandlerManager` and `Language` 
+*   Created classes `ProcessHandlerManager` and `Language`
+*   Closes #141, see [here](https://github.com/marcus67/little_brother/issues/141)
+*   Created class `UserManager`
+*   Handle exception during page rendering by displaying error page
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 
