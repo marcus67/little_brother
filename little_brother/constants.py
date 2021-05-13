@@ -17,6 +17,8 @@
 
 import os.path
 
+UNKNOWN = "<unknown>"
+
 DIR_NAME = 'little-brother'
 APPLICATION_USER = 'little-brother'
 APPLICATION_NAME = 'LittleBrother'
@@ -125,3 +127,4 @@ USERS_HTML_TEMPLATE = "users.template.html"
 USERS_REL_URL = "users"
 USERS_VIEW_NAME = "main_view"
 
+CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"

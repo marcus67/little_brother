@@ -34,7 +34,7 @@ class SessionContext(object):
         self.close_session()
 
         if exc_val is not None:
-            raise exc_val
+            return False
 
         return True
 

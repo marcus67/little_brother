@@ -22,7 +22,7 @@ import json
 import requests
 import wtforms
 
-from little_brother.context_rule_handler import AbstractContextRuleHandler
+from little_brother.context_rule_handler import AbstractContextRuleHandler, RuleHandlerRunTimeException
 from python_base_app import configuration
 from python_base_app import log_handling
 
@@ -95,7 +95,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
             if request.status_code != 200:
                 fmt = "HTTP code {error_code} while downloading {url}"
-                raise Exception(fmt.format(error_code=request.status_code, url=url))
+                raise (fmt.format(error_code=request.status_code, url=url))
 
             try:
                 result = json.loads(request.content.decode("UTF-8"))
@@ -103,7 +103,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
                 self._vacation_type_map = {vacation_type['id']: vacation_type['name'] for vacation_type in
                                            vacation_types}
 
-            except Exception as e:
+            except RuleHandlerRunTimeException as e:
                 fmt = "error {exception} while decoding data from {url}"
                 raise Exception(fmt.format(exception=str(e), url=url))
 
@@ -119,7 +119,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
             if request.status_code != 200:
                 fmt = "HTTP code {error_code} while downloading {url}"
-                raise Exception(fmt.format(error_code=request.status_code, url=url))
+                raise RuleHandlerRunTimeException(fmt.format(error_code=request.status_code, url=url))
 
             try:
                 result = json.loads(request.content.decode("UTF-8"))
@@ -133,7 +133,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
             except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
-                raise Exception(fmt.format(exception=str(e), url=url))
+                raise RuleHandlerRunTimeException(fmt.format(exception=str(e), url=url))
 
             fmt = "downloaded index metadata for {count} federal states of Germany"
             self._logger.info(fmt.format(count=len(self._federal_state_map)))
@@ -146,7 +146,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
             if request.status_code != 200:
                 fmt = "HTTP code {error_code} while downloading {url}"
-                raise Exception(fmt.format(error_code=request.status_code, url=url))
+                raise RuleHandlerRunTimeException(fmt.format(error_code=request.status_code, url=url))
 
             selected_vacation_types = [type_id for (type_id, type_name) in self._vacation_type_map.items() if
                                        type_name in ENTRY_FILTER]
@@ -173,7 +173,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
             except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
-                raise Exception(fmt.format(exception=str(e), url=url))
+                raise RuleHandlerRunTimeException(fmt.format(exception=str(e), url=url))
 
             fmt = "downloaded {count} vacation entries for Germany"
             self._logger.info(fmt.format(count=count))

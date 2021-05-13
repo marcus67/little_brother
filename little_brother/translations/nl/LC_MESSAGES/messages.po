@@ -63,15 +63,15 @@ msgstr "{user}, je hebt vandaag geen computertijd. Je wordt uitgelogd."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"{user}, you only have {minutes_left_in_session} minutes left today.\n"
 "Please, log out."
 msgstr ""
-"{user}, je hebt nog maar {minutes_left_before_logout} minuten over "
+"{user}, je hebt nog maar {minutes_left_in_session} minuten over "
 "vandaag."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"{user}, you only have {minutes_left_in_session} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
@@ -96,11 +96,11 @@ msgstr "{user}, het is te laat om de computer te gebruiken. Je wordt uitgelogd."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"{user}, in {minutes_left_in_session} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user}, in {minutes_left_before_logout} minuten zal het te laat zijn om "
+"{user}, in {minutes_left_in_session} minuten zal het te laat zijn om "
 "de computer te gebruiken. Alsjeblieft, log uit."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
@@ -111,11 +111,11 @@ msgstr "{user}, je moet een pauze nemen. Je wordt uitgelogd."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"{user}, in {minutes_left_in_session} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
-"{user}, in {minutes_left_before_logout} minuten moet je een pauze nemen. "
+"{user}, in {minutes_left_in_session} minuten moet je een pauze nemen. "
 "Alsjeblieft, log uit."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295

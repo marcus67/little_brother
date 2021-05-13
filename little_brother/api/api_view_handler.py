@@ -32,6 +32,8 @@ from python_base_app import log_handling
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
 
+MIME_TYPE_APPLICATION_JSON = 'application/json'
+
 API_BLUEPRINT_NAME = "API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
@@ -106,7 +108,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
             if event_info is None:
                 return flask.Response("{error: invalid access code}", status=constants.HTTP_STATUS_CODE_UNAUTHORIZED,
-                                      mimetype='application/json')
+                                      mimetype=MIME_TYPE_APPLICATION_JSON)
 
             client_stats = None
 
@@ -130,7 +132,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
             self._logger.debug(msg.format(count=len(return_events), hostname=hostname))
 
             return flask.Response(json.dumps(return_events, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
-                                  mimetype='application/json')
+                                  mimetype=MIME_TYPE_APPLICATION_JSON)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_URL_STATUS, methods=["GET"])
     def api_status(self):
@@ -144,7 +146,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 msg = _("username '{username}' not specified")
                 return flask.Response('{{ "{errortag}" : "{msg}" }}'.format(msg=msg, errortag=constants.JSON_ERROR),
                                       status=constants.HTTP_STATUS_CODE_NOT_FOUND,
-                                      mimetype='application/json')
+                                      mimetype=MIME_TYPE_APPLICATION_JSON)
 
             with SessionContext(p_persistence=self.persistence) as session_context:
                 user_status = self.user_manager.get_current_user_status(
@@ -154,10 +156,10 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 msg = _("username '{username}' not being monitored")
                 return flask.Response('{{ "{errortag}" : "{msg}" }}'.format(msg=msg, errortag=constants.JSON_ERROR),
                                       status=constants.HTTP_STATUS_CODE_NOT_FOUND,
-                                      mimetype='application/json')
+                                      mimetype=MIME_TYPE_APPLICATION_JSON)
 
             msg = "Received status request for user '{username}'"
             self._logger.debug(msg.format(username=username))
 
             return flask.Response(json.dumps(user_status, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
-                                  mimetype='application/json')
+                                  mimetype=MIME_TYPE_APPLICATION_JSON)

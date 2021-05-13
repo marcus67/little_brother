@@ -64,13 +64,13 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"{user}, you only have {minutes_left_in_session} minutes left today.\n"
 "Please, log out."
-msgstr "{user} さん,今日はたった{minutes_left_before_logout}分が残ります.ログアウトして下さい."
+msgstr "{user} さん,今日はたった{minutes_left_in_session}分が残ります.ログアウトして下さい."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"{user}, you only have {minutes_left_in_session} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
@@ -97,11 +97,11 @@ msgstr "{user} さん,コンピューターを使用するにはもう遅くな�
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"{user}, in {minutes_left_in_session} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user} さん,{minutes_left_before_logout}\"分掛かるとコンピューターを使うには遅くなります.\n"
+"{user} さん,{minutes_left_in_session}\"分掛かるとコンピューターを使うには遅くなります.\n"
 "ログアウトしてください."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
@@ -112,11 +112,11 @@ msgstr "{user} さん,休まなければ行けません.ログアウトされま
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"{user}, in {minutes_left_in_session} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
-"{user} さん,{minutes_left_before_logout}\"分には休憩を取らければ行けません.\n"
+"{user} さん,{minutes_left_in_session}\"分には休憩を取らければ行けません.\n"
 "ログアウトしてください."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295

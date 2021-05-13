@@ -153,7 +153,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         fmt = "Scanning processes..."
         self._logger.debug(fmt)
 
-        for proc in self._process_iterator_factory.process_iter():  # attrs=['pid', 'name', 'username', 'create_time']
+        for proc in self._process_iterator_factory.process_iter():
             try:
                 uids = proc.uids()
 

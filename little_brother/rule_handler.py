@@ -15,14 +15,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import copy
 import datetime
 import re
 
 from little_brother import constants
 from little_brother import process_statistics
+from little_brother import rule_result_info
 from little_brother.persistence import persistence
-from little_brother.persistence.persistent_time_extension import TimeExtension
+from little_brother.rule_result_info import RuleResultInfo
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -33,37 +33,7 @@ RULE_SET_SECTION_PREFIX = "RuleSet"
 
 REGEX_TIME_OF_DAY = re.compile("([0-9]+)(:([0-9]+))?")
 
-RULE_TOO_EARLY = 1
-RULE_TOO_LATE = 2
-RULE_TIME_OF_DAY = (RULE_TOO_EARLY | RULE_TOO_LATE)
-RULE_TIME_PER_DAY = 4
-RULE_DAY_BLOCKED = 8
-RULE_ACTIVITY_DURATION = 16
-RULE_MIN_BREAK = 32
-
-RULE_FREE_PLAY = 64
-RULE_TIME_EXTENSION = 128
-
-# Rules covered by this mask result in play time being granted
-# Note: granting has higher priority than denying
-RULE_GRANT_PLAYTIME_MASK = RULE_FREE_PLAY | \
-                           RULE_TIME_EXTENSION
-
-# Rules covered by this mask result in play time being denied
-RULE_DENY_PLAYTIME_MASK = RULE_TIME_OF_DAY | \
-                          RULE_TIME_PER_DAY | \
-                          RULE_DAY_BLOCKED | \
-                          RULE_ACTIVITY_DURATION | \
-                          RULE_MIN_BREAK
-
-INFO_REMAINING_PLAYTIME = 256
-INFO_REMAINING_PLAYTIME_THIS_SESSION = 512
-
-INFO_MASK = INFO_REMAINING_PLAYTIME | INFO_REMAINING_PLAYTIME_THIS_SESSION
-
 DEFAULT_RULESET_LABEL = "default"
-
-CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
@@ -208,117 +178,6 @@ class RuleSetSectionHandler(configuration.ConfigurationSectionHandler):
         return datetime.time(hour=hours, minute=minutes)
 
 
-class RuleResultInfo(object):
-
-    def __init__(self):
-
-        self.applying_rule_text_templates = []
-        self.applying_rules = 0
-        self.break_minutes_left = 0
-        self.approaching_logout_rules = 0
-        self.minutes_left_today = None
-        self.time_extension_only = True
-        self.minutes_left_in_session = None
-        self.minutes_left_before_logout = None
-        self.default_rule_set = None
-        self.effective_rule_set = None
-        self.session_end_datetime: datetime.datetime = None
-        self.args = {}
-
-    def set_approaching_logout_rule(self, p_rule, p_minutes_left):
-
-        self.approaching_logout_rules = self.approaching_logout_rules | p_rule
-
-        # if self.minutes_left_before_logout is None or p_minutes_left < self.minutes_left_before_logout:
-        #     self.minutes_left_before_logout = p_minutes_left
-        #     self.args['minutes_left_before_logout'] = p_minutes_left
-
-    def set_minutes_left_in_session(self, p_minutes_left, p_is_time_extension=False):
-
-        p_minutes_left = max(p_minutes_left, 0)
-
-        if self.minutes_left_in_session is None or \
-            (p_minutes_left < self.minutes_left_in_session and not self.time_extension_only) or \
-            (p_minutes_left > self.minutes_left_in_session and self.time_extension_only):
-            self.minutes_left_in_session = p_minutes_left
-            self.minutes_left_before_logout = p_minutes_left
-            self.args['minutes_left_in_session'] = p_minutes_left
-            self.args['minutes_left_before_logout'] = p_minutes_left
-
-        if not p_is_time_extension:
-            self.time_extension_only = False
-
-        return self.args['minutes_left_in_session']
-
-    def set_minutes_left_today(self, p_minutes_left):
-
-        p_minutes_left = max(p_minutes_left, 0)
-
-        if self.minutes_left_today is None or p_minutes_left < self.minutes_left_today:
-            self.minutes_left_today = p_minutes_left
-            self.args['minutes_left_today'] = p_minutes_left
-
-    def set_session_end_datetime(self, p_session_end_datetime):
-
-        if self.session_end_datetime is None or p_session_end_datetime < self.session_end_datetime:
-            self.session_end_datetime = p_session_end_datetime
-            self.args['session_end_datetime'] = p_session_end_datetime
-
-    def get_minutes_left_in_session(self):
-
-        return self.args.get('minutes_left_in_session')
-
-    def activity_granted(self):
-
-        return self.applying_rules & RULE_GRANT_PLAYTIME_MASK > 0
-
-    def skip_negative_checks(self):
-
-        return self.applying_rules & RULE_FREE_PLAY > 0
-
-    def activity_allowed(self):
-
-        return (self.applying_rules & RULE_GRANT_PLAYTIME_MASK > 0) or \
-               (self.applying_rules & RULE_DENY_PLAYTIME_MASK == 0)
-
-    def limited_session_time(self):
-
-        return self.minutes_left_in_session is not None
-
-
-def apply_override(p_rule_set, p_rule_override):
-    rule_set = p_rule_set
-
-    if p_rule_override is not None:
-        rule_set = copy.copy(p_rule_set)
-
-        if p_rule_override.max_time_per_day is not None:
-            rule_set.max_time_per_day = p_rule_override.max_time_per_day
-            rule_set.max_time_per_day_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
-
-        if p_rule_override.min_time_of_day is not None:
-            rule_set.min_time_of_day = p_rule_override.min_time_of_day
-            rule_set.min_time_of_day_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
-
-        if p_rule_override.max_time_of_day is not None:
-            rule_set.max_time_of_day = p_rule_override.max_time_of_day
-            rule_set.max_time_of_day_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
-
-        if p_rule_override.min_break is not None:
-            rule_set.min_break = p_rule_override.min_break
-            rule_set.min_break_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
-
-        if p_rule_override.free_play:
-            rule_set.free_play = True
-            rule_set.free_play_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
-
-        if p_rule_override.max_activity_duration is not None:
-            rule_set.max_activity_duration = p_rule_override.max_activity_duration
-            rule_set.max_activity_duration_class = CSS_CLASS_EMPHASIZE_RULE_OVERRIDE
-
-    return rule_set
-
-
 class RuleHandler(object):
 
     def __init__(self, p_config, p_persistence):
@@ -385,34 +244,10 @@ class RuleHandler(object):
     def check_free_play(self, p_rule_set: RuleSetConfigModel, p_rule_result_info: RuleResultInfo):
 
         if p_rule_set.free_play:
-            p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_FREE_PLAY
+            p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_FREE_PLAY
             p_rule_result_info.applying_rule_text_templates.append(
                 (_("Free Play"), {})
             )
-
-    def check_active_time_extension(self, p_reference_time: datetime.datetime,
-                                    p_active_time_extension: TimeExtension,
-                                    p_rule_result_info: RuleResultInfo):
-
-        if p_active_time_extension is None:
-            return
-
-        p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_TIME_EXTENSION
-        seconds_in_extension = \
-            (p_active_time_extension.end_datetime - p_active_time_extension.start_datetime).total_seconds()
-        p_rule_result_info.applying_rule_text_templates.append(
-            (_("Active time extension ({duration}) until {hh_mm}"),
-             {
-                 "duration": tools.get_duration_as_string(p_seconds=seconds_in_extension, p_include_seconds=False),
-                 "hh_mm": p_active_time_extension.end_datetime.strftime("%H:%M")
-             }))
-        time_left_in_seconds = (p_active_time_extension.end_datetime - p_reference_time).total_seconds()
-        time_left_in_minutes = max(int((time_left_in_seconds + 30) / 60), 0)
-        p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes, p_is_time_extension=True)
-
-        if time_left_in_minutes <= self._config.warning_before_logout:
-            p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_EXTENSION,
-                                                           p_minutes_left=time_left_in_minutes)
 
     def check_time_of_day(self, p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
                           p_rule_result_info: RuleResultInfo):
@@ -422,7 +257,7 @@ class RuleHandler(object):
             return
 
         if p_rule_set.min_time_of_day is not None and p_stat_info.reference_time.timetz() < p_rule_set.min_time_of_day:
-            p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_TOO_EARLY
+            p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_TOO_EARLY
 
             p_rule_result_info.applying_rule_text_templates.append(
                 (_("No activity before {hh_mm} hours"), {"hh_mm": p_rule_set.min_time_of_day.strftime("%H:%M")})
@@ -430,7 +265,7 @@ class RuleHandler(object):
 
         if p_rule_set.max_time_of_day is not None:
             if p_stat_info.reference_time.timetz() > p_rule_set.max_time_of_day:
-                p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_TOO_LATE
+                p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_TOO_LATE
                 p_rule_result_info.applying_rule_text_templates.append(
                     (_("No activity after {hh_mm} hours"), {"hh_mm": p_rule_set.max_time_of_day.strftime("%H:%M")})
                 )
@@ -444,9 +279,8 @@ class RuleHandler(object):
             if not p_rule_result_info.activity_granted():
                 p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
 
-                if time_left_in_minutes <= self._config.warning_before_logout:
-                    p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TOO_LATE,
-                                                                   p_minutes_left=time_left_in_minutes)
+                p_rule_result_info.check_approaching_logout(
+                    p_warning_before_logout=self._config.warning_before_logout, p_rule=rule_result_info.RULE_TOO_LATE)
 
     def check_time_per_day(self, p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
                            p_rule_result_info: RuleResultInfo):
@@ -460,13 +294,13 @@ class RuleHandler(object):
 
             if todays_activity_duration >= p_rule_set.max_time_per_day:
                 if p_rule_set.max_time_per_day == 0:
-                    p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_DAY_BLOCKED
+                    p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_DAY_BLOCKED
                     p_rule_result_info.applying_rule_text_templates.append(
                         (_("Day blocked: no activity permitted"), {})
                     )
 
                 else:
-                    p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_TIME_PER_DAY
+                    p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_TIME_PER_DAY
                     p_rule_result_info.applying_rule_text_templates.append(
                         (_("Activity limited to {hh_mm} per day"),
                          {"hh_mm": tools.get_duration_as_string(p_seconds=p_rule_set.max_time_per_day,
@@ -478,12 +312,10 @@ class RuleHandler(object):
                 time_left_in_minutes = int((time_left_in_seconds + 30) / 60)
                 p_rule_result_info.set_minutes_left_today(p_minutes_left=time_left_in_minutes)
 
-                if not p_rule_result_info.activity_granted():
-                    p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
-
-                    if time_left_in_minutes <= self._config.warning_before_logout:
-                        p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_TIME_PER_DAY,
-                                                                       p_minutes_left=time_left_in_minutes)
+                p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
+                p_rule_result_info.check_approaching_logout(
+                    p_warning_before_logout=self._config.warning_before_logout,
+                    p_rule=rule_result_info.RULE_TIME_PER_DAY)
 
                 if p_stat_info.current_activity_start_time is not None:
                     session_end_datetime = \
@@ -503,7 +335,7 @@ class RuleHandler(object):
 
             if current_activity_duration is not None:
                 if current_activity_duration > p_rule_set.max_activity_duration:
-                    p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_ACTIVITY_DURATION
+                    p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_ACTIVITY_DURATION
                     p_rule_result_info.applying_rule_text_templates.append(
                         (_("No activity exceeding {hh_mm}"),
                          {"hh_mm": tools.get_duration_as_string(p_seconds=p_rule_set.max_activity_duration,
@@ -514,17 +346,15 @@ class RuleHandler(object):
                     time_left_in_seconds = p_rule_set.max_activity_duration - current_activity_duration
                     time_left_in_minutes = int((time_left_in_seconds + 30) / 60)
 
-#                    if not p_rule_result_info.activity_granted():
-                    effective_time_left_in_minutes = \
-                        p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
-
-                    if effective_time_left_in_minutes <= self._config.warning_before_logout:
-                        p_rule_result_info.set_approaching_logout_rule(p_rule=RULE_ACTIVITY_DURATION,
-                                                                       p_minutes_left=effective_time_left_in_minutes)
+                    p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
+                    p_rule_result_info.check_approaching_logout(
+                        p_warning_before_logout=self._config.warning_before_logout,
+                        p_rule=rule_result_info.RULE_ACTIVITY_DURATION)
 
                     if p_stat_info.current_activity_start_time is not None:
                         session_end_datetime = \
-                            p_stat_info.current_activity_start_time + datetime.timedelta(seconds=time_left_in_seconds)
+                            p_stat_info.current_activity_start_time + datetime.timedelta(
+                                minutes=p_rule_result_info.get_minutes_left_in_session())
                         p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
 
     @staticmethod
@@ -533,6 +363,9 @@ class RuleHandler(object):
 
         if p_rule_result_info.skip_negative_checks():
             # shortcut because granting playtime has higher priority
+            return
+
+        if p_rule_result_info.datetime_is_permitted_by_extension(p_datetime=p_stat_info.reference_time.timetz()):
             return
 
         if p_rule_set.min_break is not None and p_rule_set.max_activity_duration is not None:
@@ -547,29 +380,21 @@ class RuleHandler(object):
                 min_relative_break = p_rule_set.min_break
 
             if seconds_since_last_activity is not None and seconds_since_last_activity < min_relative_break:
-                p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | RULE_MIN_BREAK
+                p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_MIN_BREAK
                 p_rule_result_info.applying_rule_text_templates.append(
                     (_("Minimum break time {hh_mm} not reached"),
                      {"hh_mm": tools.get_duration_as_string(p_seconds=min_relative_break)})
                 )
                 p_rule_result_info.break_minutes_left = int(
                     (min_relative_break - seconds_since_last_activity + 30) / 60)
-                p_rule_result_info.args['break_minutes_left'] = p_rule_result_info.break_minutes_left
 
         return
 
     def check_info_rules(self, p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
                          p_rule_result_info: RuleResultInfo):
 
-        # if p_rule_set.free_play:
-        #     p_rule_result_info.applying_rules |= INFO_REMAINING_PLAYTIME
-        #     p_rule_result_info.applying_rule_text_templates.append(
-        #         (_("Free Play"), {})
-        #     )
-        #
-        # else:
         if p_rule_result_info.minutes_left_today is not None:
-            p_rule_result_info.applying_rules |= INFO_REMAINING_PLAYTIME
+            p_rule_result_info.applying_rules |= rule_result_info.INFO_REMAINING_PLAYTIME
             p_rule_result_info.applying_rule_text_templates.append(
                 (_("Remaining play time today: {hh_mm}"),
                  {"hh_mm": tools.get_duration_as_string(p_seconds=60 * p_rule_result_info.minutes_left_today,
@@ -578,32 +403,37 @@ class RuleHandler(object):
 
         current_activity_duration = p_stat_info.current_activity_duration
 
-        if current_activity_duration is not None and p_rule_result_info.minutes_left_in_session is not None:
-            p_rule_result_info.applying_rules |= INFO_REMAINING_PLAYTIME_THIS_SESSION
+        if current_activity_duration is not None and p_rule_result_info.get_minutes_left_in_session() is not None:
+            p_rule_result_info.applying_rules |= rule_result_info.INFO_REMAINING_PLAYTIME_THIS_SESSION
             p_rule_result_info.applying_rule_text_templates.append(
                 (_("Remaining play time in current session: {hh_mm}"),
                  {"hh_mm": tools.get_duration_as_string(
-                     p_seconds=60 * p_rule_result_info.minutes_left_in_session, p_include_seconds=False)})
+                     p_seconds=60 * p_rule_result_info.get_minutes_left_in_session(), p_include_seconds=False)})
             )
+
+        # If no session restriction has been detected so far we use a specific notification for the restriction
+        # given by the time extension...
+        if (p_rule_result_info.minutes_left_in_time_extension is not None and
+                p_rule_result_info.minutes_left_in_session is None):
+            p_rule_result_info.check_approaching_logout(p_warning_before_logout=self._config.warning_before_logout,
+                                                        p_rule=rule_result_info.RULE_TIME_EXTENSION)
 
     def process_ruleset(self, p_active_rule_set, p_stat_info, p_active_time_extension,
                         p_reference_time, p_rule_override, p_locale):
 
-        rule_result_info = RuleResultInfo()
+        rule_result_info = RuleResultInfo(p_default_rule_set=p_active_rule_set,
+                                          p_rule_override=p_rule_override,
+                                          p_user=p_stat_info.notification_name,
+                                          p_locale=p_locale)
 
-        rule_result_info.default_rule_set = p_active_rule_set
-        rule_result_info.effective_rule_set = apply_override(p_rule_set=p_active_rule_set,
-                                                             p_rule_override=p_rule_override)
-
-        rule_result_info.args["user"] = p_stat_info.notification_name
         rule_result_info.locale = p_locale
 
         if p_active_rule_set is not None:
+            rule_result_info.add_time_extension_meta_data(p_active_time_extension=p_active_time_extension,
+                                                          p_reference_time=p_reference_time)
+
             # Rules granting playtime
             self.check_free_play(p_rule_set=rule_result_info.effective_rule_set, p_rule_result_info=rule_result_info)
-            self.check_active_time_extension(p_reference_time=p_reference_time,
-                                             p_active_time_extension=p_active_time_extension,
-                                             p_rule_result_info=rule_result_info)
 
             # Rules denying playtime
             self.check_time_of_day(p_rule_set=rule_result_info.effective_rule_set, p_stat_info=p_stat_info,

@@ -25,4 +25,4 @@ class BaseEntity():
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
     def populate_test_data(self, p_session_context: SessionContext):
-        pass
+        pass # default action: none

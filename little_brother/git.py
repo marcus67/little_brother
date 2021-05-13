@@ -15,11 +15,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from little_brother import constants
+
 git_metadata = {
-    "commit_id": "<unknown>",
-    "branch": "<unknown>",
-    "author_name": "<unknown>",
-    "author_email": "<unknown>"
+    "commit_id": constants.UNKNOWN,
+    "branch": constants.UNKNOWN,
+    "author_name": constants.UNKNOWN,
+    "author_email": constants.UNKNOWN
 }
 
 try:
@@ -29,7 +31,7 @@ try:
         "commit_id": git_metadata.GIT_COMMIT_ID[0:16],
         "branch": git_metadata.GIT_BRANCH,
         "author_name": git_metadata.GIT_AUTHOR_NAME,
-        "author_email":git_metadata.GIT_AUTHOR_EMAIL
+        "author_email": git_metadata.GIT_AUTHOR_EMAIL
     }
 
 except Exception as e:

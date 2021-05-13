@@ -22,6 +22,9 @@ from python_base_app.locale_helper import LocaleHelper
 
 _ = lambda x:x
 
+class RuleHandlerRunTimeException(RuntimeError):
+    pass
+
 class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
 
     def __init__(self, p_context_name, p_locale_helper=None):
@@ -52,7 +55,7 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
         return []
 
     def validate_context_details(self, p_context_detail):
-        pass
+        pass # default action: none
 
     def summary(self, p_context_detail):
         if p_context_detail is not None and p_context_detail != "":
@@ -62,4 +65,4 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
             return []
 
     def check_data(self):
-        pass
+        pass # default action: none

@@ -172,9 +172,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         return self._user_handler
 
-    # def get_number_of_monitored_users_function(self):
-    #     return lambda: self.get_number_of_monitored_users()
-
     @property
     def check_interval(self):
         return self._config.check_interval
@@ -474,6 +471,11 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                             active_rule_set = self.rule_handler.get_active_ruleset(
                                 p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
 
+                            if active_rule_set is None:
+                                msg = "No active rule set found for user '{user}'"
+                                self._logger.warning(msg.format(user=user.username))
+                                continue
+
                             rule_result_info = self.rule_handler.process_ruleset(
                                 p_active_rule_set=active_rule_set,
                                 p_stat_info=stat_info,
@@ -504,9 +506,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         fmt = "Processing rules END..."
         self._logger.debug(fmt)
 
-    ################################################################################################################################
-    ################################################################################################################################
-    ################################################################################################################################
+    ###################################################################################################################
+    ###################################################################################################################
+    ###################################################################################################################
 
     def queue_event_start_client(self):
 

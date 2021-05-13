@@ -64,15 +64,15 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"{user}, you only have {minutes_left_in_session} minutes left today.\n"
 "Please, log out."
 msgstr ""
-"{user}, สำหรับวันนี้ คุณมีเวลาเหลืออีก {minutes_left_before_logout} นาที\n"
+"{user}, สำหรับวันนี้ คุณมีเวลาเหลืออีก {minutes_left_in_session} นาที\n"
 "กรุณาออกจากระบบ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"{user}, you only have {minutes_left_in_session} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
@@ -103,11 +103,11 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"{user}, in {minutes_left_in_session} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user}, ในอีก {minutes_left_before_logout} นาที "
+"{user}, ในอีก {minutes_left_in_session} นาที "
 "จะเลยกำหนดเวลาใช้คอมพิวเตอร์แล้วกรุณาออกจากระบบ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
@@ -120,11 +120,11 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"{user}, in {minutes_left_in_session} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
-"{user}, ในอีก {minutes_left_before_logout} นาที "
+"{user}, ในอีก {minutes_left_in_session} นาที "
 "คุณจะต้องหยุดพักกรุณาออกจากระบบ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295

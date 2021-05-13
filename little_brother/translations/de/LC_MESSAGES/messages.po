@@ -69,18 +69,18 @@ msgstr "{user}, Du hast heute keine Spielzeit mehr. Du wirst ausgeloggt."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"{user}, you only have {minutes_left_in_session} minutes left today.\n"
 "Please, log out."
 msgstr ""
-"{user}, du hast heute nur noch {minutes_left_before_logout} Minuten "
+"{user}, du hast heute nur noch {minutes_left_in_session} Minuten "
 "Spielzeit übrig. Bitte logge Dich aus."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"{user}, you only have {minutes_left_in_session} minutes left in your "
 "time extension.\n"
 "Please, log out."
-msgstr ""
+msgstr "{user}, Du hast nur noch {minutes_left_in_session} Minuten in Deiner Zeitverlängerung übrig."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:287
 msgid ""
@@ -102,11 +102,11 @@ msgstr "{user}, es ist zu spät, um den Computer zu benutzen. Du wirst ausgelogg
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"{user}, in {minutes_left_in_session} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user}, in {minutes_left_before_logout} Minuten ist es zu spät, um den "
+"{user}, in {minutes_left_in_session} Minuten ist es zu spät, um den "
 "Computer zu benutzen. Bitte logge Dich aus."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
@@ -117,11 +117,11 @@ msgstr "{user}, Du musst eine Pause machen. Du wirst ausgeloggt."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"{user}, in {minutes_left_in_session} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
-"{user}, in {minutes_left_before_logout} Minuten musst Du eine Pause "
+"{user}, in {minutes_left_in_session} Minuten musst Du eine Pause "
 "machen. Bitte logge Dich aus."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295

@@ -62,15 +62,15 @@ msgstr "{user}, du har ikke computertid tilbage i dag. Du vil blive logget af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:283
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left today.\n"
+"{user}, you only have {minutes_left_in_session} minutes left today.\n"
 "Please, log out."
 msgstr ""
-"{user}, du har kun {minutes_left_before_logout} minuttter tilbage i dag. "
+"{user}, du har kun {minutes_left_in_session} minuttter tilbage i dag. "
 "Log venligst af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:285
 msgid ""
-"{user}, you only have {minutes_left_before_logout} minutes left in your "
+"{user}, you only have {minutes_left_in_session} minutes left in your "
 "time extension.\n"
 "Please, log out."
 msgstr ""
@@ -95,11 +95,11 @@ msgstr "{user}, det er for sent til at bruge computeren. Du vil blive logget af"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:290
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes it will be too late to "
+"{user}, in {minutes_left_in_session} minutes it will be too late to "
 "use the computer.\n"
 "Please, log out."
 msgstr ""
-"{user}, om {minutes_left_before_logout} minutter er det for sent til at "
+"{user}, om {minutes_left_in_session} minutter er det for sent til at "
 "bruge computeren. Log venligst af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:292
@@ -110,11 +110,11 @@ msgstr "{user}, du må tage en pause. Du vil blive logget af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:293
 msgid ""
-"{user}, in {minutes_left_before_logout} minutes you will have to take a "
+"{user}, in {minutes_left_in_session} minutes you will have to take a "
 "break.\n"
 "Please, log out."
 msgstr ""
-"{user}, om {minutes_left_before_logout} minutter må du tage en pause. Log"
+"{user}, om {minutes_left_in_session} minutter må du tage en pause. Log"
 " venligst af."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/app_control.py:295

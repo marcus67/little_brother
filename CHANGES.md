@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.1 Revision 91 (April 30th, 2021)
+## Version 0.4.1 Revision 93 (May 14th, 2021)
 
 *   Introduce base class `BasePersistentEntityManagerTest`
 *   Move all persistence modules to a folder of their own 
@@ -28,6 +28,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #141, see [here](https://github.com/marcus67/little_brother/issues/141)
 *   Created class `UserManager`
 *   Handle exception during page rendering by displaying error page
+*   Move RuleResultInfo to file of its own
+*   Simplify handling of remaining session time
+*   Remove Sonarqube code smells 
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

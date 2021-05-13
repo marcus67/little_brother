@@ -19,8 +19,8 @@ import datetime
 
 from little_brother import dependency_injection
 from little_brother import process_statistics
-from little_brother import rule_handler
 from little_brother import rule_override
+from little_brother import rule_result_info
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
@@ -108,10 +108,10 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     admin_info.time_extension_periods.append(period)
 
                 else:
-                    if admin_info.time_extension is not None:
-                        if admin_info.time_extension.end_datetime + datetime.timedelta(
-                                minutes=period) >= admin_info.time_extension.start_datetime:
-                            admin_info.time_extension_periods.append(period)
+                    if admin_info.time_extension is not None and \
+                            admin_info.time_extension.end_datetime + \
+                            datetime.timedelta(minutes=period) >= admin_info.time_extension.start_datetime:
+                        admin_info.time_extension_periods.append(period)
 
             user = self.user_entity_manager.user_map(p_session_context).get(username)
 
@@ -136,8 +136,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                             override = rule_override.RuleOverride(p_reference_date=reference_date,
                                                                   p_username=username)
 
-                        effective_ruleset = rule_handler.apply_override(p_rule_set=rule_set,
-                                                                        p_rule_override=override)
+                        effective_ruleset = rule_result_info.apply_override(p_rule_set=rule_set,
+                                                                            p_rule_override=override)
 
                         day_info = view_info.ViewInfo(p_parent=admin_info,
                                                       p_html_key=tools.get_simple_date_as_string(

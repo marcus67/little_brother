@@ -18,7 +18,7 @@
 import gettext
 import os
 
-from little_brother import rule_handler
+from little_brother import rule_result_info
 from python_base_app import log_handling
 
 _ = lambda x, y=None: x
@@ -37,17 +37,17 @@ class Language:
 
         self.text_no_time_left = _("{user}, you do not have computer time left today.\nYou will be logged out.")
         self.text_no_time_left_approaching = _(
-            "{user}, you only have {minutes_left_before_logout} minutes left today.\nPlease, log out.")
+            "{user}, you only have {minutes_left_in_session} minutes left today.\nPlease, log out.")
         self.text_no_time_left_in_time_extension = _(
-            "{user}, you only have {minutes_left_before_logout} minutes left in your time extension.\nPlease, log out.")
+            "{user}, you only have {minutes_left_in_session} minutes left in your time extension.\nPlease, log out.")
         self.text_no_time_today = _("{user}, you do not have any computer time today.\nYou will be logged out.")
         self.text_too_early = _("{user}, it is too early to use the computer.\nYou will be logged out.")
         self.text_too_late = _("{user}, it is too late to use the computer.\nYou will be logged out.")
         self.text_too_late_approaching = _(
-            "{user}, in {minutes_left_before_logout} minutes it will be too late to use the computer.\nPlease, log out.")
+            "{user}, in {minutes_left_in_session} minutes it will be too late to use the computer.\nPlease, log out.")
         self.text_need_break = _("{user}, you have to take a break.\nYou will be logged out.")
         self.text_need_break_approaching = _(
-            "{user}, in {minutes_left_before_logout} minutes you will have to take a break.\nPlease, log out.")
+            "{user}, in {minutes_left_in_session} minutes you will have to take a break.\nPlease, log out.")
         self.text_min_break = _(
             "{user}, your break will only be over in {break_minutes_left} minutes.\nYou will be logged out.")
         self.text_limited_session_start = _(
@@ -71,22 +71,22 @@ class Language:
         t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
-        if p_rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY:
+        if p_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY:
             return t.gettext(self.text_no_time_left).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_DAY_BLOCKED:
+        elif p_rule_result_info.applying_rules & rule_result_info.RULE_DAY_BLOCKED:
             return t.gettext(self.text_no_time_today).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_TOO_EARLY:
+        elif p_rule_result_info.applying_rules & rule_result_info.RULE_TOO_EARLY:
             return t.gettext(self.text_too_early).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_TOO_LATE:
+        elif p_rule_result_info.applying_rules & rule_result_info.RULE_TOO_LATE:
             return t.gettext(self.text_too_late).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION:
+        elif p_rule_result_info.applying_rules & rule_result_info.RULE_ACTIVITY_DURATION:
             return t.gettext(self.text_need_break).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK:
+        elif p_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK:
             return t.gettext(self.text_min_break).format(**p_rule_result_info.args)
 
         else:
@@ -99,16 +99,16 @@ class Language:
         t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_rule_result_info.locale], fallback=True)
 
-        if p_rule_result_info.approaching_logout_rules & rule_handler.RULE_ACTIVITY_DURATION:
+        if p_rule_result_info.approaching_logout_rules & rule_result_info.RULE_ACTIVITY_DURATION:
             return t.gettext(self.text_need_break_approaching).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TOO_LATE:
+        elif p_rule_result_info.approaching_logout_rules & rule_result_info.RULE_TOO_LATE:
             return t.gettext(self.text_too_late_approaching).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_PER_DAY:
+        elif p_rule_result_info.approaching_logout_rules & rule_result_info.RULE_TIME_PER_DAY:
             return t.gettext(self.text_no_time_left_approaching).format(**p_rule_result_info.args)
 
-        elif p_rule_result_info.approaching_logout_rules & rule_handler.RULE_TIME_EXTENSION:
+        elif p_rule_result_info.approaching_logout_rules & rule_result_info.RULE_TIME_EXTENSION:
             return t.gettext(self.text_no_time_left_in_time_extension).format(**p_rule_result_info.args)
 
         else:

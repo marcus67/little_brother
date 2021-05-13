@@ -30,6 +30,7 @@ from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.session_context import SessionContext
 from little_brother.prometheus import PrometheusClient
+from little_brother.rule_handler import RuleResultInfo
 from little_brother.user_locale_handler import UserLocaleHandler
 from little_brother.user_manager import UserManager
 from python_base_app import log_handling
@@ -263,10 +264,10 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 p_reference_time=p_reference_time)
 
             if p_queue_events:
-                self._event_handler.queue_events(p_events=events, p_to_master=True)
+                self.event_handler.queue_events(p_events=events, p_to_master=True)
 
                 if not self._is_master:
-                    self._event_handler.queue_events_locally(p_events=events)
+                    self.event_handler.queue_events_locally(p_events=events)
 
     def get_process_infos(self):
 
@@ -343,7 +344,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             p_pid=p_pinfo.pid,
             p_username=p_pinfo.username,
             p_process_start_time=p_pinfo.start_time)
-        self._event_handler.queue_event(p_event=event, p_is_action=True)
+        self.event_handler.queue_event(p_event=event, p_is_action=True)
 
     def queue_artificial_activation_events(self):
 
@@ -353,7 +354,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             fmt = "Artificially activating {process_count} active processes on handler {handler_id}"
             self._logger.info(fmt.format(process_count=len(events), handler_id=handler.id))
 
-            self._event_handler.queue_events(p_events=events, p_to_master=True)
+            self.event_handler.queue_events(p_events=events, p_to_master=True)
 
     def queue_artificial_kill_events(self):
 
@@ -363,7 +364,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             fmt = "Artificially killing {process_count} active processes on handler {handler_id}"
             self._logger.info(fmt.format(process_count=len(events), handler_id=handler.id))
 
-            self._event_handler.queue_events(p_events=events, p_to_master=False)
+            self.event_handler.queue_events(p_events=events, p_to_master=False)
 
     def queue_event_kill_process(self, p_hostname, p_username, p_processhandler, p_pid, p_process_start_time):
 
@@ -375,14 +376,14 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             p_pid=p_pid,
             p_process_start_time=p_process_start_time,
             p_delay=self._config.kill_process_delay)
-        self._event_handler.queue_event(p_event=event, p_is_action=True)
+        self.event_handler.queue_event(p_event=event, p_is_action=True)
 
     def handle_downtime(self, p_downtime):
 
         for process_handler in self._process_handlers.values():
             events = process_handler.get_downtime_corrected_admin_events(p_downtime=p_downtime)
 
-            self._event_handler.queue_events(p_events=events, p_to_master=True)
+            self.event_handler.queue_events(p_events=events, p_to_master=True)
 
     # def queue_event_speak(self, p_hostname, p_username, p_text):
     #
@@ -397,23 +398,28 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
     #         p_username=p_username,
     #         p_text=p_text,
     #         p_locale=locale)
-    #     self._event_handler.queue_event(p_event=event, p_is_action=True)
+    #     self.event_handler.queue_event(p_event=event, p_is_action=True)
 
-    def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info):
+    def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info: RuleResultInfo):
 
         current_warning = self._logout_warnings.get(p_username)
         issue_warning = False
 
         if current_warning is None:
-            current_warning = p_rule_result_info.minutes_left_before_logout
+            current_warning = p_rule_result_info.get_minutes_left_in_session()
             issue_warning = True
             self._logout_warnings[p_username] = current_warning
 
-        if p_rule_result_info.minutes_left_before_logout < current_warning:
+        elif p_rule_result_info.get_minutes_left_in_session() < current_warning:
             issue_warning = True
 
+        # If the session time has increased again, reset the warning... Otherwise the user will not be warned during
+        # the next approaching timeout.
+        elif p_rule_result_info.get_minutes_left_in_session() > current_warning:
+            self._logout_warnings[p_username] = None
+
         if issue_warning:
-            self._logout_warnings[p_username] = p_rule_result_info.minutes_left_before_logout
+            self._logout_warnings[p_username] = p_rule_result_info.get_minutes_left_in_session()
 
             with SessionContext(p_persistence=self.persistence) as session_context:
                 self.user_manager.issue_notification(
