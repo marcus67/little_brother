@@ -16,10 +16,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import time
+
 import prometheus_client
 
 from little_brother import settings
-from little_brother import client_stats
 
 SECTION_NAME = "PrometheusClient"
 
@@ -91,10 +91,6 @@ class PrometheusClient(object):
             self._cpu_seconds_total_metric = prometheus_client.Gauge(
                 'node_process_cpu_seconds_total',
                 'CPU time in seconds on node on node', ['hostname'])
-
-            # self._resident_memory_bytes_metric = client_stats.find_built_in_metric('process_resident_memory_bytes')
-            # self._start_time_seconds_metric = client_stats.find_built_in_metric('process_cpu_seconds_total')
-            # self._cpu_seconds_total_metric = client_stats.find_built_in_metric('process_start_time_seconds')
 
         def start(self):
 

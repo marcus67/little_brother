@@ -95,7 +95,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
 
             if request.status_code != 200:
                 fmt = "HTTP code {error_code} while downloading {url}"
-                raise (fmt.format(error_code=request.status_code, url=url))
+                raise RuleHandlerRunTimeException(fmt.format(error_code=request.status_code, url=url))
 
             try:
                 result = json.loads(request.content.decode("UTF-8"))
@@ -103,9 +103,9 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
                 self._vacation_type_map = {vacation_type['id']: vacation_type['name'] for vacation_type in
                                            vacation_types}
 
-            except RuleHandlerRunTimeException as e:
+            except Exception as e:
                 fmt = "error {exception} while decoding data from {url}"
-                raise Exception(fmt.format(exception=str(e), url=url))
+                raise RuleHandlerRunTimeException(fmt.format(exception=str(e), url=url))
 
             fmt = "downloaded index metadata for {count} vacation types"
             self._logger.info(fmt.format(count=len(self._vacation_type_map)))

@@ -64,7 +64,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                p_process_regex_map=test_data.get_process_regex_map_1(),
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -102,7 +102,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_process_regex_map=test_data.get_process_regex_map_1(),
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -125,7 +125,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_process_regex_map=test_data.get_process_regex_map_1(),
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -148,7 +148,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_PROCESS_PATH_REGEX_MAP_1(),
+                                                    p_process_regex_map=test_data.get_process_path_regex_map_1(),
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -169,7 +169,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1(),
+                                                    p_process_regex_map=test_data.get_process_cmd_line_option_regex_map_1(),
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -193,7 +193,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1(),
+                                                p_process_regex_map=test_data.get_process_cmd_line_option_regex_map_1(),
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -212,7 +212,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
             p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
             p_login_mapping=test_data.LOGIN_MAPPING,
             p_host_name=test_data.HOSTNAME_1,
-            p_process_regex_map=test_data.get_PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1(),
+            p_process_regex_map=test_data.get_process_cmd_line_option_part_of_path_regex_map_1(),
             p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -231,7 +231,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                p_process_regex_map=test_data.get_process_regex_map_1(),
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -256,7 +256,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_process_regex_map=test_data.get_process_regex_map_1(),
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -278,7 +278,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_PROCESS_REGEX_MAP_1(),
+                                                    p_process_regex_map=test_data.get_process_regex_map_1(),
                                                     p_reference_time=now)
 
             self.check_list_has_n_elements(p_list=events, p_n=1)

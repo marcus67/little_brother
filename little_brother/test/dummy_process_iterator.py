@@ -61,7 +61,7 @@ class DummyProcessFactory(object):
 
     def process_iter(self):
         if self._reference_time is None:
-            raise Exception("_reference_time is None")
+            raise RuntimeError("_reference_time is None")
 
         return [DummyProcess(p, p_login_mapping=self._login_mapping) for p in self._processes
                 if self._reference_time >= p.start_time and (

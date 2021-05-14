@@ -66,8 +66,6 @@ class TestAppControl(base_test.BaseTestCase):
         dummy_persistence: test_persistence.TestPersistence = \
             dependency_injection.container[Persistence]
 
-        # rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
-
         dependency_injection.container[RuleHandler] = \
             test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_persistence=dummy_persistence)
 
@@ -85,19 +83,6 @@ class TestAppControl(base_test.BaseTestCase):
         self.assertEqual(ci.host_name, HOSTNAME)
         self.assertIsNone(ci.last_message)
         self.assertEqual(ci.client_stats, some_client_stats)
-
-    # def test_get_number_of_monitored_users_function(self):
-    #     test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-    #     dependency_injection.container[MasterConnector] = None
-    #
-    #     config = app_control.AppControlConfigModel()
-    #
-    #     ac = app_control.AppControl(p_config=config, p_debug_mode=False)
-    #
-    #     func = ac.get_number_of_monitored_users_function()
-    #     self.assertIsNotNone(func)
-    #
-    #     self.assertEqual(func(), 0)
 
     def test_retrieve_user_mappings(self):
         config = app_control.AppControlConfigModel()

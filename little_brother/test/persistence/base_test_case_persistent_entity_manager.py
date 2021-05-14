@@ -53,10 +53,10 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
             session = session_context.get_session()
             session.add(an_entity)
             session.commit()
-            id = an_entity.id
+            new_id = an_entity.id
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
-            saved_entity = self._entity_manager.get_by_id(p_session_context=session_context, p_id=id)
+            saved_entity = self._entity_manager.get_by_id(p_session_context=session_context, p_id=new_id)
             self.assertIsNotNone(saved_entity)
 
             result = tools.objects_are_equal(an_entity, saved_entity, p_logger=self._logger)

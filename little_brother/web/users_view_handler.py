@@ -28,6 +28,8 @@ from python_base_app import tools
 from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
 
+ID_PREFIX = '{id}_'
+
 HTML_KEY_NEW_USER = "NewUser"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
@@ -79,7 +81,7 @@ class UsersViewHandler(BaseViewHandler):
                         new_user_html_key=HTML_KEY_NEW_USER,
                         new_user_submit_value=HTML_KEY_NEW_USER,
                         navigation={
-                            'current_view': constants.USERS_BLUEPRINT_NAME +"." + constants.USERS_VIEW_NAME
+                            'current_view': constants.USERS_BLUEPRINT_NAME + "." + constants.USERS_VIEW_NAME
                         },
                     )
 
@@ -159,7 +161,7 @@ class UsersViewHandler(BaseViewHandler):
             forms[HTML_KEY_NEW_USER] = new_user_form
 
         for user in p_users:
-            form = entity_forms.UserForm(prefix='{id}_'.format(id=user.html_key), meta={'csrf': False})
+            form = entity_forms.UserForm(prefix=ID_PREFIX.format(id=user.html_key), meta={'csrf': False})
             form.locale.choices = sorted([(locale, language) for locale, language in self._languages.items()])
             forms[user.html_key] = form
 
@@ -179,7 +181,7 @@ class UsersViewHandler(BaseViewHandler):
                 form = entity_forms.create_rulesets_form(p_context_choices=choices,
                                                          p_localized_context_details=localized_values,
                                                          p_context_details_filters=context_details_filters,
-                                                         prefix='{id}_'.format(id=ruleset.html_key))
+                                                         prefix=ID_PREFIX.format(id=ruleset.html_key))
                 forms[ruleset.html_key] = form
 
                 form.context_details.validators = [
@@ -190,14 +192,14 @@ class UsersViewHandler(BaseViewHandler):
                                                                            p_session_context=p_session_context)
 
             if len(unmonitored_devices) > 0:
-                new_device_form = entity_forms.NewUser2DeviceForm(prefix='{id}_'.format(id=user.html_key),
+                new_device_form = entity_forms.NewUser2DeviceForm(prefix=ID_PREFIX.format(id=user.html_key),
                                                                   meta={'csrf': False})
                 new_device_form.device_id.choices = [(str(device.id), device.device_name) for device in
                                                      unmonitored_devices]
                 forms[user.new_device_html_key] = new_device_form
 
             for user2device in user.devices:
-                form = entity_forms.User2DeviceForm(prefix='{id}_'.format(id=user2device.html_key),
+                form = entity_forms.User2DeviceForm(prefix=ID_PREFIX.format(id=user2device.html_key),
                                                     meta={'csrf': False})
                 forms[user2device.html_key] = form
 

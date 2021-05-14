@@ -171,7 +171,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
         if handler is None and p_raise_exception:
             fmt = "Unknown process handler '{handler_id}'"
-            raise Exception(fmt.format(handler_id=p_id))
+            raise RuntimeError(fmt.format(handler_id=p_id))
 
         return handler
 
@@ -216,21 +216,18 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
 
-                    session_variables = self.user_manager.get_user_rule_variables(
-                        p_session_context=session_context, p_username=p_event.username)
-
                     if rule_result_info.limited_session_time():
                         self.user_manager.issue_notification(
                             p_session_context=session_context,
                             p_username=p_event.username,
                             p_message=self._language.get_text_limited_session_start(p_locale=rule_result_info.locale,
-                                                                                    p_variables=session_variables))
+                                                                                    p_variables=rule_result_info.args))
                     else:
                         self.user_manager.issue_notification(
                             p_session_context=session_context,
                             p_username=p_event.username,
                             p_message=self._language.get_text_unlimited_session_start(p_locale=rule_result_info.locale,
-                                                                                      p_variables=session_variables))
+                                                                                      p_variables=rule_result_info.args))
 
     def handle_event_process_end(self, p_event):
 
@@ -328,10 +325,9 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
         counter = 0
 
         for pinfo in self.get_process_infos().values():
-            if pinfo.end_time is None:
-                if pinfo.hostname != self._host_name:
-                    self.queue_event_historic_process_start(p_pinfo=pinfo)
-                    counter = counter + 1
+            if pinfo.end_time is None and pinfo.hostname != self._host_name:
+                self.queue_event_historic_process_start(p_pinfo=pinfo)
+                counter = counter + 1
 
         fmt = "Sent %d historic process infos to slaves" % counter
         self._logger.info(fmt)
@@ -384,21 +380,6 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             events = process_handler.get_downtime_corrected_admin_events(p_downtime=p_downtime)
 
             self.event_handler.queue_events(p_events=events, p_to_master=True)
-
-    # def queue_event_speak(self, p_hostname, p_username, p_text):
-    #
-    #     with SessionContext(p_persistence=self.persistence) as session_context:
-    #         locale = self._user_locale_handler.get_user_locale(p_username=p_username, p_session_context=session_context)
-    #
-    #
-    #
-    #     event = admin_event.AdminEvent(
-    #         p_event_type=admin_event.EVENT_TYPE_SPEAK,
-    #         p_hostname=p_hostname,
-    #         p_username=p_username,
-    #         p_text=p_text,
-    #         p_locale=locale)
-    #     self.event_handler.queue_event(p_event=event, p_is_action=True)
 
     def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info: RuleResultInfo):
 

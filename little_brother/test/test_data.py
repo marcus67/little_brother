@@ -31,17 +31,15 @@ UID_1 = 123
 PROCESS_NAME_1 = "process1"
 
 
-def get_USER_OBJECT_1():
+def get_user_object_1():
     user = User()
     user.process_name_pattern = PROCESS_NAME_1
     return user
 
 
-def get_PROCESS_PATTERN_REGEX():
-    return get_USER_OBJECT_1().regex_process_name_pattern
+def get_process_pattern_regex():
+    return get_user_object_1().regex_process_name_pattern
 
-
-# PROCESS_PATTERN_REGEX = USER_OBJECT_1.regex_process_name_pattern
 
 PROCESS_PATH_1 = "/usr/bin/process1"
 PID_1 = 12345
@@ -50,24 +48,24 @@ PROCESS_CMD_LINE_OPTION_1 = "Minecraft"
 PROCESS_CMD_LINE_1 = ["/usr/bin/process1", PROCESS_CMD_LINE_OPTION_1]
 
 
-def get_USER_OBJECT_2():
+def get_user_object_2():
     user = User()
     user.process_name_pattern = PROCESS_CMD_LINE_OPTION_1
     return user
 
 
-def get_CMD_LINE_OPTION_REGEX():
-    return get_USER_OBJECT_2().regex_process_name_pattern
+def get_cmd_line_option_regex():
+    return get_user_object_2().regex_process_name_pattern
 
 
-def get_USER_OBJECT_3():
+def get_user_object_3():
     user = User()
     user.process_name_pattern = "bin"
     return user
 
 
-def get_CMD_LINE_OPTION_REGEX_PART_OF_PATH():
-    return get_USER_OBJECT_3().regex_process_name_pattern
+def get_cmd_line_option_regex_part_of_path():
+    return get_user_object_3().regex_process_name_pattern
 
 
 HOSTNAME_1 = "host1"
@@ -89,20 +87,20 @@ LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
                         p_login_uid_mapping_entry=LOGIN_UID_MAPPING_ENTRY)
 
 
-def get_PROCESS_REGEX_MAP_1():
-    return {USER_1: get_PROCESS_PATTERN_REGEX()}
+def get_process_regex_map_1():
+    return {USER_1: get_process_pattern_regex()}
 
 
-def get_PROCESS_PATH_REGEX_MAP_1():
+def get_process_path_regex_map_1():
     return {USER_1: re.compile(PROCESS_PATH_1)}
 
 
-def get_PROCESS_CMD_LINE_OPTION_REGEX_MAP_1():
-    return {USER_1: get_CMD_LINE_OPTION_REGEX()}
+def get_process_cmd_line_option_regex_map_1():
+    return {USER_1: get_cmd_line_option_regex()}
 
 
-def get_PROCESS_CMD_LINE_OPTION_PART_OF_PATH_REGEX_MAP_1():
-    return {USER_1: get_CMD_LINE_OPTION_REGEX_PART_OF_PATH()}
+def get_process_cmd_line_option_part_of_path_regex_map_1():
+    return {USER_1: get_cmd_line_option_regex_part_of_path()}
 
 
 PINFO_1 = process_info.ProcessInfo(p_username=USER_1, p_processname=PROCESS_NAME_1,

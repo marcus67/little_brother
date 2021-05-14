@@ -182,14 +182,6 @@ class UserManager(PersistenceDependencyInjectionMixIn):
             fmt = "Adding new monitored user '{username}'"
             self._logger.info(fmt.format(username=p_username))
 
-    def get_user_rule_variables(self, p_session_context: SessionContext, p_username: str):
-        current_user_status = self.get_current_user_status(p_session_context=p_session_context, p_username=p_username)
-
-        user: User = self.user_entity_manager.user_map(p_session_context=p_session_context).get(p_username)
-
-        return {"user": user.notification_name,
-                "minutes_left_in_session": current_user_status.minutes_left_in_session}
-
     def issue_notification(self, p_session_context, p_username, p_message):
 
         current_user_status = self.get_current_user_status(p_session_context=p_session_context, p_username=p_username)

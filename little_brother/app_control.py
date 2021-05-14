@@ -286,7 +286,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._event_handler.process_queue()
 
         if self.is_master():
-            self.process_rules(p_reference_time=reference_time)
+            self.process_rule_sets_for_all_users(p_reference_time=reference_time)
             self._event_handler.process_queue()
             self.set_metrics()
 
@@ -426,9 +426,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         for client in self._client_infos.values():
             self.send_config_to_slave(p_hostname=client.host_name)
 
-    def process_rules(self, p_reference_time):
+    def process_rule_sets_for_all_users(self, p_reference_time):
 
-        fmt = "Processing rules START..."
+        fmt = "Processing rules for all users START..."
         self._logger.debug(fmt)
 
         with SessionContext(p_persistence=self.persistence) as session_context:
@@ -468,43 +468,38 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                             if rule_override is not None:
                                 self._logger.debug(str(override))
 
-                            active_rule_set = self.rule_handler.get_active_ruleset(
-                                p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
-
-                            if active_rule_set is None:
-                                msg = "No active rule set found for user '{user}'"
-                                self._logger.warning(msg.format(user=user.username))
-                                continue
-
-                            rule_result_info = self.rule_handler.process_ruleset(
-                                p_active_rule_set=active_rule_set,
+                            rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                                p_rule_sets=user.rulesets,
                                 p_stat_info=stat_info,
                                 p_active_time_extension=active_time_extensions.get(user.username),
                                 p_reference_time=p_reference_time,
                                 p_rule_override=override,
                                 p_locale=user_locale)
 
-                            current_user_status = self._user_manager.get_current_user_status(
-                                p_session_context=session_context, p_username=user.username)
-
-                            if rule_result_info.limited_session_time():
-                                current_user_status.minutes_left_in_session = \
-                                    rule_result_info.get_minutes_left_in_session()
-
-                            else:
-                                current_user_status.minutes_left_in_session = None
-
-                            current_user_status.activity_allowed = rule_result_info.activity_allowed()
-                            user_active = stat_info.current_activity is not None
-                            current_user_status.logged_in = user_active
-
+                            self.update_current_user_status(rule_result_info, session_context, stat_info, user)
                             self._process_handler_manager.handle_rule_result_info(rule_result_info, stat_info, user)
+                            user_active = stat_info.current_activity is not None
 
                     if self._prometheus_client is not None:
                         self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
 
-        fmt = "Processing rules END..."
+        fmt = "Processing rules for all users END..."
         self._logger.debug(fmt)
+
+    def update_current_user_status(self, p_rule_result_info, p_session_context, p_stat_info, p_user):
+        current_user_status = self._user_manager.get_current_user_status(
+            p_session_context=p_session_context, p_username=p_user.username)
+
+        if p_stat_info.current_activity_start_time is not None and \
+                p_rule_result_info.limited_session_time():
+            current_user_status.minutes_left_in_session = \
+                p_rule_result_info.get_minutes_left_in_session()
+
+        else:
+            current_user_status.minutes_left_in_session = None
+
+        current_user_status.activity_allowed = p_rule_result_info.activity_allowed()
+        current_user_status.logged_in = p_stat_info.current_activity is not None
 
     ###################################################################################################################
     ###################################################################################################################

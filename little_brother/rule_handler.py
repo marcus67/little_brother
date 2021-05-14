@@ -234,10 +234,9 @@ class RuleHandler(object):
             active = context_rule_handler.is_active(p_reference_date=p_reference_date,
                                                     p_details=ruleset.context_details)
 
-            if active:
-                if max_priority is None or ruleset.priority > max_priority:
-                    max_priority = ruleset.priority
-                    active_ruleset = ruleset
+            if active and (max_priority is None or ruleset.priority > max_priority):
+                max_priority = ruleset.priority
+                active_ruleset = ruleset
 
         return active_ruleset
 
@@ -274,7 +273,6 @@ class RuleHandler(object):
             time_left_in_seconds = (max_time_of_day_as_date - p_stat_info.reference_time).total_seconds()
             time_left_in_minutes = max(int((time_left_in_seconds + 30) / 60), 0)
             p_rule_result_info.set_minutes_left_today(p_minutes_left=time_left_in_minutes)
-            p_rule_result_info.set_session_end_datetime(p_session_end_datetime=max_time_of_day_as_date)
 
             if not p_rule_result_info.activity_granted():
                 p_rule_result_info.set_minutes_left_in_session(p_minutes_left=time_left_in_minutes)
@@ -317,11 +315,6 @@ class RuleHandler(object):
                     p_warning_before_logout=self._config.warning_before_logout,
                     p_rule=rule_result_info.RULE_TIME_PER_DAY)
 
-                if p_stat_info.current_activity_start_time is not None:
-                    session_end_datetime = \
-                        p_stat_info.current_activity_start_time + datetime.timedelta(seconds=time_left_in_seconds)
-                    p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
-
     def check_activity_duration(self, p_rule_set: RuleSetConfigModel,
                                 p_stat_info: process_statistics.ProcessStatisticsInfo,
                                 p_rule_result_info: RuleResultInfo):
@@ -350,12 +343,6 @@ class RuleHandler(object):
                     p_rule_result_info.check_approaching_logout(
                         p_warning_before_logout=self._config.warning_before_logout,
                         p_rule=rule_result_info.RULE_ACTIVITY_DURATION)
-
-                    if p_stat_info.current_activity_start_time is not None:
-                        session_end_datetime = \
-                            p_stat_info.current_activity_start_time + datetime.timedelta(
-                                minutes=p_rule_result_info.get_minutes_left_in_session())
-                        p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
 
     @staticmethod
     def check_min_break(p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
@@ -411,6 +398,12 @@ class RuleHandler(object):
                      p_seconds=60 * p_rule_result_info.get_minutes_left_in_session(), p_include_seconds=False)})
             )
 
+        if p_stat_info.current_activity_start_time is not None:
+            session_end_datetime = \
+                p_stat_info.current_activity_start_time + datetime.timedelta(
+                    minutes=p_rule_result_info.get_minutes_left_in_session())
+            p_rule_result_info.set_session_end_datetime(p_session_end_datetime=session_end_datetime)
+
         # If no session restriction has been detected so far we use a specific notification for the restriction
         # given by the time extension...
         if (p_rule_result_info.minutes_left_in_time_extension is not None and
@@ -418,17 +411,19 @@ class RuleHandler(object):
             p_rule_result_info.check_approaching_logout(p_warning_before_logout=self._config.warning_before_logout,
                                                         p_rule=rule_result_info.RULE_TIME_EXTENSION)
 
-    def process_ruleset(self, p_active_rule_set, p_stat_info, p_active_time_extension,
-                        p_reference_time, p_rule_override, p_locale):
+    def process_rule_sets_for_user(self, p_rule_sets, p_stat_info, p_active_time_extension,
+                                   p_reference_time, p_rule_override, p_locale):
 
-        rule_result_info = RuleResultInfo(p_default_rule_set=p_active_rule_set,
+        active_rule_set = self.get_active_ruleset(p_reference_date=p_reference_time, p_rule_sets=p_rule_sets)
+
+        rule_result_info = RuleResultInfo(p_default_rule_set=active_rule_set,
                                           p_rule_override=p_rule_override,
                                           p_user=p_stat_info.notification_name,
                                           p_locale=p_locale)
 
         rule_result_info.locale = p_locale
 
-        if p_active_rule_set is not None:
+        if active_rule_set is not None:
             rule_result_info.add_time_extension_meta_data(p_active_time_extension=p_active_time_extension,
                                                           p_reference_time=p_reference_time)
 

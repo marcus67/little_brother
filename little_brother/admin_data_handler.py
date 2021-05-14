@@ -215,13 +215,12 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                                   p_reference_date=reference_time.date())
                         override = self._rule_overrides.get(key_rule_override)
 
-                        active_rule_set = self.rule_handler.get_active_ruleset(
-                            p_reference_date=reference_time, p_rule_sets=user.rulesets)
-
-                        rule_result_info = self.rule_handler.process_ruleset(
-                            p_active_rule_set=active_rule_set, p_stat_info=stat_info,
+                        rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                            p_rule_sets=user.rulesets,
+                            p_stat_info=stat_info,
                             p_active_time_extension=active_time_extension,
-                            p_reference_time=reference_time, p_rule_override=override,
+                            p_reference_time=reference_time,
+                            p_rule_override=override,
                             p_locale=user_locale)
 
                         activity_permitted = rule_result_info.activity_allowed()
@@ -299,8 +298,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     active_rule_set = self.rule_handler.get_active_ruleset(
                         p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
 
-                    rule_result_info = self.rule_handler.process_ruleset(
-                        p_active_rule_set=active_rule_set,
+                    rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                        p_rule_sets=user.rulesets,
                         p_stat_info=stat_info,
                         p_reference_time=p_reference_time,
                         p_active_time_extension=active_time_extension,

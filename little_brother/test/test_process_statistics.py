@@ -220,7 +220,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
 
     def test_process_statistics_info_add_process_without_end_time(self):
         start_time = datetime.datetime.utcnow()
-        # end_time = start_time + datetime.timedelta(seconds=60)
+
         psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
                                                        p_min_activity_duration=MIN_ACTIVITY_DURATION,
                                                        p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)

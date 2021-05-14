@@ -46,7 +46,5 @@ class LoginViewHandler(BaseViewHandler):
                 constants.LOGIN_HTML_TEMPLATE,
                 rel_font_size=self.get_rel_font_size(),
                 authentication=BaseWebServer.get_authentication_info(),
-                # navigation={
-                #     'current_view': constants.LOGIN_VIEW_NAME},
             )
             return page

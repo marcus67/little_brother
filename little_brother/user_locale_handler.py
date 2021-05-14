@@ -23,10 +23,6 @@ from little_brother.persistence.persistent_dependency_injection_mix_in import Pe
 
 class UserLocaleHandler(PersistenceDependencyInjectionMixIn):
 
-    def __init_(self):
-
-        super().__init__()
-
     def get_user_locale(self, p_session_context, p_username):
 
         user = self.user_entity_manager.user_map(p_session_context).get(p_username)
