@@ -165,7 +165,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
         self.event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS, p_handler=self.handle_event_kill_process)
 
-    def get_process_handler(self, p_id, p_raise_exception=False):
+    def get_process_handler(self, p_id:str, p_raise_exception=False):
 
         handler = self._process_handlers.get(p_id)
 

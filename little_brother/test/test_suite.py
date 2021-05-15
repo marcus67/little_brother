@@ -20,7 +20,8 @@
 
 import unittest
 
-from little_brother.test import test_app_control, test_language
+from little_brother.test import test_app_control, test_language, test_app, test_user_status, test_master_connector, \
+    test_process_handler_manager
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_german_vacation_context_rule_handler
@@ -94,6 +95,22 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_language.TestLanguage, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_app.TestApp, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_user_status.TestUserStatus, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_master_connector.TestMasterConnector, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_process_handler_manager.TestProcessHandlerManager, p_config_filename=p_config_filename)
 
 
 def main():

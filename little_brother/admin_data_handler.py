@@ -295,9 +295,6 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                               p_reference_date=p_reference_time.date())
                     override = self._rule_overrides.get(key_rule_override)
 
-                    active_rule_set = self.rule_handler.get_active_ruleset(
-                        p_reference_date=p_reference_time, p_rule_sets=user.rulesets)
-
                     rule_result_info = self.rule_handler.process_rule_sets_for_user(
                         p_rule_sets=user.rulesets,
                         p_stat_info=stat_info,

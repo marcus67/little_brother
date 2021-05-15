@@ -104,7 +104,7 @@ class App(base_app.BaseApp):
         self._master_connector = None
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
-        self._prometheus_client = None
+        self._prometheus_client : PrometheusClient = None
         self._user_handler = None
         self._locale_helper = None
         self._pinger = None
@@ -405,8 +405,10 @@ class App(base_app.BaseApp):
 
         alembic_argv = ["-x", url,
                         "stamp", p_alembic_version]
+        cwd = os.getcwd()
         os.chdir(alembic_working_dir)
         alembic.config.main(alembic_argv, prog="alembic.config.main")
+        os.chdir(cwd)
 
     def start_services(self):
 
@@ -426,11 +428,16 @@ class App(base_app.BaseApp):
 
         if self._status_server is not None:
             self._status_server.stop_server()
+            self._status_server.destroy()
             self._status_server = None
 
         if self._app_control is not None:
             self._app_control.stop()
             self._app_control = None
+
+        if self._prometheus_client is not None:
+            self._prometheus_client.stop()
+            self._prometheus_client = None
 
         for handler in self._notification_handlers:
             handler.stop_engine()

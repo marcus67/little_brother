@@ -150,10 +150,25 @@ class Persistence(object):
                 url = "{driver}://".format(driver=self._config.database_driver)
 
             else:
-                sqlite_filename = os.path.join(self._config.sqlite_dir, self._config.sqlite_filename)
+                sqlite_filename = self.get_database_filename(p_config=self._config)
                 url = "{driver}:///{filename}".format(driver=self._config.database_driver, filename=sqlite_filename)
 
         return url
+
+    @classmethod
+    def get_database_filename(cls, p_config):
+        return os.path.join(p_config.sqlite_dir, p_config.sqlite_filename)
+
+
+    @classmethod
+    def delete_database(cls, p_logger, p_config):
+        filename = cls.get_database_filename(p_config=p_config)
+
+        if os.path.exists(filename):
+            msg ="Deleting database file '{filename}'"
+            p_logger.info(msg.format(filename=filename))
+            os.unlink(filename)
+
 
     def get_admin_session(self):
         if self._admin_session is None:
@@ -304,6 +319,11 @@ class Persistence(object):
         session.query(p_entity).delete()
         session.commit()
         session.close()
+
+    def count_rows(self, p_entity):
+
+        with SessionContext(self) as session_context:
+            return session_context.get_session().query(p_entity).count()
 
     def clear_cache(self):
         SessionContext.clear_caches()

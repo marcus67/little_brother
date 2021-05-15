@@ -19,7 +19,6 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import datetime
-import os.path
 import unittest
 
 from little_brother import db_migrations
@@ -48,22 +47,26 @@ class TestPersistence(base_test.BaseTestCase):
     def setUp(self):
         dependency_injection.reset()
 
-    @staticmethod
-    def create_dummy_persistence(p_logger) -> None:
-
-        sqlite_file = os.path.join(SQLITE_DIR, SQLITE_FILE)
-
-        if os.path.exists(sqlite_file):
-            os.unlink(sqlite_file)
-
+    @classmethod
+    def create_dummy_persistence_config(cls):
         config = PersistenceConfigModel()
         config.sqlite_filename = SQLITE_FILE
         config.sqlite_dir = SQLITE_DIR
         config.database_driver = persistence_base.DATABASE_DRIVER_SQLITE
         config.database_user = None
         config.database_admin = None
+        return config
+
+    @classmethod
+    def create_dummy_persistence(cls, p_logger, p_delete=False) -> None:
+
+        config = cls.create_dummy_persistence_config()
+
+        if p_delete:
+            Persistence.delete_database(p_logger=p_logger, p_config=config)
 
         a_persistence = Persistence(p_config=config, p_reuse_session=False)
+        a_persistence.delete_database(p_logger=p_logger, p_config=config)
         a_persistence.check_schema(p_create_tables=False)
 
         db_mig = db_migrations.DatabaseMigrations(p_logger, p_persistence=a_persistence)

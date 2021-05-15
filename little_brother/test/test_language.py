@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -38,7 +38,6 @@ class TestLanguage(base_test.BaseTestCase):
         self.assertIsNotNone(language)
 
     def test_get_text_limited_session_start(self):
-
         language = Language()
         self.assertIsNotNone(language)
 
@@ -49,7 +48,6 @@ class TestLanguage(base_test.BaseTestCase):
         self.assertIn('you will be allowed to play for', text)
 
     def test_get_text_unlimited_session_start(self):
-
         language = Language()
         self.assertIsNotNone(language)
 
@@ -60,7 +58,6 @@ class TestLanguage(base_test.BaseTestCase):
         self.assertIn('unlimited playtime in this session', text)
 
     def test_pick_text_for_ruleset(self):
-
         language = Language()
         self.assertIsNotNone(language)
 
@@ -93,9 +90,7 @@ class TestLanguage(base_test.BaseTestCase):
         text = language.pick_text_for_ruleset(result_info)
         self.assertIn("your break will only be over in", text)
 
-
     def test_pick_text_for_approaching_logout(self):
-
         language = Language()
         self.assertIsNotNone(language)
 
@@ -119,6 +114,7 @@ class TestLanguage(base_test.BaseTestCase):
         result_info.approaching_logout_rules = rule_result_info.RULE_TIME_EXTENSION
         text = language.pick_text_for_approaching_logout(result_info)
         self.assertIn("minutes left in your time extension", text)
+
 
 if __name__ == "__main__":
     unittest.main()

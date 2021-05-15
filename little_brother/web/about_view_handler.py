@@ -20,7 +20,6 @@ import flask
 from little_brother import constants
 from little_brother import git
 from little_brother import settings
-from little_brother.persistence.session_context import SessionContext
 from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import tools
 from python_base_app.base_web_server import BaseWebServer
@@ -44,26 +43,25 @@ class AboutViewHandler(BaseViewHandler):
     @BLUEPRINT_ADAPTER.route_method("/about", endpoint="main_view")
     def about_view(self):
 
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            request = flask.request
+        request = flask.request
 
-            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                                   p_service=self.simplify_url(request.url_rule),
-                                                                   p_duration=duration)):
-                try:
-                    page = flask.render_template(
-                        constants.ABOUT_HTML_TEMPLATE,
-                        rel_font_size=self.get_rel_font_size(),
-                        settings=settings.settings,
-                        extended_settings=settings.extended_settings,
-                        git_metadata=git.git_metadata,
-                        authentication=BaseWebServer.get_authentication_info(),
-                        languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
-                        navigation={
-                            'current_view': constants.ABOUT_BLUEPRINT_NAME + "." + constants.ABOUT_VIEW_NAME}
-                    )
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=self.simplify_url(request.url_rule),
+                                                               p_duration=duration)):
+            try:
+                page = flask.render_template(
+                    constants.ABOUT_HTML_TEMPLATE,
+                    rel_font_size=self.get_rel_font_size(),
+                    settings=settings.settings,
+                    extended_settings=settings.extended_settings,
+                    git_metadata=git.git_metadata,
+                    authentication=BaseWebServer.get_authentication_info(),
+                    languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
+                    navigation={
+                        'current_view': constants.ABOUT_BLUEPRINT_NAME + "." + constants.ABOUT_VIEW_NAME}
+                )
 
-                except Exception as e:
-                    return self.handle_rendering_exception(p_page_name="about page", p_exception=e)
+            except Exception as e:
+                return self.handle_rendering_exception(p_page_name="about page", p_exception=e)
 
-                return page
+            return page

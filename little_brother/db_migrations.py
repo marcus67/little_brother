@@ -47,8 +47,10 @@ class DatabaseMigrations(object):
 
         alembic_argv = ["-x", url,
                         "upgrade", p_alembic_version]
+        cwd = os.getcwd()
         os.chdir(alembic_working_dir)
         alembic.config.main(alembic_argv, prog="alembic.config.main")
+        os.chdir(cwd)
 
     def get_current_version(self):
 

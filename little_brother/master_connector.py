@@ -58,16 +58,19 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
         else:
             return (hostname, json_events)
 
-    def send_events(self, p_hostname, p_events, p_client_stats):
-
-        url = self._get_api_url(constants.API_REL_URL_EVENTS)
-
-        data = {
+    def encode_event(self, p_hostname, p_events, p_client_stats):
+        return {
             constants.JSON_ACCESS_TOKEN: self._config.access_token,
             constants.JSON_HOSTNAME: p_hostname,
             constants.JSON_EVENTS: p_events,
             constants.JSON_CLIENT_STATS: p_client_stats
         }
+
+    def send_events(self, p_hostname, p_events, p_client_stats):
+
+        url = self._get_api_url(constants.API_REL_URL_EVENTS)
+
+        data = self.encode_event(p_hostname=p_hostname, p_events=p_events, p_client_stats=p_client_stats)
 
         try:
             result = self.execute_api_call(
