@@ -94,7 +94,7 @@ class TestApp(base_test.BaseTestCase):
         p_app.prepare_services()
         p_app.start_services()
 
-        p_app._persistence.check_schema(p_create_tables=True)
+        #p_app._persistence.check_schema(p_create_tables=True)
 
 
     def test_check_migrations(self):
