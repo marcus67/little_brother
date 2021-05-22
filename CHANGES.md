@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.1 Revision 95 (May 15th, 2021)
+## Version 0.4.1 Revision 96 (May 15th, 2021)
 
 *   Introduce base class `BasePersistentEntityManagerTest`
 *   Move all persistence modules to a folder of their own 
@@ -32,6 +32,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Simplify handling of remaining session time
 *   Remove Sonarqube code smells 
 *   Test unit for classes `Language`, `App`, `UserStatus`, `MasterConnector`, and `ProcessHandlerManager`
+*   Bump `python_base_app` to 0.2.19 
 
 ## Version 0.4.0 Revision 90 (April 2nd, 2021)
 

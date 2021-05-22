@@ -33,7 +33,7 @@ SECTION_NAME = "ClientProcessHandler"
 PROCESS_ID_PATTERN = "pid"
 USER_ID_PATTERN = "uid"
 SIGNAL_ID_PATTERN = "signal"
-DEFAUlT_SCAN_COMMAND_LINE_OPTIONS = False
+DEFAULT_SCAN_COMMAND_LINE_OPTIONS = False
 
 
 class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
@@ -49,7 +49,7 @@ class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel)
             self.kill_command_pattern = "/bin/kill -{signal} {pid}"
 
         self.kill_delay = 5  # seconds
-        self.scan_command_line_options = DEFAUlT_SCAN_COMMAND_LINE_OPTIONS
+        self.scan_command_line_options = DEFAULT_SCAN_COMMAND_LINE_OPTIONS
 
 
 class ClientProcessHandler(process_handler.ProcessHandler):
@@ -150,8 +150,9 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         current_processes = {}
         events = []
 
-        fmt = "Scanning processes..."
-        self._logger.debug(fmt)
+        users = ",".join(p_process_regex_map.keys())
+        fmt = "Scanning processes for users {users}..."
+        self._logger.debug(fmt.format(users=users))
 
         for proc in self._process_iterator_factory.process_iter():
             try:

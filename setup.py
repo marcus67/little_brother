@@ -91,7 +91,8 @@ extended_setup_params = {
                              'master': ('https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN')},
     "generate_generic_install": True,
     "analyze": True,
-    "analyze_extra_exclusions" : "vagrant/**"
+    "analyze_extra_exclusions" : "vagrant/**",
+    "script_timeout": 30,
 }
 
 setup_params.update(little_brother.settings.settings)
