@@ -100,10 +100,18 @@ class TestApp(base_test.BaseTestCase):
     def test_check_migrations(self):
 
         app = self.create_dummy_app()
-        self.start_dummy_app(p_app=app)
 
-        #app.check_migrations()
-        app.stop_services()
+        try:
+            self.start_dummy_app(p_app=app)
+
+            #app.check_migrations()
+
+        except Exception as e:
+            msg = "Exception '{e}' in test case"
+            self._logger.exception(msg.format(e=str(e)))
+
+        finally:
+            app.stop_services()
 
 
 if __name__ == "__main__":
