@@ -57,6 +57,8 @@
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
 	<FORM ID="main_form" ACTION="{{ url_for('users.main_view') }}" METHOD="POST" CLASS="form-horizontal">
+		<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
+		     button. -->
 		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">

@@ -381,32 +381,27 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
             self.event_handler.queue_events(p_events=events, p_to_master=True)
 
-    def issue_logout_warning(self, p_hostname, p_username, p_rule_result_info: RuleResultInfo):
+    def check_issue_logout_warning(self, p_username, p_rule_result_info: RuleResultInfo):
+
+        issue_warning = False
+        notification = None
 
         current_warning = self._logout_warnings.get(p_username)
-        issue_warning = False
 
-        if current_warning is None:
-            current_warning = p_rule_result_info.get_minutes_left_in_session()
-            issue_warning = True
-            self._logout_warnings[p_username] = current_warning
+        if p_rule_result_info.approaching_logout_rules > 0:
+            if current_warning is None or p_rule_result_info.get_minutes_left_in_session() != current_warning:
+                issue_warning = True
+                self._logout_warnings[p_username] = p_rule_result_info.get_minutes_left_in_session()
+                notification = self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info)
 
-        elif p_rule_result_info.get_minutes_left_in_session() < current_warning:
-            issue_warning = True
-
-        # If the session time has increased again, reset the warning... Otherwise the user will not be warned during
-        # the next approaching timeout.
-        elif p_rule_result_info.get_minutes_left_in_session() > current_warning:
+        elif current_warning is not None:
             self._logout_warnings[p_username] = None
+            issue_warning = True
 
         if issue_warning:
-            self._logout_warnings[p_username] = p_rule_result_info.get_minutes_left_in_session()
-
             with SessionContext(p_persistence=self.persistence) as session_context:
-                self.user_manager.issue_notification(
-                    p_session_context=session_context,
-                    p_username=p_username,
-                    p_message=self._language.pick_text_for_approaching_logout(p_rule_result_info=p_rule_result_info))
+                self.user_manager.issue_notification(p_session_context=session_context,
+                                                     p_username=p_username, p_message=notification)
 
     def reset_logout_warning(self, p_username):
 
@@ -414,7 +409,11 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             del self._logout_warnings[p_username]
 
     def handle_rule_result_info(self, p_rule_result_info, p_stat_info, p_user):
-        if not p_rule_result_info.activity_allowed():
+
+        if p_rule_result_info.activity_allowed():
+            self.check_issue_logout_warning(p_username=p_user.username, p_rule_result_info=p_rule_result_info)
+
+        else:
             fmt = "Process %s" % str(p_rule_result_info.effective_rule_set)
             self._logger.debug(fmt)
 
@@ -449,8 +448,3 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                             p_message=self._language.pick_text_for_ruleset(p_rule_result_info=p_rule_result_info))
 
                     self.reset_logout_warning(p_username=p_user.username)
-
-        elif p_rule_result_info.approaching_logout_rules > 0:
-            for (hostname, processes) in p_stat_info.currently_active_host_processes.items():
-                self.issue_logout_warning(p_hostname=hostname, p_username=p_user.username,
-                                          p_rule_result_info=p_rule_result_info)

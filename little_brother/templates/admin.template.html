@@ -51,6 +51,9 @@
 	{% include 'navbar.include.html' %}
 
 	<FORM ACTION="{{ url_for('admin.main_view') }}" METHOD="POST" CLASS="form-horizontal">
+		<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
+		     button. -->
+		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 		{{ forms['csrf'].csrf_token }}
 	    <DIV CLASS="container STANDARD_TABLE">
 	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">

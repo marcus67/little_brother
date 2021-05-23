@@ -401,7 +401,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._user_manager.send_login_mapping_to_slave(p_event.hostname)
         self._process_handler_manager.send_historic_process_infos()
 
-    def handle_event_start_master(self):
+    def handle_event_start_master(self, p_event):
 
         self._process_handler_manager.queue_artificial_activation_events()
 
@@ -512,13 +512,15 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_hostname=self._host_name)
         self._event_handler.queue_event(p_event=event, p_to_master=True)
 
-    #     def queue_broadcast_event_start_master(self):
-    #
-    #         for hostname in self._client_infos.keys():
-    #             event = admin_event.AdminEvent(
-    #                 p_event_type=admin_event.EVENT_TYPE_START_MASTER,
-    #                 p_hostname=hostname)
-    #             self._event_handler.queue_event(p_event=event, p_is_action=True)
+    def queue_broadcast_event_start_master(self):
+
+        for hostname, client_info in self._client_infos.items():
+            if not client_info.start_event_sent:
+                event = admin_event.AdminEvent(
+                    p_event_type=admin_event.EVENT_TYPE_START_MASTER,
+                    p_hostname=hostname)
+                self._event_handler.queue_event(p_event=event, p_is_action=True)
+                client_info.start_event_sent = True
 
     def queue_event_update_config(self, p_hostname, p_config):
 

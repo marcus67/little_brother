@@ -102,7 +102,9 @@ class PrometheusClient(object):
 
             except OSError as e:
                 fmt = "Exception {msg} while starting Prometheus server on port {port}"
-                raise configuration.ConfigurationException(fmt.format(msg=str(e), port=self._config.port))
+                msg = fmt.format(msg=str(e), port=self._config.port)
+                self._logger.error(msg)
+                raise configuration.ConfigurationException(msg)
 
         def stop(self):
 

@@ -260,8 +260,8 @@ msgid "No activity exceeding {hh_mm}"
 msgstr "Nicht mehr als {hh_mm} Aktivität am Stück"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:545
-msgid "Minimum break time {hh_mm} not reached"
-msgstr "Minimale Pause von {hh_mm} nicht erreicht"
+msgid "Minimum break time {hh_mm} not reached, {hh_mm_to_go} to go"
+msgstr "Minimale Pause von {hh_mm} nicht erreicht, es sind noch {hh_mm_to_go} Minuten übrig"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:567
 msgid "Remaining play time today: {hh_mm}"

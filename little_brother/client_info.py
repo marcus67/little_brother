@@ -38,6 +38,7 @@ class ClientInfo(object):
         self.maximum_client_ping_interval = p_maximum_client_ping_interval
         self.last_message = None
         self.master_version = p_master_version
+        self.start_event_sent = False
 
     @property
     def node_type(self):

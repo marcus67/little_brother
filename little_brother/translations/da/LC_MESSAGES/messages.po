@@ -251,7 +251,7 @@ msgid "No activity exceeding {hh_mm}"
 msgstr "Ingen aktivitet længere end {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:545
-msgid "Minimum break time {hh_mm} not reached"
+msgid "Minimum break time {hh_mm} not reached, {hh_mm_to_go} to go"
 msgstr "Mindste pausetid ({hh_mm}) ikke nået"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:567

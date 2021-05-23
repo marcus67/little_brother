@@ -305,7 +305,7 @@ class RuleHandler(object):
                                                                 p_include_seconds=False)})
                     )
 
-            if p_rule_set.max_time_per_day > 0:
+            if p_rule_set.max_time_per_day >= 0:
                 time_left_in_seconds = p_rule_set.max_time_per_day - todays_activity_duration
                 time_left_in_minutes = int((time_left_in_seconds + 30) / 60)
                 p_rule_result_info.set_minutes_left_today(p_minutes_left=time_left_in_minutes)
@@ -367,10 +367,12 @@ class RuleHandler(object):
                 min_relative_break = p_rule_set.min_break
 
             if seconds_since_last_activity is not None and seconds_since_last_activity < min_relative_break:
+                seconds_to_go = min_relative_break - seconds_since_last_activity
                 p_rule_result_info.applying_rules = p_rule_result_info.applying_rules | rule_result_info.RULE_MIN_BREAK
                 p_rule_result_info.applying_rule_text_templates.append(
-                    (_("Minimum break time {hh_mm} not reached"),
-                     {"hh_mm": tools.get_duration_as_string(p_seconds=min_relative_break)})
+                    (_("Minimum break time {hh_mm} not reached, {hh_mm_to_go} to go"),
+                     {"hh_mm": tools.get_duration_as_string(p_seconds=min_relative_break, p_include_seconds=False),
+                      "hh_mm_to_go": tools.get_duration_as_string(p_seconds=seconds_to_go, p_include_seconds=False)})
                 )
                 p_rule_result_info.break_minutes_left = int(
                     (min_relative_break - seconds_since_last_activity + 30) / 60)

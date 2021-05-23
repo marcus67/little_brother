@@ -125,6 +125,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
             self._logger.debug(msg.format(count=len(json_events), hostname=hostname))
 
             self.app_control.update_client_info(p_hostname=hostname, p_client_stats=client_stats)
+            self.app_control.queue_broadcast_event_start_master()
             self.event_handler.receive_events(p_json_data=json_events)
 
             return_events = self.event_handler.get_return_events(p_hostname=hostname)

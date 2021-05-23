@@ -125,7 +125,7 @@ class RuleResultInfo(object):
             'break_minutes_left': self.break_minutes_left
         }
 
-    def set_approaching_logout_rule(self, p_rule):
+    def     set_approaching_logout_rule(self, p_rule):
 
         self.approaching_logout_rules = self.approaching_logout_rules | p_rule
 

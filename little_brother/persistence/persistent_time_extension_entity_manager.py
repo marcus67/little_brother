@@ -86,7 +86,14 @@ class TimeExtensionEntityManager(BaseEntityManager):
 
         if p_session_active:
             if p_session_end_datetime is not None:
-                start_datetime = p_session_end_datetime
+                if p_session_end_datetime > start_datetime:
+                    start_datetime = p_session_end_datetime
+
+                else:
+                    msg = "Session end time {end_time} is sooner than " \
+                          "reference time {ref_time} for time extension start"
+                    self._logger.warn(msg.format(end_time=tools.get_time_as_string(p_session_end_datetime),
+                                                 ref_time=tools.get_time_as_string(p_reference_time)))
 
             else:
                 msg = "Cannot retrieve session end time for active session. " \

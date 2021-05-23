@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.2 Revision 97 (May 23rd, 2021)
+
+*   Better handling of logout notifications
+*   Fix problem with time extensions just before regular time expires
+*   Include remaining break time in applying rules details list
+
 ## Version 0.4.1 Revision 96 (May 15th, 2021)
 
 *   Introduce base class `BasePersistentEntityManagerTest`
