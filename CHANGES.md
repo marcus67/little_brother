@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.3 Revision 98 (May 24th, 2021)
+
+*   Activate CSRF for all interactive pages
+
 ## Version 0.4.2 Revision 97 (May 23rd, 2021)
 
 *   Better handling of logout notifications

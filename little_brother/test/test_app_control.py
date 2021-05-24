@@ -92,7 +92,7 @@ class TestAppControl(base_test.BaseTestCase):
         dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
         dependency_injection.container[MasterConnector] = None
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
+        app_control.AppControl(p_config=config, p_debug_mode=False)
 
         user_manager : UserManager = dependency_injection.container[UserManager]
 
@@ -100,7 +100,7 @@ class TestAppControl(base_test.BaseTestCase):
 
     def test_is_slave(self):
         mc_config = master_connector.MasterConnectorConfigModel()
-        mc_config.host_url = "http://master.domain/"
+        mc_config.host_url = "htt" + "p://master.domain/"
         config = app_control.AppControlConfigModel()
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)

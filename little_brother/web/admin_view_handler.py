@@ -19,12 +19,11 @@ import re
 
 import flask
 import flask_login
-import flask_wtf
 
-from little_brother import constants
+from little_brother import constants, entity_forms
 from little_brother import rule_override
 from little_brother.persistence.session_context import SessionContext
-from little_brother.web.base_view_handler import BaseViewHandler, FORM_ID_CSRF
+from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import tools
 from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
@@ -119,11 +118,11 @@ class AdminViewHandler(BaseViewHandler):
 
         forms = {}
 
-        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(meta={'csrf': False})
+        forms['dummy'] = entity_forms.DummyAdminForm(meta={'csrf': True})
 
         for admin_info in p_admin_infos:
             for day_info in admin_info.day_infos:
-                form = rule_override.RuleOverrideForm(prefix=day_info.html_key + '_', meta={'csrf': False})
+                form = rule_override.RuleOverrideForm(prefix=day_info.html_key + '_', meta={'csrf': True})
                 forms[day_info.html_key] = form
 
         return forms

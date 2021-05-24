@@ -44,6 +44,14 @@ class NewUserForm(custom_form.ModelForm):
 class NewUser2DeviceForm(custom_form.ModelForm):
     device_id = wtforms.SelectField("NewDeviceId")
 
+# Dummy so that the device HTML page has at least one form
+class NewDeviceForm(custom_form.ModelForm):
+    pass
+
+# Dummy so that the device HTML page has at least one form
+class DummyAdminForm(custom_form.ModelForm):
+    pass
+
 
 def dns_validator(_form, field):
     if not a_pinger.is_valid_ping(field.data):
@@ -87,7 +95,7 @@ def create_rulesets_form(prefix, p_localized_context_details, p_context_choices,
         free_play = custom_fields.BooleanField("FreePlay")
         max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
 
-    return RulesetForm(prefix=prefix, meta={'csrf': False})
+    return RulesetForm(prefix=prefix, meta={'csrf': True})
 
 
 class User2DeviceForm(custom_form.ModelForm):

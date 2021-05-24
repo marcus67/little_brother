@@ -103,17 +103,17 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
     @classmethod
     def validate(cls, p_forms):
 
-        valid_and_submitted = True
+        valid = True
         submitted = False
 
         for form in p_forms.values():
             if not form.validate_on_submit():
-                valid_and_submitted = False
+                valid = False
 
             if form.is_submitted():
                 submitted = True
 
-        return valid_and_submitted, submitted
+        return valid and submitted, submitted
 
     def register(self, p_app, p_url_prefix:str=None):
 

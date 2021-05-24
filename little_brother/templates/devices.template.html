@@ -47,7 +47,7 @@
 
 	<FORM ACTION="{{ url_for('devices.main_view') }}" METHOD="POST" CLASS="form-horizontal">
 		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
-		{{ forms['csrf'].csrf_token }}
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 	    <DIV CLASS="container STANDARD_TABLE">
 	    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_1 TITLE_ROW">
 	    		<DIV CLASS="col-xs-2 localetext">{{_('Device')}}</DIV>

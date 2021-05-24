@@ -15,11 +15,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from little_brother.constants import UNKNOWN
+
 git_metadata = {
-    "commit_id": "<unknown>",
-    "branch": "<unknown>",
-    "author_name": "<unknown>",
-    "author_email": "<unknown>"
+    "commit_id": UNKNOWN,
+    "branch": UNKNOWN,
+    "author_name": UNKNOWN,
+    "author_email": UNKNOWN
 }
 
 try:

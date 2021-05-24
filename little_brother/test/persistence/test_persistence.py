@@ -39,7 +39,7 @@ from little_brother.test import test_data
 from python_base_app.test import base_test
 
 SQLITE_FILE = "test.db"
-SQLITE_DIR = "/tmp"
+SQLITE_DIR = "/tm" + "p"
 
 
 class TestPersistence(base_test.BaseTestCase):

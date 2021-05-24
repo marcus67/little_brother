@@ -17,12 +17,11 @@
 
 import flask
 import flask_login
-import flask_wtf
 
 from little_brother import constants
 from little_brother import entity_forms
 from little_brother.persistence.session_context import SessionContext
-from little_brother.web.base_view_handler import BaseViewHandler, FORM_ID_CSRF
+from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import custom_fields
 from python_base_app import tools
 from python_base_app.base_web_server import BaseWebServer
@@ -151,17 +150,16 @@ class UsersViewHandler(BaseViewHandler):
     def get_users_forms(self, p_session_context, p_users):
 
         forms = {}
-        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(meta={'csrf': False})
 
         unmonitored_users = self.app_control.get_unmonitored_users(p_session_context)
 
         if len(unmonitored_users) > 0:
-            new_user_form = entity_forms.NewUserForm(meta={'csrf': False})
+            new_user_form = entity_forms.NewUserForm(meta={'csrf': True})
             new_user_form.username.choices = [(username, username) for username in unmonitored_users]
             forms[HTML_KEY_NEW_USER] = new_user_form
 
         for user in p_users:
-            form = entity_forms.UserForm(prefix=ID_PREFIX.format(id=user.html_key), meta={'csrf': False})
+            form = entity_forms.UserForm(prefix=ID_PREFIX.format(id=user.html_key), meta={'csrf': True})
             form.locale.choices = sorted([(locale, language) for locale, language in self._languages.items()])
             forms[user.html_key] = form
 
@@ -193,14 +191,14 @@ class UsersViewHandler(BaseViewHandler):
 
             if len(unmonitored_devices) > 0:
                 new_device_form = entity_forms.NewUser2DeviceForm(prefix=ID_PREFIX.format(id=user.html_key),
-                                                                  meta={'csrf': False})
+                                                                  meta={'csrf': True})
                 new_device_form.device_id.choices = [(str(device.id), device.device_name) for device in
                                                      unmonitored_devices]
                 forms[user.new_device_html_key] = new_device_form
 
             for user2device in user.devices:
                 form = entity_forms.User2DeviceForm(prefix=ID_PREFIX.format(id=user2device.html_key),
-                                                    meta={'csrf': False})
+                                                    meta={'csrf': True})
                 forms[user2device.html_key] = form
 
         return forms

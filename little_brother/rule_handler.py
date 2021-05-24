@@ -377,8 +377,6 @@ class RuleHandler(object):
                 p_rule_result_info.break_minutes_left = int(
                     (min_relative_break - seconds_since_last_activity + 30) / 60)
 
-        return
-
     def check_info_rules(self, p_rule_set: RuleSetConfigModel, p_stat_info: process_statistics.ProcessStatisticsInfo,
                          p_rule_result_info: RuleResultInfo):
 

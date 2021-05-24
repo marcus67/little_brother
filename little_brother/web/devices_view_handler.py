@@ -17,12 +17,11 @@
 
 import flask
 import flask_login
-import flask_wtf
 
 from little_brother import constants
 from little_brother import entity_forms
 from little_brother.persistence.session_context import SessionContext
-from little_brother.web.base_view_handler import BaseViewHandler, FORM_ID_CSRF
+from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import custom_fields
 from python_base_app import tools
 from python_base_app.base_web_server import BaseWebServer
@@ -47,12 +46,14 @@ class DevicesViewHandler(BaseViewHandler):
     def get_devices_forms(p_devices):
 
         forms = {}
-        forms[FORM_ID_CSRF] = flask_wtf.FlaskForm(meta={'csrf': False})
+
         uniqueness = custom_fields.Uniqueness(
             p_field_selectors=[lambda form: form.device_name, lambda form: form.hostname])
 
+        forms['new_device'] = entity_forms.NewDeviceForm(meta={'csrf': True})
+
         for device in p_devices:
-            form = entity_forms.DeviceForm(prefix='{id}_'.format(id=device.html_key), meta={'csrf': False})
+            form = entity_forms.DeviceForm(prefix='{id}_'.format(id=device.html_key), meta={'csrf': True})
             uniqueness.add_form(p_form=form)
             forms[device.device_name] = form
 

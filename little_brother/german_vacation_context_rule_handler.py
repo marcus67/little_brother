@@ -27,9 +27,12 @@ from python_base_app import configuration
 from python_base_app import log_handling
 
 # Dummy function to trigger extraction by pybabel...
+DECODING_ERROR_FMT = "error {exception} while decoding data from {url}"
 _ = lambda x: x
 
 _("vacation")
+
+DOWNLOAD_ERROR_FMT = "HTTP code {error_code} while downloading {url}"
 
 CALENDAR_CONTEXT_RULE_HANDLER_NAME = _("german-vacation-calendar")
 
@@ -94,7 +97,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
             request = requests.get(url)
 
             if request.status_code != 200:
-                fmt = "HTTP code {error_code} while downloading {url}"
+                fmt = DOWNLOAD_ERROR_FMT
                 raise RuleHandlerRunTimeException(fmt.format(error_code=request.status_code, url=url))
 
             try:
@@ -104,7 +107,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
                                            vacation_types}
 
             except Exception as e:
-                fmt = "error {exception} while decoding data from {url}"
+                fmt = DECODING_ERROR_FMT
                 raise RuleHandlerRunTimeException(fmt.format(exception=str(e), url=url))
 
             fmt = "downloaded index metadata for {count} vacation types"
@@ -118,7 +121,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
             request = requests.get(url)
 
             if request.status_code != 200:
-                fmt = "HTTP code {error_code} while downloading {url}"
+                fmt = DOWNLOAD_ERROR_FMT
                 raise RuleHandlerRunTimeException(fmt.format(error_code=request.status_code, url=url))
 
             try:
@@ -132,7 +135,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
                                            location['is_federal_state']}
 
             except Exception as e:
-                fmt = "error {exception} while decoding data from {url}"
+                fmt = DECODING_ERROR_FMT
                 raise RuleHandlerRunTimeException(fmt.format(exception=str(e), url=url))
 
             fmt = "downloaded index metadata for {count} federal states of Germany"
@@ -145,7 +148,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
             request = requests.get(url)
 
             if request.status_code != 200:
-                fmt = "HTTP code {error_code} while downloading {url}"
+                fmt = DOWNLOAD_ERROR_FMT
                 raise RuleHandlerRunTimeException(fmt.format(error_code=request.status_code, url=url))
 
             selected_vacation_types = [type_id for (type_id, type_name) in self._vacation_type_map.items() if
@@ -172,7 +175,7 @@ class GermanVacationContextRuleHandler(AbstractContextRuleHandler):
                     count = count + len(entries)
 
             except Exception as e:
-                fmt = "error {exception} while decoding data from {url}"
+                fmt = DECODING_ERROR_FMT
                 raise RuleHandlerRunTimeException(fmt.format(exception=str(e), url=url))
 
             fmt = "downloaded {count} vacation entries for Germany"

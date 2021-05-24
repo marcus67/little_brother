@@ -33,6 +33,7 @@
 
     <div class="wrapper">
     	<form class="form-signin" ACTION="" METHOD="post">
+ 		    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <h2 class="form-signin-heading localetext"><IMG
                     SRC="{{url_for('little_brother.static', filename='icons/icon-baby-panda-128x128.png')}}">
                 <div>Little Brother</div>

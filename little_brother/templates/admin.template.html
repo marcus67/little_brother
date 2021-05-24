@@ -54,7 +54,7 @@
 		<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
 		     button. -->
 		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
-		{{ forms['csrf'].csrf_token }}
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 	    <DIV CLASS="container STANDARD_TABLE">
 	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
 	    		<DIV CLASS="col-xs-2 localetext">{{_('User')}}</DIV>
