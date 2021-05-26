@@ -145,7 +145,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         return []
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
-                       p_process_regex_map):
+                       p_process_regex_map, p_prohibited_process_regex_map):
 
         current_processes = {}
         events = []
@@ -165,17 +165,18 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
                 if username is not None and username in p_process_regex_map:
 
+                    full_cmd_line = ' '.join(proc.cmdline())
+
                     if self._config.scan_command_line_options:
-                        proc_cmdline = ' '.join(proc.cmdline())
+                        proc_cmdline = full_cmd_line
 
                     else:
                         # Just take the name of the binary
                         proc_cmdline = proc.name()
 
                     if p_process_regex_map[username].match(proc_cmdline):
-                        start_time = datetime.datetime.fromtimestamp(proc.create_time(),
-                                                                     datetime.timezone.utc).astimezone().replace(
-                            tzinfo=None)
+                        start_time = datetime.datetime.fromtimestamp(
+                            proc.create_time(), datetime.timezone.utc).astimezone().replace(tzinfo=None)
                         key = process_info.get_key(p_hostname=p_host_name, p_pid=proc.pid, p_start_time=start_time)
                         current_processes[key] = 1
 
@@ -196,6 +197,22 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                                 p_process_start_time=start_time,
                                 p_pid=proc.pid)
                             events.append(event)
+
+                    elif p_prohibited_process_regex_map[username].match(full_cmd_line):
+                        start_time = datetime.datetime.fromtimestamp(
+                            proc.create_time(), datetime.timezone.utc).astimezone().replace(tzinfo=None)
+
+                        event = admin_event.AdminEvent(
+                            p_event_type=admin_event.EVENT_TYPE_PROHIBITED_PROCESS,
+                            p_hostname=p_host_name,
+                            p_processhandler=self.id,
+                            p_username=username,
+                            p_processname=proc.name(),
+                            p_process_start_time=start_time,
+                            p_pid=proc.pid)
+                        events.append(event)
+
+
 
             except psutil.NoSuchProcess as e:
                 fmt = "Ignoring exception '{estr}' because process has disappeared"

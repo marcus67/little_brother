@@ -198,6 +198,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                     session.add(user)
 
                 user.process_name_pattern = user_config[constants.JSON_PROCESS_NAME_PATTERN]
+                user.prohibited_process_name_pattern = user_config.get(constants.JSON_PROHIBITED_PROCESS_NAME_PATTERN)
                 user.active = user_config[constants.JSON_ACTIVE]
 
                 fmt = "Set config for {user}"
@@ -412,6 +413,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         with SessionContext(p_persistence=self.persistence) as session_context:
             user_config = {
                 user.username: {constants.JSON_PROCESS_NAME_PATTERN: user.process_name_pattern,
+                                constants.JSON_PROHIBITED_PROCESS_NAME_PATTERN: user.prohibited_process_name_pattern,
                                 constants.JSON_ACTIVE: user.active}
                 for user in self.user_entity_manager.users(p_session_context=session_context)
             }

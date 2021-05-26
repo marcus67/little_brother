@@ -214,7 +214,7 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
-                       p_process_regex_map):  # pragma: no cover
+                       p_process_regex_map, p_prohibited_process_regex_map):  # pragma: no cover
         pass
 
     def get_downtime_corrected_admin_events(self, p_downtime):

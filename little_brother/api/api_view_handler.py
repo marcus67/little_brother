@@ -59,6 +59,10 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
         p_app.register_blueprint(self._blueprint)
 
     @property
+    def blueprint(self):
+        return self._blueprint
+
+    @property
     def app_control(self) -> AppControl:
         
         if self._appcontrol is None:

@@ -118,6 +118,7 @@
 							<BUTTON id="save" type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
 		        		</DIV>
 			    	</DIV>
+
 			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
 			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1"></DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-3  col-md-1                      ">{{ helper.render_field(forms[user.html_key].active) }}</DIV>
@@ -131,8 +132,34 @@
 						<!-- line break for xs -->
 			    		<DIV CLASS="col-xs-1  col-sm-1  hidden-md hidden-lg"></DIV>
 			    		<DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-1  localetext">{{ forms[user.html_key].locale(class_="form-control dense-font") }}</DIV>
-			    		<DIV CLASS="col-xs-8  col-sm-8  col-md-6  col-lg-7  localetext">{{ forms[user.html_key].process_name_pattern(class_="form-control dense-font") }}</DIV>
+			    		<DIV CLASS="col-xs-8  col-sm-8  col-md-6  col-lg-7  localetext"></DIV>
 			    	</DIV>
+
+					{% call accordion.begin() %}process_{{ user.html_key }}{% endcall %}
+			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
+			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1           "></DIV>
+			    		<DIV CLASS="col-xs-11 col-sm-11 col-md-11 col-lg-11 localetext">
+							{% call accordion.toggle_begin(tooltip="Edit process patterns") %}process_{{ user.html_key }}{% endcall %}
+							{{_('Process Name Pattern')}}
+							{{ accordion.toggle_end() }}
+						</DIV>
+					</DIV>
+				    {% call accordion.details() %}process_{{user.html_key}}{% endcall %}
+			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
+			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  col-lg-1           "></DIV>
+						<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2 localetext">{{_('Login Process Name Pattern')}}</DIV>
+						<DIV CLASS="col-xs-8  col-sm-9  col-md-9  col-lg-9 localetext">
+							{{ forms[user.html_key].process_name_pattern(class_="form-control dense-font") }}
+						</DIV>
+					</DIV>
+			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
+			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  lol-lg-1           "></DIV>
+						<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2 localetext">{{_('Prohibited Process Name Pattern')}}</DIV>
+						<DIV CLASS="col-xs-8  col-sm-9  col-md-9  col-lg-9 localetext">
+							{{ forms[user.html_key].prohibited_process_name_pattern(class_="form-control dense-font") }}
+						</DIV>
+					</DIV>
+ 					{{ accordion.end() }}
 
 					<!-- ********************************************************************************************-->
 					<!-- RULESETS                                                                                    -->
@@ -302,6 +329,7 @@
 	{% for user in users %}
 		{{ helper.modal_confirm(user.delete_html_key, _("Do you really want to permanently remove the user from monitoring?"), _("Remove from monitoring"), _("Cancel")) }}
     	{% call accordion.script() %}{{user.html_key}}{% endcall %}
+		{% call accordion.script() %}process_{{ user.html_key }}{% endcall %}
     	{% call accordion.script() %}{{user.rulesets_html_key}}{% endcall %}
 		{% for ruleset in user.rulesets %}
 			{{ helper.modal_confirm(ruleset.delete_html_key, _("Do you really want to permanently remove the ruleset?"), _("Remove ruleset"), _("Cancel")) }}

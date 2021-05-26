@@ -53,6 +53,8 @@ class Language:
         self.text_limited_session_start = _(
             "Hello {user}, you will be allowed to play for {minutes_left_in_session} minutes\nin this session.")
         self.text_unlimited_session_start = _("Hello {user}, you have unlimited playtime in this session.")
+        self.text_prohibited_process = _("{user}, you are not allowed to use {process_name} with this account. "
+                                         "The program will be terminated.")
 
     def get_text_limited_session_start(self, p_locale, p_variables):
 
@@ -65,6 +67,12 @@ class Language:
         t = gettext.translation('messages', localedir=self._locale_dir,
                                 languages=[p_locale], fallback=True)
         return t.gettext(self.text_unlimited_session_start).format(**p_variables)
+
+    def get_text_prohibited_process(self, p_locale, p_variables):
+
+        t = gettext.translation('messages', localedir=self._locale_dir,
+                                languages=[p_locale], fallback=True)
+        return t.gettext(self.text_prohibited_process).format(**p_variables)
 
     def pick_text_for_ruleset(self, p_rule_result_info):
 

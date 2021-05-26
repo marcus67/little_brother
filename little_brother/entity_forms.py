@@ -33,7 +33,8 @@ class UserForm(custom_form.ModelForm):
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
     locale = wtforms.SelectField("Locale")
-    process_name_pattern = wtforms.StringField("ProcessNamePattern")
+    process_name_pattern = wtforms.TextAreaField("ProcessNamePattern")
+    prohibited_process_name_pattern = wtforms.TextAreaField("ProhibitedProcessNamePattern")
     active = custom_fields.BooleanField("Active")
 
 

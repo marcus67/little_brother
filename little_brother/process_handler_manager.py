@@ -23,12 +23,14 @@ from little_brother import admin_event
 from little_brother import dependency_injection
 from little_brother import process_info
 from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.admin_event import AdminEvent
 from little_brother.app_control_config_model import AppControlConfigModel
 from little_brother.event_handler import EventHandler
 from little_brother.language import Language
 from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.session_context import SessionContext
+from little_brother.process_handler import ProcessHandler
 from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleResultInfo
 from little_brother.user_locale_handler import UserLocaleHandler
@@ -98,6 +100,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             self._host_name = self._config.hostname
 
         self._process_regex_map = None
+        self._prohibited_process_regex_map = None
 
         self._locale_dir = os.path.join(os.path.dirname(__file__), "translations")
 
@@ -155,7 +158,21 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
         return self._process_regex_map
 
+    @property
+    def prohibited_process_regex_map(self):
+
+        with SessionContext(p_persistence=self.persistence) as session_context:
+            if self._prohibited_process_regex_map is None:
+                self._prohibited_process_regex_map = {}
+
+                for user in self.user_entity_manager.users(session_context):
+                    self._prohibited_process_regex_map[user.username] = user.regex_prohibited_process_name_pattern
+
+        return self._prohibited_process_regex_map
+
     def register_events(self):
+        self.event_handler.register_event_handler(
+            p_event_type=admin_event.EVENT_TYPE_PROHIBITED_PROCESS, p_handler=self.handle_event_prohibited_process)
         self.event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_PROCESS_START, p_handler=self.handle_event_process_start)
         self.event_handler.register_event_handler(
@@ -229,6 +246,32 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                             p_message=self._language.get_text_unlimited_session_start(p_locale=rule_result_info.locale,
                                                                                       p_variables=rule_result_info.args))
 
+    def handle_event_prohibited_process(self, p_event:AdminEvent):
+
+        process_handler = self.get_process_handler(p_id=p_event.processhandler)
+
+        if process_handler is None:
+            msg = "Received event for process handler of type id '{id}' which is not registered -> discarding event"
+            self._logger.warning(msg.format(id=p_event.processhandler))
+            return
+
+        if self._is_master:
+            rule_result_info = self.admin_data_handler.get_current_rule_result_info(
+                p_reference_time=datetime.datetime.now(), p_process_infos=self.get_process_infos(),
+                p_username=p_event.username)
+
+            if rule_result_info.activity_allowed():
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    variables = rule_result_info.args
+                    variables['process_name'] = p_event.processname
+
+                    self.user_manager.issue_notification(
+                        p_session_context=session_context,
+                        p_username=p_event.username,
+                        p_message=self._language.get_text_prohibited_process(p_locale=rule_result_info.locale,
+                                                                             p_variables=variables))
+
     def handle_event_process_end(self, p_event):
 
         pinfo = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_end(p_event)
@@ -247,7 +290,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             p_id=p_event.processhandler).handle_event_kill_process(p_event, p_server_group=self._config.server_group,
                                                                    p_login_mapping=self._login_mapping)
 
-    def scan_processes(self, p_process_handler, p_reference_time=None, p_queue_events=True):  # @DontTrace
+    def scan_processes(self, p_process_handler:ProcessHandler, p_reference_time=None, p_queue_events=True):  # @DontTrace
 
         if p_reference_time is None:
             p_reference_time = datetime.datetime.now()
@@ -258,6 +301,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 p_server_group=self._config.server_group, p_login_mapping=self._login_mapping,
                 p_host_name=self._host_name,
                 p_process_regex_map=self.process_regex_map,
+                p_prohibited_process_regex_map=self.prohibited_process_regex_map,
                 p_reference_time=p_reference_time)
 
             if p_queue_events:

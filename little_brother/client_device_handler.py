@@ -271,7 +271,7 @@ class ClientDeviceHandler(PersistenceDependencyInjectionMixIn, ProcessHandler):
             return len(self.device_entity_manager.devices(session_context))
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
-                       p_process_regex_map):
+                       p_process_regex_map, p_prohibited_process_regex_map):
 
         events = []
 

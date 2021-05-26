@@ -12,7 +12,7 @@ from sqlalchemy import pool
 # noinspection PyUnresolvedReferences
 from little_brother.persistence import persistent_user_2_device, persistent_device, persistent_process_info, \
     persistent_user, persistent_rule_set, persistent_rule_override, persistent_time_extension, persistence_base, \
-    persistent_admin_event
+    persistent_admin_event, persistence
 
 # *************************************************************************************************
 # IMPORTANT

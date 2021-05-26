@@ -120,6 +120,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         if self._is_master:
             self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
+            self._csrf.exempt(self._api_view_handler.blueprint)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time

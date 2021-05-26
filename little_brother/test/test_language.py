@@ -57,6 +57,16 @@ class TestLanguage(base_test.BaseTestCase):
         self.assertIsNotNone(text)
         self.assertIn('unlimited playtime in this session', text)
 
+    def test_get_text_prohibited_process(self):
+        language = Language()
+        self.assertIsNotNone(language)
+
+        result_info = RuleResultInfo()
+
+        text = language.get_text_prohibited_process(p_locale="en_US", p_variables=result_info.args)
+        self.assertIsNotNone(text)
+        self.assertIn('you have are not allowed to use', text)
+
     def test_pick_text_for_ruleset(self):
         language = Language()
         self.assertIsNotNone(language)

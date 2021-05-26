@@ -27,7 +27,9 @@ from little_brother.persistence.persistence_base import Base
 from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
-_ = lambda x: x
+
+def _(x):
+    return x
 
 
 class User(Base, BaseEntity):
@@ -35,6 +37,7 @@ class User(Base, BaseEntity):
 
     id = Column(Integer, primary_key=True)
     process_name_pattern = Column(String(256))
+    prohibited_process_name_pattern = Column(String(4096))
     username = Column(String(256))
     first_name = Column(String(256))
     last_name = Column(String(256))
@@ -47,16 +50,20 @@ class User(Base, BaseEntity):
 
         super(BaseEntity).__init__()
         self.process_name_pattern = None
+        self.prohibited_process_name_pattern = None
         self.username = None
         self.first_name = None
         self.last_name = None
         self.locale = None
         self.active = False
 
-        self.init_on_load()
+        self._regex_process_name_pattern = None
+        self._regex_prohibited_process_name_pattern = None
 
     def populate_test_data(self, p_session_context: SessionContext):
+
         self.process_name_pattern = None
+        self.prohibited_process_name_pattern = None
         self.username = "willi"
         self.first_name = "Willi"
         self.last_name = "Wusel"
@@ -118,6 +125,7 @@ class User(Base, BaseEntity):
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):
         self._regex_process_name_pattern = None
+        self._regex_prohibited_process_name_pattern = None
 
     @property
     def regex_process_name_pattern(self):
@@ -131,6 +139,20 @@ class User(Base, BaseEntity):
                 self._regex_process_name_pattern = re.compile(".*(" + self.process_name_pattern + ").*")
 
         return self._regex_process_name_pattern
+
+    @property
+    def regex_prohibited_process_name_pattern(self):
+
+        if self._regex_prohibited_process_name_pattern is None:
+
+            if "/" in self.process_name_pattern:
+                self._regex_prohibited_process_name_pattern = re.compile(self.prohibited_process_name_pattern)
+
+            else:
+                self._regex_prohibited_process_name_pattern = re.compile(".*(" + self.prohibited_process_name_pattern + ").*")
+
+        return self._regex_prohibited_process_name_pattern
+
 
     @property
     def sorted_rulesets(self):
@@ -165,5 +187,7 @@ class User(Base, BaseEntity):
         return texts
 
     def __str__(self):
-        fmt = "User (username='{username}, active={active}, process_name_pattern='{process_name_pattern}')"
-        return fmt.format(username=self.username, active=self.active, process_name_pattern=self.process_name_pattern)
+        fmt = "User (username='{username}, active={active}, process_name_pattern='{process_name_pattern}', "\
+              "prohibited_process_name_pattern='{prohibited_process_name_pattern}')"
+        return fmt.format(username=self.username, active=self.active, process_name_pattern=self.process_name_pattern,
+                          prohibited_process_name_pattern=self.prohibited_process_name_pattern)

@@ -4,12 +4,14 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.3 Revision 98 (May 24th, 2021)
+## Version 0.4.3 Revision 98 (May 26th, 2021)
 
-*   Activate CSRF for all interactive pages
+*   Closes #143, see [here](https://github.com/marcus67/little_brother/issues/143)
+*   Start on https://github.com/marcus67/little_brother/issues/129
 
 ## Version 0.4.2 Revision 97 (May 23rd, 2021)
 
+*   Activate CSRF for all interactive pages
 *   Better handling of logout notifications
 *   Fix problem with time extensions just before regular time expires
 *   Include remaining break time in applying rules details list
