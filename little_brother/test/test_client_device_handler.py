@@ -75,6 +75,7 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
                                                     p_login_mapping=None,
                                                     p_host_name=None,
                                                     p_process_regex_map=None,
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -105,6 +106,7 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
                                                     p_login_mapping=None,
                                                     p_host_name=None,
                                                     p_process_regex_map=None,
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=0)

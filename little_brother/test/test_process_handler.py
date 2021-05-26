@@ -445,7 +445,8 @@ class TestProcessHandler(base_test.BaseTestCase):
         a_process_handler = TestProcessHandler.get_process_handler()
         session_context = object()
         a_process_handler.scan_processes(p_session_context=session_context, p_reference_time=None, p_host_name=None,
-                                         p_login_mapping=None, p_server_group=None, p_process_regex_map=None)
+                                         p_login_mapping=None, p_server_group=None, p_process_regex_map=None,
+                                         p_prohibited_process_map=None)
 
 
 if __name__ == "__main__":

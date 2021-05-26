@@ -21,5 +21,5 @@ from little_brother import process_handler
 class DummyProcessHandler(process_handler.ProcessHandler):
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
-                       p_process_regex_map):
+                       p_process_regex_map, p_prohibited_process_map):
         pass # to be overwritten

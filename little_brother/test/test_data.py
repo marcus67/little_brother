@@ -40,6 +40,10 @@ def get_user_object_1():
 def get_process_pattern_regex():
     return get_user_object_1().regex_process_name_pattern
 
+def get_prohibited_process_pattern_regex():
+    # todo: Write meaningful test case
+    return re.compile("xyz")
+
 
 PROCESS_PATH_1 = "/usr/bin/process1"
 PID_1 = 12345
@@ -89,6 +93,9 @@ LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
 
 def get_process_regex_map_1():
     return {USER_1: get_process_pattern_regex()}
+
+def get_prohibited_process_regex_map_1():
+    return {USER_1: get_prohibited_process_pattern_regex()}
 
 
 def get_process_path_regex_map_1():

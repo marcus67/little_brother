@@ -25,6 +25,7 @@ from little_brother import admin_event
 from little_brother import client_process_handler
 from little_brother import dependency_injection
 from little_brother import login_mapping
+from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import dummy_process_iterator
 from little_brother.test import test_data
@@ -65,6 +66,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.get_process_regex_map_1(),
+                                                p_prohibited_process_regex_map=None,
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -92,8 +94,9 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
     def test_single_process_active(self):
 
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             process_handler = self.get_dummy_process_handler()
@@ -103,6 +106,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
                                                     p_process_regex_map=test_data.get_process_regex_map_1(),
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -115,8 +119,9 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
     def test_single_process_active_process_as_pattern(self):
 
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_PATH_1)
@@ -126,6 +131,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
                                                     p_process_regex_map=test_data.get_process_regex_map_1(),
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -140,23 +146,27 @@ class TestClientProcessHandler(base_test.BaseTestCase):
 
         process_handler = self.get_dummy_process_handler(p_processes=test_data.PROCESSES_PATH_1)
 
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
-            events = process_handler.scan_processes(p_session_context=session_context,
-                                                    p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                    p_login_mapping=test_data.LOGIN_MAPPING,
-                                                    p_host_name=test_data.HOSTNAME_1,
-                                                    p_process_regex_map=test_data.get_process_path_regex_map_1(),
-                                                    p_reference_time=datetime.datetime.now())
+            events = process_handler.scan_processes(
+                p_session_context=session_context,
+                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+                p_login_mapping=test_data.LOGIN_MAPPING,
+                p_host_name=test_data.HOSTNAME_1,
+                p_process_regex_map=test_data.get_process_path_regex_map_1(),
+                p_prohibited_process_regex_map=test_data.get_prohibited_process_regex_map_1(),
+                p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=0)
 
     def test_single_process_active_command_line_options_active(self):
 
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             config = client_process_handler.ClientProcessHandlerConfigModel()
@@ -170,6 +180,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
                                                     p_process_regex_map=test_data.get_process_cmd_line_option_regex_map_1(),
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -189,12 +200,14 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                          p_config=config)
 
         session_context = object()
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                                                p_login_mapping=test_data.LOGIN_MAPPING,
-                                                p_host_name=test_data.HOSTNAME_1,
-                                                p_process_regex_map=test_data.get_process_cmd_line_option_regex_map_1(),
-                                                p_reference_time=datetime.datetime.now())
+        events = process_handler.scan_processes(
+            p_session_context=session_context,
+            p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
+            p_login_mapping=test_data.LOGIN_MAPPING,
+            p_host_name=test_data.HOSTNAME_1,
+            p_process_regex_map=test_data.get_process_cmd_line_option_regex_map_1(),
+            p_prohibited_process_regex_map=test_data.get_prohibited_process_regex_map_1(),
+            p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
 
@@ -213,6 +226,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
             p_login_mapping=test_data.LOGIN_MAPPING,
             p_host_name=test_data.HOSTNAME_1,
             p_process_regex_map=test_data.get_process_cmd_line_option_part_of_path_regex_map_1(),
+            p_prohibited_process_regex_map=test_data.get_prohibited_process_regex_map_1(),
             p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
@@ -232,14 +246,16 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                 p_login_mapping=test_data.LOGIN_MAPPING,
                                                 p_host_name=test_data.HOSTNAME_1,
                                                 p_process_regex_map=test_data.get_process_regex_map_1(),
+                                                p_prohibited_process_regex_map=None,
                                                 p_reference_time=datetime.datetime.now())
 
         self.check_list_has_n_elements(p_list=events, p_n=0)
 
     def test_single_process_active_and_inactive(self):
 
-        dummy_persistence: test_persistence.TestPersistence = \
-            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
         with SessionContext(p_persistence=dummy_persistence) as session_context:
             processes = copy.deepcopy(test_data.PROCESSES_1)
@@ -257,6 +273,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
                                                     p_process_regex_map=test_data.get_process_regex_map_1(),
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=datetime.datetime.now())
 
             self.check_list_has_n_elements(p_list=events, p_n=1)
@@ -279,6 +296,7 @@ class TestClientProcessHandler(base_test.BaseTestCase):
                                                     p_login_mapping=test_data.LOGIN_MAPPING,
                                                     p_host_name=test_data.HOSTNAME_1,
                                                     p_process_regex_map=test_data.get_process_regex_map_1(),
+                                                    p_prohibited_process_regex_map=None,
                                                     p_reference_time=now)
 
             self.check_list_has_n_elements(p_list=events, p_n=1)

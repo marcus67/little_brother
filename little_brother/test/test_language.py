@@ -63,9 +63,11 @@ class TestLanguage(base_test.BaseTestCase):
 
         result_info = RuleResultInfo()
 
-        text = language.get_text_prohibited_process(p_locale="en_US", p_variables=result_info.args)
+        args = result_info.args
+        args['process_name'] = "some-process"
+        text = language.get_text_prohibited_process(p_locale="en_US", p_variables=args)
         self.assertIsNotNone(text)
-        self.assertIn('you have are not allowed to use', text)
+        self.assertIn('you are not allowed to use', text)
 
     def test_pick_text_for_ruleset(self):
         language = Language()
