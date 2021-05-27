@@ -100,39 +100,23 @@
 			    	</DIV>			    			        
 			    {% call accordion.details() %}{{user.html_key}}{% endcall %}
 			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
-			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1           "></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-3  col-md-1           localetext">{{_('Monitored')}}</DIV>
-			    		<DIV CLASS="col-xs-4  col-sm-4  col-md-1           localetext">{{_('First Name')}}</DIV>
-			    		<DIV CLASS="col-xs-4  col-sm-4  col-md-1           localetext">{{_('Last Name')}}</DIV>
-						<!-- line break for sm -->
-						<!-- See https://getbootstrap.com/docs/3.3/css/#grid-responsive-resets -->
-						<div CLASS="clearfix visible-xs-block visible-sm-block"></div>
-						<!-- line break for sm -->
-						<DIV CLASS="col-xs-1  col-sm-1  hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
-						<DIV CLASS="col-xs-11 col-sm-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-						<!-- line break for sm -->
-			    		<DIV CLASS="col-xs-1  col-sm-1  hidden-md hidden-lg"></DIV>
-						<DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-1 localetext">{{_('Locale')}}</DIV>
-			    		<DIV CLASS="col-xs-7  col-sm-7  col-md-5  col-lg-6 localetext">{{_('Process Name Pattern')}}</DIV>
-		        		<DIV class="col-xs-1  col-sm-1  col-md-1  col-lg-1 text-right localetext">
+			    		<DIV CLASS="col-xs-1   col-sm-1  col-md-1           "></DIV>
+			    		<DIV CLASS="col-xs-2   col-sm-2  col-md-1           localetext">{{_('Monitored')}}</DIV>
+			    		<DIV CLASS="col-xs-3   col-sm-2  col-md-2           localetext">{{_('First Name')}}</DIV>
+			    		<DIV CLASS="col-xs-3   col-sm-2  col-md-2           localetext">{{_('Last Name')}}</DIV>
+						<DIV CLASS="col-xs-3   col-sm-2  col-md-2  col-lg-2 localetext">{{_('Locale')}}</DIV>
+			    		<DIV CLASS="hidden-xs  col-sm-3  col-md-4  col-lg-4 text-right localetext">
 							<BUTTON id="save" type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
 		        		</DIV>
 			    	</DIV>
 
 			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
-			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-3  col-md-1                      ">{{ helper.render_field(forms[user.html_key].active) }}</DIV>
-			    		<DIV CLASS="col-xs-4  col-sm-4  col-md-1                      ">{{ forms[user.html_key].first_name(class_="form-control dense-font") }}</DIV>
-			    		<DIV CLASS="col-xs-4  col-sm-4  col-md-1                      ">{{ forms[user.html_key].last_name(class_="form-control dense-font") }}</DIV>
-						<!-- line break for xs -->
-						<!-- See https://getbootstrap.com/docs/3.3/css/#grid-responsive-resets -->
-						<div CLASS="clearfix visible-xs-block visible-sm-block"></div>
-						<DIV CLASS="col-xs-1  col-sm-1  hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
-						<DIV CLASS="col-xs-11 col-sm-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-						<!-- line break for xs -->
-			    		<DIV CLASS="col-xs-1  col-sm-1  hidden-md hidden-lg"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-1  localetext">{{ forms[user.html_key].locale(class_="form-control dense-font") }}</DIV>
-			    		<DIV CLASS="col-xs-8  col-sm-8  col-md-6  col-lg-7  localetext"></DIV>
+			    		<DIV CLASS="col-xs-1   col-sm-1  col-md-1"></DIV>
+			    		<DIV CLASS="col-xs-2   col-sm-2  col-md-1                      ">{{ helper.render_field(forms[user.html_key].active) }}</DIV>
+			    		<DIV CLASS="col-xs-3   col-sm-2  col-md-2                      ">{{ forms[user.html_key].first_name(class_="form-control dense-font") }}</DIV>
+			    		<DIV CLASS="col-xs-3   col-sm-2  col-md-2                      ">{{ forms[user.html_key].last_name(class_="form-control dense-font") }}</DIV>
+			    		<DIV CLASS="col-xs-3   col-sm-2  col-md-2  col-lg-2  localetext">{{ forms[user.html_key].locale(class_="form-control dense-font") }}</DIV>
+			    		<DIV CLASS="hidden-xs  col-sm-3  col-md-4  col-lg-4  localetext"></DIV>
 			    	</DIV>
 
 					{% call accordion.begin() %}process_{{ user.html_key }}{% endcall %}
@@ -145,17 +129,17 @@
 						</DIV>
 					</DIV>
 				    {% call accordion.details() %}process_{{user.html_key}}{% endcall %}
-			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
+			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
 			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  col-lg-1           "></DIV>
 						<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2 localetext">{{_('Login Process Name Pattern')}}</DIV>
-						<DIV CLASS="col-xs-8  col-sm-9  col-md-9  col-lg-9 localetext">
+						<DIV CLASS="col-xs-8  col-sm-9  col-md-9  col-lg-9">
 							{{ forms[user.html_key].process_name_pattern(class_="form-control dense-font") }}
 						</DIV>
 					</DIV>
-			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW dense-font">
+			    	<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
 			    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  lol-lg-1           "></DIV>
 						<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2 localetext">{{_('Prohibited Process Name Pattern')}}</DIV>
-						<DIV CLASS="col-xs-8  col-sm-9  col-md-9  col-lg-9 localetext">
+						<DIV CLASS="col-xs-8  col-sm-9  col-md-9  col-lg-9">
 							{{ forms[user.html_key].prohibited_process_name_pattern(class_="form-control dense-font") }}
 						</DIV>
 					</DIV>

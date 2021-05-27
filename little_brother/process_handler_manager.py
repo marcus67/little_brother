@@ -272,6 +272,14 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                         p_message=self._language.get_text_prohibited_process(p_locale=rule_result_info.locale,
                                                                              p_variables=variables))
 
+                    self.queue_event_kill_process(
+                        p_hostname=p_event.hostname,
+                        p_username=p_event.username,
+                        p_processhandler=process_handler.id,
+                        p_pid=p_event.pid,
+                        p_process_start_time=p_event.process_start_time,
+                        p_delay=0)
+
     def handle_event_process_end(self, p_event):
 
         pinfo = self.get_process_handler(p_id=p_event.processhandler).handle_event_process_end(p_event)
@@ -406,7 +414,8 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
             self.event_handler.queue_events(p_events=events, p_to_master=False)
 
-    def queue_event_kill_process(self, p_hostname, p_username, p_processhandler, p_pid, p_process_start_time):
+    def queue_event_kill_process(self, p_hostname, p_username, p_processhandler, p_pid, p_process_start_time,
+                                 p_delay=None):
 
         event = admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS,
@@ -415,7 +424,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
             p_processhandler=p_processhandler,
             p_pid=p_pid,
             p_process_start_time=p_process_start_time,
-            p_delay=self._config.kill_process_delay)
+            p_delay=p_delay if p_delay is not None else self._config.kill_process_delay)
         self.event_handler.queue_event(p_event=event, p_is_action=True)
 
     def handle_downtime(self, p_downtime):
