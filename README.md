@@ -13,6 +13,14 @@ process. Usually, the user will get several spoken notifications (using the
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) before she is actually kicked out so 
 that she can log out gracefully in time.
 
+## What's New?
+
+The latest major feature changes are:
+
+| Version  | Feature/Fix                                                | Issue Link                                                         |
+|----------|------------------------------------------------------------|--------------------------------------------------------------------|
+| 0.4.4    | *New*: Use user specific patterns to prohibit applications | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
+
 ## Contact
 
 Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments 

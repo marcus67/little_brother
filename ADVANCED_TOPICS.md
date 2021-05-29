@@ -289,3 +289,47 @@ affected slaves. The default timeout is 10 times the default scan interval of 5 
 The second setting `warning_time_without_send_events` will be used in the tool 
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) (as of version 0.1.17) to inform the user of 
 the impending logout due to connectivity issues.
+
+## Determining Process Patterns for Prohibited Processes
+In case you decide to prohibit a process for a specific user you will have to provide a specific process pattern
+so that `LittleBrother` is able to detect the process. In most cases this will be simple since most applications are
+represented by a single process (binary). However, there are other applications which are called by scripts, usually
+in one layer but sometimes in several layers. The latter case it always a good procedure to analyze the calling stack
+to optimize the termination behavior.
+
+Let's look at two examples for the same application `minecraft`.
+
+### Application Without Scripting
+
+In order to find out how the application is called we need to view the command which is used in the menu entry
+of your desktop environment. The exact way to retrieve this information will depend on the desktop manager used 
+in your system. Often the settings of a menu entry can be seen by right-clicking on the menu entry. In case of `mate`
+you need to drag the menu entry into the top bar first before you can access the settings:
+
+![Minecraft-Launcher-Settings](doc/minecraft-launcher-settings.png)
+
+As you can tell from the entry the command ("Befehl" in German) used to start Minecraft is `minecraft-launcher`.
+Open a shell window. At the prompt type `which minecraft-launcher`. Then use the `file` tool and the path of the 
+application to determine its type:
+
+![Minecraft-Launcher-Type-Check](doc/minecraft-launcher-type-check.png)
+
+As you can see the file is an `ELF` binary and no script. In this case it is safe to use the name of the application 
+as a pattern, which would be `minecraft-launcher`
+
+### Application With Scripting
+
+We start out the same way by taking a look at the menu entry:
+
+![Minecraft-Launcher-Settings](doc/minecraft-settings.png)
+
+In this case the command ("Befehl" in German) contains the exlicit path so that we can skip the `which` command.
+We continue by issuing the `file` command:
+
+![Minecraft-Launcher-Type-Check](doc/minecraft-type-check.png)
+
+As you can see the application is started by shell script. In this case start the application using the menu entry
+and type `ps uax|grep APPNAME` at the prompt. Deliberately omit the path of the application. In this example
+the process list returns `/vol/java8/bin/java -jar /vol/mirecraft/Minecraft.jar` as the actual application call.
+We cannot use `java` as the pattern since this would be too general and prevent ANY java application from being
+started. A better choice is the name of the Java JAR, which is `Minecraft.jar` in our case

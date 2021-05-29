@@ -250,18 +250,37 @@ username which may be unpronounceable.
 tool [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) to this purpose. For a new user
 the locale always defaults to the locale which is detected from the browser.
 
-*   *Process Name Pattern*: sets a regular expression defining the processes which represents a "login" by the user. 
-    The default value comprises all standard shells and `systemd` which is started by login process using X11. Only 
-    change this setting if you absolutely know what you are doing.
+*   *Process Name Patterns*: use this link to open the next level of configuration for setting 
+    regular expressions defining specific processes. See below.
+
+### Specifying Login and Prohibited Processes
+
+![Users-Level-2](doc/users-level-2.png)
+
+After opening the link "Process Name Pattern" the next level of configuration opens displaying two text areas
+for specifying process patterns.
+
+*   *Login Process Name Pattern*: sets a regular expression defining the processes which represents a "login" by the 
+    user. The default value comprises all standard shells and `systemd` which is started by login process using X11. 
+    Only  change this setting if you absolutely know what you are doing.
 
     As of version 0.3.12 the pattern will be matched against the complete command line and no longer the process name 
     only. This requires/permits the pattern to be more precise if you have several binaries with the same name in 
     different directories. Thanks to [bhulsken](https://github.com/bhulsken) for providing a pull request.
     
+    As of version 0.4.4 the pattern can span several lines. The sub patterns on the lines will implicitly be combined
+    into a single pattern using the `|` operator of regular expressions. 
+    
     **Note**: In order to guarantee backward compatibility prior to version 0.3.12, process name patterns without a 
-    single `/` will be braced by `.*( PATTERN ).*` so that the original expression will be matched at any location in the 
-    command line. If no `/` is contained in the configured expression it will be used literally.  
- 
+    single `/` will be braced by `.*( PATTERN ).*` so that the original expression will be matched at any location in 
+    the command line. If no `/` is contained in the configured expression it will be used literally.
+    
+*   *Prohibited Process Name Pattern*: sets a regular expression describing all the processes that the user is not
+    allowed to start. Per default, the pattern always scans the complete command line of the process. The sub patterns
+    on each line will be braced by `.*( PATTERN ).*` and combined into a single pattern using the `|` operator 
+    of regular expressions. As soon as a matching process is detected the user be played a notification that the 
+    process will be terminated immediately.
+    
 ### Adding Rule Sets
 
 When a new user is created, there is always one default rule created for her which will act as a fallback if no other

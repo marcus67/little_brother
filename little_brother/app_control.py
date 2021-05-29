@@ -206,6 +206,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
             session.commit()
             self._user_manager.reset_users(p_session_context=session_context)
+            self._process_handler_manager.reset_process_patterns()
 
     @property
     def process_regex_map(self):

@@ -170,6 +170,10 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
 
         return self._prohibited_process_regex_map
 
+    def reset_process_patterns(self):
+        self._process_regex_map = None
+        self._prohibited_process_regex_map = None
+
     def register_events(self):
         self.event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_PROHIBITED_PROCESS, p_handler=self.handle_event_prohibited_process)

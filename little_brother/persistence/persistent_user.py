@@ -133,10 +133,14 @@ class User(Base, BaseEntity):
         if self._regex_process_name_pattern is None:
 
             if "/" in self.process_name_pattern:
-                self._regex_process_name_pattern = re.compile(self.process_name_pattern)
+                pattern_list = self.process_name_pattern.replace('\r', '').split("\n")
+                expanded_patterns = '|'.join(pattern_list)
+                self._regex_process_name_pattern = re.compile(expanded_patterns)
 
             else:
-                self._regex_process_name_pattern = re.compile(".*(" + self.process_name_pattern + ").*")
+                pattern_list = self.process_name_pattern.replace('\r', '').split("\n")
+                expanded_patterns = '(.*' + '.*)|(.*'.join(pattern_list) + '.*)'
+                self._regex_process_name_pattern = re.compile(expanded_patterns)
 
         return self._regex_process_name_pattern
 
@@ -145,7 +149,7 @@ class User(Base, BaseEntity):
 
         if self._regex_prohibited_process_name_pattern is None:
 
-            pattern_list = self.prohibited_process_name_pattern.split("\n")
+            pattern_list = self.prohibited_process_name_pattern.replace('\r', '').split("\n")
             expanded_patterns = '(.*' + '.*)|(.*'.join(pattern_list) + '.*)'
             self._regex_prohibited_process_name_pattern = re.compile(expanded_patterns)
 
