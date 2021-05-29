@@ -34,6 +34,7 @@ PROCESS_NAME_1 = "process1"
 def get_user_object_1():
     user = User()
     user.process_name_pattern = PROCESS_NAME_1
+    user.prohibited_process_name_pattern = ""
     return user
 
 
@@ -42,7 +43,7 @@ def get_process_pattern_regex():
 
 def get_prohibited_process_pattern_regex():
     # todo: Write meaningful test case
-    return re.compile("xyz")
+    return get_user_object_1().regex_prohibited_process_name_pattern
 
 
 PROCESS_PATH_1 = "/usr/bin/process1"

@@ -60,6 +60,24 @@ class User(Base, BaseEntity):
         self._regex_process_name_pattern = None
         self._regex_prohibited_process_name_pattern = None
 
+    @classmethod
+    def get_regex_from_pattern_list(cls, p_pattern_list:str, p_check_path_component:bool):
+
+        pattern_list = p_pattern_list.replace('\r', '').split("\n")
+        normalized_pattern_list = [ entry.strip() for entry in pattern_list if len(entry.strip()) > 1 ]
+
+        if len(normalized_pattern_list) == 0:
+            # Return if none of the sub patterns contains more than one character
+            return None
+
+        if "/" in p_pattern_list and p_check_path_component:
+            expanded_patterns = '|'.join(normalized_pattern_list)
+
+        else:
+            expanded_patterns = '(.*' + '.*)|(.*'.join(normalized_pattern_list) + '.*)'
+
+        return re.compile(expanded_patterns)
+
     def populate_test_data(self, p_session_context: SessionContext):
 
         self.process_name_pattern = None
@@ -132,26 +150,19 @@ class User(Base, BaseEntity):
 
         if self._regex_process_name_pattern is None:
 
-            if "/" in self.process_name_pattern:
-                pattern_list = self.process_name_pattern.replace('\r', '').split("\n")
-                expanded_patterns = '|'.join(pattern_list)
-                self._regex_process_name_pattern = re.compile(expanded_patterns)
-
-            else:
-                pattern_list = self.process_name_pattern.replace('\r', '').split("\n")
-                expanded_patterns = '(.*' + '.*)|(.*'.join(pattern_list) + '.*)'
-                self._regex_process_name_pattern = re.compile(expanded_patterns)
+            self._regex_process_name_pattern = \
+                self.get_regex_from_pattern_list(p_pattern_list=self.process_name_pattern, p_check_path_component=True)
 
         return self._regex_process_name_pattern
 
     @property
     def regex_prohibited_process_name_pattern(self):
 
-        if self._regex_prohibited_process_name_pattern is None:
 
-            pattern_list = self.prohibited_process_name_pattern.replace('\r', '').split("\n")
-            expanded_patterns = '(.*' + '.*)|(.*'.join(pattern_list) + '.*)'
-            self._regex_prohibited_process_name_pattern = re.compile(expanded_patterns)
+        if self._regex_prohibited_process_name_pattern is None and self.prohibited_process_name_pattern is not None:
+            self._regex_prohibited_process_name_pattern = \
+                self.get_regex_from_pattern_list(p_pattern_list=self.prohibited_process_name_pattern,
+                                                 p_check_path_component=False)
 
         return self._regex_prohibited_process_name_pattern
 

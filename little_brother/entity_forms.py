@@ -29,12 +29,23 @@ a_pinger = pinger.Pinger()
 
 # TODO: edit fields should be marked by special color when containing modified (and not yet saved ) value
 
+def regex_validator(_form, field):
+    if field.data is not None:
+        sub_patterns = field.data.replace('\r', '').split('\n')
+
+        for sub_pattern in sub_patterns:
+            if len(sub_pattern.strip()) == 1:
+                raise wtforms.validators.ValidationError(_("Sub pattern must be longer than one character"))
+
+
 class UserForm(custom_form.ModelForm):
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
     locale = wtforms.SelectField("Locale")
-    process_name_pattern = wtforms.TextAreaField("ProcessNamePattern")
-    prohibited_process_name_pattern = wtforms.TextAreaField("ProhibitedProcessNamePattern")
+    process_name_pattern = wtforms.TextAreaField("ProcessNamePattern",
+                                                 validators=[regex_validator])
+    prohibited_process_name_pattern = wtforms.TextAreaField("ProhibitedProcessNamePattern",
+                                                 validators=[regex_validator])
     active = custom_fields.BooleanField("Active")
 
 

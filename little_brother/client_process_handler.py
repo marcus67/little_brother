@@ -198,7 +198,8 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                                 p_pid=proc.pid)
                             events.append(event)
 
-                    elif p_prohibited_process_regex_map[username].match(full_cmd_line):
+                    elif p_prohibited_process_regex_map[username] is not None and \
+                            p_prohibited_process_regex_map[username].match(full_cmd_line):
                         start_time = datetime.datetime.fromtimestamp(
                             proc.create_time(), datetime.timezone.utc).astimezone().replace(tzinfo=None)
 

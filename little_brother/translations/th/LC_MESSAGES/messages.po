@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-05-26 00:28+0200\n"
+"POT-Creation-Date: 2021-05-29 18:53+0200\n"
 "PO-Revision-Date: 2020-04-19 23:19+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: th\n"
@@ -74,7 +74,11 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:59
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:39
+msgid "Sub pattern must be longer than one character"
+msgstr ""
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:71
 msgid "Not a valid host address"
 msgstr ""
 
@@ -196,7 +200,7 @@ msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:248
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:150
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:237
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:221
 msgid "Free Play"
 msgstr "เวลาอิสระ"
 
@@ -311,24 +315,24 @@ msgstr ""
 msgid "Host Name"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:175
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:188
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:44
 msgid "Username"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:177
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:190
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user_2_device.py:48
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:104
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:311
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:295
 msgid "Monitored"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:183
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:196
 msgid "Unknown"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:185
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:115
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:198
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:107
 msgid "Locale"
 msgstr ""
 
@@ -428,32 +432,32 @@ msgstr "วัน"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:141
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/status.template.html:53
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:225
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:209
 msgid "Context"
 msgstr "ข้อความ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:142
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:232
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:216
 msgid "Min Time of Day"
 msgstr "ระยะเวลาน้อยที่สุดของวัน"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:143
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:233
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:217
 msgid "Max Time of Day"
 msgstr "ระยะเวลานานที่สุดของวัน"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:144
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:234
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:218
 msgid "Time per Day"
 msgstr "จำนวนครั้งต่อวัน"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:148
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:235
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:219
 msgid "Minimum Break"
 msgstr "เวลาพักน้อยที่สุด"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:149
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:236
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:220
 msgid "Max Duration"
 msgstr "ระยะเวลานานที่สุด"
 
@@ -467,9 +471,9 @@ msgstr "ยกเลิก"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:253
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:76
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:118
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:217
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:320
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:109
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:201
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:304
 msgid "Save"
 msgstr "บันทึก"
 
@@ -482,7 +486,7 @@ msgid "Device"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:56
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:284
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:268
 msgid "Add device"
 msgstr ""
 
@@ -519,9 +523,9 @@ msgid "Remove from Monitoring"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:128
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:330
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:334
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:339
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:314
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:319
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:324
 msgid "Cancel"
 msgstr ""
 
@@ -552,7 +556,7 @@ msgid "Users"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/navbar.include.html:45
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:276
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:260
 msgid "Devices"
 msgstr ""
 
@@ -673,7 +677,7 @@ msgid "User Configuration"
 msgstr ""
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:71
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:281
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:265
 msgid "Add to monitoring"
 msgstr ""
 
@@ -697,79 +701,78 @@ msgstr ""
 msgid "Last Name"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:116
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:143
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:127
 msgid "Process Name Pattern"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:150
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:134
 msgid "Login Process Name Pattern"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:157
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:141
 msgid "Prohibited Process Name Pattern"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:174
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:158
 msgid "Rulesets"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:174
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:158
 msgid "Count"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:179
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:163
 msgid "Add ruleset"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:189
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:296
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:173
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:280
 msgid "Edit ruleset details"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:201
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:334
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:185
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:319
 msgid "Remove ruleset"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:207
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:191
 msgid "Move ruleset up"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:214
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:198
 msgid "Move ruleset down"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:224
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:208
 msgid "Label"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:226
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:210
 msgid "Context Details"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:305
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:289
 msgid "Remove monitoring of this device for the user"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:312
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:296
 msgid "Percent"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:330
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:314
 msgid "Do you really want to permanently remove the user from monitoring?"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:330
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:339
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:314
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:324
 msgid "Remove from monitoring"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:334
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:319
 msgid "Do you really want to permanently remove the ruleset?"
 msgstr ""
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:339
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:324
 msgid ""
 "Do you really want to permanently remove monitoring of the device for "
 "this user?"
@@ -811,5 +814,8 @@ msgstr ""
 #~ "{user}, you have are not allowed "
 #~ "to use {process_name} with this account."
 #~ " The program will be terminated."
+#~ msgstr ""
+
+#~ msgid "Sub pattern should be longer than one character"
 #~ msgstr ""
 
