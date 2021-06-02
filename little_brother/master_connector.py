@@ -17,7 +17,7 @@
 
 import json
 
-from little_brother import constants
+from little_brother import constants, user_status
 from python_base_app import base_rest_api_access
 from python_base_app import exceptions
 from python_base_app import tools
@@ -58,15 +58,19 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
         else:
             return (hostname, json_events)
 
-    def encode_event(self, p_hostname, p_events, p_client_stats):
-        return {
+    def encode_event(self, p_hostname, p_events, p_client_stats=None):
+        event = {
             constants.JSON_ACCESS_TOKEN: self._config.access_token,
             constants.JSON_HOSTNAME: p_hostname,
-            constants.JSON_EVENTS: p_events,
-            constants.JSON_CLIENT_STATS: p_client_stats
+            constants.JSON_EVENTS: p_events
         }
 
-    def send_events(self, p_hostname, p_events, p_client_stats):
+        if p_client_stats is not None:
+            event[constants.JSON_CLIENT_STATS] = p_client_stats
+
+        return event
+
+    def send_events(self, p_hostname, p_events, p_client_stats=None):
 
         url = self._get_api_url(constants.API_REL_URL_EVENTS)
 
@@ -84,6 +88,27 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
 
             fmt = "cannot send events: invalid access token"
             self._logger.error(fmt)
+            result = None
+
+        return result
+
+    # Note: the following method is functionally identical the method in little_brother_taskbar/status_connector.py
+    def request_status(self, p_username):
+
+        url = self._get_api_url(constants.API_REL_URL_STATUS)
+
+        try:
+            api_result = self.execute_api_call(
+                p_url=url,
+                p_method="GET",
+                p_parameters={constants.API_URL_PARAM_USERNAME: p_username},
+                p_jsonify=True)
+
+            result = tools.objectify_dict(p_dict=api_result,
+                                          p_class=user_status.UserStatus,
+                                          p_attribute_classes={})
+
+        except exceptions.ArtifactNotFoundException as e:
             result = None
 
         return result

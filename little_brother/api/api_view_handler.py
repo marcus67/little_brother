@@ -20,9 +20,9 @@ import json
 import flask
 
 import little_brother
-from little_brother import constants, dependency_injection
+from little_brother import constants
+from little_brother import dependency_injection
 from little_brother.app_control import AppControl
-from little_brother.dependency_injection import container
 from little_brother.event_handler import EventHandler
 from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
@@ -40,6 +40,7 @@ API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
 
+# ToDo: Derive ApiViewHandler from BaseViewHandler!
 class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
     def __init__(self, p_app):
@@ -66,7 +67,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
     def app_control(self) -> AppControl:
         
         if self._appcontrol is None:
-            self._appcontrol = container[AppControl]
+            self._appcontrol = dependency_injection.container[AppControl]
             
         return self._appcontrol
 
@@ -74,7 +75,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
     def master_connector(self) -> MasterConnector:
 
         if self._master_connector is None:
-            self._master_connector = container[MasterConnector]
+            self._master_connector = dependency_injection.container[MasterConnector]
 
         return self._master_connector
 
@@ -82,7 +83,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
     def event_handler(self) -> EventHandler:
 
         if self._event_handler is None:
-            self._event_handler = container[EventHandler]
+            self._event_handler = dependency_injection.container[EventHandler]
 
         return self._event_handler
 
@@ -157,8 +158,8 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 user_status = self.user_manager.get_current_user_status(
                     p_session_context=session_context, p_username=username)
 
-            if user_status is None:
-                msg = _("username '{username}' not being monitored")
+            if user_status is None or not user_status.monitoring_active:
+                msg = _("username '{username}' does not exist or is not being monitored")
                 return flask.Response('{{ "{errortag}" : "{msg}" }}'.format(msg=msg, errortag=constants.JSON_ERROR),
                                       status=constants.HTTP_STATUS_CODE_NOT_FOUND,
                                       mimetype=MIME_TYPE_APPLICATION_JSON)
@@ -168,3 +169,6 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
             return flask.Response(json.dumps(user_status, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
                                   mimetype=MIME_TYPE_APPLICATION_JSON)
+
+    def destroy(self):
+        API_BLUEPRINT_ADAPTER.unassign_view_handler_instances()

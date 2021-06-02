@@ -171,7 +171,8 @@ class UserManager(PersistenceDependencyInjectionMixIn):
             p_session_context=p_session_context, p_username=p_username)
 
         user: User = self.user_entity_manager.user_map(p_session_context=p_session_context).get(p_username)
-        current_user_status.monitoring_active = user.active
+
+        current_user_status.monitoring_active = user.active if user is not None else False
 
         return current_user_status
 

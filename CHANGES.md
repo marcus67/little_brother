@@ -4,7 +4,9 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.5 Revision 100 (May 29th, 2021)
+## Version 0.4.5 Revision 101 (June 1st, 2021)
+
+*   Added test class `TestApiViewHandler`
 
 ## Version 0.4.4 Revision 99 (May 29th, 2021)
 

@@ -20,17 +20,22 @@
 
 import unittest
 
-from little_brother.test import test_app_control, test_language, test_app, test_user_status, test_master_connector, \
-    test_process_handler_manager
+from little_brother.test import test_app
+from little_brother.test import test_app_control
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
 from little_brother.test import test_german_vacation_context_rule_handler
+from little_brother.test import test_language
+from little_brother.test import test_master_connector
 from little_brother.test import test_process_handler
+from little_brother.test import test_process_handler_manager
 from little_brother.test import test_process_info
 from little_brother.test import test_process_statistics
 from little_brother.test import test_prometheus
 from little_brother.test import test_rule_handler
 from little_brother.test import test_simple_weekday_context_rule_handler
+from little_brother.test import test_user_status
+from little_brother.test.api import test_suite as api_test_suite
 from little_brother.test.persistence import test_suite as persistence_test_suite
 from little_brother.test.web import test_suite as web_test_suite
 from python_base_app import log_handling
@@ -120,6 +125,7 @@ def main():
 
     persistence_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     web_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+    api_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
 
     base_test.run_test_suite(p_test_suite=test_suite)
 

@@ -32,6 +32,8 @@ EVENT_TYPE_PROHIBITED_PROCESS = "PROHIBITED_PROCESS"
 EVENT_TYPE_PROCESS_DOWNTIME = "PROCESS_DOWNTIME"
 EVENT_TYPE_PROCESS_END = "PROCESS_END"
 
+EVENT_TYPE_DUMMY_1 = "DUMMY1"
+
 
 def create_process_info_from_event(p_event):
     return process_info.ProcessInfo(

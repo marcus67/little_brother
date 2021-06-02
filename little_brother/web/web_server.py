@@ -72,6 +72,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                  p_languages=None,
                  p_user_handler=None):
 
+        self._api_view_handler = None
         self._about_view_handler = AboutViewHandler(p_package=little_brother, p_languages=p_languages)
         self._admin_view_handler = AdminViewHandler(p_package=little_brother)
         self._devices_view_handler = DevicesViewHandler(p_package=little_brother)
@@ -227,6 +228,9 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         return self._locale_helper.gettext(p_text=p_text)
 
     def destroy(self):
+
+        if self._api_view_handler is not None:
+            self._api_view_handler.destroy()
 
         self._about_view_handler.destroy()
         self._admin_view_handler.destroy()
