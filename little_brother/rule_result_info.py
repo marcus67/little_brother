@@ -152,6 +152,9 @@ class RuleResultInfo(object):
 
     def get_minutes_left_in_session(self):
 
+        if  self.free_play:
+            return None
+
         if self.minutes_left_in_session is None:
             return self.minutes_left_in_time_extension
 
@@ -182,7 +185,7 @@ class RuleResultInfo(object):
 
         if p_active_time_extension is None:
             self.time_extension_active = False
-            self.minutes_left_in_time_extension = 0
+            self.minutes_left_in_time_extension = None
             return
 
         self.applying_rules = self.applying_rules | RULE_TIME_EXTENSION
