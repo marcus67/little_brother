@@ -261,6 +261,7 @@ class RuleHandler(object):
             p_rule_result_info.applying_rule_text_templates.append(
                 (_("No activity before {hh_mm} hours"), {"hh_mm": p_rule_set.min_time_of_day.strftime("%H:%M")})
             )
+            p_rule_result_info.set_minutes_left_in_session(p_minutes_left=0)
 
         if p_rule_set.max_time_of_day is not None:
             if p_stat_info.reference_time.timetz() > p_rule_set.max_time_of_day:

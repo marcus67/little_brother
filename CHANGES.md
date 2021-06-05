@@ -6,8 +6,12 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 ## Version 0.4.5 Revision 101 (June 1st, 2021)
 
+*   Fix problem with remaining time not being computed correctly with time extension before min time of day
+
+## Version 0.4.5 Revision 100 (June 1st, 2021)
+
 *   Added test class `TestApiViewHandler`
-*   Fix problem with remaining time not being computed correctly with time extension and after the max time of day
+*   Fix problem with remaining time not being computed correctly with time extension after the max time of day
 *   Fix problem with unlimited playtime not being displayed in `LittleBrotherTaskbar` after activating free play
 
 ## Version 0.4.4 Revision 99 (May 29th, 2021)
