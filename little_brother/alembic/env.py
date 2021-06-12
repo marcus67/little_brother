@@ -3,15 +3,10 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 # noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-from little_brother.persistence import persistent_user_2_device, persistent_device, persistent_process_info, \
-    persistent_user, persistent_rule_set, persistent_rule_override, persistent_time_extension, persistence_base, \
+from little_brother.persistence import persistence_base, persistent_user_2_device, persistent_device, \
+    persistent_process_info, \
+    persistent_daily_user_status, persistent_user, persistent_rule_set, persistent_rule_override, \
+    persistent_time_extension, \
     persistent_admin_event, persistence
 
 # *************************************************************************************************

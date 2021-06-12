@@ -23,10 +23,10 @@ import unittest
 from little_brother import app_control
 from little_brother import client_stats
 from little_brother import dependency_injection
-from little_brother import master_connector
 from little_brother import prometheus
 from little_brother.admin_data_handler import AdminDataHandler
-from little_brother.master_connector import MasterConnector
+from little_brother.api import master_connector
+from little_brother.api.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
 from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleHandler

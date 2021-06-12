@@ -4,7 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.5 Revision 101 (June 1st, 2021)
+## Version 0.4.6 Revision 102 (June ?, 2021)
+
+*   New class `DailyUserStatus`
+*   Move `MasterConnector` to subdirectory `api` 
+
+## Version 0.4.5 Revision 101 (June 6th, 2021)
 
 *   Fix problem with remaining time not being computed correctly with time extension before min time of day
 

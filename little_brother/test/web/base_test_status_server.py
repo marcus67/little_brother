@@ -30,10 +30,10 @@ from little_brother import app
 from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import dependency_injection
-from little_brother import master_connector
 from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.api import master_connector
+from little_brother.api.master_connector import MasterConnector
 from little_brother.app_control import AppControl, AppControlConfigModel
-from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext

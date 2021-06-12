@@ -30,10 +30,10 @@ from little_brother import login_mapping
 from little_brother import rule_handler
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
+from little_brother.api.master_connector import MasterConnector, MasterConnectorConfigModel, \
+    SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
 from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
 from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
-from little_brother.master_connector import MasterConnector, MasterConnectorConfigModel, \
-    SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager

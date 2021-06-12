@@ -22,6 +22,7 @@ from little_brother import constants
 from little_brother import process_statistics
 from little_brother import rule_result_info
 from little_brother.persistence import persistence
+from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.rule_result_info import RuleResultInfo
 from python_base_app import configuration
 from python_base_app import log_handling
@@ -219,7 +220,7 @@ class RuleHandler(object):
 
         return choices
 
-    def get_active_ruleset(self, p_rule_sets, p_reference_date):
+    def get_active_ruleset(self, p_rule_sets, p_reference_date) ->  RuleSet:
 
         active_ruleset = None
         max_priority = None

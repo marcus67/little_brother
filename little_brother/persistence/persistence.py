@@ -159,16 +159,14 @@ class Persistence(object):
     def get_database_filename(cls, p_config):
         return os.path.join(p_config.sqlite_dir, p_config.sqlite_filename)
 
-
     @classmethod
     def delete_database(cls, p_logger, p_config):
         filename = cls.get_database_filename(p_config=p_config)
 
         if os.path.exists(filename):
-            msg ="Deleting database file '{filename}'"
+            msg = "Deleting database file '{filename}'"
             p_logger.info(msg.format(filename=filename))
             os.unlink(filename)
-
 
     def get_admin_session(self):
         if self._admin_session is None:

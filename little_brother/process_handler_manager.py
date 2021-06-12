@@ -24,10 +24,10 @@ from little_brother import dependency_injection
 from little_brother import process_info
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.admin_event import AdminEvent
+from little_brother.api.master_connector import MasterConnector
 from little_brother.app_control_config_model import AppControlConfigModel
 from little_brother.event_handler import EventHandler
 from little_brother.language import Language
-from little_brother.master_connector import MasterConnector
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler import ProcessHandler

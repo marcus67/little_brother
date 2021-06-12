@@ -21,6 +21,7 @@
 import unittest
 
 from little_brother.test.api.test_api_view_handler import TestApiViewHandler
+from little_brother.test.api.test_master_connector import TestMasterConnector
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
@@ -29,6 +30,10 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=TestApiViewHandler, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestMasterConnector, p_config_filename=p_config_filename)
 
 
 def main():

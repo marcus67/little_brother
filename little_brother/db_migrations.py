@@ -22,6 +22,10 @@ import alembic.config
 
 from little_brother import constants
 from little_brother import simple_context_rule_handlers
+# The following import is required by alembic migrations triggered by the test cases. Otherwise the entity "UserStatus"
+# will not be found.
+# noinspection PyUnresolvedReferences
+from little_brother.persistence.persistent_daily_user_status import DailyUserStatus
 from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_user import User

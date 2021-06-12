@@ -46,6 +46,8 @@ class RuleSet(Base, BaseEntity):
     max_activity_duration = Column(Integer)
     min_break = Column(Integer)
     free_play = Column(Boolean)
+    # As of version 0.4.6
+    optional_time_per_day = Column(Integer)
 
     def __init__(self):
 

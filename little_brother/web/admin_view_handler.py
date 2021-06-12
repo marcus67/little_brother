@@ -94,7 +94,6 @@ class AdminViewHandler(BaseViewHandler):
     def handle_button_press(self, p_admin_infos, p_request, p_session_context):
 
         for admin_info in p_admin_infos:
-
             username = admin_info.username
             submit_regex = re.compile(TIME_EXTENSION_SUBMIT_PATTERN.format(username=username))
             result = submit_regex.match(p_request.form['submit'])
@@ -102,16 +101,9 @@ class AdminViewHandler(BaseViewHandler):
             if result is not None:
                 delta = int(result.group(1))
 
-                session_active = admin_info.user_info[
-                                     "active_stat_info"].current_activity_start_time is not None
-
-                active_rule_result_info = admin_info.user_info["active_rule_result_info"]
-                session_end_datetime = active_rule_result_info.session_end_datetime
-
-                self.time_extension_entity_manager.set_time_extension_for_session(
+                self.time_extension_entity_manager.set_time_extension_for_admin_info_and_session(
                     p_session_context=p_session_context, p_user_name=username,
-                    p_session_active=session_active, p_delta=delta,
-                    p_session_end_datetime=session_end_datetime)
+                    p_admin_info=admin_info, p_delta=delta)
 
     @staticmethod
     def get_admin_forms(p_admin_infos):

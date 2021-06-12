@@ -112,3 +112,31 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
             result = None
 
         return result
+
+    # Note: the following method is functionally identical the method in little_brother_taskbar/status_connector.py
+    def request_time_extension(self, p_username:str, p_access_code:str, p_extension_length:int) -> int:
+
+        url = self._get_api_url(constants.API_REL_URL_REQUEST_TIME_EXTENSION)
+
+        try:
+            self.execute_api_call(
+                p_url=url,
+                p_method="POST",
+                p_parameters={
+                    constants.API_URL_PARAM_USERNAME: p_username,
+                    constants.API_URL_PARAM_SECRET: p_access_code,
+                    constants.API_URL_PARAM_EXTENSION_LENGTH: p_extension_length
+                },
+                p_jsonify=True)
+
+        except exceptions.RangeNotSatisfiableException:
+            return constants.HTTP_STATUS_CODE_RANGE_NOT_SATISFIABLE
+
+        except exceptions.UnauthorizedException:
+            return constants.HTTP_STATUS_CODE_UNAUTHORIZED
+
+        except exceptions.ArtifactNotFoundException:
+            return constants.HTTP_STATUS_CODE_NOT_FOUND
+
+        return constants.HTTP_STATUS_CODE_OK
+

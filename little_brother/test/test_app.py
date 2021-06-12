@@ -23,8 +23,9 @@ import sys
 import unittest
 
 from little_brother import dependency_injection
+from little_brother.api.master_connector import MasterConnector
 from little_brother.app import App, ProcessIteratorFactory, APP_NAME, get_argument_parser
-from little_brother.master_connector import MasterConnector
+from little_brother.persistence.persistence import Persistence, SECTION_NAME
 from little_brother.test.persistence.test_persistence import TestPersistence
 from little_brother.web import web_server
 from python_base_app.configuration import Configuration
@@ -74,7 +75,7 @@ class TestApp(base_test.BaseTestCase):
         self.assertEqual(13, len(configuration._sections))
 
     @classmethod
-    def create_dummy_app(cls):
+    def create_dummy_app(cls, p_logger):
 
         parser = get_argument_parser(p_app_name=APP_NAME)
         arguments = parser.parse_args(cls.get_default_sys_args())
@@ -82,6 +83,10 @@ class TestApp(base_test.BaseTestCase):
         app = App(p_pid_file="TMP_PID", p_app_name=APP_NAME, p_arguments=arguments)
 
         app.load_configuration()
+
+        config = app._config[SECTION_NAME]
+
+        Persistence.delete_database(p_logger=p_logger, p_config=config)
 
         web_server_config = app._config[web_server.SECTION_NAME]
 
@@ -98,7 +103,7 @@ class TestApp(base_test.BaseTestCase):
 
     def test_check_migrations(self):
 
-        app = self.create_dummy_app()
+        app = self.create_dummy_app(p_logger=self._logger)
 
         # This try has been temporarily introduced to make sure that stop_services is called because the call to
         # start_dummy_app runs into an error when instantiating the Prometheus server. Somehow an upstream test

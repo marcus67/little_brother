@@ -29,6 +29,7 @@ from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
 from python_base_app import view_info
+from python_base_app.view_info import ViewInfo
 
 
 def _(text, _mode=None):
@@ -74,6 +75,19 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
             self._user_locale_handler = dependency_injection.container[UserLocaleHandler]
 
         return self._user_locale_handler
+
+    def get_admin_info(self, p_session_context, p_user_name, p_process_infos) -> ViewInfo:
+
+        admin_infos = self.get_admin_infos(
+            p_session_context=p_session_context,
+            p_process_infos=p_process_infos,
+            p_user_names=[ p_user_name ])
+
+        if len(admin_infos) == 0:
+            return None
+
+        return admin_infos[0]
+
 
     def get_admin_infos(self, p_session_context, p_user_names, p_process_infos):
 

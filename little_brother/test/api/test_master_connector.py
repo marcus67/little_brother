@@ -21,8 +21,8 @@
 import unittest
 
 from little_brother.admin_event import AdminEvent
+from little_brother.api.master_connector import MasterConnector, MasterConnectorConfigModel
 from little_brother.client_stats import ClientStats
-from little_brother.master_connector import MasterConnector, MasterConnectorConfigModel
 from python_base_app.test import base_test
 
 HOSTNAME = "some.host"

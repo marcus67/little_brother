@@ -43,8 +43,10 @@ class User(Base, BaseEntity):
     last_name = Column(String(256))
     locale = Column(String(5))
     active = Column(Boolean)
+    access_code = Column(String(256), default=constants.DEFAULT_ACCESS_CODE)
     rulesets = relationship("RuleSet", back_populates="user", lazy="joined")
     devices = relationship("User2Device", back_populates="user", lazy="joined")
+    status = relationship("DailyUserStatus", back_populates="user", lazy="joined")
 
     def __init__(self):
 

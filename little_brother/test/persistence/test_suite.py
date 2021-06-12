@@ -23,6 +23,8 @@ import unittest
 
 from little_brother.test.persistence import test_persistence
 from little_brother.test.persistence.test_persistent_admin_event_entity_manager import TestAdminEventEntityManager
+from little_brother.test.persistence.test_persistent_daily_user_status_entity_manager import \
+    TestDailyUserStatusEntityManager
 from little_brother.test.persistence.test_persistent_device_entity_manager import TestDeviceEntityManager
 from little_brother.test.persistence.test_persistent_process_info_entity_manager import TestProcessInfoEntityManager
 from little_brother.test.persistence.test_persistent_rule_override_entity_manager import TestRuleOverrideEntityManager
@@ -69,6 +71,10 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite, p_test_unit_class=TestUserEntityManager,
+        p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite, p_test_unit_class=TestDailyUserStatusEntityManager,
         p_config_filename=p_config_filename)
 
 
