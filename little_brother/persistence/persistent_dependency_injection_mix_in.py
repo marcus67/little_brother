@@ -119,7 +119,7 @@ class PersistenceDependencyInjectionMixIn:
         return self._user_2_device_entity_manager
 
     @property
-    def user_status_entity_manager(self) -> DailyUserStatusEntityManager:
+    def daily_user_status_entity_manager(self) -> DailyUserStatusEntityManager:
 
         if self._user_status_entity_manager is None:
             self._user_status_entity_manager = dependency_injection.container[DailyUserStatusEntityManager]

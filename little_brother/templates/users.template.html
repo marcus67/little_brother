@@ -207,7 +207,8 @@
 									<DIV CLASS="col-xs-1 "></DIV>
 									<DIV CLASS="col-xs-3  col-md-1 localetext dense-font">{{_('Label')}}</DIV>
 									<DIV CLASS="col-xs-4  col-md-2 localetext dense-font">{{_('Context')}}</DIV>
-									<DIV CLASS="col-xs-4  col-md-2 localetext dense-font">{{_('Context Details')}}</DIV>
+									<DIV CLASS="col-xs-2  col-md-1 localetext dense-font">{{_('Context Details')}}</DIV>
+									<DIV CLASS="col-xs-2  col-md-1 localetext dense-font">{{_('Optional Time')}}</DIV>
 									<!-- line break for sm -->
 									<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
 									<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
@@ -226,10 +227,11 @@
 									<DIV CLASS="col-xs-4  col-md-2  col-lg-2  ">
 										{{ helper.render_field(forms[ruleset.html_key].context, ruleset.fixed_context) }}
 									</DIV>
-									<DIV CLASS="col-xs-4  col-md-2  col-lg-2  ">
+									<DIV CLASS="col-xs-2  col-md-1  col-lg-1  ">
 										{{ helper.render_field(forms[ruleset.html_key].context_details,
 										ruleset.fixed_context) }}
 									</DIV>
+									<DIV CLASS="col-xs-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].optional_time_per_day) }}</DIV>
 									<!-- line break for sm -->
 									<!-- See https://getbootstrap.com/docs/3.3/css/#grid-responsive-resets -->
 									<DIV CLASS="clearfix visible-xs-block"></DIV>

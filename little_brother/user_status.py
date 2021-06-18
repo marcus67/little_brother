@@ -33,3 +33,5 @@ class UserStatus(object):
 
         # Since LittleBrother 0.4.1
         self.monitoring_active = False
+
+        self.optional_time_available = None

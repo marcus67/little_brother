@@ -106,6 +106,7 @@ def create_rulesets_form(prefix, p_localized_context_details, p_context_choices,
         min_break = custom_fields.DurationField("MinBreak")
         free_play = custom_fields.BooleanField("FreePlay")
         max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
+        optional_time_per_day = custom_fields.DurationField("OptionalTimePerDay")
 
     return RulesetForm(prefix=prefix, meta={'csrf': True})
 

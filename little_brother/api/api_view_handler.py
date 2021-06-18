@@ -211,14 +211,20 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 user_status = self.user_manager.get_current_user_status(
                     p_session_context=session_context, p_username=username)
 
-            if user_status is None or not user_status.monitoring_active:
-                return self.user_does_not_exist_error(p_username=username)
+                if user_status is None or not user_status.monitoring_active:
+                    return self.user_does_not_exist_error(p_username=username)
 
-            msg = "Received status request for user '{username}'"
-            self._logger.debug(msg.format(username=username))
+                user = self.user_entity_manager.get_by_username(p_session_context=session_context, p_username=username)
 
-            return flask.Response(json.dumps(user_status, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
-                                  mimetype=MIME_TYPE_APPLICATION_JSON)
+                user_status.optional_time_available = \
+                    self.get_optional_time_available(p_session_context=session_context, p_user=user)
+
+                msg = "Received status request for user '{username}'"
+                self._logger.debug(msg.format(username=username))
+
+                return flask.Response(json.dumps(user_status, cls=tools.ObjectEncoder),
+                                      status=constants.HTTP_STATUS_CODE_OK,
+                                      mimetype=MIME_TYPE_APPLICATION_JSON)
 
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_URL_REQUEST_TIME_EXTENSION, methods=["POST"])
@@ -262,34 +268,42 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 return self.request_time_extension(p_session_context=session_context, p_user=user,
                                                    p_time_extension_length=extension_length)
 
-
-    def request_time_extension(self, p_session_context: SessionContext, p_user: User, 
-                               p_time_extension_length: int, p_reference_date: datetime.date=None):
+    def get_optional_time_available(self, p_session_context: SessionContext, p_user: User,
+                                    p_reference_date: datetime.date=None):
 
         if p_reference_date is None:
-            p_reference_date = datetime.datetime.today()
-    
-        user_status = self.user_status_entity_manager.get_user_status(
+            p_reference_date = datetime.date.today()
+
+        user_status = self.daily_user_status_entity_manager.get_user_status(
             p_user_id=p_user.id, p_session_context=p_session_context, p_reference_date=p_reference_date)
-        
-        active_rule_set = self.rule_handler.get_active_ruleset(p_reference_date=p_reference_date, 
+
+        active_rule_set = self.rule_handler.get_active_ruleset(p_reference_date=p_reference_date,
                                                                p_rule_sets=p_user.rulesets)
-        
+
         if active_rule_set is not None:
             optional_time_per_day = active_rule_set.optional_time_per_day
-            
+
         else:
             optional_time_per_day = 0
-            
+
         if user_status is None:
             optional_time_used = 0
-            
+
         else:
             optional_time_used = user_status.optional_time_used
 
-        new_optional_time_used = optional_time_used + p_time_extension_length
+        if optional_time_per_day is None:
+            return None
 
-        if new_optional_time_used <= optional_time_per_day:
+        return optional_time_per_day - optional_time_used
+
+    def request_time_extension(self, p_session_context: SessionContext, p_user: User,
+                               p_time_extension_length: int, p_reference_date: datetime.date=None):
+
+        optional_time_available= self.get_optional_time_available(p_session_context=p_session_context,
+                                                                  p_user=p_user, p_reference_date=p_reference_date)
+
+        if p_time_extension_length <= optional_time_available:
 
             process_infos = self.processs_handler_manager.get_process_infos()
 
@@ -302,14 +316,21 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
             session = p_session_context.get_session()
 
+            if p_reference_date is None:
+                p_reference_date = datetime.date.today()
+
+            user_status = self.daily_user_status_entity_manager.get_user_status(
+                p_user_id=p_user.id, p_session_context=p_session_context, p_reference_date=p_reference_date)
+
             if user_status is None:
                 user_status = DailyUserStatus()
                 session.add(user_status)
                 user_status.reference_date = p_reference_date
                 user_status.user = p_user
-                #p_user.status.append(user_status)
+                user_status.optional_time_used = p_time_extension_length
 
-            user_status.optional_time_used = new_optional_time_used
+            else:
+                user_status.optional_time_used += p_time_extension_length
 
             session.commit()
 
