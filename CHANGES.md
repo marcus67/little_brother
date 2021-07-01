@@ -4,10 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.6 Revision 102 (June ?, 2021)
+## Version 0.4.6 Revision 102 (July 1st, 2021)
 
 *   New class `DailyUserStatus`
-*   Move `MasterConnector` to subdirectory `api` 
+*   Move `MasterConnector` to subdirectory `api`
+*   Closes #148, see [here](https://github.com/marcus67/little_brother/issues/148)
 
 ## Version 0.4.5 Revision 101 (June 6th, 2021)
 

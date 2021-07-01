@@ -145,7 +145,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
     def wrong_parameter_format_error(self, p_parameter_name, p_value):
         msg_format = _("parameter '{parameter_name}' with value '{value}' has wrong format")
-        msg = msg_format.format(parameter_name=p_parameter_name, p_value=p_value)
+        msg = msg_format.format(parameter_name=p_parameter_name, value=p_value)
         return self.api_error(p_message=msg)
 
     def user_does_not_exist_error(self, p_username):

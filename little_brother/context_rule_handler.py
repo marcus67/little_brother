@@ -36,7 +36,7 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
     def locale_helper(self) -> LocaleHelper:
 
         if self._locale_helper is None:
-            self._locale_helper = dependency_injection.container(LocaleHelper)
+            self._locale_helper = dependency_injection.container[LocaleHelper]
 
         return self._locale_helper
 
