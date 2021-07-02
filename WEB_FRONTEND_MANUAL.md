@@ -338,7 +338,7 @@ If different days are to be treated differently more rules are required besides 
 To this purpose the setting *Context* can be used. If its value is `weekplan` the setting
 *Context Details* will contain either:
 
-*   the concrete name of the day of the week,
+*   the adverb referring to the day of the week (e.g. `sundays`),
 
 *   the string `weekend` comprising Saturday and Sunday, or day-coded seven-character string in which `1`, `X`, or `Y` 
 denotes an active day and any other character denotes an inactive day. For example: the string "X-X-X--" would denote 

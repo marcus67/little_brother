@@ -107,6 +107,9 @@ class UserEntityManager(BaseEntityManager):
         for user2device in user.devices:
             session.delete(user2device)
 
+        for status in user.status:
+            session.delete(status)
+
         session.delete(user)
         session.commit()
         self.persistence.clear_cache()
