@@ -8,6 +8,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Delete all user status entries when deleting a user
 *   Correct description of rule configuration using days of the week
+*   Closes #149, see [here](https://github.com/marcus67/little_brother/issues/149)
 
 ## Version 0.4.6 Revision 102 (July 1st, 2021)
 

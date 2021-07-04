@@ -39,6 +39,7 @@ from little_brother.persistence.persistent_dependency_injection_mix_in import Pe
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler_manager import ProcessHandlerManager
+from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleHandler
 from little_brother.user_locale_handler import UserLocaleHandler
 from little_brother.user_manager import UserManager
@@ -173,6 +174,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         return self._user_handler
 
     @property
+    def prometheus_client(self) -> PrometheusClient:
+
+        if self._prometheus_client is None:
+            self._prometheus_client = dependency_injection.container[PrometheusClient]
+
+        return self._prometheus_client
+
+    @property
     def check_interval(self):
         return self._config.check_interval
 
@@ -231,52 +240,52 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
     def set_prometheus_http_requests_summary(self, p_hostname, p_service, p_duration):
 
-        if self._prometheus_client is not None:
+        if self.prometheus_client is not None:
             # try to resolve ip addresses
             p_hostname = tools.get_dns_name_by_ip_address(p_ip_address=p_hostname)
-            self._prometheus_client.set_http_requests_summary(p_hostname=p_hostname,
+            self.prometheus_client.set_http_requests_summary(p_hostname=p_hostname,
                                                               p_service=p_service,
                                                               p_duration=p_duration)
 
     def set_metrics(self):
 
         with SessionContext(p_persistence=self.persistence) as session_context:
-            if self._prometheus_client is not None:
-                self._prometheus_client.set_uptime(p_hostname="master", p_uptime=time.time() - self._start_time)
+            if self.prometheus_client is not None:
+                self.prometheus_client.set_uptime(p_hostname="master", p_uptime=time.time() - self._start_time)
 
-                self._prometheus_client.set_number_of_monitored_users(
+                self.prometheus_client.set_number_of_monitored_users(
                     self._user_manager.get_number_of_monitored_users())
-                self._prometheus_client.set_number_of_configured_users(
+                self.prometheus_client.set_number_of_configured_users(
                     len(self.user_entity_manager.user_map(session_context)))
 
                 if self._config.scan_active:
-                    self._prometheus_client.set_monitored_host(self._host_name, True)
+                    self.prometheus_client.set_monitored_host(self._host_name, True)
 
                 latest_ping_time = tools.get_current_time() + \
                                    datetime.timedelta(seconds=-self._config.maximum_client_ping_interval)
 
                 for hostname, client_info in self._client_infos.items():
                     active = client_info.last_message > latest_ping_time
-                    self._prometheus_client.set_monitored_host(hostname, active)
+                    self.prometheus_client.set_monitored_host(hostname, active)
 
                 if self._device_handler is not None:
-                    self._prometheus_client.set_number_of_monitored_devices(
+                    self.prometheus_client.set_number_of_monitored_devices(
                         self._device_handler.get_number_of_monitored_devices())
 
                     for device_info in self._device_handler.device_infos.values():
-                        self._prometheus_client.set_device_active(
+                        self.prometheus_client.set_device_active(
                             device_info.device_name, 1 if device_info.is_up else 0)
-                        self._prometheus_client.set_device_response_time(
+                        self.prometheus_client.set_device_response_time(
                             device_info.device_name, device_info.response_time)
-                        self._prometheus_client.set_device_moving_average_response_time(
+                        self.prometheus_client.set_device_moving_average_response_time(
                             device_info.device_name, device_info.moving_average_response_time)
 
                 else:
-                    self._prometheus_client.set_number_of_monitored_devices(0)
+                    self.prometheus_client.set_number_of_monitored_devices(0)
 
                 for client_info in self._client_infos.values():
                     if client_info.client_stats is not None:
-                        self._prometheus_client.set_client_stats(p_hostname=client_info.host_name,
+                        self.prometheus_client.set_client_stats(p_hostname=client_info.host_name,
                                                                  p_client_stats=client_info.client_stats)
 
     def check(self):
@@ -483,8 +492,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                             self._process_handler_manager.handle_rule_result_info(rule_result_info, stat_info, user)
                             user_active = stat_info.current_activity is not None
 
-                    if self._prometheus_client is not None:
-                        self._prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
+                    if self.prometheus_client is not None:
+                        self.prometheus_client.set_user_active(p_username=user.username, p_is_active=user_active)
 
         fmt = "Processing rules for all users END..."
         self._logger.debug(fmt)
