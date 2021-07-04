@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.7 Revision 103 (July 2nd, 2021)
+## Version 0.4.7 Revision 103 (July 4th, 2021)
 
 *   Delete all user status entries when deleting a user
 *   Correct description of rule configuration using days of the week
