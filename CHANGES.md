@@ -10,6 +10,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Provide `ruleset_check_interval` in `UserStatus`
 *   Correct conversion of optional time from seconds to minutes
 *   Update Italian localization
+*   Add option `--allow-releaseinfo-change` to `apt-get update`
 
 ## Version 0.4.7 Revision 103 (July 4th, 2021)
 
