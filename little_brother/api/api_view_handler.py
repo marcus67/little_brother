@@ -217,7 +217,9 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 user = self.user_entity_manager.get_by_username(p_session_context=session_context, p_username=username)
 
                 user_status.optional_time_available = \
-                    self.get_optional_time_available(p_session_context=session_context, p_user=user)
+                    self.get_optional_time_available_in_minutes(p_session_context=session_context, p_user=user)
+
+                user_status.ruleset_check_interval = self.app_control._config.check_interval
 
                 msg = "Received status request for user '{username}'"
                 self._logger.debug(msg.format(username=username))
@@ -268,8 +270,8 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 return self.request_time_extension(p_session_context=session_context, p_user=user,
                                                    p_time_extension_length=extension_length)
 
-    def get_optional_time_available(self, p_session_context: SessionContext, p_user: User,
-                                    p_reference_date: datetime.date=None):
+    def get_optional_time_available_in_minutes(self, p_session_context: SessionContext, p_user: User,
+                                               p_reference_date: datetime.date=None):
 
         if p_reference_date is None:
             p_reference_date = datetime.date.today()
@@ -280,8 +282,11 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
         active_rule_set = self.rule_handler.get_active_ruleset(p_reference_date=p_reference_date,
                                                                p_rule_sets=p_user.rulesets)
 
+        if active_rule_set.optional_time_per_day is None:
+            return None
+
         if active_rule_set is not None:
-            optional_time_per_day = active_rule_set.optional_time_per_day
+            optional_time_per_day = int (active_rule_set.optional_time_per_day / 60)
 
         else:
             optional_time_per_day = 0
@@ -292,16 +297,14 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
         else:
             optional_time_used = user_status.optional_time_used
 
-        if optional_time_per_day is None:
-            return None
 
         return optional_time_per_day - optional_time_used
 
     def request_time_extension(self, p_session_context: SessionContext, p_user: User,
                                p_time_extension_length: int, p_reference_date: datetime.date=None):
 
-        optional_time_available= self.get_optional_time_available(p_session_context=p_session_context,
-                                                                  p_user=p_user, p_reference_date=p_reference_date)
+        optional_time_available= self.get_optional_time_available_in_minutes(p_session_context=p_session_context,
+                                                                             p_user=p_user, p_reference_date=p_reference_date)
 
         if p_time_extension_length <= optional_time_available:
 

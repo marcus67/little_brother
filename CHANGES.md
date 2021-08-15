@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.8 Revision 104 (August 15th, 2021)
+
+*   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)
+*   Provide `ruleset_check_interval` in `UserStatus`
+*   Correct conversion of optional time from seconds to minutes
+
 ## Version 0.4.7 Revision 103 (July 4th, 2021)
 
 *   Delete all user status entries when deleting a user

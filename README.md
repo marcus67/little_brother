@@ -19,6 +19,7 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                | Issue Link                                                         |
 |----------|------------------------------------------------------------|--------------------------------------------------------------------|
+| 0.4.8    | *New*: Full support for requesting optional time by users  | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
 | 0.4.4    | *New*: Use user specific patterns to prohibit applications | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
 
 ## Contact
@@ -263,7 +264,7 @@ the following languages are supported or currently in preparation (in the order 
 | ---------------------------------------------------------------| ------------- | ------ | -------------- | ---------------------------|
 | ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Up-to-date     |  Marcus Rickert            |
 | ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Up-to-date     |  Marcus Rickert            |
-| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Revision 86    |  Albano Battistella        |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
 | ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 86    |  Albano Battistella        |

@@ -37,7 +37,7 @@ from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 USERNAME = "user1"
 ACCESS_CODE = "$ecret"
 EXTENSION_LENGTH = 5
-OPTIONAL_TIME_PER_DAY = 30
+OPTIONAL_TIME_PER_DAY_IN_SECONDS = 30 * 60
 
 
 class TestApiViewHandler(BaseTestStatusServer):
@@ -128,7 +128,7 @@ class TestApiViewHandler(BaseTestStatusServer):
 
         ruleset = RuleSet()
         session.add(ruleset)
-        ruleset.optional_time_per_day = OPTIONAL_TIME_PER_DAY
+        ruleset.optional_time_per_day = OPTIONAL_TIME_PER_DAY_IN_SECONDS
 
         user.rulesets.append(ruleset)
 

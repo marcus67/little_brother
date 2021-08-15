@@ -32,8 +32,9 @@ class DailyUserStatus(Base, BaseEntity):
 
     id = Column(Integer, primary_key=True)
 
-    optional_time_used = Column(Integer, nullable=False)
     reference_date =Column(Date, nullable=False)
+    # Optional time (in minutes) used on the reference day
+    optional_time_used = Column(Integer, nullable=False)
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="status", lazy="joined")

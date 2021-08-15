@@ -169,7 +169,7 @@ removes the color again.
 
 ![Admin-Override](doc/admin-override.png)
 
-### Managing Time Extensions
+### Managing Time Extensions (handled by the administrator)
 
 Often, it is helpful to be able to extend the time of an active user sessions by some minutes or to grant time
 to a user who is currently not allowed to user the computer. In principle, this is possible by changing one or several
@@ -210,7 +210,20 @@ that will always show the "right" time is the one regarding the remaining number
 
 *   In contrast to the normal rule sets which usually have trouble to cover computer times spanning midnight
 elegantly, time extensions will handle this case nicely.       
-      
+
+### Managing Time Extensions (handled by the user)
+
+In addition to the time extensions handled by the administrator, it is also possible to grant a certain time a day
+which can be used by the user to request time extensions on the fly. This optional time is administered with the
+corresponding ruleset. See the configuration of rulesets further below.
+
+The idea is that time extensions may be required very urgently at the end of session to "kill that final invader" or
+maybe save a game context. For the user, it would be contact the administrator to ask for a time extension 
+and in some cases it may simply be impossible. With the help of the "optional time" the user can avoid the critical
+moments. However, using the optional time will NOT increase the overall playtime of the day which is intentional.
+
+The actual request is executed by the user through the tool 
+[LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar).
 
 ## Configuring Users
 
@@ -299,6 +312,10 @@ The fields represent the following restrictions/meaning:
 *   *Context*: sets the context (type) of rule. Currently, there are three contexts available. See below.
 
 *   *Context details*: sets the specific details of the chosen context. See below.
+
+*   *Optional time*: When set this optional time can be used by the user to request time extensions in sessions. The
+    time is valid for a whole day. Whenever the user requests a time extension the duration will be subtracted from
+    this value.
 
 *   *Min Time of Day*: optionally sets the earliest time of the day when login is allowed. Timestamps must be given 
 in the format `HH:MM` in military time. Time durations must be given in the format `HHh:MMm`.  Either part may be 
