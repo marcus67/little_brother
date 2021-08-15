@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2021-05-29 18:53+0200\n"
-"PO-Revision-Date: 2021-02-21 10:00+0100\n"
+"PO-Revision-Date: 2021-06-19 20:00+0200\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: it\n"
 "Language-Team: it <LL@li.org>\n"
@@ -74,7 +74,7 @@ msgstr "Dettagli"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:39
 msgid "Sub pattern must be longer than one character"
-msgstr ""
+msgstr "Il sotto-modello deve essere più lungo di un carattere"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:71
 msgid "Not a valid host address"
@@ -116,6 +116,9 @@ msgid ""
 " extension.\n"
 "Please, log out."
 msgstr ""
+"{user}, hai solo {minutes_left_in_session} minuti rimasti del tuo tempo"
+" esteso.\n"
+"Per favore, disconnettiti."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/language.py:43
 msgid ""
@@ -185,6 +188,8 @@ msgid ""
 "{user}, you are not allowed to use {process_name} with this account. The "
 "program will be terminated."
 msgstr ""
+"{user}, non sei autorizzato a utilizzare {process_name} con questo account. Il "
+"programma verrà terminato."
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:248
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:150
@@ -226,7 +231,7 @@ msgstr "Tempo di gioco rimanente nella sessione corrente: {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_result_info.py:195
 msgid "Active time extension ({duration}) until {hh_mm}"
-msgstr ""
+msgstr "Estensione del tempo attivo ({duration}) fino a {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/simple_context_rule_handlers.py:26
 msgid "default"
@@ -402,19 +407,19 @@ msgstr "illimitato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:105
 msgid "Manage Time Extension"
-msgstr ""
+msgstr "Gestisci Estensione del Tempo"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:114
 msgid "Deactivate time extension"
-msgstr ""
+msgstr "Disattiva Estensione del Tempo"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:122
 msgid "Decrease time extension by {minutes} minutes"
-msgstr ""
+msgstr "Riduci l'estensione del tempo di {minutes} minuti"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:129
 msgid "Increase time extension by {minutes} minutes"
-msgstr ""
+msgstr "Aumenta l'estensione del tempo di {minutes} minuti"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/admin.template.html:140
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/status.template.html:131
@@ -522,7 +527,7 @@ msgstr "Cancella"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/internal_error.template.html:43
 msgid "Internal Error"
-msgstr ""
+msgstr "Errore Interno"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:27
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/login.template.html:51
@@ -695,14 +700,12 @@ msgid "Process Name Pattern"
 msgstr "Schema Nome Processo"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:134
-#, fuzzy
 msgid "Login Process Name Pattern"
-msgstr "Schema Nome Processo"
+msgstr "Nome Modello Processo di Accesso"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:141
-#, fuzzy
 msgid "Prohibited Process Name Pattern"
-msgstr "Schema Nome Processo"
+msgstr "Nome Modello Processo Proibito"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:158
 msgid "Rulesets"
@@ -802,13 +805,18 @@ msgstr ""
 #~ "{user}, you have are not allowed "
 #~ "to use {process_name} with this account."
 #~ msgstr ""
+#~ "{user}, non sei autorizzato "
+#~ "ad usare {process_name} con questo account."
 
 #~ msgid ""
 #~ "{user}, you have are not allowed "
 #~ "to use {process_name} with this account."
 #~ " The program will be terminated."
 #~ msgstr ""
+#~ "{user}, non sei autorizzato "
+#~ "ad usare {process_name} con questo account."
+#~ "Il programma verrà terminato."
 
 #~ msgid "Sub pattern should be longer than one character"
-#~ msgstr ""
+#~ msgstr "Il sottomodello dovrebbe essere più lungo di un carattere"
 
