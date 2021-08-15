@@ -9,6 +9,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)
 *   Provide `ruleset_check_interval` in `UserStatus`
 *   Correct conversion of optional time from seconds to minutes
+*   Update Italian localization
 
 ## Version 0.4.7 Revision 103 (July 4th, 2021)
 
