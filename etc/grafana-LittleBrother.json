@@ -297,57 +297,77 @@
       }
     },
     {
-      "cacheTimeout": null,
+      "columns": [
+        {
+          "$$hashKey": "object:616",
+          "text": "Current",
+          "value": "current"
+        }
+      ],
       "datasource": null,
+      "description": "",
+      "fontSize": "80%",
       "gridPos": {
         "h": 5,
         "w": 3,
         "x": 15,
         "y": 0
       },
-      "id": 35,
-      "links": [],
-      "options": {
-        "colorMode": "value",
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "$$hashKey": "object:267",
-                "id": 0,
-                "op": "=",
-                "text": "N/A",
-                "type": 1,
-                "value": "null"
-              }
-            ],
-            "nullValueMode": "connected",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "s"
-          },
-          "overrides": [],
-          "values": false
-        },
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal"
+      "id": 46,
+      "pageSize": null,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
       },
-      "pluginVersion": "6.7.2",
+      "styles": [
+        {
+          "$$hashKey": "object:181",
+          "alias": "Uptime",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Current",
+          "type": "number",
+          "unit": "s"
+        },
+        {
+          "$$hashKey": "object:1273",
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:182",
+          "alias": "Hostname",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "Metric",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "expr": "little_brother_uptime{job=\"$job\"}",
-          "instant": true,
           "interval": "",
           "legendFormat": "{{hostname}}",
           "refId": "A"
@@ -355,8 +375,9 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Uptime (Nodes)",
-      "type": "stat"
+      "title": "Nodes (Uptime)",
+      "transform": "timeseries_aggregations",
+      "type": "table"
     },
     {
       "content": "",
@@ -1813,6 +1834,68 @@
       "timeShift": null,
       "title": "Request Count by Hostname (last hour)",
       "type": "bargauge"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 24
+      },
+      "id": 35,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "$$hashKey": "object:267",
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "s"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.7.2",
+      "targets": [
+        {
+          "expr": "little_brother_uptime{job=\"$job\"}",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{hostname}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Uptime (Nodes)",
+      "type": "stat"
     }
   ],
   "refresh": "10s",
@@ -1884,5 +1967,5 @@
   "variables": {
     "list": []
   },
-  "version": 2
+  "version": 3
 }

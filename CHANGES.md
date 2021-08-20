@@ -12,6 +12,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Update Italian localization
 *   Add option `--allow-releaseinfo-change` to `apt-get update`
 *   Correct minor errors in Grafana sample configuration ("Request Count by Service" and "Request Count by Hostname")
+*   Use table for panel "Nodes (Uptime)" in Grafana sample configuration
 *   Closes #146, see [here](https://github.com/marcus67/little_brother/issues/146)
 
 ## Version 0.4.7 Revision 103 (July 4th, 2021)
