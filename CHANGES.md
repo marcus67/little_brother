@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.8 Revision 104 (August 15th, 2021)
+## Version 0.4.8 Revision 105 (August 15th, 2021)
 
 *   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)
 *   Provide `ruleset_check_interval` in `UserStatus`
@@ -12,6 +12,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Update Italian localization
 *   Add option `--allow-releaseinfo-change` to `apt-get update`
 *   Correct minor errors in Grafana sample configuration ("Request Count by Service" and "Request Count by Hostname")
+*   Closes #146, see [here](https://github.com/marcus67/little_brother/issues/146)
 
 ## Version 0.4.7 Revision 103 (July 4th, 2021)
 

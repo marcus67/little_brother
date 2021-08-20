@@ -56,10 +56,13 @@ class StatusViewHandler(BaseViewHandler):
                     process_infos = self.processs_handler_manager.get_process_infos()
                     user_infos = self.admin_data_handler.get_user_status_infos(p_session_context=session_context,
                                                                                p_process_infos=process_infos)
+
+                    sorted_infos = sorted(user_infos.values(), key=lambda info:info['username'])
+
                     page = flask.render_template(
                         constants.STATUS_HTML_TEMPLATE,
                         rel_font_size=self.get_rel_font_size(),
-                        user_infos=user_infos,
+                        user_infos=sorted_infos,
                         has_downtime_today=self.has_downtime_today(p_user_infos=user_infos),
                         app_control_config=self.app_control._config,
                         authentication=BaseWebServer.get_authentication_info(),

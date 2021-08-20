@@ -72,7 +72,8 @@
     		<!--<DIV CLASS="col-xs-1 hidden-sm hidden-md hidden-lg"></DIV> -->
     		<DIV CLASS="hidden-xs col-sm-5  col-md-3 col-lg-4 localetext">{{_('Reasons')}}</DIV>
     	</DIV>
-		{% for username, user_info in user_infos.items() %}
+		{% for user_info in user_infos %}
+			{% set username = user_info.username %}
 	    	{% call accordion.begin() %}status_{{username}}_summary{% endcall %}	    			        
 		    	<DIV CLASS="row ROWLEVEL_2">
 		    		<DIV CLASS="col-xs-3  col-sm-2            col-lg-1 ">
@@ -195,8 +196,9 @@
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
-	{% for username, user_info in user_infos.items() %}
-    	{% call accordion.script() %}status_{{username}}_summary{% endcall %}	    			        
+	{% for user_info in user_infos %}
+		{% set username = user_info.username %}
+    	{% call accordion.script() %}status_{{username}}_summary{% endcall %}
     	{% for i in range (0, user_info.max_lookback_in_days) %}
 			{% call accordion.script() %}status_{{username}}_{{i}}{% endcall %}
     	{% endfor %}

@@ -240,6 +240,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                         activity_permitted = rule_result_info.activity_allowed()
 
                         user_infos[username] = {
+                            'username': username,
                             'active_rule_set': rule_set,
                             'active_stat_info': stat_info,
                             'active_rule_result_info': rule_result_info,
