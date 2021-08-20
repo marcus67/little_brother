@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.8 Revision 105 (August 15th, 2021)
+## Version 0.4.8 Revision 107 (August 21th, 2021)
 
 *   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)
 *   Provide `ruleset_check_interval` in `UserStatus`
