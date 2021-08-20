@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1614114952507,
+  "iteration": 1629479163576,
   "links": [],
   "panels": [
     {
@@ -1640,10 +1640,11 @@
         "displayMode": "basic",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
+            "min": 0,
             "thresholds": {
               "mode": "absolute",
               "steps": [
@@ -1779,7 +1780,7 @@
         "displayMode": "basic",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
@@ -1823,10 +1824,10 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "tags": [],
-          "text": "little-brother-test",
-          "value": "little-brother-test"
+          "$$hashKey": "object:75",
+          "selected": true,
+          "text": "little-brother-prod",
+          "value": "little-brother-prod"
         },
         "hide": 0,
         "includeAll": false,
@@ -1836,13 +1837,13 @@
         "options": [
           {
             "$$hashKey": "object:75",
-            "selected": false,
+            "selected": true,
             "text": "little-brother-prod",
             "value": "little-brother-prod"
           },
           {
             "$$hashKey": "object:76",
-            "selected": true,
+            "selected": false,
             "text": "little-brother-test",
             "value": "little-brother-test"
           },
@@ -1883,5 +1884,5 @@
   "variables": {
     "list": []
   },
-  "version": 32
+  "version": 2
 }

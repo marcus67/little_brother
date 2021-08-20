@@ -11,6 +11,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Correct conversion of optional time from seconds to minutes
 *   Update Italian localization
 *   Add option `--allow-releaseinfo-change` to `apt-get update`
+*   Correct minor errors in Grafana sample configuration ("Request Count by Service" and "Request Count by Hostname")
 
 ## Version 0.4.7 Revision 103 (July 4th, 2021)
 
