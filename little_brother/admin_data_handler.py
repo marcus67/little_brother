@@ -241,6 +241,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
                         user_infos[username] = {
                             'username': username,
+                            'full_name': user.full_name,
                             'active_rule_set': rule_set,
                             'active_stat_info': stat_info,
                             'active_rule_result_info': rule_result_info,

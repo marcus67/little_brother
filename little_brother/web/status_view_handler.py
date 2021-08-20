@@ -57,7 +57,7 @@ class StatusViewHandler(BaseViewHandler):
                     user_infos = self.admin_data_handler.get_user_status_infos(p_session_context=session_context,
                                                                                p_process_infos=process_infos)
 
-                    sorted_infos = sorted(user_infos.values(), key=lambda info:info['username'])
+                    sorted_infos = sorted(user_infos.values(), key=lambda info:info['full_name'])
 
                     page = flask.render_template(
                         constants.STATUS_HTML_TEMPLATE,
