@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.9 Revision 108 (August 21th, 2021)
+
+*   Remove old extra panel from Grafana sample configuration 
+
 ## Version 0.4.8 Revision 107 (August 21th, 2021)
 
 *   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)
