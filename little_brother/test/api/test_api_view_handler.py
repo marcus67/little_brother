@@ -31,6 +31,7 @@ from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_daily_user_status_entity_manager import DailyUserStatusEntityManager
 from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_user import User
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test.web.base_test_status_server import BaseTestStatusServer
 
@@ -146,6 +147,13 @@ class TestApiViewHandler(BaseTestStatusServer):
 
         with SessionContext(p_persistence=persistence) as session_context:
             user_id = self.create_user(p_session_context=session_context)
+
+        user_entity_manager = dependency_injection.container[UserEntityManager]
+
+        user : User = user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+        user.active = True
+
+        session_context.get_session().commit()
 
         master_connector_config = MasterConnectorConfigModel()
         master_connector_config.host_url = "http://localhost:" + port

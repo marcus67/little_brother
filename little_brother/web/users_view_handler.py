@@ -33,8 +33,10 @@ HTML_KEY_NEW_USER = "NewUser"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
 
 
 class UsersViewHandler(BaseViewHandler):
@@ -94,17 +96,61 @@ class UsersViewHandler(BaseViewHandler):
         for user in p_users:
             p_forms[user.html_key].load_from_model(p_model=user)
 
-            for ruleset in user.rulesets:
-                p_forms[ruleset.html_key].load_from_model(p_model=ruleset)
+            for rule_set in user.rulesets:
+                p_forms[rule_set.html_key].load_from_model(p_model=rule_set)
                 # provide a callback function so that the RuleSet can retrieve context summaries
-                ruleset._get_context_rule_handler = self.rule_handler.get_context_rule_handler
+                rule_set._get_context_rule_handler = self.rule_handler.get_context_rule_handler
 
             for user2device in user.devices:
                 p_forms[user2device.html_key].load_from_model(p_model=user2device)
 
+    def handle_button_press_for_rule_set(self, p_session_context, p_submit_id, p_rule_set):
+
+        if p_submit_id == p_rule_set.delete_html_key:
+            self.rule_set_entity_manager.delete_ruleset(
+                p_session_context=p_session_context, p_ruleset_id=p_rule_set.id)
+
+        elif p_submit_id == p_rule_set.move_down_html_key:
+            self.rule_set_entity_manager.move_down_ruleset(
+                p_session_context=p_session_context, p_ruleset_id=p_rule_set.id)
+
+        elif p_submit_id == p_rule_set.move_up_html_key:
+            self.rule_set_entity_manager.move_up_ruleset(
+                p_session_context=p_session_context, p_ruleset_id=p_rule_set.id)
+
+    def handle_button_press_for_user(self, p_forms, p_session_context, p_submit_id, p_user):
+
+        if p_submit_id == p_user.delete_html_key:
+            self.user_entity_manager.delete_user(
+                p_session_context=p_session_context, p_username=p_user.username)
+            self.persistence.clear_cache()
+            self.app_control.send_config_to_all_slaves()
+
+        elif p_submit_id == p_user.new_ruleset_html_key:
+            self.user_entity_manager.assign_ruleset(
+                p_session_context=p_session_context, p_username=p_user.username)
+
+        elif p_submit_id == p_user.new_device_html_key:
+            device_id = int(p_forms[p_user.new_device_html_key].device_id.data)
+            self.user_2_device_entity_manager.add_user2device(
+                p_session_context=p_session_context, p_device_id=device_id,
+                p_username=p_user.username)
+
+        else:
+            for rule_set in p_user.rulesets:
+                self.handle_button_press_for_rule_set(p_session_context=p_session_context,
+                                                      p_submit_id=p_submit_id, p_rule_set=rule_set)
+
+            for user2device in p_user.devices:
+                if p_submit_id == user2device.delete_html_key:
+                    self.user_2_device_entity_manager.delete_user2device(
+                        p_session_context=p_session_context, p_user2device_id=user2device.id)
+
     def handle_button_press(self, p_forms, p_request, p_session_context, p_users):
 
-        if p_request.form['submit'] == HTML_KEY_NEW_USER:
+        submit_id = p_request.form['submit']
+
+        if submit_id == HTML_KEY_NEW_USER:
             username = p_forms[HTML_KEY_NEW_USER].username.data
             self.app_control.add_new_user(p_session_context=p_session_context,
                                           p_username=username, p_locale=self._locale_helper.locale)
@@ -112,40 +158,8 @@ class UsersViewHandler(BaseViewHandler):
 
         else:
             for user in p_users:
-                if p_request.form['submit'] == user.delete_html_key:
-                    self.user_entity_manager.delete_user(
-                        p_session_context=p_session_context, p_username=user.username)
-                    self.persistence.clear_cache()
-                    self.app_control.send_config_to_all_slaves()
-
-                elif p_request.form['submit'] == user.new_ruleset_html_key:
-                    self.user_entity_manager.assign_ruleset(
-                        p_session_context=p_session_context, p_username=user.username)
-
-                elif p_request.form['submit'] == user.new_device_html_key:
-                    device_id = int(p_forms[user.new_device_html_key].device_id.data)
-                    self.user_2_device_entity_manager.add_user2device(
-                        p_session_context=p_session_context, p_device_id=device_id,
-                        p_username=user.username)
-
-                else:
-                    for ruleset in user.rulesets:
-                        if p_request.form['submit'] == ruleset.delete_html_key:
-                            self.rule_set_entity_manager.delete_ruleset(
-                                p_session_context=p_session_context, p_ruleset_id=ruleset.id)
-
-                        elif p_request.form['submit'] == ruleset.move_down_html_key:
-                            self.rule_set_entity_manager.move_down_ruleset(
-                                p_session_context=p_session_context, p_ruleset_id=ruleset.id)
-
-                        elif p_request.form['submit'] == ruleset.move_up_html_key:
-                            self.rule_set_entity_manager.move_up_ruleset(
-                                p_session_context=p_session_context, p_ruleset_id=ruleset.id)
-
-                    for user2device in user.devices:
-                        if p_request.form['submit'] == user2device.delete_html_key:
-                            self.user_2_device_entity_manager.delete_user2device(
-                                p_session_context=p_session_context, p_user2device_id=user2device.id)
+                self.handle_button_press_for_user(p_forms=p_forms, p_session_context=p_session_context,
+                                                  p_submit_id=submit_id, p_user=user)
 
     def get_users_forms(self, p_session_context, p_users):
 
@@ -163,12 +177,12 @@ class UsersViewHandler(BaseViewHandler):
             form.locale.choices = sorted([(locale, language) for locale, language in self._languages.items()])
             forms[user.html_key] = form
 
-            for ruleset in user.rulesets:
+            for rule_set in user.rulesets:
                 localized_values = [(value, self.gettext(value))
                                     for value in self.rule_handler.get_context_rule_handler_choices()]
 
-                if ruleset.fixed_context:
-                    choices = self.add_labels([ruleset.context])
+                if rule_set.fixed_context:
+                    choices = self.add_labels([rule_set.context])
 
                 else:
                     choices = self.add_labels(self.rule_handler.get_context_rule_handler_names())
@@ -179,8 +193,8 @@ class UsersViewHandler(BaseViewHandler):
                 form = entity_forms.create_rulesets_form(p_context_choices=choices,
                                                          p_localized_context_details=localized_values,
                                                          p_context_details_filters=context_details_filters,
-                                                         prefix=ID_PREFIX.format(id=ruleset.html_key))
-                forms[ruleset.html_key] = form
+                                                         prefix=ID_PREFIX.format(id=rule_set.html_key))
+                forms[rule_set.html_key] = form
 
                 form.context_details.validators = [
                     lambda a_form, a_field: self.rule_handler.validate_context_rule_handler_details(
@@ -203,6 +217,31 @@ class UsersViewHandler(BaseViewHandler):
 
         return forms
 
+    def save_for_user2device(self, p_form, p_session_context, p_user2device):
+
+        changed = False
+        a_persistent_user_2_device = self.user_2_device_entity_manager.get_by_id(
+            p_session_context=p_session_context, p_id=p_user2device.id)
+
+        if a_persistent_user_2_device is not None and p_form.differs_from_model(
+                p_model=a_persistent_user_2_device):
+            p_form.save_to_model(p_model=a_persistent_user_2_device)
+            changed = True
+
+        return changed
+
+    def save_for_rule_set(self, p_form, p_session_context, p_rule_set):
+
+        changed = False
+        a_persistent_rule_set = self.rule_set_entity_manager.get_by_id(
+            p_session_context=p_session_context, p_id=p_rule_set.id)
+
+        if a_persistent_rule_set is not None and p_form.differs_from_model(p_model=a_persistent_rule_set):
+            p_form.save_to_model(p_model=a_persistent_rule_set)
+            changed = True
+
+        return changed
+
     def save_users_data(self, p_users, p_forms):
 
         with SessionContext(p_persistence=self.persistence) as session_context:
@@ -210,39 +249,39 @@ class UsersViewHandler(BaseViewHandler):
             changed = False
 
             for user in p_users:
-                form = p_forms[user.html_key]
-                a_persistent_user = self.user_entity_manager.get_by_username(
-                    p_session_context=session_context, p_username=user.username)
-
-                if a_persistent_user is not None and form.differs_from_model(p_model=a_persistent_user):
-                    form.save_to_model(p_model=a_persistent_user)
+                if self.save_for_user(p_forms=p_forms, p_session_context=session_context, p_user=user):
                     changed = True
-
-                for ruleset in user.rulesets:
-                    form = p_forms[ruleset.html_key]
-                    a_persistent_ruleset = self.rule_set_entity_manager.get_by_id(
-                        p_session_context=session_context, p_id=ruleset.id)
-
-                    if a_persistent_ruleset is not None and form.differs_from_model(p_model=a_persistent_ruleset):
-                        form.save_to_model(p_model=a_persistent_ruleset)
-                        changed = True
-
-                for user2device in user.devices:
-                    form = p_forms[user2device.html_key]
-                    a_persistent_user_2_device = self.user_2_device_entity_manager.get_by_id(
-                        p_session_context=session_context, p_id=user2device.id)
-
-                    if a_persistent_user_2_device is not None and form.differs_from_model(
-                            p_model=a_persistent_user_2_device):
-                        form.save_to_model(p_model=a_persistent_user_2_device)
-                        changed = True
 
             if changed:
                 session.commit()
-
                 self._persistence.clear_cache()
                 self.app_control.send_config_to_all_slaves()
                 self.user_manager.reset_users(p_session_context=session_context)
+
+    def save_for_user(self, p_forms, p_session_context, p_user):
+
+        changed = False
+        form = p_forms[p_user.html_key]
+        a_persistent_user = self.user_entity_manager.get_by_username(
+            p_session_context=p_session_context, p_username=p_user.username)
+
+        if a_persistent_user is not None and form.differs_from_model(p_model=a_persistent_user):
+            form.save_to_model(p_model=a_persistent_user)
+            changed = True
+
+        for rule_set in p_user.rulesets:
+            form = p_forms[rule_set.html_key]
+
+            if self.save_for_rule_set(p_form=form, p_session_context=p_session_context, p_rule_set=rule_set):
+                changed = True
+
+        for user2device in p_user.devices:
+            form = p_forms[user2device.html_key]
+
+            if self.save_for_user2device(p_form=form, p_session_context=p_session_context, p_user2device=user2device):
+                changed = True
+
+        return changed
 
     def add_labels(self, p_value_list):
 

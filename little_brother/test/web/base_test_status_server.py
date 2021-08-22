@@ -238,8 +238,13 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             user_id = p_user_entity_manager.add_new_user(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_locale="en")
 
-        user_manager : UserManager = dependency_injection.container[UserManager]
+        session = session_context.get_session()
+        user = p_user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+        # activate monitoring of user so that it will show up on the admin page
+        user.active = True
+        session.commit()
 
+        user_manager : UserManager = dependency_injection.container[UserManager]
 
         user_manager.add_monitored_user(p_username=self.get_new_user_name())
         user_manager.retrieve_user_mappings()
