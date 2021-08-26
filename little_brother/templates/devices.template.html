@@ -43,93 +43,96 @@
 
   <BODY>
     {{ helper.fontawesome_script() }}
-	{% include 'navbar.include.html' %}
 
-	<FORM ACTION="{{ url_for('devices.main_view') }}" METHOD="POST" CLASS="form-horizontal">
-		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
-		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-	    <DIV CLASS="container STANDARD_TABLE">
-	    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_1 TITLE_ROW">
-	    		<DIV CLASS="col-xs-2 localetext">{{_('Device')}}</DIV>
-				<DIV CLASS="col-xs-9 hidden-xs"></DIV>
-				<DIV CLASS="col-xs-1 hidden-xs text-right">
-						<BUTTON id="add_device" type="submit" name="submit" class="btn" title="{{_('Add device')}}"
-								value="{{ new_device_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
+	<DIV class="container-fluid">
+		{% include 'navbar.include.html' %}
+		{% include 'version_check.include.html' %}
+
+		<FORM ACTION="{{ url_for('devices.main_view') }}" METHOD="POST" CLASS="form-horizontal">
+			<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+			<DIV CLASS="container STANDARD_TABLE">
+				<DIV CLASS="row ALTERNATE2_ROWLEVEL_1 TITLE_ROW">
+					<DIV CLASS="col-xs-2 localetext">{{_('Device')}}</DIV>
+					<DIV CLASS="col-xs-9 hidden-xs"></DIV>
+					<DIV CLASS="col-xs-1 hidden-xs text-right">
+							<BUTTON id="add_device" type="submit" name="submit" class="btn" title="{{_('Add device')}}"
+									value="{{ new_device_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
+					</DIV>
 				</DIV>
-	    	</DIV>
-	    	{% for device in devices %}
-	    	   	{% call accordion.begin() %}{{device.html_key}}{% endcall %}
-	    	
-			    	<DIV CLASS="row ALTERNATE2_ROWLEVEL_2">
-			    		<DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-2">
-							<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
-							<!-- {{ _('Edit device details') }} -->
-		    				{% call accordion.toggle_begin(tooltip="Edit device details") %}{{device.html_key}}{% endcall %}
-							{{ device.device_name }}
-			        		{{ accordion.toggle_end() }}
-		        		</DIV>
-						<DIV CLASS="col-xs-6  col-sm-6  col-md-8  col-lg-8 localetext">
-							{{ device.summary|format_text_array|safe }}
+				{% for device in devices %}
+					{% call accordion.begin() %}{{device.html_key}}{% endcall %}
+
+						<DIV CLASS="row ALTERNATE2_ROWLEVEL_2">
+							<DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-2">
+								<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+								<!-- {{ _('Edit device details') }} -->
+								{% call accordion.toggle_begin(tooltip="Edit device details") %}{{device.html_key}}{% endcall %}
+								{{ device.device_name }}
+								{{ accordion.toggle_end() }}
+							</DIV>
+							<DIV CLASS="col-xs-6  col-sm-6  col-md-8  col-lg-8 localetext">
+								{{ device.summary|format_text_array|safe }}
+							</DIV>
+							<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
+								<BUTTON id="{{ device.delete_html_key }}" class="btn" title="{{_('Remove device from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>
+								<BUTTON id="save" type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
+							</DIV>
 						</DIV>
-		        		<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
-							<BUTTON id="{{ device.delete_html_key }}" class="btn" title="{{_('Remove device from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>
-							<BUTTON id="save" type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
-		        		</DIV>
-			    	</DIV>			    			        
-			    {% call accordion.details() %}{{device.html_key}}{% endcall %}
-			<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-				<DIV CLASS="col-xs-1 "></DIV>
-				<DIV CLASS="col-xs-4  col-md-2  col-lg-3 localetext">{{_('Name')}}</DIV>
-				<DIV CLASS="col-xs-7  col-md-3  col-lg-5 localetext">{{_('Host Name')}}</DIV>
-				<!-- line break for xs -->
-				<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
-				<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-				<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-				<!-- line break for xs -->
-				<DIV CLASS="col-xs-1  hidden-md hidden-lg  "></DIV>
-				<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Min Activity Duration [s]')}}</DIV>
-				<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{_('Sample Size')}}</DIV>
-				<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Max Active Response Delay [ms]')}}</DIV>
+					{% call accordion.details() %}{{device.html_key}}{% endcall %}
+				<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+					<DIV CLASS="col-xs-1 "></DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-3 localetext">{{_('Name')}}</DIV>
+					<DIV CLASS="col-xs-7  col-md-3  col-lg-5 localetext">{{_('Host Name')}}</DIV>
+					<!-- line break for xs -->
+					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+					<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+					<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+					<!-- line break for xs -->
+					<DIV CLASS="col-xs-1  hidden-md hidden-lg  "></DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Min Activity Duration [s]')}}</DIV>
+					<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{_('Sample Size')}}</DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Max Active Response Delay [ms]')}}</DIV>
+				</DIV>
+				<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+					<DIV CLASS="col-xs-1 "></DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-3 localetext">{{
+						helper.render_field(forms[device.device_name].device_name) }}
+					</DIV>
+					<DIV CLASS="col-xs-7  col-md-3  col-lg-5 localetext">{{
+						helper.render_field(forms[device.device_name].hostname) }}
+					</DIV>
+					<!-- line break for xs -->
+					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+					<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+					<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+					<!-- line break for xs -->
+					<DIV CLASS="col-xs-1 hidden-md hidden-lg  "></DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
+						helper.render_field(forms[device.device_name].min_activity_duration) }}
+					</DIV>
+					<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{
+						helper.render_field(forms[device.device_name].sample_size) }}
+					</DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
+						helper.render_field(forms[device.device_name].max_active_ping_delay) }}
+					</DIV>
+				</DIV>
+					{{ accordion.end() }}
+				{% endfor %}
 			</DIV>
-			<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-				<DIV CLASS="col-xs-1 "></DIV>
-				<DIV CLASS="col-xs-4  col-md-2  col-lg-3 localetext">{{
-					helper.render_field(forms[device.device_name].device_name) }}
-				</DIV>
-				<DIV CLASS="col-xs-7  col-md-3  col-lg-5 localetext">{{
-					helper.render_field(forms[device.device_name].hostname) }}
-				</DIV>
-				<!-- line break for xs -->
-				<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
-				<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-				<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-				<!-- line break for xs -->
-				<DIV CLASS="col-xs-1 hidden-md hidden-lg  "></DIV>
-				<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
-					helper.render_field(forms[device.device_name].min_activity_duration) }}
-				</DIV>
-				<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{
-					helper.render_field(forms[device.device_name].sample_size) }}
-				</DIV>
-				<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
-					helper.render_field(forms[device.device_name].max_active_ping_delay) }}
-				</DIV>
-			</DIV>
-				{{ accordion.end() }}
-	    	{% endfor %}
-	    </DIV>
 
-		<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
-		<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
-		<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
-		<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
+			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
-		{% for device in devices %}
-			{{ helper.modal_confirm(device.delete_html_key, _("Do you really want to permanently remove the device from monitoring?"), _("Remove from Monitoring"), _("Cancel")) }}
-			{% call accordion.script() %}{{device.html_key}}{% endcall %}
-		{% endfor %}
-    </FORM>
+			{% for device in devices %}
+				{{ helper.modal_confirm(device.delete_html_key, _("Do you really want to permanently remove the device from monitoring?"), _("Remove from Monitoring"), _("Cancel")) }}
+				{% call accordion.script() %}{{device.html_key}}{% endcall %}
+			{% endfor %}
+		</FORM>
+	</DIV>
 
   </BODY>
-  
 </HTML>

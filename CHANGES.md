@@ -7,9 +7,10 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.4.9 Revision 108 (August 23rd, 2021)
 
 *   Remove old extra panel from Grafana sample configuration 
-*   Reduce complexity in classes `AdminDataHandler` and `UsersViewHandler`
+*   Reduce cognitive complexity in classes `AdminDataHandler` and `UsersViewHandler`
 *   Only display in admin view users that are being monitored (fixes runtime error after removing users from monitoring)
 *   Exclude `run_python_base_app_test_suite_no_venv.py` from SonarQube coverage check
+*   Closes #150, see [here](https://github.com/marcus67/little_brother/issues/150)
 
 ## Version 0.4.8 Revision 107 (August 21th, 2021)
 

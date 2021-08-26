@@ -24,15 +24,16 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import custom_fields
 from python_base_app import tools
-from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
 
 HTML_KEY_NEW_DEVICE = "NewDevice"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
 
 
 class DevicesViewHandler(BaseViewHandler):
@@ -116,18 +117,18 @@ class DevicesViewHandler(BaseViewHandler):
                         for device in devices:
                             forms[device.device_name].load_from_model(p_model=device)
 
-                    page = flask.render_template(
-                        constants.DEVICES_HTML_TEMPLATE,
-                        rel_font_size=self.get_rel_font_size(),
-                        devices=devices,
-                        authentication=BaseWebServer.get_authentication_info(),
-                        forms=forms,
-                        new_device_html_key=HTML_KEY_NEW_DEVICE,
-                        new_device_submit_value=HTML_KEY_NEW_DEVICE,
-                        navigation={
-                            'current_view': constants.DEVICES_BLUEPRINT_NAME + "." + constants.DEVICES_VIEW_NAME
-                        },
-                    )
+                    template_dict = {}
+                    self.add_general_template_data(p_dict=template_dict)
+                    template_dict["forms"] = forms
+                    template_dict["devices"] = devices
+                    template_dict["new_device_html_key"] = HTML_KEY_NEW_DEVICE
+                    template_dict["new_device_submit_value"] = HTML_KEY_NEW_DEVICE
+                    template_dict["navigation"] = {
+                        'current_view': constants.DEVICES_BLUEPRINT_NAME + "." + constants.DEVICES_VIEW_NAME
+                    }
+                    self.add_version_info(p_dict=template_dict)
+
+                    page = flask.render_template(constants.DEVICES_HTML_TEMPLATE, **template_dict)
 
                 except Exception as e:
                     return self.handle_rendering_exception(p_page_name="devices page", p_exception=e)

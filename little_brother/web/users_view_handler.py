@@ -24,7 +24,6 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import custom_fields
 from python_base_app import tools
-from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
 
 ID_PREFIX = '{id}_'
@@ -73,18 +72,18 @@ class UsersViewHandler(BaseViewHandler):
                     if not submitted:
                         self.load_from_model(p_forms=forms, p_users=users)
 
-                    page = flask.render_template(
-                        constants.USERS_HTML_TEMPLATE,
-                        rel_font_size=self.get_rel_font_size(),
-                        users=users,
-                        authentication=BaseWebServer.get_authentication_info(),
-                        forms=forms,
-                        new_user_html_key=HTML_KEY_NEW_USER,
-                        new_user_submit_value=HTML_KEY_NEW_USER,
-                        navigation={
-                            'current_view': constants.USERS_BLUEPRINT_NAME + "." + constants.USERS_VIEW_NAME
-                        },
-                    )
+                    dict = {}
+                    self.add_general_template_data(p_dict=dict)
+                    dict["forms"] = forms
+                    dict["users"] = users
+                    dict["new_user_html_key"] = HTML_KEY_NEW_USER
+                    dict["new_user_submit_value"] = HTML_KEY_NEW_USER
+                    dict["navigation"] = {
+                        'current_view': constants.USERS_BLUEPRINT_NAME + "." + constants.USERS_VIEW_NAME
+                    }
+                    self.add_version_info(p_dict=dict)
+
+                    page = flask.render_template(constants.USERS_HTML_TEMPLATE, **dict)
 
                 except Exception as e:
                     return self.handle_rendering_exception(p_page_name="users page", p_exception=e)

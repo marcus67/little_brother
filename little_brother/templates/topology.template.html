@@ -48,27 +48,31 @@
 
   <BODY>
 	{{ helper.fontawesome_script() }}
-	{% include 'navbar.include.html' %}
+	<DIV class="container-fluid">
 
-    <DIV CLASS="container STANDARD_TABLE">
-        <DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-            <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('Node Type')}}</DIV>
-            <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('Node Name')}}</DIV>
-            <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('App Version')}}</DIV>
-            <DIV CLASS="col-xs-2 hidden-xs localetext">{{_('Revision')}}</DIV>
-            <DIV CLASS="col-xs-2 hidden-xs localetext">{{_('Python Version')}}</DIV>
-            <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('Time Since Last Ping')}}</DIV>
+        {% include 'navbar.include.html' %}
+        {% include 'version_check.include.html' %}
+
+        <DIV CLASS="container STANDARD_TABLE">
+            <DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('Node Type')}}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('Node Name')}}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('App Version')}}</DIV>
+                <DIV CLASS="col-xs-2 hidden-xs localetext">{{_('Revision')}}</DIV>
+                <DIV CLASS="col-xs-2 hidden-xs localetext">{{_('Python Version')}}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{_('Time Since Last Ping')}}</DIV>
+            </DIV>
+            {% for info in topology_infos %}
+            <DIV CLASS="row  ROWLEVEL_3">
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ _(info.node_type) }}{% if info.client_stats.running_in_docker %} (Docker){% endif%}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ info.host_name }}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext {{ info.version_class }}">{{ info.version_string }}</DIV>
+                <DIV CLASS="col-xs-2 hidden-xs localetext">{{ info.client_stats.revision }}</DIV>
+                <DIV CLASS="col-xs-2 hidden-xs localetext">{{ info.client_stats.python_version }}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext {{ info.last_message_class}}">{{ info.seconds_without_ping | seconds_as_humanized_duration }}</DIV>
+            </DIV>
+            {% endfor %}
         </DIV>
-        {% for info in topology_infos %}
-        <DIV CLASS="row  ROWLEVEL_3">
-            <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ _(info.node_type) }}{% if info.client_stats.running_in_docker %} (Docker){% endif%}</DIV>
-            <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ info.host_name }}</DIV>
-            <DIV CLASS="col-xs-3 col-sm-2 localetext {{ info.version_class }}">{{ info.version_string }}</DIV>
-            <DIV CLASS="col-xs-2 hidden-xs localetext">{{ info.client_stats.revision }}</DIV>
-            <DIV CLASS="col-xs-2 hidden-xs localetext">{{ info.client_stats.python_version }}</DIV>
-            <DIV CLASS="col-xs-3 col-sm-2 localetext {{ info.last_message_class}}">{{ info.seconds_without_ping | seconds_as_humanized_duration }}</DIV>
-        </DIV>
-        {% endfor %}
     </DIV>
 
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
