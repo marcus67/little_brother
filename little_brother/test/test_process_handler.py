@@ -295,9 +295,13 @@ class TestProcessHandler(base_test.BaseTestCase):
         pinfo = test_data.PINFO_1
 
         a_process_handler = TestProcessHandler.get_process_handler()
-        an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
-            p_pinfo=pinfo)
+        an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(p_pinfo=pinfo)
         a_process_handler.handle_event_process_start(p_event=an_admin_event)
+
+        pinfo.downtime = 123
+
+        an_admin_event = process_handler.ProcessHandler.create_admin_event_process_downtime_from_pinfo(p_pinfo=pinfo)
+        a_process_handler.handle_event_process_downtime(p_event=an_admin_event)
 
         process_infos = a_process_handler.process_infos
 
@@ -307,6 +311,10 @@ class TestProcessHandler(base_test.BaseTestCase):
         key = an_admin_event.get_key()
 
         self.assertIn(key, process_infos)
+
+        process_info = process_infos[key]
+
+        self.assertEqual(123, process_info.downtime)
 
     def test_handle_event_kill_process(self):
         pinfo = test_data.PINFO_1
@@ -437,7 +445,8 @@ class TestProcessHandler(base_test.BaseTestCase):
         a_process_handler = TestProcessHandler.get_process_handler()
         session_context = object()
         a_process_handler.scan_processes(p_session_context=session_context, p_reference_time=None, p_host_name=None,
-                                         p_login_mapping=None, p_server_group=None, p_process_regex_map=None)
+                                         p_login_mapping=None, p_server_group=None, p_process_regex_map=None,
+                                         p_prohibited_process_map=None)
 
 
 if __name__ == "__main__":

@@ -73,6 +73,46 @@ a.CVE_HYPERLINK:visited {
   padding-right: 1px;
 }
 
+.col-xs-5 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-6 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-7 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-8 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-9 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-10 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-11 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-12 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
 .col-lg-1 {
   padding-left: 2px;
   padding-right: 2px;
@@ -313,6 +353,14 @@ ul {
   text-align: center;
 }
 
+.dense-font {
+  font-size: 90%;
+}
+
+.very-dense-font {
+  font-size: 80%;
+}
+
 /* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
 
 .blink {
@@ -333,6 +381,22 @@ ul {
   width: 20px;
 }
 
+/* See https://stackoverflow.com/questions/306924/can-i-change-the-checkbox-size-using-css */
+/*
+input[type=checkbox]
+  /* Double-sized Checkboxes */
+
+  width: 32px;
+  size: 32px;
+
+  margin: 0px 0px 0px 5px;
+}
+
+.ycheck-box-wrapper {
+  margin: 0px 5px 5px 20px;
+  padding: 5px 5px 5px 5px;
+}
+
 /* Style buttons */
 .btn {
   background-color: gray; /* Blue background */
@@ -341,6 +405,35 @@ ul {
   padding: 4px 4px; /* Some padding */
   font-size: 16px; /* Set a font size */
   cursor: pointer; /* Mouse pointer on hover */
+}
+
+.btn-time-extension-plus {
+  background-color: lightgray; /* Blue background */
+  color: green; /* White text */
+  padding: 3px 3px 0px 3px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.btn-time-extension-minus {
+  background-color: lightgray; /* Blue background */
+  color: red; /* White text */
+  padding: 3px 3px 0px 3px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.btn-time-extension-off {
+  background-color: lightgray; /* Blue background */
+  color: red; /* White text */
+  padding: 5px 6px 5px 6px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.time-extension-plus {
+  color: green; /* White text */
+}
+
+.time-extension-minus {
+  color: red; /* White text */
 }
 
 /* Darker background on mouse-over */

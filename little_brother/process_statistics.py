@@ -27,7 +27,7 @@ class HostStat(object):
         self._count = p_count
         self._percent = p_percent
 
-    def add_occurence(self, p_percent, p_count=1):
+    def add_occurence(self, p_percent, p_count=0):
 
         self._count += p_count
 
@@ -79,7 +79,7 @@ class Activity(object):
 
     def add_host_process(self, p_hostname, p_percent=100):
 
-        host_stat = self.host_stats.get(p_hostname)
+        host_stat : HostStat = self.host_stats.get(p_hostname)
 
         if host_stat is None:
             host_stat = HostStat(p_hostname=p_hostname, p_percent=p_percent)
@@ -152,9 +152,9 @@ class DayStatistics(object):
         if self.min_time is None or p_activity.start_time < self.min_time:
             self.min_time = p_activity.start_time
 
-        if p_activity.end_time is not None:
-            if self.max_time is None or p_activity.end_time > self.max_time:
-                self.max_time = p_activity.end_time
+        if p_activity.end_time is not None and \
+                (self.max_time is None or p_activity.end_time > self.max_time):
+            self.max_time = p_activity.end_time
 
     @property
     def duration(self):
@@ -243,22 +243,21 @@ class ProcessStatisticsInfo(object):
 
         self.active_processes = self.active_processes - 1
 
-        if self.active_processes == 0:
-            if p_process_info.end_time is not None:
-                self.current_activity.set_end_time(p_end_time=p_end_time)
-                self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
+        if self.active_processes == 0 and p_process_info.end_time is not None:
+            self.current_activity.set_end_time(p_end_time=p_end_time)
+            self.current_activity.set_downtime(p_downtime=p_process_info.downtime)
 
-                login_date = self.current_activity.start_time.date()
-                lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
+            login_date = self.current_activity.start_time.date()
+            lookback = int((self.reference_date - login_date).total_seconds() / (24 * 3600))
 
-                if self.current_activity.duration > self.min_activity_duration:
-                    if lookback <= self.max_lookback_in_days:
-                        self.day_statistics[lookback].add_activity(self.current_activity)
+            if self.current_activity.duration > self.min_activity_duration:
+                if lookback <= self.max_lookback_in_days:
+                    self.day_statistics[lookback].add_activity(self.current_activity)
 
-                    self.last_inactivity_start_time = p_end_time
-                    self.previous_activity = self.current_activity
+                self.last_inactivity_start_time = p_end_time
+                self.previous_activity = self.current_activity
 
-                self.current_activity = None
+            self.current_activity = None
 
     @property
     def current_activity_start_time(self):

@@ -23,7 +23,7 @@ play and the estimated remaining play time for the day.
 
 The columns contain the following details:
 
-*   *Context*: Shows the active ruleset context for the day.
+*   *Context*: Shows the active rule set context for the day.
 
 *   *Today's Activity*: Shows the overall active time and the maximum activity duration for the current day. If one of 
 the hosts had a downtime, this column will also show the detected downtime (in yellow) which will be subtracted from 
@@ -144,14 +144,14 @@ play and the estimated remaining play time for the day.
 ![Admin-Level-1](doc/admin-level-1.png)
    
 The second level can be opened by clicking on the name of a user. It will show the active restrictions of
-the current day and the next seven days of the selected user. The column "Context" denotes which ruleset is active
+the current day and the next seven days of the selected user. The column "Context" denotes which rule set is active
 on the respective day. The entries are sorted by the start time in ascending order with
 the current day at the top.
 
 ![Admin-Level-2](doc/admin-level-2.png)
 
 The third level can be opened by clicking on a day row. It will show input fields to override the default
-restrictions of the active ruleset of the selected day.    
+restrictions of the active rule set of the selected day.    
 
 ![Admin-Level-3](doc/admin-level-3.png)
 
@@ -168,6 +168,62 @@ When default values are overridden the day row shows the values in blue color. R
 removes the color again. 
 
 ![Admin-Override](doc/admin-override.png)
+
+### Managing Time Extensions (handled by the administrator)
+
+Often, it is helpful to be able to extend the time of an active user sessions by some minutes or to grant time
+to a user who is currently not allowed to user the computer. In principle, this is possible by changing one or several
+of the settings above, but it is not easy and not quick. In come the *time extensions* which allow you to do just this.
+
+Normally, that is without an active time extension, the administration below the user summary looks as follows.
+
+![Time-Extension](doc/screenshot-time-extension-inactive.png)
+
+The dialog shows a number of green buttons with plus signs and numbers on them denoting minutes. Pressing one of these 
+buttons activates the time extension with the selected number of minutes.
+
+The dialog changes to the following display.
+
+![Time-Extension](doc/screenshot-time-extension-active.png)
+
+The rule summary on the top right states that the time extension is active and shows the current end time. In the
+row below there are some red buttons now with minus signs and numbers on them also denoting minutes. Pressing one of 
+these red buttons shortens the time extension by the selected number of minutes. Pressing a green button will further
+extend the time by the selected number of minutes. Shortening the extension by more than its current length or 
+pressing the red off button will remove the time extension.
+
+The exact point of time when the extension starts depends on the current state of the user:
+
+*   *The user is active*: The time extension is *appended* to the current session effectively extending it by the
+number of selected minutes.
+*   *The user is not permitted to use the computer*: In this case the time extension is created starting right away
+and having the length of the selected number of minutes.
+
+**Please, note the following aspects**:
+
+*   Time extensions grant instant computer time overriding other restrictive rules. This will always allow the user
+to play at least until the end of the time extension. It will, however, **not** change the daily limit, nor will it
+influence the way minimum break times are computed.
+
+*   In the rule summary, active restrictive rules will still be displayed but they will be inactive. The only rule
+that will always show the "right" time is the one regarding the remaining number of minutes in the current session.
+
+*   In contrast to the normal rule sets which usually have trouble to cover computer times spanning midnight
+elegantly, time extensions will handle this case nicely.       
+
+### Managing Time Extensions (handled by the user)
+
+In addition to the time extensions handled by the administrator, it is also possible to grant a certain time a day
+which can be used by the user to request time extensions on the fly. This optional time is administered with the
+corresponding ruleset. See the configuration of rulesets further below.
+
+The idea is that time extensions may be required very urgently at the end of session to "kill that final invader" or
+maybe save a game context. For the user, it would be contact the administrator to ask for a time extension 
+and in some cases it may simply be impossible. With the help of the "optional time" the user can avoid the critical
+moments. However, using the optional time will NOT increase the overall playtime of the day which is intentional.
+
+The actual request is executed by the user through the tool 
+[LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar).
 
 ## Configuring Users
 
@@ -187,7 +243,7 @@ To add the user choose the user name from the drop down list and click the add b
 
 After the user has been added her top level entry will be shown:
 
-![Users-New-User-Addes](doc/users-new-user-added.png)
+![Users-New-User-Adds](doc/users-new-user-added.png)
 
 Click on the username to change to second level of the user entry:
 
@@ -196,7 +252,7 @@ Click on the username to change to second level of the user entry:
 The details will show the following items:
 
 *   *Monitored*: denotes if the user will actually be monitored. This will be un-ticked for all new users and should 
-only be ticked off after the user has been configured completely using rulesets and optionally devices.
+only be ticked off after the user has been configured completely using rule sets and optionally devices.
 
 *   *First Name*: sets the first name of the user. When set the first name will be used in notifications instead of the
 username which may be unpronounceable. 
@@ -207,11 +263,38 @@ username which may be unpronounceable.
 tool [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) to this purpose. For a new user
 the locale always defaults to the locale which is detected from the browser.
 
-*   *Process Name Pattern*: sets a regular expression defining the processes which represents a "login" by the user. 
-The default value comprises all standard shells and `systemd` which is started by login process using X11. Only change
-this setting if you absolutely know what you are doing.
- 
-### Adding Rulesets
+*   *Process Name Patterns*: use this link to open the next level of configuration for setting 
+    regular expressions defining specific processes. See below.
+
+### Specifying Login and Prohibited Processes
+
+![Users-Level-2](doc/users-level-2.png)
+
+After opening the link "Process Name Pattern" the next level of configuration opens displaying two text areas
+for specifying process patterns.
+
+*   *Login Process Name Pattern*: sets a regular expression defining the processes which represents a "login" by the 
+    user. The default value comprises all standard shells and `systemd` which is started by login process using X11. 
+    Only  change this setting if you absolutely know what you are doing.
+
+    As of version 0.3.12 the pattern will be matched against the complete command line and no longer the process name 
+    only. This requires/permits the pattern to be more precise if you have several binaries with the same name in 
+    different directories. Thanks to [bhulsken](https://github.com/bhulsken) for providing a pull request.
+    
+    As of version 0.4.4 the pattern can span several lines. The sub patterns on the lines will implicitly be combined
+    into a single pattern using the `|` operator of regular expressions. 
+    
+    **Note**: In order to guarantee backward compatibility prior to version 0.3.12, process name patterns without a 
+    single `/` will be braced by `.*( PATTERN ).*` so that the original expression will be matched at any location in 
+    the command line. If no `/` is contained in the configured expression it will be used literally.
+    
+*   *Prohibited Process Name Pattern*: sets a regular expression describing all the processes that the user is not
+    allowed to start. Per default, the pattern always scans the complete command line of the process. The sub patterns
+    on each line will be braced by `.*( PATTERN ).*` and combined into a single pattern using the `|` operator 
+    of regular expressions. As soon as a matching process is detected the user be played a notification that the 
+    process will be terminated immediately.
+    
+### Adding Rule Sets
 
 When a new user is created, there is always one default rule created for her which will act as a fallback if no other
 rule applies. However, the new rule does not contain any restrictions yet:
@@ -229,6 +312,10 @@ The fields represent the following restrictions/meaning:
 *   *Context*: sets the context (type) of rule. Currently, there are three contexts available. See below.
 
 *   *Context details*: sets the specific details of the chosen context. See below.
+
+*   *Optional time*: When set this optional time can be used by the user to request time extensions in sessions. The
+    time is valid for a whole day. Whenever the user requests a time extension the duration will be subtracted from
+    this value.
 
 *   *Min Time of Day*: optionally sets the earliest time of the day when login is allowed. Timestamps must be given 
 in the format `HH:MM` in military time. Time durations must be given in the format `HHh:MMm`.  Either part may be 
@@ -268,7 +355,7 @@ If different days are to be treated differently more rules are required besides 
 To this purpose the setting *Context* can be used. If its value is `weekplan` the setting
 *Context Details* will contain either:
 
-*   the concrete name of the day of the week,
+*   the adverb referring to the day of the week (e.g. `sundays`),
 
 *   the string `weekend` comprising Saturday and Sunday, or day-coded seven-character string in which `1`, `X`, or `Y` 
 denotes an active day and any other character denotes an inactive day. For example: the string "X-X-X--" would denote 
@@ -331,7 +418,7 @@ and click the add button
 
 ![Add-Button](doc/add-button.png)
 
-The top level device overview will show a comma seperated list of all devices.
+The top level device overview will show a comma separated list of all devices.
 
 ![User-Devices-Level-1](doc/users-devices-level-1.png)
  
@@ -390,6 +477,29 @@ be a valid address which can be resolved by the name server. Otherwise the entry
 has to be unique across all devices. If you want to monitor devices in your local WIFI you have to see to it 
 that your WIFI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
 router accordingly. Look out for *persistent IP addresses* in the manual.
+
+    As of version 0.3.12 of `LittleBrother` the host name may also have an extended format permitting to ping devices
+    behind a firewall. This feature is supported by [ProxyPing](https://github.com/marcus67/proxy_ping). In this case the
+    host name has the following format
+
+        proxy.host.name:port,device.host.name
+    
+    where `proxy.host.name` ist the DNS name of proxy host and `port` is the optional port number. `device.host.name`
+    denotes the DNS name of the actual device. The port defaults to `6666` which is the default of `ProxyPing`. If 
+    no port is given the colon has to be omitted, too. Of course, instead of either host name an IP address may be used. 
+
+    Some examples:
+
+    | Host Specification                           | Description                                                                                                                      |                                                                                                                                                                                                                                                                                                                                    
+    |:-------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------- |
+    | `my.device.net`                              | Direct ping to device with DNS name `my.device.net`                                                                              |
+    | `192.168.5.2`                                | Direct ping to device with IP address `192.168.5.2`                                                                              |
+    | `my.proxy.somenet,my.hidden.device`          | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using default port `6666`  |
+    | `my.proxy.somenet:6665,my.hidden.device`     | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using explicit port `6665` |
+
+    **Note** that `LittleBrother` will only check the validity of the proxy host 
+    name, whereas the `device.host.name` will not be checked. For the time being, format errors in the specification above
+    or a wrong device host name will silently be ignored resulting in the device being regarded as *down* all the time.   
 
 *   *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
 as active. Durations shorter than this period will be ignored completely.

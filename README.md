@@ -13,6 +13,15 @@ process. Usually, the user will get several spoken notifications (using the
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) before she is actually kicked out so 
 that she can log out gracefully in time.
 
+## What's New?
+
+The latest major feature changes are:
+
+| Version  | Feature/Fix                                                | Issue Link                                                         |
+|----------|------------------------------------------------------------|--------------------------------------------------------------------|
+| 0.4.8    | *New*: Full support for requesting optional time by users  | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
+| 0.4.4    | *New*: Use user specific patterns to prohibit applications | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
+
 ## Contact
 
 Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments 
@@ -54,12 +63,13 @@ See [here](CHANGES.md)
 
 ## Continuous Integration Status Overview
 
-| Status              | Master                                                                                                                                                                                                                                                                                                                                                               | Mac OS Test                                                                                                                                                                                       | Release                                                                                                                                                                                                                                                                                                                                                              |
-|:------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CircleCI            | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A>                                                                                                                                                                                 | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A> | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A>                                                                                                                                                                              |
-| Test Coverage       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A>                                                                                                                                                                                               | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/fb-rickert-beethoven.svg?label=MacOS"></A>       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>                                                                                                                                                                                     |
-| Snyk Vulnerability  | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>         | not available                                                                                                                                                                                     | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/release/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> |
-| Codacy Code Quality | <A href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a>                                                                                         | not available                                                                                                                                                                                     | <A href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd?branch=release"/></a>                                                                          |
+| Status              | Master                                                                                                                                                                                                                                                                                                                                                               | Release                                                                                                                                                                                                                                                                                                                                                              |
+|:------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CircleCI            | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A>                                                                                                                                                                                 | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A>                                                                                                                                                                              |
+| Test Coverage       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A>                                                                                                                                                                                               | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>                                                                                                                                                                                     |
+| Snyk Vulnerability  | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>         | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/release/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> |
+| Codacy Code Quality | <A href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a>                                                                                         | <A href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd?branch=release"/></a>                                                                          |
+| Code Climate        | <a href="https://codeclimate.com/github/marcus67/little_brother/maintainability"><img src="https://api.codeclimate.com/v1/badges/c42e65d566d1e10f1402/maintainability" /></a>                                                                                                                                                                                        | not available                                                                                                                                                                                                                                                                                                                                                        |                 
 
 Note: The vulnerability status is derived from the Python PIP packages found in `requirements.txt`.
 
@@ -100,7 +110,7 @@ display the remaining playtime of a monitored user and speak the notifications.
 *   The application has international language support. Currently English, Italian and German translations are provided.
 Users are invited to provide translations for other languages.
 
-*   Downtime of a server during playtime (e.g. due to hibernation) is automatically substracted from the play time.
+*   Downtime of a server during playtime (e.g. due to hibernation) is automatically subtracted from the play time.
 
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
 such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
@@ -109,8 +119,21 @@ be used to determine the activity on those devices. In contrast to the Linux hos
 will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
 
+*   As of version 0.3.12 `LittleBrother` is able to use [ProxyPing](https://github.com/marcus67/proxy_ping) to ping
+devices behind firewalls provided the tool can be deployed on a Debian server behind the firewall.
+
+*   As of version 0.3.13 `LittleBrother` slaves will terminate local user sessions if they cannot reach the master
+process for a certain time (defaults to 50 seconds). This ensures users cannot suppress being logged out by 
+*pulling the plug*.
+
+*   As of version 0.4.0 `LittleBrother` provides an administration feature to easily extend the current computer time 
+or grant computer when the usage would normally be prohibited. This is called a time extension. During a active 
+extension all other restrictions (maximum time per session, time of day, and maximum time per day) are deactivated.
+Time extension can even extend into the next day making long night session possible. However, any computer time
+actually spent during a time extension will contribute to the overall time played in the course of a day.   
+
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
-Linux host with a Docker deamon available.
+Linux host with a Docker daemon available.
 
 *   The application uses voice generation to inform the user over impending logouts. Also these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
@@ -173,19 +196,20 @@ to log into the [web frontend](http://localhost:5555/).
 The default setup will fit most first-time users (except for the password). The following table contains 
 various additional aspects that may require additional configuration.
 
-| Aspect                | Default Setting                                                    | Alternatives                                                    | Reference                                               |
-| --------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------- |
-| Admin Password        | User `admin` with password `test123`                               |                                                                 | See "Setting Admin Password" below                      | 
-| Database backend      | File oriented database [sqlite](https://www.sqlite.org/index.html) | Full fledge database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Web frontend port     | `5555`                                                             | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Web frontend base URL | `/`                                                                | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| User registry         | `/etc/passwd`                                                      | Predfined users and UIDs                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Master slave setup    | Use only a master host                                             | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Mapping UIDs          | UIDs are synchronized across all hosts                             | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Scanning Interval     | Every 5 seconds                                                    | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Reverse proxy setup   | No reverse proxy                                                   | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Docker Support        | Slave is installed as Debian package                               | Slave is run as Docker container                                | See [Docker](DOCKER.md).                                |
-| Prometheus Support    | Not activated                                                      | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
+| Aspect                      | Default Setting                                                            | Alternatives                                                    | Reference                                               |
+| --------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------- |
+| Admin Password              | User `admin` with password `test123`                                       | Use LDAP for authentication and authorization                   | See "Setting Admin Password" below                      | 
+| Database backend            | File oriented database [sqlite](https://www.sqlite.org/index.html)         | Full fledged database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Web frontend port           | `5555`                                                                     | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Web frontend base URL       | `/`                                                                        | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| User registry               | `/etc/passwd`                                                              | Predefined users and UIDs or LDAP registry                      | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Master slave setup          | Use only a master host                                                     | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Docker Support              | Slave is installed as Debian package                                       | Slave is run as Docker container                                | See [Docker](DOCKER.md).                                |
+| Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
+| Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 
 ### Setting the Admin Password
 
@@ -243,7 +267,7 @@ the following languages are supported or currently in preparation (in the order 
 | ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
-| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 63    |  Albano Battistella        |
+| ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 86    |  Albano Battistella        |
 | ![Flag Turkey](doc/turkey-flag-icon-32.png)                    | Turkish       | tr     | Revision 63    |  Selay Dogan               |
 | ![Flag Russia](doc/russia-flag-icon-32.png)                    | Russian       | ru     | Revision 63    |  J. Moldawski              |
 | ![Flag Japan](doc/japan-flag-icon-32.png)                      | Japanese      | ja     | Revision 63    |  Arik M.                   |
@@ -271,4 +295,9 @@ a translation. You do not necessarily have to clone this repository or be famili
 *   The site [www.mehr-schulferien.de](https://www.mehr-schulferien.de) maintains the vacation metadata for
     Germany.
     
-*   The icons are provided by [fontawesome.com](https://fontawesome.com). 
+*   The icons are provided by [fontawesome.com](https://fontawesome.com).
+
+*   People contributing by providing pull requests:
+
+    *   [Bas Hulsken](https://github.com/bhulsken) (see [issue 120](https://github.com/marcus67/little_brother/issues/120))
+    *   [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 

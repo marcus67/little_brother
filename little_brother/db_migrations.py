@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -21,9 +21,16 @@ import alembic
 import alembic.config
 
 from little_brother import constants
-from little_brother import persistence
-from little_brother import rule_handler
 from little_brother import simple_context_rule_handlers
+# The following import is required by alembic migrations triggered by the test cases. Otherwise the entity "UserStatus"
+# will not be found.
+# noinspection PyUnresolvedReferences
+from little_brother.persistence.persistent_daily_user_status import DailyUserStatus
+from little_brother.persistence.persistent_device import Device
+from little_brother.persistence.persistent_rule_set import RuleSet
+from little_brother.persistence.persistent_user import User
+from little_brother.persistence.persistent_user_2_device import User2Device
+from python_base_app import tools
 
 
 class DatabaseMigrations(object):
@@ -44,8 +51,10 @@ class DatabaseMigrations(object):
 
         alembic_argv = ["-x", url,
                         "upgrade", p_alembic_version]
+        cwd = os.getcwd()
         os.chdir(alembic_working_dir)
         alembic.config.main(alembic_argv, prog="alembic.config.main")
+        os.chdir(cwd)
 
     def get_current_version(self):
 
@@ -71,7 +80,7 @@ class DatabaseMigrations(object):
             msg = "Migrating username '{username}..."
             self._logger.info(msg.format(username=username))
 
-            user = persistence.User()
+            user = User()
             session.add(user)
 
             user.username = username
@@ -80,13 +89,13 @@ class DatabaseMigrations(object):
             locale = None
 
             for old_ruleset in configs:
-                ruleset = persistence.RuleSet()
+                ruleset = RuleSet()
                 session.add(ruleset)
                 ruleset.user = user
-                persistence.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
+                tools.copy_attributes(p_from=old_ruleset, p_to=ruleset, p_only_existing=True)
 
                 if ruleset.priority is None:
-                    ruleset.priority = rule_handler.DEFAULT_PRIORITY
+                    ruleset.priority = constants.DEFAULT_RULE_SET_PRIORITY
 
                 if process_name_pattern is None and old_ruleset.process_name_pattern is not None:
                     process_name_pattern = old_ruleset.process_name_pattern
@@ -109,7 +118,7 @@ class DatabaseMigrations(object):
         session.commit()
         session.close()
 
-    def migrate_client_device_configs(self, p_client_device_configs):
+    def migrate_client_device_configs(self, p_client_device_configs, persistent_user2device=None):
 
         session = self._persistence.get_session()
 
@@ -117,17 +126,17 @@ class DatabaseMigrations(object):
             msg = "Migrating device '{device_name}..."
             self._logger.info(msg.format(device_name=device_name))
 
-            device = persistence.Device()
+            device = Device()
             session.add(device)
             device.device_name = device_name
-            persistence.copy_attributes(p_from=old_device, p_to=device, p_only_existing=True)
+            tools.copy_attributes(p_from=old_device, p_to=device, p_only_existing=True)
 
             if old_device.username is not None:
-                query = session.query(persistence.User).filter(persistence.User.username == old_device.username)
+                query = session.query(User).filter(User.username == old_device.username)
 
                 if query.count() == 1:
                     user = query.one()
-                    user2device = persistence.User2Device()
+                    user2device = User2Device()
                     user2device.device = device
                     user2device.percent = constants.DEFAULT_USER2DEVICE_PERCENT
                     user2device.active = True

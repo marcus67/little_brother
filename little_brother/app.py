@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -21,32 +21,43 @@ import alembic.config
 import alembic.util.messaging
 import psutil
 
-from little_brother import app_control
 from little_brother import client_device_handler
 from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import db_migrations
-from little_brother import master_connector
-from little_brother import persistence
-from little_brother import popup_handler
-from little_brother import prometheus
-from little_brother import rule_handler
-from little_brother import status_server
+from little_brother import dependency_injection
 from little_brother import login_mapping
+from little_brother import rule_handler
+from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
-
+from little_brother.api.master_connector import MasterConnector, MasterConnectorConfigModel, \
+    SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
+from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
+from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
+from little_brother.persistence import persistence
+from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
+from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistence.persistent_user import User
+from little_brother.prometheus import PrometheusClient, PrometheusClientConfigModel, \
+    SECTION_NAME as PROMETHEUS_SECTION_NAME
+from little_brother.rule_handler import RuleHandler
+from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
+from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
-from python_base_app import locale_helper
+from python_base_app import ldap_user_handler
+from python_base_app import pinger
 from python_base_app import unix_user_handler
+from python_base_app.base_user_handler import BaseUserHandler
+from python_base_app.locale_helper import LocaleHelper
 
 APP_NAME = 'LittleBrother'
 DIR_NAME = 'little-brother'
 PACKAGE_NAME = 'little_brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
-DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60 # seconds
+DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60  # seconds
 
 
 class AppConfigModel(base_app.BaseAppConfigModel):
@@ -93,21 +104,19 @@ class App(base_app.BaseApp):
         self._master_connector = None
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
-        self._prometheus_client = None
+        self._prometheus_client : PrometheusClient = None
         self._user_handler = None
         self._locale_helper = None
+        self._pinger = None
 
     def prepare_configuration(self, p_configuration):
 
-        app_control_section = app_control.AppControlConfigModel()
+        app_control_section = AppControlConfigModel()
         p_configuration.add_section(app_control_section)
 
         audio_handler_section = audio_handler.AudioHandlerConfigModel()
         audio_handler_section.spool_dir = os.path.join("/var/spool", constants.DIR_NAME)
         p_configuration.add_section(audio_handler_section)
-
-        popup_handler_section = popup_handler.PopupHandlerConfigModel()
-        p_configuration.add_section(popup_handler_section)
 
         persistence_section = persistence.PersistenceConfigModel()
         persistence_section.sqlite_dir = os.path.join("/var/spool", constants.DIR_NAME)
@@ -128,29 +137,35 @@ class App(base_app.BaseApp):
         self._client_device_section_handler = client_device_handler.ClientDeviceSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._client_device_section_handler)
 
-        status_server_section = status_server.StatusServerConfigModel()
+        status_server_section = web_server.StatusServerConfigModel()
         p_configuration.add_section(status_server_section)
 
-        master_connector_section = master_connector.MasterConnectorConfigModel()
+        master_connector_section = MasterConnectorConfigModel()
         p_configuration.add_section(master_connector_section)
 
-        prometheus_client_section = prometheus.PrometheusClientConfigModel()
+        prometheus_client_section = PrometheusClientConfigModel()
         p_configuration.add_section(prometheus_client_section)
 
         self.app_config = AppConfigModel()
         p_configuration.add_section(self.app_config)
 
-        user_handler_section = unix_user_handler.BaseUserHandlerConfigModel()
+        user_handler_section = unix_user_handler.UnixUserHandlerConfigModel()
         p_configuration.add_section(user_handler_section)
+
+        ldap_handler_section = ldap_user_handler.LdapUserHandlerConfigModel()
+        p_configuration.add_section(ldap_handler_section)
 
         self._login_mapping_section_handler = login_mapping.LoginMappingSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._login_mapping_section_handler)
+
+        pinger_section = pinger.PingerConfigModel()
+        p_configuration.add_section(pinger_section)
 
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
     def is_master(self):
 
-        return self._config[master_connector.SECTION_NAME].host_url is None
+        return self._config[MASTER_CONNECTOR_SECTION_NAME].host_url is None
 
     def check_migrations(self):
 
@@ -163,7 +178,7 @@ class App(base_app.BaseApp):
 
         if db_mig.check_if_version_is_active(p_version=alembic_version_gui.revision):
             session = self._persistence.get_session()
-            rows = session.query(persistence.User).count()
+            rows = session.query(User).count()
 
             if rows == 0:
                 # if there are no users in the database yet we assume that the migration has never run yet
@@ -186,6 +201,11 @@ class App(base_app.BaseApp):
 
             session.close()
 
+    def register_rule_context_handlers(self, p_rule_handler):
+        p_rule_handler.register_context_rule_handler(DefaultContextRuleHandler(), p_default=True)
+        p_rule_handler.register_context_rule_handler(WeekplanContextRuleHandler())
+        p_rule_handler.register_context_rule_handler(GermanVacationContextRuleHandler())
+
     def prepare_services(self, p_full_startup=True):
 
         super().prepare_services(p_full_startup=p_full_startup)
@@ -197,23 +217,28 @@ class App(base_app.BaseApp):
         if not p_full_startup:
             return
 
+        # Define dependency injection
+        dependency_injection.container[persistence.Persistence] = self._persistence
+        dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
+        dependency_injection.container[TimeExtensionEntityManager] = TimeExtensionEntityManager()
+
         if self.is_master():
-            self._rule_handler = rule_handler.RuleHandler(
+            self._rule_handler = RuleHandler(
                 p_config=self._config[rule_handler.SECTION_NAME],
                 p_persistence=self._persistence)
 
-        self._master_connector = master_connector.MasterConnector(
-            p_config=self._config[master_connector.SECTION_NAME])
+            dependency_injection.container[RuleHandler] = self._rule_handler
+
+            self.register_rule_context_handlers(p_rule_handler=self._rule_handler)
+
+        self._master_connector = MasterConnector(p_config=self._config[MASTER_CONNECTOR_SECTION_NAME])
+
+        dependency_injection.container[MasterConnector] = self._master_connector
 
         config = self._config[audio_handler.SECTION_NAME]
 
         if config.is_active():
             self._notification_handlers.append(audio_handler.AudioHandler(p_config=config))
-
-        config = self._config[popup_handler.SECTION_NAME]
-
-        if config.is_active():
-            self._notification_handlers.append(popup_handler.PopupHandler(p_config=config))
 
         self.check_migrations()
 
@@ -221,74 +246,88 @@ class App(base_app.BaseApp):
             p_config=self._config[client_process_handler.SECTION_NAME],
             p_process_iterator_factory=ProcessIteratorFactory())
 
+        pinger_config = self._config[pinger.SECTION_NAME]
+        self._pinger = pinger.Pinger(p_config=pinger_config)
+
         self._client_device_handler = client_device_handler.ClientDeviceHandler(
             p_config=self._config[client_device_handler.SECTION_NAME],
-            p_persistence=self._persistence)
+            p_pinger=self._pinger)
 
         self._process_handlers = {
             process_handler.id: process_handler,
             self._client_device_handler.id: self._client_device_handler
         }
 
-        config = self._config[prometheus.SECTION_NAME]
+        config = self._config[PROMETHEUS_SECTION_NAME]
 
         if config.is_active():
-            self._prometheus_client = prometheus.PrometheusClient(
+            self._prometheus_client = PrometheusClient(
                 p_logger=self._logger, p_config=config)
 
+        dependency_injection.container[PrometheusClient] = self._prometheus_client
+
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
-        status_server_config = self._config[status_server.SECTION_NAME]
+        ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
+        status_server_config = self._config[web_server.SECTION_NAME]
 
         self.init_babel(p_localeselector=self.get_request_locale)
 
         localedir = os.path.join(os.path.dirname(__file__), "translations")
-        a_locale_helper = locale_helper.LocaleHelper(p_locale_selector=self.get_request_locale,
-                                                     p_locale_dir=localedir)
+        a_locale_helper = LocaleHelper(p_locale_selector=self.get_request_locale, p_locale_dir=localedir)
         self.add_locale_helper(a_locale_helper)
+
+        dependency_injection.container[LocaleHelper] = self.locale_helper
 
         if self.is_master():
             if status_server_config.is_active():
-                if status_server_config.admin_password is not None:
-                    msg = "admin_user and admin_password in section [StatusSever] " \
-                          "should be moved to section [UnixUserHandler]"
-                    self._logger.warning(msg)
+                if ldap_user_handler_config.is_active():
+                    self._user_handler = ldap_user_handler.LdapUserHandler(p_config=ldap_user_handler_config)
 
-                    if not unix_user_handler_config.is_active():
-                        unix_user_handler_config.admin_username = status_server_config.admin_username
-                        unix_user_handler_config.admin_password = status_server_config.admin_password
+                else:
+                    if status_server_config.admin_password is not None:
+                        msg = "admin_user and admin_password in section [StatusSever] " \
+                              "should be moved to section [UnixUserHandler]"
+                        self._logger.warning(msg)
 
-                if self.is_master() and not unix_user_handler_config.is_active():
-                    msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
-                    raise configuration.ConfigurationException(msg)
+                        if not unix_user_handler_config.is_active():
+                            unix_user_handler_config.admin_username = status_server_config.admin_username
+                            unix_user_handler_config.admin_password = status_server_config.admin_password
 
-                if unix_user_handler_config.is_active():
-                    self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
-                                                                           p_exclude_user_list=[
-                                                                               constants.APPLICATION_USER])
+                    if self.is_master() and not unix_user_handler_config.is_active():
+                        msg = "admin_user and admin_password must be supplied in section [UnixUserHandler]"
+                        raise configuration.ConfigurationException(msg)
+
+                    if unix_user_handler_config.is_active():
+                        self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config,
+                                                                               p_exclude_user_list=[
+                                                                                   constants.APPLICATION_USER])
 
         else:
             self._user_handler = unix_user_handler.UnixUserHandler(p_config=unix_user_handler_config)
 
+        dependency_injection.container[BaseUserHandler] = self._user_handler
+
         self._login_mapping = login_mapping.LoginMapping()
         self._login_mapping.read_from_configuration(p_login_mapping_section_handler=self._login_mapping_section_handler)
 
-        self._app_control = app_control.AppControl(
-            p_config=self._config[app_control.SECTION_NAME],
+        self._admin_data_handler = AdminDataHandler(p_config=self._config[APP_CONTROL_SECTION_NAME])
+
+        dependency_injection.container[AdminDataHandler] = self._admin_data_handler
+
+        self._app_control = AppControl(
+            p_config=self._config[APP_CONTROL_SECTION_NAME],
             p_debug_mode=self._app_config.debug_mode,
             p_process_handlers=self._process_handlers,
             p_device_handler=self._client_device_handler,
-            p_persistence=self._persistence,
-            p_rule_handler=self._rule_handler,
             p_notification_handlers=self._notification_handlers,
-            p_master_connector=self._master_connector,
-            p_prometheus_client=self._prometheus_client,
-            p_user_handler=self._user_handler,
             p_locale_helper=self.locale_helper,
             p_login_mapping=self._login_mapping)
 
-        if self._config[app_control.SECTION_NAME].scan_active:
+        dependency_injection.container[AppControl] = self._app_control
+
+        if self._config[APP_CONTROL_SECTION_NAME].scan_active:
             task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
-                                          p_handler_method=lambda: self._app_control.scan_processes(
+                                          p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
                                               p_process_handler=process_handler),
                                           p_interval=process_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
@@ -300,7 +339,7 @@ class App(base_app.BaseApp):
         if self._client_device_handler:
             task = base_app.RecurringTask(
                 p_name="app_control.scan_processes(DeviceHandler)",
-                p_handler_method=lambda: self._app_control.scan_processes(
+                p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
                     p_process_handler=self._client_device_handler),
                 p_interval=self._client_device_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
@@ -312,14 +351,12 @@ class App(base_app.BaseApp):
                 p_interval=self._app_config.clean_history_interval)
             self.add_recurring_task(p_recurring_task=task)
 
-
         if status_server_config.is_active():
-            self._status_server = status_server.StatusServer(
-                p_config=self._config[status_server.SECTION_NAME],
+            self._status_server = web_server.StatusServer(
+                p_config=self._config[web_server.SECTION_NAME],
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
-                p_persistence=self._persistence,
                 p_is_master=self.is_master(),
                 p_locale_helper=self._locale_helper,
                 p_base_gettext=self.gettext,
@@ -368,8 +405,10 @@ class App(base_app.BaseApp):
 
         alembic_argv = ["-x", url,
                         "stamp", p_alembic_version]
+        cwd = os.getcwd()
         os.chdir(alembic_working_dir)
         alembic.config.main(alembic_argv, prog="alembic.config.main")
+        os.chdir(cwd)
 
     def start_services(self):
 
@@ -389,11 +428,16 @@ class App(base_app.BaseApp):
 
         if self._status_server is not None:
             self._status_server.stop_server()
+            self._status_server.destroy()
             self._status_server = None
 
         if self._app_control is not None:
             self._app_control.stop()
             self._app_control = None
+
+        if self._prometheus_client is not None:
+            self._prometheus_client.stop()
+            self._prometheus_client = None
 
         for handler in self._notification_handlers:
             handler.stop_engine()

@@ -22,13 +22,22 @@ import datetime
 
 from little_brother import client_device_handler
 from little_brother import db_migrations
-from little_brother import persistence
+from little_brother import dependency_injection
+from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
+from little_brother.persistence.session_context import SessionContext
+from little_brother.process_handler import ProcessHandler
 from little_brother.test import test_data
-from little_brother.test import test_persistence
+from little_brother.test.persistence import test_persistence
+from python_base_app import pinger
 from python_base_app.test import base_test
 
 
 class TestClientDeviceHandler(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
+
 
     def check_list_has_n_elements(self, p_list, p_n):
         self.assertIsNotNone(p_list)
@@ -46,29 +55,30 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
-        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
-        migrator.migrate_client_device_configs(device_configs)
-        process_handler = client_device_handler.ClientDeviceHandler(p_config=config,
-                                                                    p_persistence=dummy_persistence)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        process_handler.scan_processes(p_session_context=session_context,
-                                       p_server_group=None,
-                                       p_login_mapping=None,
-                                       p_host_name=None,
-                                       p_process_regex_map=None,
-                                       p_reference_time=datetime.datetime.now())
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=None,
-                                                p_login_mapping=None,
-                                                p_host_name=None,
-                                                p_process_regex_map=None,
-                                                p_reference_time=datetime.datetime.now())
+        user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
 
-        self.check_list_has_n_elements(p_list=events, p_n=1)
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            user_entity_manager.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+
+            migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+            migrator.migrate_client_device_configs(device_configs)
+            a_pinger = pinger.Pinger()
+            process_handler: ProcessHandler = client_device_handler.ClientDeviceHandler(
+                p_config=config, p_pinger=a_pinger)
+
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=None,
+                                                    p_login_mapping=None,
+                                                    p_host_name=None,
+                                                    p_process_regex_map=None,
+                                                    p_prohibited_process_regex_map=None,
+                                                    p_reference_time=datetime.datetime.now())
+
+            self.check_list_has_n_elements(p_list=events, p_n=1)
 
     def test_nonexisting_host(self):
         config = client_device_handler.ClientDeviceHandlerConfigModel()
@@ -80,25 +90,23 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
 
         device_configs = {device_config.section_name: device_config}
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
-        migrator.migrate_client_device_configs(device_configs)
-        process_handler = client_device_handler.ClientDeviceHandler(p_config=config,
-                                                                    p_persistence=dummy_persistence)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        process_handler.scan_processes(p_session_context=session_context,
-                                       p_server_group=None,
-                                       p_login_mapping=None,
-                                       p_host_name=None,
-                                       p_process_regex_map=None,
-                                       p_reference_time=datetime.datetime.now())
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
-        events = process_handler.scan_processes(p_session_context=session_context,
-                                                p_server_group=None,
-                                                p_login_mapping=None,
-                                                p_host_name=None,
-                                                p_process_regex_map=None,
-                                                p_reference_time=datetime.datetime.now())
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
+            migrator.migrate_client_device_configs(device_configs)
+            a_pinger = pinger.Pinger()
+            process_handler: ProcessHandler = client_device_handler.ClientDeviceHandler(
+                p_config=config, p_pinger=a_pinger)
 
-        self.check_list_has_n_elements(p_list=events, p_n=0)
+            events = process_handler.scan_processes(p_session_context=session_context,
+                                                    p_server_group=None,
+                                                    p_login_mapping=None,
+                                                    p_host_name=None,
+                                                    p_process_regex_map=None,
+                                                    p_prohibited_process_regex_map=None,
+                                                    p_reference_time=datetime.datetime.now())
+
+            self.check_list_has_n_elements(p_list=events, p_n=0)

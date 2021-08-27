@@ -34,7 +34,14 @@ setup_params = {
 
     "install_requires": install_requires,
 
-    "packages": ['little_brother', 'little_brother.test'],
+    "packages": ['little_brother',
+                 'little_brother.api',
+                 'little_brother.persistence',
+                 'little_brother.web',
+                 'little_brother.test',
+                 'little_brother.test.persistence',
+                 'little_brother.test.web',
+                 ],
 
     "include_package_data": True,
 
@@ -80,9 +87,12 @@ extended_setup_params = {
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ],
     "build_pypi_package": True,
-    "publish_pypi_package": { 'release': ( 'https://upload.pypi.org/legacy/', 'PYPI_API_TOKEN' ),
-                              'master': ( 'https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN') },
+    "publish_pypi_package": {'release': ('https://upload.pypi.org/legacy/', 'PYPI_API_TOKEN'),
+                             'master': ('https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN')},
     "generate_generic_install": True,
+    "analyze": True,
+    "analyze_extra_exclusions" : "vagrant/**",
+    "script_timeout": 30,
 }
 
 setup_params.update(little_brother.settings.settings)

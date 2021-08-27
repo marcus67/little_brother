@@ -31,7 +31,15 @@ class DummyProcess(object):
         return uids_tuple(real=self._uid, effective=self._uid)
 
     def name(self):
-        return self._pinfo.processname
+        return self._pinfo.processname.split('/')[-1]
+
+    def cmdline(self):
+        if self._pinfo.cmd_line:
+            return self._pinfo.cmd_line
+
+        else:
+            return [self._pinfo.processname]
+
 
     def create_time(self):
         return self._pinfo.start_time.timestamp()
@@ -53,7 +61,7 @@ class DummyProcessFactory(object):
 
     def process_iter(self):
         if self._reference_time is None:
-            raise Exception("_reference_time is None")
+            raise RuntimeError("_reference_time is None")
 
         return [DummyProcess(p, p_login_mapping=self._login_mapping) for p in self._processes
                 if self._reference_time >= p.start_time and (

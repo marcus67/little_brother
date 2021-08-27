@@ -26,7 +26,7 @@ the `port`number in the configuration file:
     port=8888
     ...
 
-The statistics availale from the port can be used by reporting tools such as [Grafana](https://grafana.com/). Note
+The statistics available from the port can be used by reporting tools such as [Grafana](https://grafana.com/). Note
 that you also have to have a server instance of [Prometheus](https://prometheus.io/) running.
 
 ## Grafana Configuration File 

@@ -143,6 +143,13 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
         return events
 
+    def get_artificial_kill_events(self):
+        events = [self.create_admin_event_kill_process_from_pinfo(p_pinfo=pinfo) for pinfo in
+                  self._process_infos.values() if pinfo.is_active()]
+
+        return events
+
+
     @staticmethod
     def create_admin_event_process_end_from_pinfo(p_pinfo, p_reference_time=None):
         if p_reference_time is None:
@@ -176,6 +183,25 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
             p_pid=p_pinfo.pid)
 
     @staticmethod
+    def create_admin_event_kill_process_from_pinfo(p_pinfo, p_reference_time=None):
+
+        if p_pinfo.start_time is not None:
+            p_reference_time = p_pinfo.start_time
+
+        elif p_reference_time is None:
+            p_reference_time = datetime.datetime.now()
+
+        return admin_event.AdminEvent(
+            p_event_type=admin_event.EVENT_TYPE_KILL_PROCESS,
+            p_hostname=p_pinfo.hostname,
+            p_username=p_pinfo.username,
+            p_processhandler=p_pinfo.processhandler,
+            p_process_start_time=p_reference_time,
+            p_event_time=datetime.datetime.now(),
+            p_pid=p_pinfo.pid)
+
+
+    @staticmethod
     def create_admin_event_process_downtime_from_pinfo(p_pinfo):
         return admin_event.AdminEvent(
             p_event_type=admin_event.EVENT_TYPE_PROCESS_DOWNTIME,
@@ -188,7 +214,7 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
-                       p_process_regex_map):  # pragma: no cover
+                       p_process_regex_map, p_prohibited_process_regex_map):  # pragma: no cover
         pass
 
     def get_downtime_corrected_admin_events(self, p_downtime):

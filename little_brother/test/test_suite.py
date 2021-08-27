@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-
 # -*- coding: utf-8 -*-
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -21,20 +20,23 @@
 
 import unittest
 
+from little_brother.test import test_app
+from little_brother.test import test_app_control
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
-from little_brother.test import test_process_handler
 from little_brother.test import test_german_vacation_context_rule_handler
-from little_brother.test import test_persistence
-from little_brother.test import test_popup_handler
+from little_brother.test import test_language
+from little_brother.test import test_process_handler
+from little_brother.test import test_process_handler_manager
 from little_brother.test import test_process_info
 from little_brother.test import test_process_statistics
+from little_brother.test import test_prometheus
 from little_brother.test import test_rule_handler
 from little_brother.test import test_simple_weekday_context_rule_handler
-from little_brother.test import test_status_server
-from little_brother.test import test_prometheus
-from little_brother.test import test_app_control
-
+from little_brother.test import test_user_status
+from little_brother.test.api import test_suite as api_test_suite
+from little_brother.test.persistence import test_suite as persistence_test_suite
+from little_brother.test.web import test_suite as web_test_suite
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
@@ -59,10 +61,6 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_process_handler.TestProcessHandler, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=test_popup_handler.TestPopupHandler, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
@@ -92,25 +90,38 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
-        p_test_unit_class=test_persistence.TestPersistence, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
-        p_test_unit_class=test_status_server.TestStatusServer, p_config_filename=p_config_filename)
-
-    base_test.add_tests_in_test_unit(
-        p_test_suite=p_test_suite,
         p_test_unit_class=test_prometheus.TestPrometheus, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_app_control.TestAppControl, p_config_filename=p_config_filename)
 
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_language.TestLanguage, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_app.TestApp, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_user_status.TestUserStatus, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_process_handler_manager.TestProcessHandlerManager, p_config_filename=p_config_filename)
+
 
 def main():
     log_handling.start_logging(p_use_filter=False)
     test_suite = unittest.TestSuite()
     add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+
+    persistence_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+    web_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+    api_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+
     base_test.run_test_suite(p_test_suite=test_suite)
 
 

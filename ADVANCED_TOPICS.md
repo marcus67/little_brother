@@ -66,12 +66,58 @@ The `USERNAME*` and `UID*` must match those on the slave hosts.
 ## Providing a Mapping between UIDs
 
 When using a master-slave setup the assumption is that UIDs on the master host and the slave hosts match. In this
-case no further configuration will be necessary. If however, there are differences between master and slave, it is
-possible to provide a mapping of the UIDs for the user names.
+case no further configuration will be necessary. If, however, there are differences between master and slaves, it is
+possible to provide a mapping of the UIDs for the user names. This mapping is done for each group of hosts sharing
+the same mapping by defining a `LoginMapping*` entry in the configuration file of the master host:
 
-<!--
-TODO: Describe UID mapping feature
---> 
+    [LoginMappingSomeServerGroup]
+    server_group = SomeServerGroup
+    mapping_entries[0] = leon:2000
+    mapping_entries[1] = christoph:2001
+    
+The name after `LoginMapping` can be chosen freely. It just has to be unique across all mappings. The actual name
+of the server is given by option `server_group`. It is followed by entries for each user in format `username:UID`.
+The `username` has to match the username on the master. The `uid` is the UID for that user on the slaves of the
+server group. Note that the actual username of the user on the slaves is irrelevant for the mapping!
+
+In the slave configuration the name of the server group has to be configured:
+
+    [AppControl]
+    server_group = SomeServerGroup
+  
+### Example
+
+In the example below there are two server groups with two slaves each: `AB` and `CD`. The blue boxes contain the
+local usernames ans UIDs on all servers. The green boxes contain the required configuration for `LittleBrother`.
+
+![Login Mappings](doc/login-mappings.png)
+
+Note the following aspects:
+
+*   The UIDs on the master and the slaves do not match.
+*   The login mappings always contain the usernames on the master. They may differ from the usernames on the slaves
+   (see `sam` on the slave who is called `sammy` on servers in group `AB`).
+*   The login mappings always contain the UIDs on the slaves.
+*   If users do not exist on servers of a group there is no need to supply a mapping entry. See mapping for group
+`CD`.   
+
+## Using LDAP For Authorization and Authentication
+
+`LittleBrother` can use an external LDAP server for authorization and authentication. It is activated if all mandatory
+options are configured in the master configuration file. See section `[LdapUserHandler]` in 
+[master.config](etc/master.config). A fully configured `[LdapUserHandler]` will take precedence over
+`[UnixUserHandler]`. If at least one mandatory setting is missing `[UnixUserHandler]` will be used as a fallback. 
+
+All users/accounts in the administration group (setting `ldap_admin_group_name`) 
+will be able to login and have access to the restricted pages. The logged in user will be displayed in the 
+menu bar as shown below (`mr` in this case).
+
+![MenubarLdapLogin](doc/menubar-ldap-login.png)
+
+If a user group (setting `ldap_user_object_class`)
+is provided all users in that group will be offered as potential users to be monitored. If the group is missing
+all users in `/etc/passwd` will be offered that fulfill the same requirements as described above for the 
+section `[UnixUserHandler]`. Also as above, the requirements can be changed using the same options. 
 
 ## Migrating From Older Revisions 
 
@@ -135,10 +181,10 @@ Restart the application on the slave host again by issuing
 Beside the Debian package, there is also a Docker image available which can be used on the slave host. 
 See [Docker](DOCKER.md) for details.
 
-## Using a Full Fledge Database as Backend
+## Using a Full Fledged Database as Backend
 
 The default backend for `LittleBrother` is a Sqlite file oriented database. It works out of the box. If you prefer
-a more mature backend you can switch to a full fledge database such as MySQL or MariaDB. This is possible, since 
+a more mature backend you can switch to a full fledged database such as MySQL or MariaDB. This is possible, since 
 the persistence uses the abstraction layer [SQLAlchemy](https://www.sqlalchemy.org/) which can be used with many 
 different database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
 
@@ -219,3 +265,71 @@ The `[StatusServer]` configuration section of the master host should contain the
 ## Monitoring the Application
 
 `LittleBrother` offers two options for operational monitoring. See [here](OPERATIONAL_MONITORING.md) for details.
+
+## Network Tempering Detection
+
+The master-slave approach of `LittleBrother` results in all runtime data about processes to be held and evaluated on
+the master node. It is there that the decision to terminate a user session will be made. The slaves only execute
+these decisions. If the network connection between master and slaves is cut the slaves are basically "headless".
+This could be abused by a user (whose activity does not depend on network access) to simply cut the connection to
+the master by *pulling the plug*.
+
+As of version 0.3.13 a detected network downtime will result in an automatic termination of user sessions on the
+affected slaves. The default timeout is 10 times the default scan interval of 5 seconds, that is 50 seconds. This value
+(`maximum_time_without_send_events`) can be changed in the configuration file:
+
+    # Number of seconds before warnings are issued about missing connectivity (no successful send events from slave to master)
+    # Defaults to 3 * DEFAULT_CHECK_INTERVAL.
+    warning_time_without_send_events = 15
+    
+    # Number of seconds before slave terminates processes due to missing connectivity (no successful send events from slave to master)
+    # Defaults to 10 * DEFAULT_CHECK_INTERVAL.
+    maximum_time_without_send_events = 50
+ 
+The second setting `warning_time_without_send_events` will be used in the tool 
+[LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) (as of version 0.1.17) to inform the user of 
+the impending logout due to connectivity issues.
+
+## Determining Process Patterns for Prohibited Processes
+In case you decide to prohibit a process for a specific user you will have to provide a specific process pattern
+so that `LittleBrother` is able to detect the process. In most cases this will be simple since most applications are
+represented by a single process (binary). However, there are other applications which are called by scripts, usually
+in one layer but sometimes in several layers. The latter case it always a good procedure to analyze the calling stack
+to optimize the termination behavior.
+
+Let's look at two examples for the same application `minecraft`.
+
+### Application Without Scripting
+
+In order to find out how the application is called we need to view the command which is used in the menu entry
+of your desktop environment. The exact way to retrieve this information will depend on the desktop manager used 
+in your system. Often the settings of a menu entry can be seen by right-clicking on the menu entry. In case of `mate`
+you need to drag the menu entry into the top bar first before you can access the settings:
+
+![Minecraft-Launcher-Settings](doc/minecraft-launcher-settings.png)
+
+As you can tell from the entry the command ("Befehl" in German) used to start Minecraft is `minecraft-launcher`.
+Open a shell window. At the prompt type `which minecraft-launcher`. Then use the `file` tool and the path of the 
+application to determine its type:
+
+![Minecraft-Launcher-Type-Check](doc/minecraft-launcher-type-check.png)
+
+As you can see the file is an `ELF` binary and no script. In this case it is safe to use the name of the application 
+as a pattern, which would be `minecraft-launcher`
+
+### Application With Scripting
+
+We start out the same way by taking a look at the menu entry:
+
+![Minecraft-Launcher-Settings](doc/minecraft-settings.png)
+
+In this case the command ("Befehl" in German) contains the exlicit path so that we can skip the `which` command.
+We continue by issuing the `file` command:
+
+![Minecraft-Launcher-Type-Check](doc/minecraft-type-check.png)
+
+As you can see the application is started by shell script. In this case start the application using the menu entry
+and type `ps uax|grep APPNAME` at the prompt. Deliberately omit the path of the application. In this example
+the process list returns `/vol/java8/bin/java -jar /vol/mirecraft/Minecraft.jar` as the actual application call.
+We cannot use `java` as the pattern since this would be too general and prevent ANY java application from being
+started. A better choice is the name of the Java JAR, which is `Minecraft.jar` in our case

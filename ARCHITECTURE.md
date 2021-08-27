@@ -12,9 +12,9 @@ This page is still under construction. Please, bear with me. Thanks!
 by the Debian package) in a Python virtualenv environment.
 
 *   The application regularly scans the process list of the host for configured patterns and, if found, executes 
-configured rules. When not active it sleeps in a system interrupt.
+configured rules. When it is not active, it sleeps in a system interrupt.
 
-*   If the maximum login time of users is exceeded the application will terminate the appropriate processes.
+*   If the maximum login time of users is exceeded, the application will terminate the appropriate processes.
 
 *   Process termination is done by a sudo-rule permitting the use of  `kill` for the user `little-brother`.
 

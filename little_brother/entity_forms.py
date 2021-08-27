@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -17,33 +17,56 @@
 
 import wtforms
 
+from little_brother import constants
 from python_base_app import custom_fields
 from python_base_app import custom_form
-from python_base_app import tools
+from python_base_app import pinger
 
 _ = lambda x: x
 
+a_pinger = pinger.Pinger()
+
 
 # TODO: edit fields should be marked by special color when containing modified (and not yet saved ) value
+
+def regex_validator(_form, field):
+    if field.data is not None:
+        sub_patterns = field.data.replace('\r', '').split('\n')
+
+        for sub_pattern in sub_patterns:
+            if len(sub_pattern.strip()) == 1:
+                raise wtforms.validators.ValidationError(_("Sub pattern must be longer than one character"))
+
 
 class UserForm(custom_form.ModelForm):
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
     locale = wtforms.SelectField("Locale")
-    process_name_pattern = wtforms.StringField("ProcessNamePattern")
+    process_name_pattern = wtforms.TextAreaField("ProcessNamePattern",
+                                                 validators=[regex_validator])
+    prohibited_process_name_pattern = wtforms.TextAreaField("ProhibitedProcessNamePattern",
+                                                 validators=[regex_validator])
     active = custom_fields.BooleanField("Active")
 
 
 class NewUserForm(custom_form.ModelForm):
-
     username = wtforms.SelectField("NewUsername")
 
-class NewUser2DeviceForm(custom_form.ModelForm):
 
+class NewUser2DeviceForm(custom_form.ModelForm):
     device_id = wtforms.SelectField("NewDeviceId")
 
+# Dummy so that the device HTML page has at least one form
+class NewDeviceForm(custom_form.ModelForm):
+    pass
+
+# Dummy so that the device HTML page has at least one form
+class DummyAdminForm(custom_form.ModelForm):
+    pass
+
+
 def dns_validator(_form, field):
-    if not tools.is_valid_dns_name(field.data):
+    if not a_pinger.is_valid_ping(field.data):
         raise wtforms.validators.ValidationError(_("Not a valid host address"))
 
 
@@ -58,10 +81,17 @@ class DeviceForm(custom_form.ModelForm):
                                                dns_validator,
                                                custom_fields.Uniqueness()])
     min_activity_duration = wtforms.IntegerField("MinActivityDuration",
-                                                 validators=[wtforms.validators.NumberRange(min=1, max=1000)])
+                                                 validators=[wtforms.validators.NumberRange(
+                                                     min=constants.DEVICE_MIN_MIN_ACTIVITY_DURATION,
+                                                     max=constants.DEVICE_MAX_MIN_ACTIVITY_DURATION)])
     max_active_ping_delay = wtforms.IntegerField("MaxActivePingDelay",
-                                                 validators=[wtforms.validators.NumberRange(min=1, max=1000)])
-    sample_size = wtforms.IntegerField("SampleSize", validators=[wtforms.validators.NumberRange(min=5, max=100)])
+                                                 validators=[wtforms.validators.NumberRange(
+                                                     min=constants.DEVICE_MIN_MAX_ACTIVE_PING_DELAY,
+                                                     max=constants.DEVICE_MAX_MAX_ACTIVE_PING_DELAY)])
+    sample_size = wtforms.IntegerField("SampleSize",
+                                       validators=[wtforms.validators.NumberRange(
+                                           min=constants.DEVICE_MIN_SAMPLE_SIZE,
+                                           max=constants.DEVICE_MAX_SAMPLE_SIZE)])
 
 
 def create_rulesets_form(prefix, p_localized_context_details, p_context_choices, p_context_details_filters):
@@ -76,8 +106,9 @@ def create_rulesets_form(prefix, p_localized_context_details, p_context_choices,
         min_break = custom_fields.DurationField("MinBreak")
         free_play = custom_fields.BooleanField("FreePlay")
         max_activity_duration = custom_fields.DurationField("MaxActivityDuration")
+        optional_time_per_day = custom_fields.DurationField("OptionalTimePerDay")
 
-    return RulesetForm(prefix=prefix, meta={'csrf': False})
+    return RulesetForm(prefix=prefix, meta={'csrf': True})
 
 
 class User2DeviceForm(custom_form.ModelForm):

@@ -21,12 +21,15 @@
 import datetime
 import unittest
 
+import little_brother.persistence.session_context
 from little_brother import db_migrations
-from little_brother import persistence
+from little_brother import dependency_injection
 from little_brother import process_info
 from little_brother import process_statistics
+from little_brother.persistence import persistent_user_entity_manager
+from little_brother.persistence.persistence import Persistence
 from little_brother.test import test_data
-from little_brother.test import test_persistence
+from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
 
 HOSTNAME = "hostname"
@@ -40,6 +43,9 @@ DURATION = 55  # seconds
 
 
 class TestProcessStatistics(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
 
     def test_activity_init(self):
         reference_time = datetime.datetime.utcnow()
@@ -72,7 +78,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(a.host_stats), 1)
         self.assertIn(HOSTNAME, a.host_stats)
         host_stat = a.host_stats[HOSTNAME]
-        self.assertEqual(host_stat.count, 2)
+        self.assertEqual(host_stat.count, 1)
         self.assertEqual(host_stat.percent, 50)
 
         a.add_host_process(p_hostname=HOSTNAME, p_percent=100)
@@ -81,7 +87,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(a.host_stats), 1)
         self.assertIn(HOSTNAME, a.host_stats)
         host_stat = a.host_stats[HOSTNAME]
-        self.assertEqual(host_stat.count, 3)
+        self.assertEqual(host_stat.count, 1)
         self.assertEqual(host_stat.percent, 100)
 
         a.add_host_process(p_hostname=HOSTNAME, p_percent=75)
@@ -90,7 +96,7 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(len(a.host_stats), 1)
         self.assertIn(HOSTNAME, a.host_stats)
         host_stat = a.host_stats[HOSTNAME]
-        self.assertEqual(host_stat.count, 4)
+        self.assertEqual(host_stat.count, 1)
         self.assertEqual(host_stat.percent, 100)
 
         a.add_host_process(p_hostname=HOSTNAME2)
@@ -192,7 +198,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(host_stat.count, 1)
 
     def test_process_statistics_info_add_process_with_end_time(self):
-
         start_time = datetime.datetime.utcnow()
         end_time = start_time + datetime.timedelta(seconds=60)
         psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
@@ -214,9 +219,8 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(psi.active_processes, 0)
 
     def test_process_statistics_info_add_process_without_end_time(self):
-
         start_time = datetime.datetime.utcnow()
-        #end_time = start_time + datetime.timedelta(seconds=60)
+
         psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
                                                        p_min_activity_duration=MIN_ACTIVITY_DURATION,
                                                        p_max_lookback_in_days=MAX_LOOKBACK_IN_DAYS)
@@ -236,7 +240,6 @@ class TestProcessStatistics(base_test.BaseTestCase):
         self.assertEqual(psi.active_processes, 0)
 
     def test_process_statistics_info_str(self):
-
         start_time = datetime.datetime.utcnow()
         psi = process_statistics.ProcessStatisticsInfo(p_username=USERNAME, p_reference_time=start_time,
                                                        p_min_activity_duration=MIN_ACTIVITY_DURATION,
@@ -248,13 +251,20 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
+        user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
+        session_context = little_brother.persistence.session_context.SessionContext(p_persistence=dummy_persistence)
+        user_entity_manager.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_ruleset_configs(p_ruleset_configs=rule_set_configs)
         sis = process_statistics.get_empty_stat_infos(
-            p_user_map=dummy_persistence.user_map(session_context),
+            p_user_map=user_entity_manager.user_map(session_context),
             p_reference_time=start_time,
             p_max_lookback_in_days=5,
             p_min_activity_duration=30)
@@ -265,20 +275,28 @@ class TestProcessStatistics(base_test.BaseTestCase):
         start_time = datetime.datetime.utcnow()
         rule_set_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_ALL_RESTRICTIONS)
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        session_context = persistence.SessionContext(p_persistence=dummy_persistence)
-        dummy_persistence.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
+
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
+
+        user_entity_manager: persistent_user_entity_manager.UserEntityManager = \
+            dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
+
+        session_context = little_brother.persistence.session_context.SessionContext(p_persistence=dummy_persistence)
+        user_entity_manager.add_new_user(p_session_context=session_context, p_username=test_data.USER_1)
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_ruleset_configs(p_ruleset_configs=rule_set_configs)
 
         pss = process_statistics.get_process_statistics(
-            p_user_map=dummy_persistence.user_map(session_context),
+            p_user_map=user_entity_manager.user_map(session_context),
             p_process_infos=test_data.get_process_dict(p_processes=test_data.PROCESSES_3),
             p_reference_time=start_time,
             p_max_lookback_in_days=5,
             p_min_activity_duration=30)
 
         self.assertIsNotNone(pss)
+
 
 if __name__ == "__main__":
     unittest.main()

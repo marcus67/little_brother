@@ -17,7 +17,13 @@
 
 import abc
 
+from little_brother import dependency_injection
+from python_base_app.locale_helper import LocaleHelper
+
 _ = lambda x:x
+
+class RuleHandlerRunTimeException(RuntimeError):
+    pass
 
 class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
 
@@ -25,6 +31,14 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
 
         self._context_name = p_context_name
         self._locale_helper = p_locale_helper
+
+    @property
+    def locale_helper(self) -> LocaleHelper:
+
+        if self._locale_helper is None:
+            self._locale_helper = dependency_injection.container[LocaleHelper]
+
+        return self._locale_helper
 
     @abc.abstractmethod
     def is_active(self, p_reference_date, p_details):
@@ -41,7 +55,7 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
         return []
 
     def validate_context_details(self, p_context_detail):
-        pass
+        pass # default action: none
 
     def summary(self, p_context_detail):
         if p_context_detail is not None and p_context_detail != "":
@@ -51,4 +65,4 @@ class AbstractContextRuleHandler(object, metaclass=abc.ABCMeta):
             return []
 
     def check_data(self):
-        pass
+        pass # default action: none

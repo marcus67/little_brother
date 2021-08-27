@@ -21,15 +21,20 @@
 import datetime
 import os.path
 
+import little_brother.persistence.session_context
+from little_brother import constants
 from little_brother import db_migrations
+from little_brother import dependency_injection
 from little_brother import german_vacation_context_rule_handler
-from little_brother import persistence
 from little_brother import process_info
 from little_brother import process_statistics
 from little_brother import rule_handler
 from little_brother import rule_override
+from little_brother import rule_result_info
 from little_brother import simple_context_rule_handlers
-from little_brother.test import test_persistence
+from little_brother.persistence import persistent_user, persistent_user_entity_manager
+from little_brother.persistence.persistence import Persistence
+from little_brother.test.persistence import test_persistence
 from python_base_app import configuration
 from python_base_app.test import base_test
 
@@ -58,46 +63,50 @@ DURATION = 55  # seconds
 
 class TestRuleHandler(base_test.BaseTestCase):
 
+    def setUp(self):
+        dependency_injection.reset()
+
     @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_priority(self):
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-        session_context = persistence.SessionContext(p_persistence=dummy_persistence)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
+
+        session_context = little_brother.persistence.session_context.SessionContext(p_persistence=dummy_persistence)
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence)
+
+        user_entity_manager = dependency_injection.container[persistent_user_entity_manager.UserEntityManager]
 
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=dummy_persistence)
         migrator.migrate_ruleset_configs(self.create_dummy_ruleset_configs())
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=NORMAL_DAY_1)
+        user: persistent_user.User = user_entity_manager.user_map(p_session_context=session_context).get(TEST_USER)
+        self.assertIsNotNone(user)
+
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=NORMAL_DAY_1)
+
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.DEFAULT_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=WEEKEND_DAY_1)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=WEEKEND_DAY_2)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER,
-                                                            p_reference_date=VACATION_DAY_1)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=VACATION_DAY_1)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context,
                          german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER,
-                                                            p_reference_date=VACATION_DAY_2)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=VACATION_DAY_2)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context,
                          german_vacation_context_rule_handler.CALENDAR_CONTEXT_RULE_HANDLER_NAME)
 
-        active_rule_set = a_rule_handler.get_active_ruleset(p_session_context=session_context,
-                                                            p_username=TEST_USER, p_reference_date=WEEKEND_DAY_3)
+        active_rule_set = a_rule_handler.get_active_ruleset(p_rule_sets=user.rulesets, p_reference_date=WEEKEND_DAY_3)
         self.assertIsNotNone(active_rule_set)
         self.assertEqual(active_rule_set.context, simple_context_rule_handlers.WEEKPLAN_CONTEXT_RULE_HANDLER_NAME)
 
@@ -182,103 +191,120 @@ class TestRuleHandler(base_test.BaseTestCase):
         stat_info.previous_activity = previous_activity
 
         # Check that playing is not allowed after full break minus one second
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-299)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_set.min_break = 300
 
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
+                                                 p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK,
+                         rule_result_info.RULE_MIN_BREAK)
 
         # Check that playing is allowed after full break minus one second but with free_play activated
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-299)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_set.min_break = 300
+
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
+
+        a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
+                                                        p_create_complex_handlers=False)
         rule_set.free_play = True
+
+        a_rule_handler.check_free_play(p_rule_set=rule_set, p_rule_result_info=a_rule_result_info)
+
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK, 0)
 
         # Check that playing is allowed after full break
         rule_set.free_play = False
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-300)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_set.min_break = 300
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK, 0)
 
         # Check that playing is not allowed after break after short period (1/3 of max) minus one second
         stat_info.previous_activity = previous_short_activity
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-99)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
-        self.assertEqual(rule_result_info.args['break_minutes_left'], 0)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK,
+                         rule_result_info.RULE_MIN_BREAK)
+        self.assertEqual(a_rule_result_info.args['break_minutes_left'], 0)
 
         # Check that playing is not allowed after break after short period (1/3 of max) minus one second
         # but with max_activity_duration=0
         stat_info.previous_activity = previous_short_activity
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         rule_set.max_activity_duration = 0
         activity_start_time = reference_time + datetime.timedelta(seconds=-299)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK,
+                         rule_result_info.RULE_MIN_BREAK)
 
         # Check that playing is allowed after break after short period (1/3 of max)
         # but with max_activity_duration=0
         stat_info.previous_activity = previous_short_activity
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         rule_set.max_activity_duration = 0
         activity_start_time = reference_time + datetime.timedelta(seconds=-300)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK, 0)
 
         # Check that playing is allowed after break after short period (1/3 of max)
         stat_info.previous_activity = previous_short_activity
         rule_set.max_activity_duration = 600
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-100)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, 0)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK, 0)
 
         # Check that playing is not allowed after break after short period (1/3 of max) minus 31 second and
         # that the number of break minutes left = 1
         stat_info.previous_activity = previous_short_activity
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-69)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
-        self.assertEqual(rule_result_info.args['break_minutes_left'], 1)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK,
+                         rule_result_info.RULE_MIN_BREAK)
+        self.assertEqual(a_rule_result_info.args['break_minutes_left'], 1)
 
         # Check that playing is not allowed after break after short period (1/3 of max) minus 91 second and
         # that the number of break minutes left = 2
         stat_info.previous_activity = previous_short_activity
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
         activity_start_time = reference_time + datetime.timedelta(seconds=-9)
         stat_info.last_inactivity_start_time = activity_start_time
         rule_handler.RuleHandler.check_min_break(p_rule_set=rule_set, p_stat_info=stat_info,
-                                                 p_rule_result_info=rule_result_info)
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_MIN_BREAK, rule_handler.RULE_MIN_BREAK)
-        self.assertEqual(rule_result_info.args['break_minutes_left'], 2)
+                                                 p_rule_result_info=a_rule_result_info)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_MIN_BREAK,
+                         rule_result_info.RULE_MIN_BREAK)
+        self.assertEqual(a_rule_result_info.args['break_minutes_left'], 2)
 
     def test_max_session_duration(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -297,27 +323,29 @@ class TestRuleHandler(base_test.BaseTestCase):
         stat_info.add_process_start(p_process_info=a_process_info, p_start_time=activity_start)
 
         # Check that playing is allowed up to the maximum session time
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
-                                               p_rule_result_info=rule_result_info)
+                                               p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION,
-                         rule_handler.RULE_ACTIVITY_DURATION)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_ACTIVITY_DURATION,
+                         rule_result_info.RULE_ACTIVITY_DURATION)
 
         rule_set.max_activity_duration = 1201
 
         # Check that playing is allowed after the maximum session time
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
-                                               p_rule_result_info=rule_result_info)
+                                               p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION, 0)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_ACTIVITY_DURATION, 0)
 
     def test_max_session_duration_with_downtime(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -337,27 +365,29 @@ class TestRuleHandler(base_test.BaseTestCase):
 
         # Check that playing is allowed up to the maximum session time
         rule_set.max_activity_duration = 899
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
-                                               p_rule_result_info=rule_result_info)
+                                               p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION,
-                         rule_handler.RULE_ACTIVITY_DURATION)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_ACTIVITY_DURATION,
+                         rule_result_info.RULE_ACTIVITY_DURATION)
 
         rule_set.max_activity_duration = 901
 
         # Check that playing is allowed after the maximum session time
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_activity_duration(p_rule_set=rule_set, p_stat_info=stat_info,
-                                               p_rule_result_info=rule_result_info)
+                                               p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_ACTIVITY_DURATION, 0)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_ACTIVITY_DURATION, 0)
 
     def test_max_time_per_day(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -376,27 +406,29 @@ class TestRuleHandler(base_test.BaseTestCase):
 
         # Check that playing is allowed up to the maximum session time
         rule_set.max_time_per_day = 1199
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
-                                          p_rule_result_info=rule_result_info)
+                                          p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
-                         rule_handler.RULE_TIME_PER_DAY)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY,
+                         rule_result_info.RULE_TIME_PER_DAY)
 
         rule_set.max_time_per_day = 1201
 
         # Check that playing is allowed after the maximum session time
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
-                                          p_rule_result_info=rule_result_info)
+                                          p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY, 0)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY, 0)
 
     def test_max_time_per_day_with_downtime(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -416,27 +448,29 @@ class TestRuleHandler(base_test.BaseTestCase):
 
         # Check that playing is allowed up to the maximum session time
         rule_set.max_time_per_day = 899
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
-                                          p_rule_result_info=rule_result_info)
+                                          p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
-                         rule_handler.RULE_TIME_PER_DAY)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY,
+                         rule_result_info.RULE_TIME_PER_DAY)
 
         rule_set.max_time_per_day = 901
 
         # Check that playing is allowed after the maximum session time
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
-                                          p_rule_result_info=rule_result_info)
+                                          p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY, 0)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY, 0)
 
     def test_max_time_per_day_with_downtime_and_previous_activity(self):
 
-        dummy_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
         a_rule_handler = self.create_dummy_rule_handler(p_persistence=dummy_persistence,
                                                         p_create_complex_handlers=False)
 
@@ -469,23 +503,23 @@ class TestRuleHandler(base_test.BaseTestCase):
 
         # Check that playing is allowed up to the maximum session time
         rule_set.max_time_per_day = 649
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
-                                          p_rule_result_info=rule_result_info)
+                                          p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY,
-                         rule_handler.RULE_TIME_PER_DAY)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY,
+                         rule_result_info.RULE_TIME_PER_DAY)
 
         rule_set.max_time_per_day = 651
 
         # Check that playing is allowed after the maximum session time
-        rule_result_info = rule_handler.RuleResultInfo()
+        a_rule_result_info = rule_handler.RuleResultInfo()
 
         a_rule_handler.check_time_per_day(p_rule_set=rule_set, p_stat_info=stat_info,
-                                          p_rule_result_info=rule_result_info)
+                                          p_rule_result_info=a_rule_result_info)
 
-        self.assertEqual(rule_result_info.applying_rules & rule_handler.RULE_TIME_PER_DAY, 0)
+        self.assertEqual(a_rule_result_info.applying_rules & rule_result_info.RULE_TIME_PER_DAY, 0)
 
 
 class TestRuleOverride(base_test.BaseTestCase):
@@ -587,13 +621,14 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
         a_config_override_model.min_break = "4"
         a_config_override_model.free_play = "Y"
 
-        new_rule_set = rule_handler.apply_override(p_rule_set=a_config_model, p_rule_override=a_config_override_model)
+        new_rule_set = rule_result_info.apply_override(p_rule_set=a_config_model,
+                                                       p_rule_override=a_config_override_model)
 
-        self.assertEqual(new_rule_set.min_time_of_day_class, rule_handler.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
-        self.assertEqual(new_rule_set.max_time_of_day_class, rule_handler.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
-        self.assertEqual(new_rule_set.max_time_per_day_class, rule_handler.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
-        self.assertEqual(new_rule_set.min_break_class, rule_handler.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
-        self.assertEqual(new_rule_set.free_play_class, rule_handler.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
+        self.assertEqual(new_rule_set.min_time_of_day_class, constants.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
+        self.assertEqual(new_rule_set.max_time_of_day_class, constants.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
+        self.assertEqual(new_rule_set.max_time_per_day_class, constants.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
+        self.assertEqual(new_rule_set.min_break_class, constants.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
+        self.assertEqual(new_rule_set.free_play_class, constants.CSS_CLASS_EMPHASIZE_RULE_OVERRIDE)
 
         self.assertEqual(new_rule_set.min_time_of_day, "1")
         self.assertEqual(new_rule_set.max_time_of_day, "2")
@@ -612,7 +647,8 @@ class TestRuleSetConfigModel(base_test.BaseTestCase):
 
         a_config_override_model = rule_handler.RuleSetConfigModel()
 
-        new_rule_set = rule_handler.apply_override(p_rule_set=a_config_model, p_rule_override=a_config_override_model)
+        new_rule_set = rule_result_info.apply_override(p_rule_set=a_config_model,
+                                                       p_rule_override=a_config_override_model)
 
         self.assertEqual(new_rule_set.min_time_of_day_class, "")
         self.assertEqual(new_rule_set.max_time_of_day_class, "")

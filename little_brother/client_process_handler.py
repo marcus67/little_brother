@@ -33,6 +33,7 @@ SECTION_NAME = "ClientProcessHandler"
 PROCESS_ID_PATTERN = "pid"
 USER_ID_PATTERN = "uid"
 SIGNAL_ID_PATTERN = "signal"
+DEFAULT_SCAN_COMMAND_LINE_OPTIONS = False
 
 
 class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel):
@@ -48,6 +49,7 @@ class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel)
             self.kill_command_pattern = "/bin/kill -{signal} {pid}"
 
         self.kill_delay = 5  # seconds
+        self.scan_command_line_options = DEFAULT_SCAN_COMMAND_LINE_OPTIONS
 
 
 class ClientProcessHandler(process_handler.ProcessHandler):
@@ -143,15 +145,16 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         return []
 
     def scan_processes(self, p_session_context, p_reference_time, p_server_group, p_login_mapping, p_host_name,
-                       p_process_regex_map):
+                       p_process_regex_map, p_prohibited_process_regex_map):
 
         current_processes = {}
         events = []
 
-        fmt = "Scanning processes..."
-        self._logger.debug(fmt)
+        users = ",".join(p_process_regex_map.keys())
+        fmt = "Scanning processes for users {users}..."
+        self._logger.debug(fmt.format(users=users))
 
-        for proc in self._process_iterator_factory.process_iter():  # attrs=['pid', 'name', 'username', 'create_time']
+        for proc in self._process_iterator_factory.process_iter():
             try:
                 uids = proc.uids()
 
@@ -161,12 +164,19 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                 username = p_login_mapping.get_login_by_uid(p_server_group=p_server_group, p_uid=uid)
 
                 if username is not None and username in p_process_regex_map:
-                    proc_name = proc.name()
 
-                    if p_process_regex_map[username].match(proc_name):
-                        start_time = datetime.datetime.fromtimestamp(proc.create_time(),
-                                                                     datetime.timezone.utc).astimezone().replace(
-                            tzinfo=None)
+                    full_cmd_line = ' '.join(proc.cmdline())
+
+                    if self._config.scan_command_line_options:
+                        proc_cmdline = full_cmd_line
+
+                    else:
+                        # Just take the name of the binary
+                        proc_cmdline = proc.name()
+
+                    if p_process_regex_map[username].match(proc_cmdline):
+                        start_time = datetime.datetime.fromtimestamp(
+                            proc.create_time(), datetime.timezone.utc).astimezone().replace(tzinfo=None)
                         key = process_info.get_key(p_hostname=p_host_name, p_pid=proc.pid, p_start_time=start_time)
                         current_processes[key] = 1
 
@@ -187,6 +197,23 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                                 p_process_start_time=start_time,
                                 p_pid=proc.pid)
                             events.append(event)
+
+                    elif p_prohibited_process_regex_map[username] is not None and \
+                            p_prohibited_process_regex_map[username].match(full_cmd_line):
+                        start_time = datetime.datetime.fromtimestamp(
+                            proc.create_time(), datetime.timezone.utc).astimezone().replace(tzinfo=None)
+
+                        event = admin_event.AdminEvent(
+                            p_event_type=admin_event.EVENT_TYPE_PROHIBITED_PROCESS,
+                            p_hostname=p_host_name,
+                            p_processhandler=self.id,
+                            p_username=username,
+                            p_processname=proc.name(),
+                            p_process_start_time=start_time,
+                            p_pid=proc.pid)
+                        events.append(event)
+
+
 
             except psutil.NoSuchProcess as e:
                 fmt = "Ignoring exception '{estr}' because process has disappeared"

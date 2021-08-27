@@ -28,9 +28,11 @@ EVENT_TYPE_KILL_PROCESS = "KILL_PROCESS"
 EVENT_TYPE_UPDATE_CONFIG = "UPDATE_CONFIG"
 EVENT_TYPE_UPDATE_LOGIN_MAPPING = "UPDATE_LOGIN_MAPPING"
 EVENT_TYPE_PROCESS_START = "PROCESS_START"
+EVENT_TYPE_PROHIBITED_PROCESS = "PROHIBITED_PROCESS"
 EVENT_TYPE_PROCESS_DOWNTIME = "PROCESS_DOWNTIME"
 EVENT_TYPE_PROCESS_END = "PROCESS_END"
-EVENT_TYPE_SPEAK = "SPEAK"
+
+EVENT_TYPE_DUMMY_1 = "DUMMY1"
 
 
 def create_process_info_from_event(p_event):
@@ -60,7 +62,8 @@ class AdminEvent(object):
                  p_payload=None,
                  p_downtime=0,
                  p_percent=100,
-                 p_hostlabel=None):
+                 p_hostlabel=None,
+                 p_delay=0):
         if p_event_time is None:
             p_event_time = datetime.datetime.now()
 
@@ -78,6 +81,7 @@ class AdminEvent(object):
         self.downtime = p_downtime
         self.percent = p_percent
         self.hostlabel = p_hostlabel
+        self.delay = p_delay
 
     def __str__(self):
         return "AdminEvent (type=%s, host=%s, user=%s, process=%s, PID=%s)" % (

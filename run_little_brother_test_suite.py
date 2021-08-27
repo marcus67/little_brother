@@ -1,4 +1,4 @@
-#!/var/lib/little-brother/virtualenv/bin/python3
+#! /var/lib/little-brother/virtualenv/bin/python3
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2019  Marcus Rickert

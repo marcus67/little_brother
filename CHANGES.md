@@ -4,12 +4,138 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.8 Revision 107 (August 21th, 2021)
+
+*   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)
+*   Provide `ruleset_check_interval` in `UserStatus`
+*   Correct conversion of optional time from seconds to minutes
+*   Update Italian localization
+*   Add option `--allow-releaseinfo-change` to `apt-get update`
+*   Correct minor errors in Grafana sample configuration ("Request Count by Service" and "Request Count by Hostname")
+*   Use table for panel "Nodes (Uptime)" in Grafana sample configuration
+*   Closes #146, see [here](https://github.com/marcus67/little_brother/issues/146)
+
+## Version 0.4.7 Revision 103 (July 4th, 2021)
+
+*   Delete all user status entries when deleting a user
+*   Correct description of rule configuration using days of the week
+*   Closes #149, see [here](https://github.com/marcus67/little_brother/issues/149)
+
+## Version 0.4.6 Revision 102 (July 1st, 2021)
+
+*   New class `DailyUserStatus`
+*   Move `MasterConnector` to subdirectory `api`
+*   Closes #148, see [here](https://github.com/marcus67/little_brother/issues/148)
+
+## Version 0.4.5 Revision 101 (June 6th, 2021)
+
+*   Fix problem with remaining time not being computed correctly with time extension before min time of day
+
+## Version 0.4.5 Revision 100 (June 1st, 2021)
+
+*   Added test class `TestApiViewHandler`
+*   Fix problem with remaining time not being computed correctly with time extension after the max time of day
+*   Fix problem with unlimited playtime not being displayed in `LittleBrotherTaskbar` after activating free play
+
+## Version 0.4.4 Revision 99 (May 29th, 2021)
+
+*   Closes #129, see [here](https://github.com/marcus67/little_brother/issues/129)
+*   Added "What's New" section in README.md 
+
+## Version 0.4.3 Revision 98 (May 26th, 2021)
+
+*   Closes #143, see [here](https://github.com/marcus67/little_brother/issues/143)
+*   Start on https://github.com/marcus67/little_brother/issues/129
+
+## Version 0.4.2 Revision 97 (May 23rd, 2021)
+
+*   Activate CSRF for all interactive pages
+*   Better handling of logout notifications
+*   Fix problem with time extensions just before regular time expires
+*   Include remaining break time in applying rules details list
+
+## Version 0.4.1 Revision 96 (May 15th, 2021)
+
+*   Introduce base class `BasePersistentEntityManagerTest`
+*   Move all persistence modules to a folder of their own 
+*   Split up test class `TestStatusServer`
+*   Add test cases for users page: 
+    *   add and delete user, edit user,
+    *   assign/unassign rule set, 
+    *   move up/down rule set,
+    *   assign/unassign device
+*   Add test cases for devices page: add and delete device, edit device
+*   Add test cases for admin page: edit rule override, add, extend, and delete time extension
+*   Add test cases for invalid data in rule override and device
+*   Move web test cases to a folder of their own
+*   Closes #133, see [here](https://github.com/marcus67/little_brother/issues/133)
+*   Create mix in class `PersistenceDependencyInjectionMixIn`
+*   Split up class `StatusServer` and move to new sub folder
+*   Created classes `AdminDataHandler` and `UserLocaleHandler`
+*   Error page for internal errors during HTML template evaluation
+*   Created class `EventHandler`
+*   Created classes `ProcessHandlerManager` and `Language`
+*   Closes #141, see [here](https://github.com/marcus67/little_brother/issues/141)
+*   Created class `UserManager`
+*   Handle exception during page rendering by displaying error page
+*   Move RuleResultInfo to file of its own
+*   Simplify handling of remaining session time
+*   Remove Sonarqube code smells 
+*   Test unit for classes `Language`, `App`, `UserStatus`, `MasterConnector`, and `ProcessHandlerManager`
+*   Bump `python_base_app` to 0.2.19 
+
+## Version 0.4.0 Revision 90 (April 2nd, 2021)
+
+*   Split file persistence.py into separate class files
+*   New class `BaseEntityManager`
+*   New test unit class `TestPersistentTimeExtension`
+*   Introduce entity managers for persistent entities rule set, user,  and time extension
+*   Introduce dependency injection using module `lagom`
+*   Clean up translation files
+*   Closes #135, see [here](https://github.com/marcus67/little_brother/issues/135)
+*   Closes #136, see [here](https://github.com/marcus67/little_brother/issues/136)
+*   Closes #124, see [here](https://github.com/marcus67/little_brother/issues/124)
+*   Closes #137, see [here](https://github.com/marcus67/little_brother/issues/137)
+
+## Version 0.3.14 Revision 86 (March 25th, 2021)
+
+*   Closes #131, see [here](https://github.com/marcus67/little_brother/issues/131)
+
+## Version 0.3.13 Revision 85 (March 22nd, 2021)
+
+*   Closes #125, see [here](https://github.com/marcus67/little_brother/issues/125)
+*   Closes #76, see [here](https://github.com/marcus67/little_brother/issues/76)
+*   Closes #82, see [here](https://github.com/marcus67/little_brother/issues/82)
+*   Closes #126, see [here](https://github.com/marcus67/little_brother/issues/126)
+*   Closes #127, see [here](https://github.com/marcus67/little_brother/issues/127)
+
+## Version 0.3.13 Revision 84 (March 6th, 2021)
+
+*   Closes #12, see [here](https://github.com/marcus67/little_brother/issues/12)
+*   Closes #117, see [here](https://github.com/marcus67/little_brother/issues/117)
+*   Closes #20, see [here](https://github.com/marcus67/little_brother/issues/20)
+
+## Version 0.3.12 Revision 83 (February 6th, 2021)
+
+*   Closes #101, see [here](https://github.com/marcus67/little_brother/issues/101)
+*   Closes #118, see [here](https://github.com/marcus67/little_brother/issues/118)
+*   Closes #120, see [here](https://github.com/marcus67/little_brother/issues/120)
+*   Greatly improved layouts of web interface for smaller screens
+*   Optional use of [ProxyPing](https://github.com/marcus67/proxy_ping)
+*   Closes #115, see [here](https://github.com/marcus67/little_brother/issues/115)
+*   Accepts [pull request regarding scanning whole command lines](https://github.com/marcus67/little_brother/pull/119)
+*   Simplified service URLs in Grafana dashboard 
+*   Accepts [pull request regarding Italian localization](https://github.com/marcus67/little_brother/pull/121)
+*   Accepts [pull request regarding French localization](https://github.com/marcus67/little_brother/pull/122)
+*   Add option to activate/deactivate the scanning of complete command lines
+*   Updated Grafana dashboard
+
 ## Version 0.3.11 Revision 82 (February 6th, 2021)
 
 *   Closes #28, see [here](https://github.com/marcus67/little_brother/issues/28)
 *   Closes #113, see [here](https://github.com/marcus67/little_brother/issues/113)
-*   Closes #112, see [here](https://github.com/marcus67/little_brother/issues/112) (presumably)
-*   Closes #58, see [here](https://github.com/marcus67/little_brother/issues/58) (presumably)
+*   Closes #112 (presumably), see [here](https://github.com/marcus67/little_brother/issues/112)
+*   Closes #58 (presumably), see [here](https://github.com/marcus67/little_brother/issues/58)
 *   Closes #110, see [here](https://github.com/marcus67/little_brother/issues/110)
 *   Closes #86, see [here](https://github.com/marcus67/little_brother/issues/86)
 
@@ -104,7 +230,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Update Italian localization (locale "it")
 *   Issue error when no database user is given when driver != sqlite
 *   Register logging filter for alembic
-*   Add up-to-dateness of translations as column to localization table
+*   Add latest change date of translations as column to localization table
 
 ## Version 0.3.0 Revision 65 (July 18th, 2020)
     
@@ -127,7 +253,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Completely revised documentation
 *   Catch exception while retrieving data on the German vacation schedules.
 *   Include local installation of fontawesome
-*   Decativate settings changes to log handling by alembic
+*   Deactivate settings changes to log handling by alembic
 *   Support broadcasting of user settings, activate on all relevant changes
 *   Increase connection pool size
 *   Activate mandatory sqlite backend for slaves
@@ -250,7 +376,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Support for `playsound` as audio engine (rewritten as engine)
 *   Support for `pyglet` as audio engine (new)
 *   Correct handling of default locale on slave device
-*   Distribution of login mappings from master to slave (for Docker containers and MacOS)
+*   Distribution of login mappings from master to slave (for Docker containers and macOS)
 *   New CI stage to build docker images
 *   Consistent hiding of sensitive variable values in logging
 *   Packages `sudo` and `procps` added to the Debian package dependencies
@@ -263,23 +389,23 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 *   Fixed problem with generated kill command under Linux
 *   Fixed several issues reported by Codacy
-*   Turned CI status into a table (including MacOS branch)
+*   Turned CI status into a table (including macOS branch)
 
 ## Version 0.1 Revision 46 (October 25th, 2019)
 
 *   Generate script for building Docker images
 *   Add list typed option values to configuration files
 *   Improve test coverage of Configuration.py
-*   Provide initial Docker images for little-brother servers (non functional)
+*   Provide initial Docker images for little-brother servers (non-functional)
 
 ## Version 0.1 Revision 45 (October 21st, 2019)
 
 *   Closes #60, see [here](https://github.com/marcus67/little_brother/issues/60)
 *   Make ProcessControl an abstract base class
-*   Use launchctl to terminate login process under MacOs
+*   Use launchctl to terminate login process under macOS
 *   Remove duplicate PopupHandler section in minimal-master.config
 *   Switch to effective user id in process infos
-*   Add missing -SIGHUP for MacOs kill command
+*   Add missing -SIGHUP for macOS kill command
 *   Use ConfigurationException
 
 ## Version 0.1 Revision 44 (October 9th, 2019)
@@ -288,7 +414,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #4, see [here](https://github.com/marcus67/little_brother/issues/4)
 *   Increased default value for DEFAULT_MINIMUM_DOWNTIME_DURATION to 20
 *   Improved exception handling upon startup
-*   Improved security of Popen by using shlex
+*   Improved security of `Popen` by using `shlex`
 
 ## Version 0.1 Revision 43 (October 5th, 2019)
 
@@ -378,7 +504,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Closes #5, see [here](https://github.com/marcus67/little_brother/issues/5)
 *   Closes #10, see [here](https://github.com/marcus67/little_brother/issues/10)
 *   Closes #14, see [here](https://github.com/marcus67/little_brother/issues/10)
-*   Round remaining play times to nearest minute in notifications.
+*   Round remaining play times to the nearest minute in notifications.
 *   Instantiate flask_wtf.FlaskForm instead of flask_wtf.Form (obsolete).
 *   Several changes proposed by codacy.
   

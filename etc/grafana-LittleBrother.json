@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1609868082785,
+  "iteration": 1629479163576,
   "links": [],
   "panels": [
     {
@@ -297,57 +297,77 @@
       }
     },
     {
-      "cacheTimeout": null,
+      "columns": [
+        {
+          "$$hashKey": "object:616",
+          "text": "Current",
+          "value": "current"
+        }
+      ],
       "datasource": null,
+      "description": "",
+      "fontSize": "80%",
       "gridPos": {
         "h": 5,
         "w": 3,
         "x": 15,
         "y": 0
       },
-      "id": 35,
-      "links": [],
-      "options": {
-        "colorMode": "value",
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "$$hashKey": "object:267",
-                "id": 0,
-                "op": "=",
-                "text": "N/A",
-                "type": 1,
-                "value": "null"
-              }
-            ],
-            "nullValueMode": "connected",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "s"
-          },
-          "overrides": [],
-          "values": false
-        },
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal"
+      "id": 46,
+      "pageSize": null,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
       },
-      "pluginVersion": "6.7.2",
+      "styles": [
+        {
+          "$$hashKey": "object:181",
+          "alias": "Uptime",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Current",
+          "type": "number",
+          "unit": "s"
+        },
+        {
+          "$$hashKey": "object:1273",
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "$$hashKey": "object:182",
+          "alias": "Hostname",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "Metric",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
       "targets": [
         {
           "expr": "little_brother_uptime{job=\"$job\"}",
-          "instant": true,
           "interval": "",
           "legendFormat": "{{hostname}}",
           "refId": "A"
@@ -355,8 +375,9 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Uptime (Nodes)",
-      "type": "stat"
+      "title": "Nodes (Uptime)",
+      "transform": "timeseries_aggregations",
+      "type": "table"
     },
     {
       "content": "",
@@ -1366,11 +1387,11 @@
       "legend": {
         "avg": false,
         "current": false,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
         "show": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
@@ -1421,11 +1442,12 @@
       "yaxes": [
         {
           "$$hashKey": "object:622",
+          "decimals": null,
           "format": "decbytes",
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1435,7 +1457,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -1639,10 +1661,11 @@
         "displayMode": "basic",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
+            "min": 0,
             "thresholds": {
               "mode": "absolute",
               "steps": [
@@ -1662,7 +1685,7 @@
       "pluginVersion": "6.7.2",
       "targets": [
         {
-          "expr": "sum by (service) (delta(little_brother_http_requests_count{job=\"$job\"}[24h]))",
+          "expr": "sum by (service) (delta(little_brother_http_requests_count{job=\"$job\"}[1h]))",
           "interval": "",
           "legendFormat": "{{service}}",
           "refId": "A"
@@ -1670,7 +1693,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Request Count by Service (last 24h)",
+      "title": "Request Count by Service (last hour)",
       "type": "bargauge"
     },
     {
@@ -1778,7 +1801,7 @@
         "displayMode": "basic",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
@@ -1801,7 +1824,7 @@
       "pluginVersion": "6.7.2",
       "targets": [
         {
-          "expr": "sum by(hostname) (delta(little_brother_http_requests_count{job=\"$job\"}[24h]))",
+          "expr": "sum by(hostname) (delta(little_brother_http_requests_count{job=\"$job\"}[1h]))",
           "interval": "",
           "legendFormat": "{{hostname}}",
           "refId": "A"
@@ -1809,8 +1832,70 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Request Count by Hostname (last 24h)",
+      "title": "Request Count by Hostname (last hour)",
       "type": "bargauge"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 16,
+        "y": 24
+      },
+      "id": 35,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "$$hashKey": "object:267",
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "s"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.7.2",
+      "targets": [
+        {
+          "expr": "little_brother_uptime{job=\"$job\"}",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{hostname}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Uptime (Nodes)",
+      "type": "stat"
     }
   ],
   "refresh": "10s",
@@ -1822,9 +1907,10 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
-          "text": "little-brother-test",
-          "value": "little-brother-test"
+          "$$hashKey": "object:75",
+          "selected": true,
+          "text": "little-brother-prod",
+          "value": "little-brother-prod"
         },
         "hide": 0,
         "includeAll": false,
@@ -1834,13 +1920,13 @@
         "options": [
           {
             "$$hashKey": "object:75",
-            "selected": false,
+            "selected": true,
             "text": "little-brother-prod",
             "value": "little-brother-prod"
           },
           {
             "$$hashKey": "object:76",
-            "selected": true,
+            "selected": false,
             "text": "little-brother-test",
             "value": "little-brother-test"
           },
@@ -1858,7 +1944,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1881,5 +1967,5 @@
   "variables": {
     "list": []
   },
-  "version": 31
+  "version": 3
 }

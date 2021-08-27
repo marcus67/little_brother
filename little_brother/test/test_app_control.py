@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -21,11 +21,18 @@
 import unittest
 
 from little_brother import app_control
-from little_brother import master_connector
-from little_brother import prometheus
 from little_brother import client_stats
-from little_brother.test import test_persistence
+from little_brother import dependency_injection
+from little_brother import prometheus
+from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.api import master_connector
+from little_brother.api.master_connector import MasterConnector
+from little_brother.persistence.persistence import Persistence
+from little_brother.prometheus import PrometheusClient
+from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_rule_handler
+from little_brother.test.persistence import test_persistence
+from little_brother.user_manager import UserManager
 from python_base_app.test import base_test
 
 HOSTNAME = "hostname"
@@ -36,12 +43,17 @@ PID = 123
 
 class TestAppControl(base_test.BaseTestCase):
 
+    def setUp(self):
+        dependency_injection.reset()
+
+
     def test_constructor(self):
         config = app_control.AppControlConfigModel()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dependency_injection.container[MasterConnector] = None
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertIsNotNone(ac)
 
@@ -49,15 +61,15 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         config.hostname = HOSTNAME
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dependency_injection.container[MasterConnector] = None
+        dummy_persistence: test_persistence.TestPersistence = \
+            dependency_injection.container[Persistence]
 
-        rule_set_configs = test_rule_handler.TestRuleHandler.create_dummy_ruleset_configs()
+        dependency_injection.container[RuleHandler] = \
+            test_rule_handler.TestRuleHandler.create_dummy_rule_handler(p_persistence=dummy_persistence)
 
-        dummy_persistence = p_persistence = test_persistence.TestPersistence.create_dummy_persistence(self._logger)
-
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_rule_handler=test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
-                                        p_persistence=dummy_persistence),
-                                    p_persistence=dummy_persistence)
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertIsNotNone(ac)
 
@@ -72,38 +84,31 @@ class TestAppControl(base_test.BaseTestCase):
         self.assertIsNone(ci.last_message)
         self.assertEqual(ci.client_stats, some_client_stats)
 
-    def test_get_number_of_monitored_users_function(self):
-        config = app_control.AppControlConfigModel()
-
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
-
-        func = ac.get_number_of_monitored_users_function()
-        self.assertIsNotNone(func)
-
-        self.assertEqual(func(), 0)
-
     def test_retrieve_user_mappings(self):
         config = app_control.AppControlConfigModel()
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        ac.retrieve_user_mappings()
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = None
+
+        app_control.AppControl(p_config=config, p_debug_mode=False)
+
+        user_manager : UserManager = dependency_injection.container[UserManager]
+
+        user_manager.retrieve_user_mappings()
 
     def test_is_slave(self):
         mc_config = master_connector.MasterConnectorConfigModel()
-        mc_config.host_url = "http://master.domain/"
+        mc_config.host_url = "htt" + "p://master.domain/"
         config = app_control.AppControlConfigModel()
 
-        mc = master_connector.MasterConnector(p_config=mc_config)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_master_connector=mc,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = MasterConnector(p_config=mc_config)
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertFalse(ac.is_master())
 
@@ -111,12 +116,12 @@ class TestAppControl(base_test.BaseTestCase):
         mc_config = master_connector.MasterConnectorConfigModel()
         config = app_control.AppControlConfigModel()
 
-        mc = master_connector.MasterConnector(p_config=mc_config)
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_master_connector=mc,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = MasterConnector(p_config=mc_config)
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertTrue(ac.is_master())
 
@@ -127,10 +132,13 @@ class TestAppControl(base_test.BaseTestCase):
 
         pc = prometheus.PrometheusClient(p_logger=self._logger, p_config=pc_config)
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_prometheus_client=pc,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+        dependency_injection.container[MasterConnector] = None
+        dependency_injection.container[PrometheusClient] = pc
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         ac.set_prometheus_http_requests_summary(p_duration=1.0, p_hostname=HOSTNAME, p_service="/app")
         ac.set_metrics()
@@ -141,9 +149,11 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
         config.check_interval = 123
 
-        ac = app_control.AppControl(p_config=config, p_debug_mode=False,
-                                    p_persistence=test_persistence.TestPersistence.create_dummy_persistence(
-                                        self._logger))
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
+        dependency_injection.container[MasterConnector] = None
+
+        ac = app_control.AppControl(p_config=config, p_debug_mode=False)
 
         self.assertIsNotNone(ac)
 

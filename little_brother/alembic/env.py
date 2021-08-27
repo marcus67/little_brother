@@ -2,9 +2,20 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from little_brother import persistence
+# noinspection PyUnresolvedReferences
+from little_brother.persistence import persistence_base, persistent_user_2_device, persistent_device, \
+    persistent_process_info, \
+    persistent_daily_user_status, persistent_user, persistent_rule_set, persistent_rule_override, \
+    persistent_time_extension, \
+    persistent_admin_event, persistence
 
-#import persistence
+# *************************************************************************************************
+# IMPORTANT
+# *************************************************************************************************
+# In order for the alembic auto generation mechanism to be able to detect the current model
+# ALL modules having a reference to the declarative_base() have to be imported!
+# See https://stackoverflow.com/questions/15660676/alembic-autogenerate-producing-empty-migration
+# *************************************************************************************************
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,7 +31,7 @@ config = context.config
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
-target_metadata = persistence.Base.metadata
+target_metadata = persistence_base.Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

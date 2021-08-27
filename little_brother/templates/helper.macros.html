@@ -18,13 +18,13 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -->
 
-{% macro render_field(field, read_only=False) %}
+{% macro render_field(field, read_only=False, rows=None) %}
 {% if field.errors %}
 <div class="has-error">
     {% if field.extra_css_classes is defined %}
-    {{ field(class_="form-control " + field.extra_css_classes, readonly=read_only) }}
+    {{ field(class_="form-control " + field.extra_css_classes, readonly=read_only, rows=rows) }}
     {% else %}
-    {{ field(class_="form-control", readonly=read_only) }}
+    {{ field(class_="form-control", readonly=read_only, rows=rows) }}
     {% endif %}
     <label class="error-label" for="{{ field.id }}">
         {% if field.errors|length == 1 %}
@@ -40,9 +40,9 @@
 </div>
 {% else %}
 {% if field.extra_css_classes is defined %}
-{{ field(class_="form-control " + field.extra_css_classes, readonly=read_only) }}
+{{ field(class_="form-control " + field.extra_css_classes, readonly=read_only, rows=rows) }}
 {% else %}
-{{ field(class_="form-control", readonly=read_only) }}
+{{ field(class_="form-control", readonly=read_only, rows=rows) }}
 {% endif %}
 {% endif %}
 {% endmacro %}
