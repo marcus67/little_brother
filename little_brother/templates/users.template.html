@@ -1,5 +1,5 @@
-<!--
-#    Copyright (C) 2019  Marcus Rickert
+{#<!--
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
@@ -36,7 +36,6 @@
       <LINK REL="stylesheet" TYPE="text/css"
             HREF="{{ url_for('little_brother.static', filename='contrib/fontawesome/css/all.min.css') }}">
       <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
-      <!-- <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/font-awesome/font-awesome.min.css') }}"> -->
 
       <LINK REL="shortcut icon" TYPE="image/x-icon"
             HREF="{{ url_for('little_brother.static', filename='icons/baby-panda-32x32.ico') }}">
@@ -55,8 +54,8 @@
 		{% include 'version_check.include.html' %}
 
 		<FORM ID="main_form" ACTION="{{ url_for('users.main_view') }}" METHOD="POST" CLASS="form-horizontal">
-			<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
-				 button. -->
+			{#<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
+				 button. -->#}
 			<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 			<DIV CLASS="container STANDARD_TABLE">
@@ -75,14 +74,14 @@
 					</DIV>
 				</DIV>
 				{% for user in users %}
-					<!-- ************************************************************************************************-->
+					{#<!-- ************************************************************************************************-->
 					<!-- USER DETAILS                                                                                    -->
-					<!-- ************************************************************************************************-->
+					<!-- ************************************************************************************************-->#}
 
 					{% call accordion.begin() %}{{ user.html_key }}{% endcall %}
 						<DIV CLASS="row ROWLEVEL_2">
 							<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
-								<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+								{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
 								<!-- {{ _('Edit user details') }} -->
 								{% call accordion.toggle_begin(tooltip="Edit user details") %}{{ user.html_key }}{% endcall
 								%}
@@ -143,9 +142,9 @@
 						</DIV>
 						{{ accordion.end() }}
 
-						<!-- ********************************************************************************************-->
+						{#<!-- ********************************************************************************************-->
 						<!-- RULESETS                                                                                    -->
-						<!-- ********************************************************************************************-->
+						<!-- ********************************************************************************************-->#}
 
 						{% call accordion.begin() %}{{ user.rulesets_html_key }}{% endcall %}
 							<DIV CLASS="row ALTERNATE_ROWLEVEL_1">
@@ -167,7 +166,7 @@
 									<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
 										<DIV CLASS="col-xs-1"></DIV>
 										<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1">
-											<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+											{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
 											<!-- {{ _('Edit ruleset details') }} -->
 											{% call accordion.toggle_begin(tooltip="Edit ruleset details")
 											%}{{ruleset.html_key}}{% endcall %}
@@ -207,10 +206,10 @@
 										<DIV CLASS="col-xs-4  col-md-2 localetext dense-font">{{_('Context')}}</DIV>
 										<DIV CLASS="col-xs-2  col-md-1 localetext dense-font">{{_('Context Details')}}</DIV>
 										<DIV CLASS="col-xs-2  col-md-1 localetext dense-font">{{_('Optional Time')}}</DIV>
-										<!-- line break for sm -->
+										{#<!-- line break for sm -->#}
 										<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
 										<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-										<!-- line break for sm -->
+										{#<!-- line break for sm -->#}
 										<DIV CLASS="col-xs-1  hidden-md hidden-lg"></DIV>
 										<DIV CLASS="col-xs-2  col-md-1 localetext dense-font">{{_('Min Time of Day')}}</DIV>
 										<DIV CLASS="col-xs-2  col-md-1 localetext dense-font">{{_('Max Time of Day')}}</DIV>
@@ -230,12 +229,12 @@
 											ruleset.fixed_context) }}
 										</DIV>
 										<DIV CLASS="col-xs-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].optional_time_per_day) }}</DIV>
-										<!-- line break for sm -->
-										<!-- See https://getbootstrap.com/docs/3.3/css/#grid-responsive-resets -->
+										{#<!-- line break for sm -->
+										<!-- See https://getbootstrap.com/docs/3.3/css/#grid-responsive-resets -->#}
 										<DIV CLASS="clearfix visible-xs-block"></DIV>
 										<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
 										<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-										<!-- line break for sm -->
+										{#<!-- line break for sm -->#}
 										<DIV CLASS="col-xs-1  hidden-md hidden-lg"></DIV>
 										<DIV CLASS="col-xs-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].min_time_of_day) }}</DIV>
 										<DIV CLASS="col-xs-2  col-md-1  col-lg-1  ">{{ helper.render_field(forms[ruleset.html_key].max_time_of_day) }}</DIV>
@@ -245,12 +244,12 @@
 										<DIV CLASS="col-xs-1  col-md-1  col-lg-1  ">{{ forms[ruleset.html_key].free_play(class_="form-control inline-field") }}</DIV>
 									</DIV>
 								{{ accordion.end() }}
-							{% endfor %} <!-- rulesets -->
+							{% endfor %} {#<!-- rulesets -->#}
 						{{ accordion.end() }}
 
-						<!-- ********************************************************************************************-->
+						{#<!-- ********************************************************************************************-->
 						<!-- DEVICES                                                                                     -->
-						<!-- ********************************************************************************************-->
+						<!-- ********************************************************************************************-->#}
 
 						{% call accordion.begin() %}{{ user.devices_html_key }}{% endcall %}
 							<DIV CLASS="row ALTERNATE2_ROWLEVEL_1">
@@ -276,7 +275,7 @@
 									<DIV CLASS="row ALTERNATE2_ROWLEVEL_2">
 										<DIV CLASS="col-xs-1 "></DIV>
 										<DIV CLASS="col-xs-2">
-											<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+											{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
 											<!-- {{ _('Edit ruleset details') }} -->
 											{% call accordion.toggle_begin(tooltip="Edit device assignment details") %}{{user2device.html_key}}{% endcall %}
 												{{ user2device.device.device_name }}
@@ -305,11 +304,11 @@
 										</DIV>
 									</DIV>
 								{{ accordion.end() }}
-							{% endfor %} <!-- user2devices -->
+							{% endfor %} {#<!-- user2devices -->#}
 						{{ accordion.end() }}
 					{{ accordion.end() }}
-				{% endfor %} <!-- users -->
-			</DIV> <!-- table -->
+				{% endfor %} {#<!-- users -->#}
+			</DIV> {#<!-- table -->#}
 
 			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
 			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>

@@ -1,4 +1,4 @@
-<!--
+{#<!--
 #    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
@@ -70,7 +70,6 @@
 
 				<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  center  localetext">{{_('Activity permitted')}}</DIV>
 				<DIV CLASS="col-xs-1  col-sm-1  col-md-1  hidden-lg center  localetext">{{_('OK?')}}</DIV>
-				<!--<DIV CLASS="col-xs-1 hidden-sm hidden-md hidden-lg"></DIV> -->
 				<DIV CLASS="hidden-xs col-sm-5  col-md-3 col-lg-4 localetext">{{_('Reasons')}}</DIV>
 			</DIV>
 			{% for user_info in user_infos %}
@@ -185,12 +184,12 @@
 									<DIV CLASS="hidden-xs col-sm-1  col-md-1  col-lg-1">{{ activity.end_time|time_to_string }}</DIV>
 									<DIV CLASS="col-xs-5  col-sm-7  col-md-7  col-lg-7">{{ activity.host_infos }}</DIV>
 								</DIV>
-							{% endfor %} <!-- activity -->
+							{% endfor %} {#<!-- activity -->#}
 						{{ accordion.end() }}
-					{% endfor %} <!-- i -->
+					{% endfor %} {#<!-- i -->#}
 				{{ accordion.end() }}
-			{% endfor %} <!-- username -->
-		</DIV> <!-- CLASS="container" -->
+			{% endfor %} {#<!-- username -->#}
+		</DIV> {#<!-- CLASS="container" -->#}
 	</DIV>
 
 	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>

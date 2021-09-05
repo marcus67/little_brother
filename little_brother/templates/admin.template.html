@@ -1,4 +1,4 @@
-<!--
+{#<!--
 #    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
@@ -54,8 +54,8 @@
 		{% include 'version_check.include.html' %}
 
 		<FORM ACTION="{{ url_for('admin.main_view') }}" METHOD="POST" CLASS="form-horizontal">
-			<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
-				 button. -->
+			{#<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
+				 button. -->#}
 			<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
 			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 			<DIV CLASS="container STANDARD_TABLE">
@@ -68,7 +68,7 @@
 
 						<DIV CLASS="row ROWLEVEL_2">
 							<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
-								<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+								{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
 								<!-- {{ _('Show configurations of upcoming days') }} -->
 								{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days")
 								%}{{admin_info.html_key}}{% endcall %}
@@ -157,16 +157,14 @@
 								<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
 									<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 "></DIV>
 									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg localetext">
-										<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+										{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
 										<!-- {{ _('Show overrides for day') }}-->
 										{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
-											<!-- { { _(day_info.short_label[0])|format(day_info.short_label[1]) }} -->
 											{{ day_info.reference_date|format_babel_date(_(day_info.short_format))|safe }}
 										{{ accordion.toggle_end() }}
 									</DIV>
 									<DIV CLASS="hidden-xs col-sm-2 col-md-2 localetext">
 										{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
-											<!-- { { _(day_info.label[0])|format(day_info.label[1]) }} -->
 											{{ day_info.reference_date|format_babel_date(_(day_info.long_format))|safe }}
 										{{ accordion.toggle_end() }}
 									</DIV>
