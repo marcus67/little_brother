@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.9 Revision 108 (September 5th, 2021)
+## Version 0.4.9 Revision 108 (September 6th, 2021)
 
 *   Remove old extra panel from Grafana sample configuration 
 *   Reduce cognitive complexity in classes `AdminDataHandler` and `UsersViewHandler`
@@ -14,6 +14,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Remove (most) comments from generated Jinja2 HTML pages 
 *   Added testcases for `DefaultContextRuleHandler` and `ClientProcessHandler`
 *   Make sure LittleBrother will not kill processes that do not belong to monitored user anymore
+*   Closes #144, see [here](https://github.com/marcus67/little_brother/issues/144)
+*   Closes #138, see [here](https://github.com/marcus67/little_brother/issues/138)
 
 ## Version 0.4.8 Revision 107 (August 21th, 2021)
 

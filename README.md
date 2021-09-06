@@ -17,11 +17,13 @@ that she can log out gracefully in time.
 
 The latest major feature changes are:
 
-| Version  | Feature/Fix                                                | Issue Link                                                         |
-|----------|------------------------------------------------------------|--------------------------------------------------------------------|
-| 0.4.9    | *New*: Automatic check for new versions of `LittleBrother` | [Issue 150](https://github.com/marcus67/little_brother/issues/150) |
-| 0.4.8    | *New*: Full support for requesting optional time by users  | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
-| 0.4.4    | *New*: Use user specific patterns to prohibit applications | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
+| Version  | Feature/Fix                                                   | Issue Link                                                         |
+|----------|---------------------------------------------------------------|--------------------------------------------------------------------|
+| 0.4.9    | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150) |
+|          | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144) |
+|          | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138) |
+| 0.4.8    | *New*: Full support for requesting optional time by users     | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
+| 0.4.4    | *New*: Use user specific patterns to prohibit applications    | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
 
 ## Contact
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -35,7 +35,7 @@ from little_brother import simple_context_rule_handlers
 from little_brother.persistence import persistent_user, persistent_user_entity_manager
 from little_brother.persistence.persistence import Persistence
 from little_brother.test.persistence import test_persistence
-from python_base_app import configuration
+from python_base_app import configuration, tools
 from python_base_app.test import base_test
 
 TEST_USER = "user1"
@@ -475,7 +475,7 @@ class TestRuleHandler(base_test.BaseTestCase):
                                                         p_create_complex_handlers=False)
 
         # Use reference time around noon so that we don't get trouble with time intervals spanning midnight
-        reference_time = datetime.datetime.today() + datetime.timedelta(hours=+12)
+        reference_time = tools.get_today() + datetime.timedelta(hours=+12)
         rule_set = TestRuleHandler.create_dummy_ruleset_config()
 
         activity_start = reference_time + datetime.timedelta(seconds=-2000)
