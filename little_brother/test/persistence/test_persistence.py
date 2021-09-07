@@ -89,6 +89,38 @@ class TestPersistence(base_test.BaseTestCase):
 
         self.assertIsNotNone(dependency_injection.container[Persistence])
 
+    def test_get_admin_session(self):
+
+        self.create_dummy_persistence(self._logger)
+
+        persistence = dependency_injection.container[Persistence]
+
+        session = persistence.get_admin_session()
+
+        self.assertIsNotNone(session)
+
+        session2 = persistence.get_admin_session()
+
+        self.assertIsNotNone(session2)
+        self.assertEqual(session, session2)
+
+    def test_get_create_table_session(self):
+
+        self.create_dummy_persistence(self._logger)
+
+        persistence = dependency_injection.container[Persistence]
+
+        session = persistence.get_create_table_session()
+
+        self.assertIsNotNone(session)
+
+        session2 = persistence.get_create_table_session()
+
+        self.assertIsNotNone(session2)
+        self.assertEqual(session, session2)
+
+
+
     @staticmethod
     def create_pinfo(p_age_in_days, p_include_end_time=False):
 
