@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.9 Revision 108 (September 6th, 2021)
+## Version 0.4.9 Revision 108 (September 13th, 2021)
 
 * Remove old extra panel from Grafana sample configuration 
 * Reduce cognitive complexity in classes `AdminDataHandler` and `UsersViewHandler`
@@ -17,6 +17,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Closes #144, see [here](https://github.com/marcus67/little_brother/issues/144)
 * Closes #138, see [here](https://github.com/marcus67/little_brother/issues/138)
 * Added test cases for `ClientInfo`, `Persistence`, and `PersistentDailyUserStatusEntityManager`
+* Fix alembic at 1.5.8
+* Exclude markdown files from Codacy reports
+
 
 ## Version 0.4.8 Revision 107 (August 21th, 2021)
 
