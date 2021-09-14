@@ -183,21 +183,6 @@ class TestStatusServerDevices(BaseTestStatusServer):
         self._test_page_devices_edit_invalid_data(
             p_elem_name="hostname", p_invalid_data=NEW_INVALID_HOST_NAME)
 
-    @base_test.skip_if_env("NO_SELENIUM_TESTS")
-    def test_page_devices_edit_invalid_min_activity_duration(self):
-        self._test_page_devices_edit_invalid_data(
-            p_elem_name="min_activity_duration", p_invalid_data=NEW_INVALID_MIN_ACTIVITY_DURATION)
-
-    @base_test.skip_if_env("NO_SELENIUM_TESTS")
-    def test_page_devices_edit_invalid_max_active_ping_delay(self):
-        self._test_page_devices_edit_invalid_data(
-            p_elem_name="max_active_ping_delay", p_invalid_data=NEW_INVALID_MAX_PING_DELAY)
-
-    @base_test.skip_if_env("NO_SELENIUM_TESTS")
-    def test_page_devices_edit_invalid_sample_size(self):
-        self._test_page_devices_edit_invalid_data(
-            p_elem_name="sample_size", p_invalid_data=NEW_INVALID_SAMPLE_SIZE)
-
 
 if __name__ == "__main__":
     unittest.main()
