@@ -19,6 +19,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Added test cases for `ClientInfo`, `Persistence`, and `PersistentDailyUserStatusEntityManager`
 * Fix alembic at 1.5.8
 * Exclude markdown files from Codacy reports
+* Closes #154, see [here](https://github.com/marcus67/little_brother/issues/154)
 
 
 ## Version 0.4.8 Revision 107 (August 21th, 2021)
