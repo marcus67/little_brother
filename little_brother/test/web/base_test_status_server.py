@@ -33,6 +33,7 @@ from little_brother import dependency_injection
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.api import master_connector
 from little_brother.api.master_connector import MasterConnector
+from little_brother.api.version_checker import VersionCheckerConfigModel, VersionChecker, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
@@ -130,6 +131,10 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         status_server_config.app_secret = "123456"
 
         status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
+
+        version_checker_config = VersionCheckerConfigModel()
+        version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
+        dependency_injection.container[VersionChecker] = version_checker
 
         self._status_server = web_server.StatusServer(
             p_config=status_server_config,
@@ -238,8 +243,13 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             user_id = p_user_entity_manager.add_new_user(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_locale="en")
 
-        user_manager : UserManager = dependency_injection.container[UserManager]
+        session = session_context.get_session()
+        user = p_user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+        # activate monitoring of user so that it will show up on the admin page
+        user.active = True
+        session.commit()
 
+        user_manager : UserManager = dependency_injection.container[UserManager]
 
         user_manager.add_monitored_user(p_username=self.get_new_user_name())
         user_manager.retrieve_user_mappings()

@@ -20,8 +20,12 @@
 
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity_manager import BaseEntityManager
+from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.persistent_daily_user_status import DailyUserStatus
 from little_brother.persistence.persistent_daily_user_status_entity_manager import DailyUserStatusEntityManager
+from little_brother.persistence.session_context import SessionContext
 from little_brother.test.persistence.base_test_case_persistent_entity_manager import BaseTestCasePersistentEntityManager
+from little_brother.test.persistence.test_persistence import TestPersistence
 
 
 class TestDailyUserStatusEntityManager(BaseTestCasePersistentEntityManager):
@@ -33,3 +37,38 @@ class TestDailyUserStatusEntityManager(BaseTestCasePersistentEntityManager):
 
     def setUp(self):
         dependency_injection.reset()
+
+    def test_delete_user_status(self):
+
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
+        self.assertIsNotNone(a_persistence)
+
+        daily_user_status_entity_manager: DailyUserStatusEntityManager = dependency_injection.container[DailyUserStatusEntityManager]
+
+        with SessionContext(a_persistence) as session_context:
+
+            daily_user_status = DailyUserStatus()
+            session = session_context.get_session()
+            session.add(daily_user_status)
+            daily_user_status.populate_test_data(p_session_context=session_context)
+
+            session.commit()
+
+            id = daily_user_status.id
+
+            daily_user_status_entity_manager.delete_user_status(p_session_context=session_context, p_user_status_id=id)
+
+    def test_delete_non_existing_user_status(self):
+
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
+        self.assertIsNotNone(a_persistence)
+
+        daily_user_status_entity_manager: DailyUserStatusEntityManager = dependency_injection.container[DailyUserStatusEntityManager]
+
+        with SessionContext(a_persistence) as session_context:
+            daily_user_status_entity_manager.delete_user_status(p_session_context=session_context, p_user_status_id=1)
+

@@ -137,3 +137,8 @@ USERS_REL_URL = "users"
 USERS_VIEW_NAME = "main_view"
 
 CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
+
+SOURCEFORGE_VERSION_RSS_URL = "https://sourceforge.net/projects/little-brother/rss?path=/"
+SOURCEFORGE_VERSION_XPATH = "./channel/item/title"
+SOURCEFORGE_VERSION_REGEX = "^/([a-z]+)/little-brother_([.0-9]+)_([0-9]+)\.deb$"
+

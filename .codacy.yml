@@ -8,3 +8,4 @@ engines:
 exclude_paths:
   - 'little_brother/templates/**'
   - 'little_brother/static/contrib/**'
+  - '**/*.md'

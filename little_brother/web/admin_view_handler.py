@@ -25,15 +25,16 @@ from little_brother import rule_override
 from little_brother.persistence.session_context import SessionContext
 from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import tools
-from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
 
 TIME_EXTENSION_SUBMIT_PATTERN = "time_extension_{username}_(off|-?[0-9]+)"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
 
 
 class AdminViewHandler(BaseViewHandler):
@@ -71,14 +72,16 @@ class AdminViewHandler(BaseViewHandler):
                     if not submitted:
                         self.load_from_model(admin_infos, forms)
 
-                    page = flask.render_template(
-                        constants.ADMIN_HTML_TEMPLATE,
-                        rel_font_size=self.get_rel_font_size(),
-                        admin_infos=admin_infos,
-                        authentication=BaseWebServer.get_authentication_info(),
-                        forms=forms,
-                        navigation={
-                            'current_view': constants.ADMIN_BLUEPRINT_NAME + "." + constants.ADMIN_VIEW_NAME})
+                    template_dict = {}
+                    self.add_general_template_data(p_dict=template_dict)
+                    template_dict["forms"] = forms
+                    template_dict["admin_infos"] = admin_infos
+                    template_dict["navigation"] = {
+                        'current_view': constants.ADMIN_BLUEPRINT_NAME + "." + constants.ADMIN_VIEW_NAME
+                    }
+                    self.add_version_info(p_dict=template_dict)
+
+                    page = flask.render_template(constants.ADMIN_HTML_TEMPLATE, **template_dict)
 
                 except Exception as e:
                     return self.handle_rendering_exception(p_page_name="admin page", p_exception=e)

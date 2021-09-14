@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from little_brother import login_mapping
+from little_brother import settings
 from python_base_app import configuration
 
 DEFAULT_SCAN_ACTIVE = True
@@ -32,6 +33,7 @@ DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS = 3 * DEFAULT_CHECK_INTERVAL  # seconds
 DEFAULT_MAXIMUM_TIME_WITHOUT_SEND_EVENTS = 10 * DEFAULT_CHECK_INTERVAL  # minutes
 DEFAULT_KILL_PROCESS_DELAY = 10  # seconds
 DEFAULT_TIME_EXTENSION_PERIODS = "-30,-15,-5,5,10,15,30,45,60"
+DEFAULT_UPDATE_CHANNEL = settings.MASTER_BRANCH_NAME
 
 SECTION_NAME = "AppControl"
 
@@ -57,6 +59,7 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.warning_time_without_send_events = DEFAULT_WARNING_TIME_WITHOUT_SEND_EVENTS
         self.kill_process_delay = DEFAULT_KILL_PROCESS_DELAY
         self.time_extension_periods = DEFAULT_TIME_EXTENSION_PERIODS
+        self.update_channel = DEFAULT_UPDATE_CHANNEL
 
         self._time_extension_periods_list = None
 

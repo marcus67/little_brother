@@ -18,7 +18,7 @@
 settings = {
     "name": "little-brother",
     "url": "https://github.com/marcus67/little_brother",
-    "version": "0.4.8",
+    "version": "0.4.9",
     "description": "Simple parental control application monitoring specific processes on Linux hosts "
                    "to monitor and limit the play time of (young) children.",
     "author": "Marcus Rickert",
@@ -27,7 +27,21 @@ settings = {
 
 extended_settings = {
     "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "107",
+    "debian_package_revision": "108",
     "debian_package_architecture": "all",
     "babel_rel_directory": "translations",
+    "analyze_extra_coverage_exclusions": "run_python_base_app_test_suite_no_venv.py",
 }
+
+RELEASE_BRANCH_NAME = "release"
+MASTER_BRANCH_NAME = "master"
+
+SOURCEFORGE_CHANNELS = [
+    MASTER_BRANCH_NAME,
+    RELEASE_BRANCH_NAME
+]
+
+DOCKER_CHANNELS = [
+    MASTER_BRANCH_NAME,
+    RELEASE_BRANCH_NAME
+]

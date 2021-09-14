@@ -113,11 +113,20 @@ in red.
 
 ![Topology with Highlighting](doc/topology_with_highlighting.png)
 
-#### Outdated Clients 
+#### Outdated Clients and Version Checks
 
-When a client is detected whose version is older then 0.3.9 the additional meta data (AppVersion, Revision and Python
+If a client is detected whose version is older than 0.3.9 the additional metadata (AppVersion, Revision and Python
 Version) is not available. In this case the AppVersion will show "< 0.3.9" in red color. If the slave version is 
-smaller than the master version the AppVersion will also show in red. See screenshot above.
+smaller than the master version, the AppVersion will also show in red. See screenshot above.
+
+As of version 0.4.9 of `LittleBrother` the master node will check SourceForge for versions automatically. If a 
+new version is found, this version will be reported in a banner underneath the navigation bar. The bannner also
+includes a download link.
+
+![Version Check Banner](doc/version-check-banner.png)
+
+The version check refers to a configured update channel with `master` being the default channel. The version is
+checked once a day.
 
 #### Inactive Clients
 

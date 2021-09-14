@@ -6,9 +6,9 @@
 
 `LittleBrother` is a simple parental control application monitoring specific processes (read "games") on Linux hosts
 to monitor and limit the play time of (young) children. It is designed as a client server application running
-on several hosts and combining playing time spent across these hosts but it also works on a standalone host.
+on several hosts and combining playing time spent across these hosts, but it also works on a standalone host.
 
-When the application determines that a user has exceeded her play time it will terminate the configured 
+When the application determines that a user has exceeded her play time, it will terminate the configured 
 process. Usually, the user will get several spoken notifications (using the 
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) before she is actually kicked out so 
 that she can log out gracefully in time.
@@ -17,10 +17,13 @@ that she can log out gracefully in time.
 
 The latest major feature changes are:
 
-| Version  | Feature/Fix                                                | Issue Link                                                         |
-|----------|------------------------------------------------------------|--------------------------------------------------------------------|
-| 0.4.8    | *New*: Full support for requesting optional time by users  | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
-| 0.4.4    | *New*: Use user specific patterns to prohibit applications | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
+| Version  | Feature/Fix                                                   | Issue Link                                                         |
+|----------|---------------------------------------------------------------|--------------------------------------------------------------------|
+| 0.4.9    | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150) |
+|          | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144) |
+|          | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138) |
+| 0.4.8    | *New*: Full support for requesting optional time by users     | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
+| 0.4.4    | *New*: Use user specific patterns to prohibit applications    | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
 
 ## Contact
 
@@ -113,10 +116,10 @@ Users are invited to provide translations for other languages.
 *   Downtime of a server during playtime (e.g. due to hibernation) is automatically subtracted from the play time.
 
 *   In addition to the time spent on Linux hosts the application can also monitor activity time on other devices 
-such as smart phones or tables. It takes advantage of the fact that most modern operating systems put devices
+such as smartphones or tables. It takes advantage of the fact that most modern operating systems put devices
 in some kind of power saving mode while they are not being used. This way, the network response (by `pinging`) can
 be used to determine the activity on those devices. In contrast to the Linux hosts, the application
-will not be able the terminate the activity. The play time, however, will be added to the overall playtime and
+will not be able to terminate the activity. The play time, however, will be added to the overall playtime and
 hence will have an impact on the time allowed and also on the break time rules on the Linux hosts.
 
 *   As of version 0.3.12 `LittleBrother` is able to use [ProxyPing](https://github.com/marcus67/proxy_ping) to ping
@@ -127,7 +130,7 @@ process for a certain time (defaults to 50 seconds). This ensures users cannot s
 *pulling the plug*.
 
 *   As of version 0.4.0 `LittleBrother` provides an administration feature to easily extend the current computer time 
-or grant computer when the usage would normally be prohibited. This is called a time extension. During a active 
+or grant computer when the usage would normally be prohibited. This is called a time extension. During an active 
 extension all other restrictions (maximum time per session, time of day, and maximum time per day) are deactivated.
 Time extension can even extend into the next day making long night session possible. However, any computer time
 actually spent during a time extension will contribute to the overall time played in the course of a day.   
@@ -135,7 +138,7 @@ actually spent during a time extension will contribute to the overall time playe
 *   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
 Linux host with a Docker daemon available.
 
-*   The application uses voice generation to inform the user over impending logouts. Also these spoken
+*   The application uses voice generation to inform the user over impending logouts. Also, these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
 functionality of the `LittleBrother` application has been replaced by the `LittleBrotherTaskbar.` 
 
@@ -238,7 +241,7 @@ You are all set now. It's time to set up users to be monitored and optionally de
 
 ### Troubleshooting
 
-So, you went through all of the above but LittleBrother does not seem to work? Maybe this 
+So, you went through all the above but LittleBrother does not seem to work? Maybe this 
 [troubleshooting page](TROUBLESHOOTING.md) can help you.
 
 ## Caveats
@@ -252,7 +255,7 @@ solved by trying to kill the processes again using the master user. Database elo
 delete/correct the incorrect process time entries.
 
 *   The web server only responds to HTTP requests. This is probably always OK for communication between the
-slaves and the master in local area network. If the master host is to be accessible from the internet it should
+slaves and the master in local area network. If the master host is to be accessible from the internet, it should
 be put behind a reverse proxy handling the HTTPS termination (see below). 
 
 ## Internationalization
@@ -264,7 +267,7 @@ the following languages are supported or currently in preparation (in the order 
 | ---------------------------------------------------------------| ------------- | ------ | -------------- | ---------------------------|
 | ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Up-to-date     |  Marcus Rickert            |
 | ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Up-to-date     |  Marcus Rickert            |
-| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Revision 107   |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
 | ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 86    |  Albano Battistella        |

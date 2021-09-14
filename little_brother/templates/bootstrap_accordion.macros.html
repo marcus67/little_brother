@@ -1,4 +1,4 @@
-<!--
+{#<!--
 #    Copyright (C) 2019  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 {% macro begin() -%}
 <DIV ID="accordion{{caller()}}" ROLE="tablist">
@@ -45,6 +45,7 @@
 </A>
 {%- endmacro %}
 
+{#
 // The following comments have deliberately been moved out of the macro to reduce the size of the generated file.
 
 // The following code snippet is based on https://www.geekpub.de/2015/01/bootstrap-3-accordion-status-merken-mit-cookies/
@@ -58,6 +59,7 @@
 // The correction is based on https://stackoverflow.com/questions/32070392/jquery-show-bs-collapse-event-for-nested-bootstrap-collapsible-buttons-fires-on
 
 // ad (3): The following is executed when the page is loaded. It opens the accordion when a matching cookie is found.
+#}
 
 {% macro script() -%}
 <SCRIPT type="text/javascript">

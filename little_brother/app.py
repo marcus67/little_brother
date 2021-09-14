@@ -32,6 +32,9 @@ from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
 from little_brother.api.master_connector import MasterConnector, MasterConnectorConfigModel, \
     SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
+from little_brother.api.version_checker import VersionChecker
+from little_brother.api.version_checker import VersionCheckerConfigModel, \
+    SECTION_NAME as VERSION_CHECKER_SECTION_NAME, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
 from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
@@ -160,6 +163,9 @@ class App(base_app.BaseApp):
 
         pinger_section = pinger.PingerConfigModel()
         p_configuration.add_section(pinger_section)
+
+        version_checker_section = VersionCheckerConfigModel()
+        p_configuration.add_section(version_checker_section)
 
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
@@ -371,6 +377,12 @@ class App(base_app.BaseApp):
         else:
             msg = "Slave instance will not start web server due to missing port number"
             self._logger.warn(msg)
+
+        self._version_checker = VersionChecker(p_config=self._config[VERSION_CHECKER_SECTION_NAME],
+                                               p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
+
+        dependency_injection.container[VersionChecker] = self._version_checker
+
 
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)

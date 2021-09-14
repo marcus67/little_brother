@@ -20,10 +20,11 @@
 
 import datetime
 
-from python_base_app import configuration
-from python_base_app.test import base_test
+from wtforms import ValidationError
 
 from little_brother import simple_context_rule_handlers
+from python_base_app import configuration, tools
+from python_base_app.test import base_test
 
 ONE_DAY = datetime.timedelta(hours=24)
 
@@ -102,3 +103,35 @@ class TestWeekDayContextRuleHandler(base_test.BaseTestCase):
         self.assertTrue(rule_handler.is_active(p_reference_date=FRIDAY, p_details="WEEKDAYS"))
         self.assertFalse(rule_handler.is_active(p_reference_date=SUNDAY, p_details="WEEKDAYS"))
         self.assertFalse(rule_handler.is_active(p_reference_date=SATURDAY, p_details="WEEKDAYS"))
+
+    def test_is_active_without_details(self):
+
+        rule_handler = simple_context_rule_handlers.WeekplanContextRuleHandler()
+
+        with self.assertRaises(configuration.ConfigurationException) as e:
+            rule_handler.is_active(p_reference_date=tools.get_current_time(), p_details=None)
+            self.assertIn("context without context details", str(e))
+
+    def test_validate(self):
+        rule_handler = simple_context_rule_handlers.WeekplanContextRuleHandler()
+        rule_handler.validate_context_details(p_context_detail="weekend")
+        rule_handler.validate_context_details(p_context_detail="weekdays")
+        rule_handler.validate_context_details(p_context_detail="mondays")
+        rule_handler.validate_context_details(p_context_detail="tuesdays")
+        rule_handler.validate_context_details(p_context_detail="wednesdays")
+        rule_handler.validate_context_details(p_context_detail="thursdays")
+        rule_handler.validate_context_details(p_context_detail="fridays")
+        rule_handler.validate_context_details(p_context_detail="saturdays")
+        rule_handler.validate_context_details(p_context_detail="sundays")
+
+        rule_handler.validate_context_details(p_context_detail="1yx0n--")
+        rule_handler.validate_context_details(p_context_detail="1YX0N--")
+
+        with self.assertRaises(ValidationError):
+            rule_handler.validate_context_details(p_context_detail="xxxxxx")
+
+        with self.assertRaises(ValidationError):
+            rule_handler.validate_context_details(p_context_detail="xxxxxxxx")
+
+        with self.assertRaises(ValidationError):
+            rule_handler.validate_context_details(p_context_detail="abcdefg")

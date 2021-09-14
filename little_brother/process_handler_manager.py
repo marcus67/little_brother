@@ -233,8 +233,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 p_reference_time=datetime.datetime.now(), p_process_infos=self.get_process_infos(),
                 p_username=p_event.username)
 
-            if rule_result_info.activity_allowed():
-
+            if rule_result_info is not None and rule_result_info.activity_allowed():
                 with SessionContext(p_persistence=self.persistence) as session_context:
 
                     if rule_result_info.limited_session_time():
@@ -264,7 +263,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 p_reference_time=datetime.datetime.now(), p_process_infos=self.get_process_infos(),
                 p_username=p_event.username)
 
-            if rule_result_info.activity_allowed():
+            if rule_result_info is not None and rule_result_info.activity_allowed():
                 with SessionContext(p_persistence=self.persistence) as session_context:
 
                     variables = rule_result_info.args

@@ -1,4 +1,4 @@
-<!--
+{#<!--
 #    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
@@ -48,221 +48,222 @@
 
   <BODY>
 	{{ helper.fontawesome_script() }}
-	{% include 'navbar.include.html' %}
+	<DIV class="container-fluid">
 
-	<FORM ACTION="{{ url_for('admin.main_view') }}" METHOD="POST" CLASS="form-horizontal">
-		<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
-		     button. -->
-		<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
-		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-	    <DIV CLASS="container STANDARD_TABLE">
-	    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-	    		<DIV CLASS="col-xs-2 localetext">{{_('User')}}</DIV>
-				<DIV CLASS="col-xs-10 hidden-xs"></DIV>
-	    	</DIV>
-	    	{% for admin_info in admin_infos %}
-	    	   	{% call accordion.begin() %}{{admin_info.html_key}}{% endcall %}	    			        
-	    	
-			    	<DIV CLASS="row ROWLEVEL_2">
-						<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
-							<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
-							<!-- {{ _('Show configurations of upcoming days') }} -->
-							{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days")
-							%}{{admin_info.html_key}}{% endcall %}
-							{{ admin_info.full_name }}
-							{{ helper.check_or_cross(admin_info.user_info.activity_permitted) }}
-							{{ accordion.toggle_end() }}
-						</DIV>
-						<DIV CLASS="col-xs-3  col-sm-3  col-md-3  col-lg-3 localetext">
-							{% if admin_info.user_info.active_stat_info is defined %}
-							{{_("Today's Activity")}}:
-							<SPAN CLASS="nonlocaletext">
-								{{ admin_info.user_info.active_stat_info.todays_activity_duration|seconds_to_string }} /
-								{% if admin_info.day_infos[0].effective_rule_set.free_play %}
-									{{ _("unlimited") }}
-								{% else %}
-									{{ admin_info.day_infos[0].effective_rule_set.max_time_per_day|seconds_to_string }}
-								{% endif %}
-							</SPAN>
-							{% endif %}
-						</DIV>
-						<DIV CLASS="col-xs-7  col-sm-7  col-md-7  col-lg-7 localetext">
-							<UL>
-								{% for rule_template in
-								admin_info.user_info.active_rule_result_info.applying_rule_text_templates %}
-								<LI>{{ _(rule_template[0])|format(rule_template[1])|safe }}</LI>
-								{% endfor %}
-							</UL>
-						</DIV>
+		{% include 'navbar.include.html' %}
+		{% include 'version_check.include.html' %}
 
-					</DIV>
-			    {% call accordion.details() %}{{admin_info.html_key}}{% endcall %}
-			        {% if admin_info.time_extension_periods|length > 0 %}
-						<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
+		<FORM ACTION="{{ url_for('admin.main_view') }}" METHOD="POST" CLASS="form-horizontal">
+			{#<!-- The following button ensures that pressing enter will trigger a normal save and not a more specialized
+				 button. -->#}
+			<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+			<DIV CLASS="container STANDARD_TABLE">
+				<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+					<DIV CLASS="col-xs-2 localetext">{{_('User')}}</DIV>
+					<DIV CLASS="col-xs-10 hidden-xs"></DIV>
+				</DIV>
+				{% for admin_info in admin_infos %}
+					{% call accordion.begin() %}{{admin_info.html_key}}{% endcall %}
+
+						<DIV CLASS="row ROWLEVEL_2">
 							<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
+								{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
+								<!-- {{ _('Show configurations of upcoming days') }} -->
+								{% call accordion.toggle_begin(tooltip="Show configurations of upcoming days")
+								%}{{admin_info.html_key}}{% endcall %}
+								{{ admin_info.full_name }}
+								{{ helper.check_or_cross(admin_info.user_info.activity_permitted) }}
+								{{ accordion.toggle_end() }}
 							</DIV>
 							<DIV CLASS="col-xs-3  col-sm-3  col-md-3  col-lg-3 localetext">
-								{{ _("Manage Time Extension") }}
+								{% if admin_info.user_info.active_stat_info is defined %}
+								{{_("Today's Activity")}}:
+								<SPAN CLASS="nonlocaletext">
+									{{ admin_info.user_info.active_stat_info.todays_activity_duration|seconds_to_string }} /
+									{% if admin_info.day_infos[0].effective_rule_set.free_play %}
+										{{ _("unlimited") }}
+									{% else %}
+										{{ admin_info.day_infos[0].effective_rule_set.max_time_per_day|seconds_to_string }}
+									{% endif %}
+								</SPAN>
+								{% endif %}
 							</DIV>
 							<DIV CLASS="col-xs-7  col-sm-7  col-md-7  col-lg-7 localetext">
-								{% for period in admin_info.time_extension_periods %}
-								    {% if period == 0 %}
-										{% set period_string = - period %}
-										<BUTTON id="time_extension_{{ admin_info.username }}_0"
-												class="btn btn-time-extension-off" type="submit" name="submit"
-												value="time_extension_{{ admin_info.username }}_0"
-												title="{{_('Deactivate time extension')}}">
-											<I class="fas fa-power-off"></I>
-										</BUTTON>
-								    {% elif period < 0 %}
-										{% set period_string = - period %}
-										<BUTTON id="time_extension_{{ admin_info.username }}_{{period}}"
-												class="btn btn-time-extension-minus" type="submit" name="submit"
-												value="time_extension_{{ admin_info.username }}_{{period}}"
-												title="{{_('Decrease time extension by {minutes} minutes')|format({'minutes':period_string})}}">
-											<I class="far fa-minus-square"></I> {{ period_string }}
-										</BUTTON>
-								    {% else %}
-										<BUTTON id="time_extension_{{ admin_info.username }}_{{period}}"
-												class="btn btn-time-extension-plus" type="submit" name="submit"
-												value="time_extension_{{ admin_info.username }}_{{period}}"
-												title="{{_('Increase time extension by {minutes} minutes')|format({'minutes':period})}}">
-											<I class="far fa-plus-square"></I> {{ period }}
-										</BUTTON>
-								    {% endif %}
-								{% endfor %}
+								<UL>
+									{% for rule_template in
+									admin_info.user_info.active_rule_result_info.applying_rule_text_templates %}
+									<LI>{{ _(rule_template[0])|format(rule_template[1])|safe }}</LI>
+									{% endfor %}
+								</UL>
 							</DIV>
 
 						</DIV>
-			        {% endif %}
-			    	<DIV CLASS="row ALTERNATE_ROWLEVEL_1 TITLE_ROW">
-			    		<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Day')}}</DIV>
-			    		<DIV CLASS="hidden-xs hidden-sm col-md-2 localetext">{{_('Context')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Min Time of Day')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Max Time of Day')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Time per Day')}}</DIV>
-						<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
-						<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-						<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Minimum Break')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Max Duration')}}</DIV>
-			    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Free Play')}}</DIV>
-			    	</DIV>
-			    	{% for day_info in admin_info.day_infos %}
-			    	   	{% call accordion.begin() %}{{day_info.html_key}}{% endcall %}
-				    		<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
-				    			<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 "></DIV>
-				    			<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg localetext">
-									<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
-									<!-- {{ _('Show overrides for day') }}-->
-				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
-        								<!-- { { _(day_info.short_label[0])|format(day_info.short_label[1]) }} -->
-        								{{ day_info.reference_date|format_babel_date(_(day_info.short_format))|safe }}
-				        			{{ accordion.toggle_end() }}
-					    		</DIV>
-				    			<DIV CLASS="hidden-xs col-sm-2 col-md-2 localetext">
-				    				{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
-        								<!-- { { _(day_info.label[0])|format(day_info.label[1]) }} -->
-        								{{ day_info.reference_date|format_babel_date(_(day_info.long_format))|safe }}
-				        			{{ accordion.toggle_end() }}
+					{% call accordion.details() %}{{admin_info.html_key}}{% endcall %}
+						{% if admin_info.time_extension_periods|length > 0 %}
+							<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
+								<DIV CLASS="col-xs-2  col-sm-2  col-md-2  col-lg-2">
 								</DIV>
-								<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT localetext">{{
-									_(day_info.rule_set.label) }}
+								<DIV CLASS="col-xs-3  col-sm-3  col-md-3  col-lg-3 localetext">
+									{{ _("Manage Time Extension") }}
 								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_time_of_day_class }} ">
-									{{ day_info.effective_rule_set.min_time_of_day|time_to_string }}
+								<DIV CLASS="col-xs-7  col-sm-7  col-md-7  col-lg-7 localetext">
+									{% for period in admin_info.time_extension_periods %}
+										{% if period == 0 %}
+											{% set period_string = - period %}
+											<BUTTON id="time_extension_{{ admin_info.username }}_0"
+													class="btn btn-time-extension-off" type="submit" name="submit"
+													value="time_extension_{{ admin_info.username }}_0"
+													title="{{_('Deactivate time extension')}}">
+												<I class="fas fa-power-off"></I>
+											</BUTTON>
+										{% elif period < 0 %}
+											{% set period_string = - period %}
+											<BUTTON id="time_extension_{{ admin_info.username }}_{{period}}"
+													class="btn btn-time-extension-minus" type="submit" name="submit"
+													value="time_extension_{{ admin_info.username }}_{{period}}"
+													title="{{_('Decrease time extension by {minutes} minutes')|format({'minutes':period_string})}}">
+												<I class="far fa-minus-square"></I> {{ period_string }}
+											</BUTTON>
+										{% else %}
+											<BUTTON id="time_extension_{{ admin_info.username }}_{{period}}"
+													class="btn btn-time-extension-plus" type="submit" name="submit"
+													value="time_extension_{{ admin_info.username }}_{{period}}"
+													title="{{_('Increase time extension by {minutes} minutes')|format({'minutes':period})}}">
+												<I class="far fa-plus-square"></I> {{ period }}
+											</BUTTON>
+										{% endif %}
+									{% endfor %}
 								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_time_of_day_class }} ">
-									{{ day_info.effective_rule_set.max_time_of_day|time_to_string }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_time_per_day_class }} ">
-									{{ day_info.effective_rule_set.max_time_per_day|seconds_to_string }}
-								</DIV>
-								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-								<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg "></DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_break_class }} ">
-									{{ day_info.effective_rule_set.min_break|seconds_to_string }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_activity_duration_class }} ">
-									{{ _(day_info.effective_rule_set.max_activity_duration|seconds_to_string) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  {{ day_info.effective_rule_set.free_play_class }} localetext">
-									{{ day_info.effective_rule_set.free_play|boolean_to_string|_base }}
-								</DIV>
+
 							</DIV>
-					    {% call accordion.details() %}{{day_info.html_key}}{% endcall %}
-				    		<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
-				    			<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
-								<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT localetext">{{
-									_(day_info.rule_set.label) }}
+						{% endif %}
+						<DIV CLASS="row ALTERNATE_ROWLEVEL_1 TITLE_ROW">
+							<DIV CLASS="hidden-xs hidden-sm col-md-1"></DIV>
+							<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Day')}}</DIV>
+							<DIV CLASS="hidden-xs hidden-sm col-md-2 localetext">{{_('Context')}}</DIV>
+							<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Min Time of Day')}}</DIV>
+							<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Max Time of Day')}}</DIV>
+							<DIV CLASS="col-xs-3  col-sm-2  col-md-1 localetext">{{_('Time per Day')}}</DIV>
+							<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW">&nbsp;</DIV>
+							<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+							<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
+							<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Minimum Break')}}</DIV>
+							<DIV CLASS="col-xs-3  col-sm-1  col-md-1 localetext">{{_('Max Duration')}}</DIV>
+							<DIV CLASS="col-xs-3  col-sm-2  col-md-2 localetext">{{_('Free Play')}}</DIV>
+						</DIV>
+						{% for day_info in admin_info.day_infos %}
+							{% call accordion.begin() %}{{day_info.html_key}}{% endcall %}
+								<DIV CLASS="row ALTERNATE_ROWLEVEL_2">
+									<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1 "></DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg localetext">
+										{#<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->#}
+										<!-- {{ _('Show overrides for day') }}-->
+										{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
+											{{ day_info.reference_date|format_babel_date(_(day_info.short_format))|safe }}
+										{{ accordion.toggle_end() }}
+									</DIV>
+									<DIV CLASS="hidden-xs col-sm-2 col-md-2 localetext">
+										{% call accordion.toggle_begin(tooltip="Show overrides for day") %}{{day_info.html_key}}{% endcall %}
+											{{ day_info.reference_date|format_babel_date(_(day_info.long_format))|safe }}
+										{{ accordion.toggle_end() }}
+									</DIV>
+									<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT localetext">{{
+										_(day_info.rule_set.label) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_time_of_day_class }} ">
+										{{ day_info.effective_rule_set.min_time_of_day|time_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_time_of_day_class }} ">
+										{{ day_info.effective_rule_set.max_time_of_day|time_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_time_per_day_class }} ">
+										{{ day_info.effective_rule_set.max_time_per_day|seconds_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+									<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg "></DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  {{ day_info.effective_rule_set.min_break_class }} ">
+										{{ day_info.effective_rule_set.min_break|seconds_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  {{ day_info.effective_rule_set.max_activity_duration_class }} ">
+										{{ _(day_info.effective_rule_set.max_activity_duration|seconds_to_string) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  {{ day_info.effective_rule_set.free_play_class }} localetext">
+										{{ day_info.effective_rule_set.free_play|boolean_to_string|_base }}
+									</DIV>
 								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  hidden-md hidden-lg CONTEXT localetext">{{
-									_(day_info.rule_set.label) }}
+							{% call accordion.details() %}{{day_info.html_key}}{% endcall %}
+								<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
+									<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
+									<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-2  CONTEXT localetext">{{
+										_(day_info.rule_set.label) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  hidden-md hidden-lg CONTEXT localetext">{{
+										_(day_info.rule_set.label) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
+										day_info.rule_set.min_time_of_day|time_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
+										day_info.rule_set.max_time_of_day|time_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
+										day_info.rule_set.max_time_per_day|seconds_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+									<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
+										day_info.rule_set.min_break|seconds_to_string }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
+										_(day_info.rule_set.max_activity_duration|seconds_to_string) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  localetext ">{{
+										day_info.rule_set.free_play|boolean_to_string|_base }}
+									</DIV>
 								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
-									day_info.rule_set.min_time_of_day|time_to_string }}
+								<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
+									<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  CONTEXT localetext">
+										{{_('override')}}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
+										helper.render_field(forms[day_info.html_key].min_time_of_day) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
+										helper.render_field(forms[day_info.html_key].max_time_of_day) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
+										helper.render_field(forms[day_info.html_key].max_time_per_day) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+									<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+									<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
+										helper.render_field(forms[day_info.html_key].min_break) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
+										helper.render_field(forms[day_info.html_key].max_activity_duration) }}
+									</DIV>
+									<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  "><DIV CLASS="check-box-wrapper">{{
+										helper.render_field(forms[day_info.html_key].free_play) }}</DIV>
+									</DIV>
+									<DIV class="col-xs-1  col-sm-1  col-md-1  col-lg-1 text-right localetext">
+										<BUTTON id="save" class="btn" type="submit" name="submit" title="{{_('Save')}}">
+											<I class="fas fa-save"></I>
+										</BUTTON>
+									</DIV>
 								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
-									day_info.rule_set.max_time_of_day|time_to_string }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
-									day_info.rule_set.max_time_per_day|seconds_to_string }}
-								</DIV>
-								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-								<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
-									day_info.rule_set.min_break|seconds_to_string }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
-									_(day_info.rule_set.max_activity_duration|seconds_to_string) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  localetext ">{{
-									day_info.rule_set.free_play|boolean_to_string|_base }}
-								</DIV>
-							</DIV>
-				    		<DIV CLASS="row ALTERNATE_ROWLEVEL_3">
-								<DIV CLASS="hidden-xs hidden-sm col-md-3  col-lg-3  "></DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  CONTEXT localetext">
-									{{_('override')}}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
-									helper.render_field(forms[day_info.html_key].min_time_of_day) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
-									helper.render_field(forms[day_info.html_key].max_time_of_day) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  ">{{
-									helper.render_field(forms[day_info.html_key].max_time_per_day) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-								<DIV CLASS="col-xs-9  hidden-sm hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-								<DIV CLASS="col-xs-3  hidden-sm hidden-md hidden-lg"></DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
-									helper.render_field(forms[day_info.html_key].min_break) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  ">{{
-									helper.render_field(forms[day_info.html_key].max_activity_duration) }}
-								</DIV>
-								<DIV CLASS="col-xs-3  col-sm-1  col-md-1  col-lg-1  "><DIV CLASS="check-box-wrapper">{{
-									helper.render_field(forms[day_info.html_key].free_play) }}</DIV>
-								</DIV>
-								<DIV class="col-xs-1  col-sm-1  col-md-1  col-lg-1 text-right localetext">
-									<BUTTON id="save" class="btn" type="submit" name="submit" title="{{_('Save')}}">
-										<I class="fas fa-save"></I>
-									</BUTTON>
-								</DIV>
-							</DIV>
-						{{ accordion.end() }}    	
-			    	{% endfor %}
-				{{ accordion.end() }}
-	    	{% endfor %}
-	    </DIV>
-    </FORM>    		
-    
-    
+							{{ accordion.end() }}
+						{% endfor %}
+					{{ accordion.end() }}
+				{% endfor %}
+			</DIV>
+		</FORM>
+	</DIV>
+
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
     <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
@@ -274,7 +275,5 @@
     		{% call accordion.script() %}{{day_info.html_key}}{% endcall %}    		    			        
     	{% endfor %}
 	{% endfor %}
-
   </BODY>
-  
 </HTML>
