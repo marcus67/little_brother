@@ -1,5 +1,5 @@
-<!--
-#    Copyright (C) 2019  Marcus Rickert
+{#<!--
+#    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -16,13 +16,13 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 <HTML>
 {% import 'helper.macros.html' as helper %}
   {{ helper.locale_font(rel_font_size) }}
 
-  <META http-equiv="Content-Type" content="text/html;charset=UTF-9">
+  <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <HEAD>
       <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <LINK REL="stylesheet" TYPE="text/css"
@@ -46,66 +46,65 @@
 
   <BODY>
   {{ helper.fontawesome_script() }}
-  {% include 'navbar.include.html' %}
-  <CENTER>
-	  <img alt="Brand" src="{{ url_for('little_brother.static', filename='icons/icon-baby-panda-128x128.png') }}">
-	  <BR>
-	  <H2>Little&nbsp;Brother</H2>
-	  <BR>
-  </CENTER>
+	<DIV class="container-fluid">
+	  {% include 'navbar.include.html' %}
+	  <CENTER>
+		  <img alt="Brand" src="{{ url_for('little_brother.static', filename='icons/icon-baby-panda-128x128.png') }}">
+		  <BR>
+		  <H2>Little&nbsp;Brother</H2>
+		  <BR>
+	  </CENTER>
 
-    <DIV CLASS="container STANDARD_TABLE condensed-container">
+		<DIV CLASS="container STANDARD_TABLE condensed-container">
 
-    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-    		<DIV CLASS="col-xs-3 localetext">{{_('Setting')}}</DIV>
-    		<DIV CLASS="col-xs-9 localetext">{{_('Value')}}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_('Repository')}}</DIV>
-			<DIV CLASS="col-xs-9"><A HREF="{{ settings.url }}">{{ extended_settings.display_url }}</A></DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_('Version')}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ settings.version }}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-			<DIV CLASS="col-xs-3 localetext"><SPAN CLASS="nonlocaletext">Debian</SPAN> {{_('Package Revision')}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ extended_settings.debian_package_revision }}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_('Git Commit ID')}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ git_metadata.commit_id }}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_('Git Branch Name')}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ git_metadata.branch }}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_("Git Author's Name")}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ git_metadata.author_name }}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_("Git Author's Email Address")}}</DIV>
-    		<DIV CLASS="col-xs-9">{{ git_metadata.author_email }}</DIV>
-    	</DIV>
-    	<DIV CLASS="row  ROWLEVEL_3">
-    		<DIV CLASS="col-xs-3 localetext">{{_("Supported Languages")}}</DIV>
-    		<DIV CLASS="col-xs-9">
-				<UL>
-					{% for language in languages %}
-						<LI>{{ language[1] }} ({{ language[0] }})</LI>
-					{% endfor %}
-				</UL>
+			<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+				<DIV CLASS="col-xs-3 localetext">{{_('Setting')}}</DIV>
+				<DIV CLASS="col-xs-9 localetext">{{_('Value')}}</DIV>
 			</DIV>
-    	</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_('Repository')}}</DIV>
+				<DIV CLASS="col-xs-9"><A HREF="{{ settings.url }}">{{ extended_settings.display_url }}</A></DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_('Version')}}</DIV>
+				<DIV CLASS="col-xs-9">{{ settings.version }}</DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext"><SPAN CLASS="nonlocaletext">Debian</SPAN> {{_('Package Revision')}}</DIV>
+				<DIV CLASS="col-xs-9">{{ extended_settings.debian_package_revision }}</DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_('Git Commit ID')}}</DIV>
+				<DIV CLASS="col-xs-9">{{ git_metadata.commit_id }}</DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_('Git Branch Name')}}</DIV>
+				<DIV CLASS="col-xs-9">{{ git_metadata.branch }}</DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_("Git Author's Name")}}</DIV>
+				<DIV CLASS="col-xs-9">{{ git_metadata.author_name }}</DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_("Git Author's Email Address")}}</DIV>
+				<DIV CLASS="col-xs-9">{{ git_metadata.author_email }}</DIV>
+			</DIV>
+			<DIV CLASS="row  ROWLEVEL_3">
+				<DIV CLASS="col-xs-3 localetext">{{_("Supported Languages")}}</DIV>
+				<DIV CLASS="col-xs-9">
+					<UL>
+						{% for language in languages %}
+							<LI>{{ language[1] }} ({{ language[0] }})</LI>
+						{% endfor %}
+					</UL>
+				</DIV>
+			</DIV>
+		</DIV> {#<!-- CLASS="container" -->#}
+	</DIV>
 
-    </DIV> <!-- CLASS="container" -->
-
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
-
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
   </BODY>
-  
 </HTML>

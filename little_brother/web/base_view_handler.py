@@ -17,14 +17,16 @@
 
 import flask
 
-from little_brother import dependency_injection, constants
+from little_brother import dependency_injection, constants, settings, git
 from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.api.version_checker import VersionChecker, VersionInfo
 from little_brother.app_control import AppControl
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_handler import RuleHandler
 from little_brother.user_manager import UserManager
 from python_base_app import log_handling
+from python_base_app.base_web_server import BaseWebServer
 from python_base_app.locale_helper import LocaleHelper
 from some_flask_helpers import blueprint_adapter
 
@@ -33,6 +35,7 @@ LOCALE_REL_FONT_SIZES = {
 }
 
 FORM_ID_CSRF = 'csrf'
+
 
 class BaseViewHandler(PersistenceDependencyInjectionMixIn):
 
@@ -54,7 +57,7 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
         self._locale_helper = None
         self._process_handler_manager = None
         self._user_manager = None
-
+        self._version_checker = None
 
     @property
     def app_control(self) -> AppControl:
@@ -99,6 +102,13 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
 
         return self._user_manager
 
+    @property
+    def version_checker(self) -> VersionChecker:
+
+        if self._version_checker is None:
+            self._version_checker = dependency_injection.container[VersionChecker]
+
+        return self._version_checker
 
     @classmethod
     def validate(cls, p_forms):
@@ -115,11 +125,10 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
 
         return valid and submitted, submitted
 
-    def register(self, p_app, p_url_prefix:str=None):
+    def register(self, p_app, p_url_prefix: str = None):
 
         p_app.register_blueprint(self._blueprint, url_prefix=p_url_prefix)
         self._url_prefix = p_url_prefix
-
 
     def measure(self, p_hostname, p_service, p_duration):
 
@@ -144,6 +153,33 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
             rel_font_size = 100
         return rel_font_size
 
+    def add_general_template_data(self, p_dict):
+
+        p_dict["rel_font_size"] = self.get_rel_font_size()
+        p_dict["settings"] = settings.settings
+        p_dict["extended_settings"] = settings.extended_settings
+        p_dict["git_metadata"] = git.git_metadata
+        p_dict["authentication"] = BaseWebServer.get_authentication_info()
+
+    def add_version_info(self, p_dict):
+
+        current_revision = settings.extended_settings["debian_package_revision"]
+        channel = self.app_control._config.update_channel
+
+        suggested_version_info: VersionInfo = self.version_checker.is_revision_current(p_channel=channel,
+                                                                                       p_revision=current_revision)
+
+        if suggested_version_info is not None:
+            format_dict = {
+                "channel": channel,
+                "current_version": settings.settings["version"],
+                "current_revision": current_revision,
+                "suggested_version": suggested_version_info.version,
+                "suggested_revision": suggested_version_info.revision,
+                "download_url": self.version_checker.get_download_url(p_channel=channel)
+            }
+
+            p_dict["version_format_dict"] = format_dict
 
     def destroy(self):
         self._blueprint_adapter.unassign_view_handler_instances()
@@ -161,4 +197,3 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
             rel_font_size=self.get_rel_font_size(),
             error_message=str(p_exception)
         )
-

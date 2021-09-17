@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -83,8 +83,17 @@ class ClientProcessHandler(process_handler.ProcessHandler):
         uid = p_login_mapping.get_uid_by_login(p_server_group=p_server_group, p_login=p_event.username)
 
         if uid is None:
-            fmt = "handle_event_kill_process: cannot find uid for username '{username}'"
+            fmt = "handle_event_kill_process: cannot find uid for username '{username}' -> ignoring event"
             self._logger.warning(fmt.format(username=p_event.username))
+            return []
+
+        current_uid = proc.uids().effective
+
+        if uid != current_uid:
+            fmt = "handle_event_kill_process: current uid {current_uid} of process " \
+                  "does not match the one of event {event_uid} -> ignoring event"
+            self._logger.warning(fmt.format(current_uid=current_uid, event_uid=uid))
+            return []
 
         params = {
             'pid': p_event.pid,

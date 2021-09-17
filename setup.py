@@ -56,7 +56,7 @@ setup_params = {
 extended_setup_params = {
 
     # Target version to be used to upgrade the database
-    "target_alembic_version": "647cf46033a9",
+    "target_alembic_version": "9713cef84918",
 
     "docker_registry_user": "marcusrickert",
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
@@ -76,9 +76,9 @@ extended_setup_params = {
     "deploy_sudoers_file": True,
     "deploy_apparmor_file": True,
     "contributing_setups": ["python_base_app", "some_flask_helpers"],
-    "publish_debian_package": ["master", "release"],
-    "publish_docker_images": ["master", "release"],
-    "publish_latest_docker_image": "release",
+    "publish_debian_package": little_brother.settings.SOURCEFORGE_CHANNELS,
+    "publish_docker_images": little_brother.settings.DOCKER_CHANNELS,
+    "publish_latest_docker_image": little_brother.settings.RELEASE_BRANCH_NAME,
     "debian_extra_files": [
         ("etc/slave.config", "etc/little-brother/slave.config"),
         ("etc/master.config", "etc/little-brother/master.config"),
@@ -87,8 +87,10 @@ extended_setup_params = {
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ],
     "build_pypi_package": True,
-    "publish_pypi_package": {'release': ('https://upload.pypi.org/legacy/', 'PYPI_API_TOKEN'),
-                             'master': ('https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN')},
+    "publish_pypi_package": {
+        little_brother.settings.RELEASE_BRANCH_NAME: ('https://upload.pypi.org/legacy/', 'PYPI_API_TOKEN'),
+        little_brother.settings.MASTER_BRANCH_NAME: ('https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN')
+    },
     "generate_generic_install": True,
     "analyze": True,
     "analyze_extra_exclusions" : "vagrant/**",

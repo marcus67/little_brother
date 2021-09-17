@@ -81,13 +81,97 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         admin_infos = self.get_admin_infos(
             p_session_context=p_session_context,
             p_process_infos=p_process_infos,
-            p_user_names=[ p_user_name ])
+            p_user_names=[p_user_name])
 
         if len(admin_infos) == 0:
             return None
 
         return admin_infos[0]
 
+    def get_day_info_for_user(self, p_admin_info, p_username: str,
+                              p_reference_date: datetime.datetime, p_rule_set) -> view_info.ViewInfo:
+
+        if p_rule_set is not None:
+            key_rule_override = rule_override.get_key(p_username=p_username,
+                                                      p_reference_date=p_reference_date)
+            override = self._rule_overrides.get(key_rule_override)
+
+            if override is None:
+                override = rule_override.RuleOverride(p_reference_date=p_reference_date,
+                                                      p_username=p_username)
+
+            effective_rule_set = rule_result_info.apply_override(p_rule_set=p_rule_set,
+                                                                 p_rule_override=override)
+
+            day_info = view_info.ViewInfo(p_parent=p_admin_info,
+                                          p_html_key=tools.get_simple_date_as_string(
+                                              p_date=p_reference_date))
+
+            if p_reference_date == datetime.date.today():
+                day_info.long_format = _("'Today ('EEE')'", 'long')
+                day_info.short_format = _("'Today'", 'short')
+
+            elif p_reference_date == datetime.date.today() + datetime.timedelta(days=1):
+                day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
+                day_info.short_format = _("'Tomorrow'", 'short')
+
+            else:
+                day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
+                day_info.short_format = _("EEE")
+
+            day_info.reference_date = p_reference_date
+            day_info.rule_set = p_rule_set
+            day_info.override = override
+            day_info.effective_rule_set = effective_rule_set
+            day_info.max_lookahead_in_days = self._config.admin_lookahead_in_days
+
+            return day_info
+
+    def get_admin_info_for_user(self, p_session_context, p_user_infos, p_time_extensions, p_days, p_username):
+
+        user : User = self.user_entity_manager.user_map(p_session_context).get(p_username)
+
+        if user is None or not user.active:
+            return None
+
+        admin_info = view_info.ViewInfo(p_html_key=p_username)
+        admin_info.full_name = user.full_name
+        admin_info.username = p_username
+        admin_info.full_name = p_username
+
+        admin_info.time_extension = p_time_extensions.get(p_username)
+        admin_info.time_extension_periods = []
+
+        if admin_info.time_extension is not None:
+            # add special value 0 for "off"
+            admin_info.time_extension_periods.append(0)
+
+        for period in self._config.time_extension_periods_list:
+            if period > 0:
+                admin_info.time_extension_periods.append(period)
+
+            else:
+                if admin_info.time_extension is not None and \
+                        admin_info.time_extension.end_datetime + \
+                        datetime.timedelta(minutes=period) >= admin_info.time_extension.start_datetime:
+                    admin_info.time_extension_periods.append(period)
+
+
+        admin_info.day_infos = []
+
+        admin_info.user_info = p_user_infos.get(p_username)
+
+        if admin_info.user_info is not None:
+            for reference_date in sorted(p_days):
+                rule_set = self.rule_handler.get_active_ruleset(
+                    p_rule_sets=user.rulesets, p_reference_date=reference_date)
+
+                day_info = self.get_day_info_for_user(p_admin_info=admin_info, p_username=p_username,
+                                                      p_reference_date=reference_date, p_rule_set=rule_set)
+
+                admin_info.day_infos.append(day_info)
+
+        return admin_info
 
     def get_admin_infos(self, p_session_context, p_user_names, p_process_infos):
 
@@ -102,81 +186,15 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                 range(0, self._config.admin_lookahead_in_days + 1)]
 
         for override in self._rule_overrides.values():
-            if not override.reference_date in days and override.reference_date >= datetime.date.today():
+            if override.reference_date not in days and override.reference_date >= datetime.date.today():
                 days.append(override.reference_date)
 
         for username in p_user_names:
-            admin_info = view_info.ViewInfo(p_html_key=username)
-            admin_info.username = username
-            admin_info.full_name = username
+            admin_info = self.get_admin_info_for_user(p_session_context=p_session_context, p_user_infos=user_infos,
+                                                      p_days=days, p_time_extensions=time_extensions,
+                                                      p_username=username)
 
-            admin_info.time_extension = time_extensions.get(username)
-            admin_info.time_extension_periods = []
-
-            if admin_info.time_extension is not None:
-                # add special value 0 for "off"
-                admin_info.time_extension_periods.append(0)
-
-            for period in self._config.time_extension_periods_list:
-                if period > 0:
-                    admin_info.time_extension_periods.append(period)
-
-                else:
-                    if admin_info.time_extension is not None and \
-                            admin_info.time_extension.end_datetime + \
-                            datetime.timedelta(minutes=period) >= admin_info.time_extension.start_datetime:
-                        admin_info.time_extension_periods.append(period)
-
-            user = self.user_entity_manager.user_map(p_session_context).get(username)
-
-            if user is not None:
-                admin_info.full_name = user.full_name
-
-            admin_info.user_info = user_infos.get(username)
-
-            if admin_info.user_info is not None:
-                admin_info.day_infos = []
-
-                for reference_date in sorted(days):
-                    rule_set = self.rule_handler.get_active_ruleset(
-                        p_rule_sets=user.rulesets, p_reference_date=reference_date)
-
-                    if rule_set is not None:
-                        key_rule_override = rule_override.get_key(p_username=username,
-                                                                  p_reference_date=reference_date)
-                        override = self._rule_overrides.get(key_rule_override)
-
-                        if override is None:
-                            override = rule_override.RuleOverride(p_reference_date=reference_date,
-                                                                  p_username=username)
-
-                        effective_ruleset = rule_result_info.apply_override(p_rule_set=rule_set,
-                                                                            p_rule_override=override)
-
-                        day_info = view_info.ViewInfo(p_parent=admin_info,
-                                                      p_html_key=tools.get_simple_date_as_string(
-                                                          p_date=reference_date))
-
-                        if reference_date == datetime.date.today():
-                            day_info.long_format = _("'Today ('EEE')'", 'long')
-                            day_info.short_format = _("'Today'", 'short')
-
-                        elif reference_date == datetime.date.today() + datetime.timedelta(days=1):
-                            day_info.long_format = _("'Tomorrow ('EEE')'", 'long')
-                            day_info.short_format = _("'Tomorrow'", 'short')
-
-                        else:
-                            day_info.long_format = _("yyyy-MM-dd' ('EEE')'")
-                            day_info.short_format = _("EEE")
-
-                        admin_info.day_infos.append(day_info)
-
-                        day_info.reference_date = reference_date
-                        day_info.rule_set = rule_set
-                        day_info.override = override
-                        day_info.effective_rule_set = effective_ruleset
-                        day_info.max_lookahead_in_days = self._config.admin_lookahead_in_days
-
+            if admin_info is not None:
                 admin_infos.append(admin_info)
 
         return sorted(admin_infos, key=lambda info: info.full_name)
@@ -191,6 +209,51 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         with SessionContext(p_persistence=self.persistence) as session_context:
             self.rule_override_entity_manager.update_rule_override(
                 p_session_context=session_context, p_rule_override=p_rule_override)
+
+    def get_user_info_for_user(self, p_session_context, p_user, p_reference_time,
+                               p_users_stat_infos, p_active_time_extensions):
+
+        user_info = None
+
+        rule_set = self.rule_handler.get_active_ruleset(
+            p_rule_sets=p_user.rulesets, p_reference_date=p_reference_time.date())
+        stat_infos = p_users_stat_infos.get(p_user.username)
+        active_time_extension = p_active_time_extensions.get(p_user.username)
+        user_locale = self.user_locale_handler.get_user_locale(
+            p_session_context=p_session_context, p_username=p_user.username)
+
+        if stat_infos is not None:
+            stat_info = stat_infos.get(rule_set.context)
+
+            if stat_info is not None:
+                self._logger.debug(str(stat_info))
+
+                key_rule_override = rule_override.get_key(p_username=p_user.username,
+                                                          p_reference_date=p_reference_time.date())
+                override = self._rule_overrides.get(key_rule_override)
+
+                rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                    p_rule_sets=p_user.rulesets,
+                    p_stat_info=stat_info,
+                    p_active_time_extension=active_time_extension,
+                    p_reference_time=p_reference_time,
+                    p_rule_override=override,
+                    p_locale=user_locale)
+
+                activity_permitted = rule_result_info.activity_allowed()
+
+                user_info = {
+                    'username': p_user.username,
+                    'full_name': p_user.full_name,
+                    'active_rule_set': rule_set,
+                    'active_stat_info': stat_info,
+                    'active_rule_result_info': rule_result_info,
+                    'max_lookback_in_days': self._config.process_lookback_in_days,
+                    'activity_permitted': activity_permitted,
+                    'history_labels': self.history_labels
+                }
+
+        return user_info
 
     def get_user_status_infos(self, p_session_context, p_process_infos, p_include_history=True):
 
@@ -212,43 +275,13 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
             user: User = self.user_entity_manager.user_map(p_session_context).get(username)
 
             if user is not None:
-                rule_set = self.rule_handler.get_active_ruleset(
-                    p_rule_sets=user.rulesets, p_reference_date=reference_time.date())
-                stat_infos = users_stat_infos.get(username)
-                active_time_extension = active_time_extensions.get(username)
-                user_locale = self.user_locale_handler.get_user_locale(
-                    p_session_context=p_session_context, p_username=username)
+                user_info = self.get_user_info_for_user(p_session_context=p_session_context, p_user=user,
+                                                        p_users_stat_infos=users_stat_infos,
+                                                        p_active_time_extensions=active_time_extensions,
+                                                        p_reference_time=reference_time)
 
-                if stat_infos is not None:
-                    stat_info = stat_infos.get(rule_set.context)
-
-                    if stat_info is not None:
-                        self._logger.debug(str(stat_info))
-
-                        key_rule_override = rule_override.get_key(p_username=username,
-                                                                  p_reference_date=reference_time.date())
-                        override = self._rule_overrides.get(key_rule_override)
-
-                        rule_result_info = self.rule_handler.process_rule_sets_for_user(
-                            p_rule_sets=user.rulesets,
-                            p_stat_info=stat_info,
-                            p_active_time_extension=active_time_extension,
-                            p_reference_time=reference_time,
-                            p_rule_override=override,
-                            p_locale=user_locale)
-
-                        activity_permitted = rule_result_info.activity_allowed()
-
-                        user_infos[username] = {
-                            'username': username,
-                            'full_name': user.full_name,
-                            'active_rule_set': rule_set,
-                            'active_stat_info': stat_info,
-                            'active_rule_result_info': rule_result_info,
-                            'max_lookback_in_days': self._config.process_lookback_in_days,
-                            'activity_permitted': activity_permitted,
-                            'history_labels': self.history_labels
-                        }
+                if user_info is not None:
+                    user_infos[username] = user_info
 
         return user_infos
 
@@ -298,25 +331,25 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                 rule_set = self.rule_handler.get_active_ruleset(p_rule_sets=user.rulesets,
                                                                 p_reference_date=p_reference_time.date())
 
-            stat_infos = users_stat_infos.get(p_username)
-            active_time_extension = active_time_extensions.get(p_username)
+                stat_infos = users_stat_infos.get(p_username)
+                active_time_extension = active_time_extensions.get(p_username)
 
-            if stat_infos is not None:
-                stat_info = stat_infos.get(rule_set.context)
+                if stat_infos is not None:
+                    stat_info = stat_infos.get(rule_set.context)
 
-                if stat_info is not None:
-                    self._logger.debug(str(stat_info))
+                    if stat_info is not None:
+                        self._logger.debug(str(stat_info))
 
-                    key_rule_override = rule_override.get_key(p_username=p_username,
-                                                              p_reference_date=p_reference_time.date())
-                    override = self._rule_overrides.get(key_rule_override)
+                        key_rule_override = rule_override.get_key(p_username=p_username,
+                                                                  p_reference_date=p_reference_time.date())
+                        override = self._rule_overrides.get(key_rule_override)
 
-                    rule_result_info = self.rule_handler.process_rule_sets_for_user(
-                        p_rule_sets=user.rulesets,
-                        p_stat_info=stat_info,
-                        p_reference_time=p_reference_time,
-                        p_active_time_extension=active_time_extension,
-                        p_rule_override=override,
-                        p_locale=user_locale)
+                        rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                            p_rule_sets=user.rulesets,
+                            p_stat_info=stat_info,
+                            p_reference_time=p_reference_time,
+                            p_active_time_extension=active_time_extension,
+                            p_rule_override=override,
+                            p_locale=user_locale)
 
         return rule_result_info

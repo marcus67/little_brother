@@ -18,15 +18,15 @@
 import flask
 
 from little_brother import constants
-from little_brother import git
-from little_brother import settings
 from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import tools
-from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
+
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
@@ -49,17 +49,15 @@ class AboutViewHandler(BaseViewHandler):
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
             try:
-                page = flask.render_template(
-                    constants.ABOUT_HTML_TEMPLATE,
-                    rel_font_size=self.get_rel_font_size(),
-                    settings=settings.settings,
-                    extended_settings=settings.extended_settings,
-                    git_metadata=git.git_metadata,
-                    authentication=BaseWebServer.get_authentication_info(),
-                    languages=sorted([(a_locale, a_language) for a_locale, a_language in self._languages.items()]),
-                    navigation={
-                        'current_view': constants.ABOUT_BLUEPRINT_NAME + "." + constants.ABOUT_VIEW_NAME}
-                )
+                template_dict = {}
+                self.add_general_template_data(p_dict=template_dict)
+                template_dict["languages"] = sorted(
+                    [(a_locale, a_language) for a_locale, a_language in self._languages.items()])
+                template_dict["navigation"] = {
+                    'current_view': constants.ABOUT_BLUEPRINT_NAME + "." + constants.ABOUT_VIEW_NAME
+                }
+
+                page = flask.render_template(constants.ABOUT_HTML_TEMPLATE, **template_dict)
 
             except Exception as e:
                 return self.handle_rendering_exception(p_page_name="about page", p_exception=e)

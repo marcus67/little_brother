@@ -1,4 +1,4 @@
-<!--
+{#<!--
 #    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->
+-->#}
 
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
@@ -46,162 +46,163 @@
 
   <BODY>
     {{ helper.fontawesome_script() }}
-	{% include 'navbar.include.html' %}
-    <DIV CLASS="container STANDARD_TABLE container">
-    	<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
-			<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('User')}}</DIV>
-			<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('Context')}}</DIV>
+	<DIV class="container-fluid">
+		{% include 'navbar.include.html' %}
+		<DIV CLASS="container STANDARD_TABLE container">
+			<DIV CLASS="row ROWLEVEL_1 TITLE_ROW">
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('User')}}</DIV>
+				<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('Context')}}</DIV>
 
-			<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1  localetext">
-				{{_("Today's Activity")}}
-				{% if has_downtime_today %}
-				<DIV CLASS="downtime"> {{_("Downtime")}}</DIV>
-				{% endif %}
-			</DIV>
-			<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Today')}}</DIV>
-
-			<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Previous Activity Start Time')}}</DIV>
-			<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Previous Activity End Time')}}</DIV>
-			<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Current Activity Start Time')}}</DIV>
-
-			<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1  localetext">{{_('Current Activity Duration')}}</DIV>
-			<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Current')}}</DIV>
-
-			<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  center  localetext">{{_('Activity permitted')}}</DIV>
-    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  hidden-lg center  localetext">{{_('OK?')}}</DIV>
-    		<!--<DIV CLASS="col-xs-1 hidden-sm hidden-md hidden-lg"></DIV> -->
-    		<DIV CLASS="hidden-xs col-sm-5  col-md-3 col-lg-4 localetext">{{_('Reasons')}}</DIV>
-    	</DIV>
-		{% for user_info in user_infos %}
-			{% set username = user_info.username %}
-	    	{% call accordion.begin() %}status_{{username}}_summary{% endcall %}	    			        
-		    	<DIV CLASS="row ROWLEVEL_2">
-		    		<DIV CLASS="col-xs-3  col-sm-2            col-lg-1 ">
-						<!-- {{ _('Show durations of most recent days') }} -->
-						{% call accordion.toggle_begin(tooltip="Show durations of most recent days")
-						%}status_{{username}}_summary{% endcall %}
-						{{ user_info.active_stat_info.full_name }}
-						{{ accordion.toggle_end() }}
-					</DIV>
-		    		<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">
-						{{ _(user_info.active_rule_set.label) }}
-					</DIV>
-		    		<DIV CLASS="col-xs-2  col-sm-1  col-md-2  col-lg-1 ">
-						{{ user_info.active_stat_info.todays_activity_duration|seconds_to_string }} /
-						{% if user_info.active_rule_set.free_play %}
-						{{ _("unlimited") }}
-						{% else %}
-						{{ user_info.active_rule_set.max_time_per_day|seconds_to_string }}
-						{% endif %}
-						{% if user_info.active_stat_info.todays_downtime %}
-						<DIV CLASS="downtime"> {{user_info.active_stat_info.todays_downtime|seconds_to_string}}</DIV>
-						{% endif %}
-					</DIV>
-
-		    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">
-						{{ user_info.active_stat_info.previous_activity_start_time|datetime_to_string }}
-					</DIV>
-		    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">
-						{{ user_info.active_stat_info.previous_activity_end_time|datetime_to_string }}
-					</DIV>
-		    		<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 {% if user_info.active_stat_info.current_activity_start_time %}blink{% endif %}">
-						{{ user_info.active_stat_info.current_activity_start_time|datetime_to_string }}
-					</DIV>
-
-		    		<DIV CLASS="col-xs-2  col-sm-1  col-md-2  col-lg-1  {% if user_info.active_stat_info.current_activity_duration %}blink{% endif %}">
-						{{ user_info.active_stat_info.current_activity_duration|seconds_to_string }}
-						{% if user_info.active_stat_info.current_activity_downtime %}
-							<DIV CLASS="downtime"> {{user_info.active_stat_info.current_activity_downtime|seconds_to_string}}</DIV>
-						{% endif %}
-					</DIV>
-
-		    		<DIV CLASS="col-xs-1  col-sm-1  col-md-1  col-lg-1  center ">
-						{{ helper.check_or_cross(user_info.activity_permitted) }}
-					</DIV>
-		    		<DIV CLASS="col-xs-12 col-sm-5  col-md-3  col-lg-4 localetext">
-						<UL>
-			    		{% for rule_template in user_info.active_rule_result_info.applying_rule_text_templates %}
-			    			<LI>{{ _(rule_template[0])|format(rule_template[1]) }}</LI>
-			    		{% endfor %}
-						</UL>
-		    		</DIV>
-		    	</DIV>
-			{% call accordion.details() %}status_{{username}}_summary{% endcall %}
-				<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
-					<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
-					<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('Day')}}</DIV>
-					<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">
-						{{_('Active Time')}}
-						{% if user_info.active_stat_info.has_downtime %}
-						<DIV CLASS="downtime"> {{_("Downtime")}}</DIV>
-						{% endif %}
-					</DIV>
-					<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Active')}}</DIV>
-					<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Activity Start')}}</DIV>
-					<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Start')}}</DIV>
-					<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Activity End')}}</DIV>
-					<DIV CLASS="hidden-xs col-sm-1  hidden-md hidden-lg localetext">{{_('End')}}</DIV>
-					<DIV CLASS="col-xs-5  col-sm-6  col-md-6  col-lg-7  localetext">{{_('Host(#procs)')}}</DIV>
+				<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1  localetext">
+					{{_("Today's Activity")}}
+					{% if has_downtime_today %}
+					<DIV CLASS="downtime"> {{_("Downtime")}}</DIV>
+					{% endif %}
 				</DIV>
-				{% for i in range (0, user_info.max_lookback_in_days) %}
-					{% call accordion.begin() %}status_{{username}}_{{i}}{% endcall %}
-						<DIV CLASS="row ROWLEVEL_3">
-							<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
-							<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 localetext">
-								<!-- {{ _('Show activity times') }} -->
-								{% call accordion.toggle_begin(tooltip='Show activity times') %}status_{{username}}_{{i}}{% endcall %}
-								{{ _(user_info.history_labels[i][0])|format(user_info.history_labels[i][1]) }}
-								{{ accordion.toggle_end() }}
-							</DIV>
-							<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">
-								{{ user_info.active_stat_info.day_statistics[i].duration|seconds_to_string }}
-								{% if user_info.active_stat_info.day_statistics[i].downtime %}
-								<DIV CLASS="downtime"> {{user_info.active_stat_info.day_statistics[i].downtime|seconds_to_string}}</DIV>
-								{% endif %}
-							</DIV>
-							<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">{{
-								user_info.active_stat_info.day_statistics[i].min_time|time_to_string }}
-							</DIV>
-							<DIV CLASS="hidden-xs col-sm-1  col-md-1  col-lg-1">{{
-								user_info.active_stat_info.day_statistics[i].max_time|time_to_string }}
-							</DIV>
-							<DIV CLASS="col-xs-5  col-sm-7  col-md-7  col-lg-7">{{
-								user_info.active_stat_info.day_statistics[i].host_infos }}
-							</DIV>
+				<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Today')}}</DIV>
+
+				<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Previous Activity Start Time')}}</DIV>
+				<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Previous Activity End Time')}}</DIV>
+				<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  localetext">{{_('Current Activity Start Time')}}</DIV>
+
+				<DIV CLASS="hidden-xs hidden-sm col-md-2  col-lg-1  localetext">{{_('Current Activity Duration')}}</DIV>
+				<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Current')}}</DIV>
+
+				<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1  center  localetext">{{_('Activity permitted')}}</DIV>
+				<DIV CLASS="col-xs-1  col-sm-1  col-md-1  hidden-lg center  localetext">{{_('OK?')}}</DIV>
+				<DIV CLASS="hidden-xs col-sm-5  col-md-3 col-lg-4 localetext">{{_('Reasons')}}</DIV>
+			</DIV>
+			{% for user_info in user_infos %}
+				{% set username = user_info.username %}
+				{% call accordion.begin() %}status_{{username}}_summary{% endcall %}
+					<DIV CLASS="row ROWLEVEL_2">
+						<DIV CLASS="col-xs-3  col-sm-2            col-lg-1 ">
+							<!-- {{ _('Show durations of most recent days') }} -->
+							{% call accordion.toggle_begin(tooltip="Show durations of most recent days")
+							%}status_{{username}}_summary{% endcall %}
+							{{ user_info.active_stat_info.full_name }}
+							{{ accordion.toggle_end() }}
 						</DIV>
-					{% call accordion.details() %}status_{{username}}_{{i}}{% endcall %}
-						{% for activity in user_info.active_stat_info.day_statistics[i].activities %}
-							<DIV CLASS="row ROWLEVEL_4 {% if not activity.end_time %}blink{% endif %}">
+						<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">
+							{{ _(user_info.active_rule_set.label) }}
+						</DIV>
+						<DIV CLASS="col-xs-2  col-sm-1  col-md-2  col-lg-1 ">
+							{{ user_info.active_stat_info.todays_activity_duration|seconds_to_string }} /
+							{% if user_info.active_rule_set.free_play %}
+							{{ _("unlimited") }}
+							{% else %}
+							{{ user_info.active_rule_set.max_time_per_day|seconds_to_string }}
+							{% endif %}
+							{% if user_info.active_stat_info.todays_downtime %}
+							<DIV CLASS="downtime"> {{user_info.active_stat_info.todays_downtime|seconds_to_string}}</DIV>
+							{% endif %}
+						</DIV>
+
+						<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">
+							{{ user_info.active_stat_info.previous_activity_start_time|datetime_to_string }}
+						</DIV>
+						<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 ">
+							{{ user_info.active_stat_info.previous_activity_end_time|datetime_to_string }}
+						</DIV>
+						<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1 {% if user_info.active_stat_info.current_activity_start_time %}blink{% endif %}">
+							{{ user_info.active_stat_info.current_activity_start_time|datetime_to_string }}
+						</DIV>
+
+						<DIV CLASS="col-xs-2  col-sm-1  col-md-2  col-lg-1  {% if user_info.active_stat_info.current_activity_duration %}blink{% endif %}">
+							{{ user_info.active_stat_info.current_activity_duration|seconds_to_string }}
+							{% if user_info.active_stat_info.current_activity_downtime %}
+								<DIV CLASS="downtime"> {{user_info.active_stat_info.current_activity_downtime|seconds_to_string}}</DIV>
+							{% endif %}
+						</DIV>
+
+						<DIV CLASS="col-xs-1  col-sm-1  col-md-1  col-lg-1  center ">
+							{{ helper.check_or_cross(user_info.activity_permitted) }}
+						</DIV>
+						<DIV CLASS="col-xs-12 col-sm-5  col-md-3  col-lg-4 localetext">
+							<UL>
+							{% for rule_template in user_info.active_rule_result_info.applying_rule_text_templates %}
+								<LI>{{ _(rule_template[0])|format(rule_template[1]) }}</LI>
+							{% endfor %}
+							</UL>
+						</DIV>
+					</DIV>
+				{% call accordion.details() %}status_{{username}}_summary{% endcall %}
+					<DIV CLASS="row ROWLEVEL_3 TITLE_ROW">
+						<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
+						<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1  localetext">{{_('Day')}}</DIV>
+						<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">
+							{{_('Active Time')}}
+							{% if user_info.active_stat_info.has_downtime %}
+							<DIV CLASS="downtime"> {{_("Downtime")}}</DIV>
+							{% endif %}
+						</DIV>
+						<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Active')}}</DIV>
+						<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Activity Start')}}</DIV>
+						<DIV CLASS="col-xs-2  col-sm-1  hidden-md hidden-lg localetext">{{_('Start')}}</DIV>
+						<DIV CLASS="hidden-xs hidden-sm col-md-1  col-lg-1  localetext">{{_('Activity End')}}</DIV>
+						<DIV CLASS="hidden-xs col-sm-1  hidden-md hidden-lg localetext">{{_('End')}}</DIV>
+						<DIV CLASS="col-xs-5  col-sm-6  col-md-6  col-lg-7  localetext">{{_('Host(#procs)')}}</DIV>
+					</DIV>
+					{% for i in range (0, user_info.max_lookback_in_days) %}
+						{% call accordion.begin() %}status_{{username}}_{{i}}{% endcall %}
+							<DIV CLASS="row ROWLEVEL_3">
 								<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
-								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1"></DIV>
+								<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1 localetext">
+									<!-- {{ _('Show activity times') }} -->
+									{% call accordion.toggle_begin(tooltip='Show activity times') %}status_{{username}}_{{i}}{% endcall %}
+									{{ _(user_info.history_labels[i][0])|format(user_info.history_labels[i][1]) }}
+									{{ accordion.toggle_end() }}
+								</DIV>
 								<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">
-									{{ activity.duration|seconds_to_string }}
-									{% if activity.downtime %}
-									<DIV CLASS="downtime"> {{activity.downtime|seconds_to_string}}</DIV>
+									{{ user_info.active_stat_info.day_statistics[i].duration|seconds_to_string }}
+									{% if user_info.active_stat_info.day_statistics[i].downtime %}
+									<DIV CLASS="downtime"> {{user_info.active_stat_info.day_statistics[i].downtime|seconds_to_string}}</DIV>
 									{% endif %}
 								</DIV>
-								<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">{{ activity.start_time|time_to_string }}</DIV>
-								<DIV CLASS="hidden-xs col-sm-1  col-md-1  col-lg-1">{{ activity.end_time|time_to_string }}</DIV>
-								<DIV CLASS="col-xs-5  col-sm-7  col-md-7  col-lg-7">{{ activity.host_infos }}</DIV>
+								<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">{{
+									user_info.active_stat_info.day_statistics[i].min_time|time_to_string }}
+								</DIV>
+								<DIV CLASS="hidden-xs col-sm-1  col-md-1  col-lg-1">{{
+									user_info.active_stat_info.day_statistics[i].max_time|time_to_string }}
+								</DIV>
+								<DIV CLASS="col-xs-5  col-sm-7  col-md-7  col-lg-7">{{
+									user_info.active_stat_info.day_statistics[i].host_infos }}
+								</DIV>
 							</DIV>
-						{% endfor %} <!-- activity -->
-					{{ accordion.end() }}
-				{% endfor %} <!-- i -->
-			{{ accordion.end() }}
-    	{% endfor %} <!-- username -->
-    </DIV> <!-- CLASS="container" -->
+						{% call accordion.details() %}status_{{username}}_{{i}}{% endcall %}
+							{% for activity in user_info.active_stat_info.day_statistics[i].activities %}
+								<DIV CLASS="row ROWLEVEL_4 {% if not activity.end_time %}blink{% endif %}">
+									<DIV CLASS="hidden-xs hidden-sm hidden-md col-lg-1"></DIV>
+									<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-1"></DIV>
+									<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">
+										{{ activity.duration|seconds_to_string }}
+										{% if activity.downtime %}
+										<DIV CLASS="downtime"> {{activity.downtime|seconds_to_string}}</DIV>
+										{% endif %}
+									</DIV>
+									<DIV CLASS="col-xs-2  col-sm-1  col-md-1  col-lg-1">{{ activity.start_time|time_to_string }}</DIV>
+									<DIV CLASS="hidden-xs col-sm-1  col-md-1  col-lg-1">{{ activity.end_time|time_to_string }}</DIV>
+									<DIV CLASS="col-xs-5  col-sm-7  col-md-7  col-lg-7">{{ activity.host_infos }}</DIV>
+								</DIV>
+							{% endfor %} {#<!-- activity -->#}
+						{{ accordion.end() }}
+					{% endfor %} {#<!-- i -->#}
+				{{ accordion.end() }}
+			{% endfor %} {#<!-- username -->#}
+		</DIV> {#<!-- CLASS="container" -->#}
+	</DIV>
 
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
-    <SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+	<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
 	{% for user_info in user_infos %}
 		{% set username = user_info.username %}
-    	{% call accordion.script() %}status_{{username}}_summary{% endcall %}
-    	{% for i in range (0, user_info.max_lookback_in_days) %}
+		{% call accordion.script() %}status_{{username}}_summary{% endcall %}
+		{% for i in range (0, user_info.max_lookback_in_days) %}
 			{% call accordion.script() %}status_{{username}}_{{i}}{% endcall %}
-    	{% endfor %}
+		{% endfor %}
 	{% endfor %}
 
   </BODY>

@@ -4,6 +4,25 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.9 Revision 108 (September 14th, 2021)
+
+* Remove old extra panel from Grafana sample configuration 
+* Reduce cognitive complexity in classes `AdminDataHandler` and `UsersViewHandler`
+* Only display in admin view users that are being monitored (fixes runtime error after removing users from monitoring)
+* Exclude `run_python_base_app_test_suite_no_venv.py` from SonarQube coverage check
+* Closes #150, see [here](https://github.com/marcus67/little_brother/issues/150)
+* Remove (most) comments from generated Jinja2 HTML pages 
+* Added test cases for `DefaultContextRuleHandler` and `ClientProcessHandler`
+* Make sure LittleBrother will not kill processes that do not belong to monitored user anymore
+* Closes #144, see [here](https://github.com/marcus67/little_brother/issues/144)
+* Closes #138, see [here](https://github.com/marcus67/little_brother/issues/138)
+* Added test cases for `ClientInfo`, `Persistence`, and `PersistentDailyUserStatusEntityManager`
+* Fix alembic at 1.5.8
+* Exclude markdown files from Codacy reports
+* Closes #154, see [here](https://github.com/marcus67/little_brother/issues/154)
+* Upgrade WTForms to version 3.0.0a1
+
+
 ## Version 0.4.8 Revision 107 (August 21th, 2021)
 
 *   Closes #130, see [here](https://github.com/marcus67/little_brother/issues/130)

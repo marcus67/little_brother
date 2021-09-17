@@ -140,7 +140,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
             self.assertEqual(NEW_USER_FIRST_NAME, user.first_name)
             self.assertEqual(NEW_USER_LAST_NAME, user.last_name)
             self.assertEqual(NEW_USER_PROCESS_NAME_PATTERN, user.process_name_pattern)
-            self.assertEqual(NEW_USER_ACTIVE, user.active)
+            self.assertEqual(None, user.active)
             self.assertEqual(NEW_USER_LOCALE, user.locale)
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")

@@ -1,4 +1,4 @@
-<!-- https://codepen.io/ace-subido/pen/Cuiep -->
+{#<!-- https://codepen.io/ace-subido/pen/Cuiep -->#}
 {% import 'helper.macros.html' as helpers %}
 
 <HTML>
@@ -29,8 +29,6 @@
   </HEAD>
 
   <BODY>
-    <!-- { % include 'navbar.include.html' % } -->
-
     <div class="wrapper">
     	<form class="form-signin" ACTION="" METHOD="post">
  		    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -43,11 +41,6 @@
 
   			<input type="text" class="form-control localetext" name="username" placeholder="{{_('Username')}}" required="" autofocus="" />
   			<input type="password" class="form-control localetext" name="password" placeholder="{{_('Password')}}" required=""/>
-  			<!--      
-  			<label class="checkbox">
-    			<input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
-  			</label>
-  			-->
       		<button class="btn btn-lg btn-primary btn-block localetext" type="submit">{{_('Login')}}</button>
 	    </form>
   	</div>

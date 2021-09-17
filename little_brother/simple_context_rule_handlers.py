@@ -76,7 +76,7 @@ class WeekplanContextRuleHandler(AbstractContextRuleHandler):
 
         time_tuple = p_reference_date.timetuple()
 
-        return weekday_string[time_tuple.tm_wday] in VALID_ACTIVE_DAY_CHARACTERS
+        return weekday_string.upper()[time_tuple.tm_wday] in VALID_ACTIVE_DAY_CHARACTERS
 
     def get_choices(self):
 
@@ -93,7 +93,7 @@ class WeekplanContextRuleHandler(AbstractContextRuleHandler):
             invalid = True
 
         else:
-            for c in p_context_detail:
+            for c in p_context_detail.upper():
                 if c not in VALID_ACTIVE_DAY_CHARACTERS + VALID_INACTIVE_DAY_CHARACTERS:
                     invalid = True
 

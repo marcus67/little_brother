@@ -1834,68 +1834,6 @@
       "timeShift": null,
       "title": "Request Count by Hostname (last hour)",
       "type": "bargauge"
-    },
-    {
-      "cacheTimeout": null,
-      "datasource": null,
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 16,
-        "y": 24
-      },
-      "id": 35,
-      "links": [],
-      "options": {
-        "colorMode": "value",
-        "fieldOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "$$hashKey": "object:267",
-                "id": 0,
-                "op": "=",
-                "text": "N/A",
-                "type": 1,
-                "value": "null"
-              }
-            ],
-            "nullValueMode": "connected",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "s"
-          },
-          "overrides": [],
-          "values": false
-        },
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal"
-      },
-      "pluginVersion": "6.7.2",
-      "targets": [
-        {
-          "expr": "little_brother_uptime{job=\"$job\"}",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "{{hostname}}",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Uptime (Nodes)",
-      "type": "stat"
     }
   ],
   "refresh": "10s",
@@ -1967,5 +1905,5 @@
   "variables": {
     "list": []
   },
-  "version": 3
+  "version": 4
 }

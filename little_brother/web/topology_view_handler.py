@@ -22,15 +22,18 @@ from little_brother import constants
 from little_brother.persistence.session_context import SessionContext
 from little_brother.web.base_view_handler import BaseViewHandler
 from python_base_app import tools
-from python_base_app.base_web_server import BaseWebServer
 from some_flask_helpers import blueprint_adapter
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
+
 
 BLUEPRINT_NAME = "topology"
 
 BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
+
 
 class TopologyViewHandler(BaseViewHandler):
 
@@ -50,15 +53,17 @@ class TopologyViewHandler(BaseViewHandler):
             with SessionContext(p_persistence=self.persistence) as session_context:
                 try:
                     topology_infos = self.app_control.get_topology_infos(p_session_context=session_context)
-                    page = flask.render_template(
-                        constants.TOPOLOGY_HTML_TEMPLATE,
-                        rel_font_size=self.get_rel_font_size(),
-                        topology_infos=topology_infos,
-                        app_control_config=self.app_control._config,
-                        authentication=BaseWebServer.get_authentication_info(),
-                        navigation={
-                            'current_view': constants.TOPOLOGY_BLUEPRINT_NAME + "." + constants.TOPOLOGY_VIEW_NAME},
-                    )
+
+                    template_dict = {}
+                    self.add_general_template_data(p_dict=template_dict)
+                    template_dict["topology_infos"] = topology_infos
+                    template_dict["app_control_config"] = self.app_control._config
+                    template_dict["navigation"] = {
+                        'current_view': constants.TOPOLOGY_BLUEPRINT_NAME + "." + constants.TOPOLOGY_VIEW_NAME
+                    }
+                    self.add_version_info(p_dict=template_dict)
+
+                    page = flask.render_template(constants.TOPOLOGY_HTML_TEMPLATE, **template_dict)
 
                 except Exception as e:
                     return self.handle_rendering_exception(p_page_name="topology page", p_exception=e)
