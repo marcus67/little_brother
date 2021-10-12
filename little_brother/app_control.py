@@ -572,7 +572,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_python_version="{major}.{minor}.{micro}".format(major=sys.version_info.major,
                                                               minor=sys.version_info.minor,
                                                               micro=sys.version_info.micro),
-            p_running_in_docker=tools.running_in_docker()
+            p_running_in_docker=tools.running_in_docker(),
+            p_running_in_snap=tools.running_in_snap()
         )
 
         if not self.is_master():

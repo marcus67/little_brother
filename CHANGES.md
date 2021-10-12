@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.10 Revision 109 (October 12th, 2021)
+
+* Show snap runtime in topology view
+* Closes #156, see [here](https://github.com/marcus67/little_brother/issues/156)
+
 ## Version 0.4.9 Revision 108 (September 14th, 2021)
 
 * Remove old extra panel from Grafana sample configuration 

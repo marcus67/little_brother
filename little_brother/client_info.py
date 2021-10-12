@@ -17,6 +17,7 @@
 
 from packaging import version
 
+from little_brother.client_stats import ClientStats
 from python_base_app import tools
 
 LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT = "0.3.8"
@@ -30,7 +31,7 @@ def _(x):
 
 class ClientInfo(object):
 
-    def __init__(self, p_is_master, p_host_name, p_client_stats, p_maximum_client_ping_interval=None,
+    def __init__(self, p_is_master, p_host_name, p_client_stats: ClientStats, p_maximum_client_ping_interval=None,
                  p_master_version=None):
         self.is_master = p_is_master
         self.host_name = p_host_name
@@ -39,6 +40,20 @@ class ClientInfo(object):
         self.last_message = None
         self.master_version = p_master_version
         self.start_event_sent = False
+
+    @property
+    def runtime(self):
+
+        if self.client_stats is None:
+            return ""
+
+        if self.client_stats.running_in_docker:
+            return "(Docker)"
+
+        elif self.client_stats.running_in_snap:
+            return "(Snap)"
+
+        return ""
 
     @property
     def node_type(self):

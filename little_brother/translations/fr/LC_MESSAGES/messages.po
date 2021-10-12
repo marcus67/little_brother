@@ -236,7 +236,7 @@ msgstr "Temps de jeu restant aujourd'hui: {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:399
 msgid "Remaining play time in current session: {hh_mm}"
-msgstr "Temps restant de jeu en session en cours:\" {hh_mm"
+msgstr "Temps restant de jeu en session en cours:\" {hh_mm}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_result_info.py:198
 msgid "Active time extension ({duration}) until {hh_mm}"

@@ -64,7 +64,7 @@
             </DIV>
             {% for info in topology_infos %}
             <DIV CLASS="row  ROWLEVEL_3">
-                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ _(info.node_type) }}{% if info.client_stats.running_in_docker %} (Docker){% endif%}</DIV>
+                <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ _(info.node_type) }} {{ info.runtime }}</DIV>
                 <DIV CLASS="col-xs-3 col-sm-2 localetext">{{ info.host_name }}</DIV>
                 <DIV CLASS="col-xs-3 col-sm-2 localetext {{ info.version_class }}">{{ info.version_string }}</DIV>
                 <DIV CLASS="col-xs-2 hidden-xs localetext">{{ info.client_stats.revision }}</DIV>
