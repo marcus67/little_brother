@@ -4,7 +4,21 @@
 
 This page tries to help you with troubleshooting the most common problems with running LittleBrother. 
 
-## The web page is working but I cannot see any activity of the monitored users
+## The monitored user is not logged in but LittleBrother still shows her as active.
+
+This is usually due to processes that do not get cleanly killed when the user logs out. One of the culprits may
+be the `geoclue` daemon. Use 
+
+    ps uax|grep geoclue
+
+in a terminal to find out if there are any agents running. 
+Chances are that you do not require `geoclue` on your system. In this case uninstalling the package using
+
+    apt-get remove geoclue-2.0
+
+may be an option for you.
+
+## The web page is working, but I cannot see any activity of the monitored users
 
 *   Check that the usernames used in the configuration file actually identically match the users that you would 
     like to monitor.

@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.11 Revision 110 (November 22nd, 2021)
+
+* Requeue outgoing events on slave in case API call was not successful (potential fix for 
+  [issue 157](https://github.com/marcus67/little_brother/issues/157))
+
 ## Version 0.4.10 Revision 109 (October 12th, 2021)
 
 * Show snap runtime in topology view
