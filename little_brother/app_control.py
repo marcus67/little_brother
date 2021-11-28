@@ -89,6 +89,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._time_last_successful_send_events = tools.get_current_time()
         self._user_locale_handler = UserLocaleHandler()
         self._admin_data_handler = None
+        self._process_regex_map = None
 
         if self._config.hostname is None:
             self._host_name = socket.getfqdn()
@@ -572,7 +573,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             p_python_version="{major}.{minor}.{micro}".format(major=sys.version_info.major,
                                                               minor=sys.version_info.minor,
                                                               micro=sys.version_info.micro),
-            p_running_in_docker=tools.running_in_docker()
+            p_running_in_docker=tools.running_in_docker(),
+            p_running_in_snap=tools.running_in_snap()
         )
 
         if not self.is_master():
@@ -596,9 +598,13 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
     def send_events(self):
 
+        outgoing_events = self._event_handler.get_outgoing_events()
+
         try:
+            fmt = "Sending {number} event(s) to master"
+            self._logger.debug(fmt.format(number=len(outgoing_events)))
             result = self.master_connector.send_events(p_hostname=self._host_name,
-                                                       p_events=self._event_handler.get_outgoing_events(),
+                                                       p_events=outgoing_events,
                                                        p_client_stats=self.get_client_stats())
             self._time_last_successful_send_events = tools.get_current_time()
 
@@ -611,8 +617,9 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         except Exception as e:
 
-            fmt = "Exception '{estr}' while sending events to master"
+            fmt = "Exception '{estr}' while sending events to master. Requeueing events..."
             self._logger.error(fmt.format(estr=str(e)))
+            self._event_handler.queue_outgoing_events(p_events=outgoing_events)
 
             self._could_not_send = True
 

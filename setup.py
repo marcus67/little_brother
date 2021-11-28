@@ -41,6 +41,7 @@ setup_params = {
                  'little_brother.test',
                  'little_brother.test.persistence',
                  'little_brother.test.web',
+                 'little_brother.test.api',
                  ],
 
     "include_package_data": True,

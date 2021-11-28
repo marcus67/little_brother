@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2020  Marcus Rickert
+# Copyright (C) 2020-2021  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -22,11 +22,13 @@ BUILT_IN_METRIC_PROCESS_START_TIME_SECONDS = 'process_start_time_seconds'
 BUILT_IN_METRIC_PROCESS_CPU_SECONDS = 'process_cpu_seconds'
 
 class ClientStats(object):
-    def __init__(self, p_version=None, p_revision=None, p_python_version=None, p_running_in_docker=None):
+    def __init__(self, p_version=None, p_revision=None, p_python_version=None,
+                 p_running_in_docker=None, p_running_in_snap=None):
         self.version = p_version
         self.revision = p_revision
         self.python_version = p_python_version
         self.running_in_docker = p_running_in_docker
+        self.running_in_snap = p_running_in_snap
         self.resident_memory_bytes = 0.0
         self.start_time_seconds = 0.0
         self.cpu_seconds_total = 0.0

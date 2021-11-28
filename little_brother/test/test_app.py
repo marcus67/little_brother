@@ -19,6 +19,7 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
+import os.path
 import sys
 import unittest
 
@@ -41,9 +42,12 @@ class TestApp(base_test.BaseTestCase):
 
     @classmethod
     def get_default_sys_args(cls):
+
+        config_filename = os.path.join(os.path.dirname(__file__), 'resources/app.config')
+
         return [
             '--create-databases',
-            '--config', 'little_brother/test/resources/app.config',
+            '--config', config_filename,
 
         ]
 

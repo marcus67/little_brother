@@ -105,6 +105,10 @@ class EventHandler(PersistenceDependencyInjectionMixIn):
 
         self._outgoing_events.append(p_event)
 
+    def queue_outgoing_events(self, p_events):
+
+        self._outgoing_events.extend(p_events)
+
     def process_event(self, p_event):
 
         fmt = "Processing {event}"
