@@ -8,7 +8,7 @@
 to monitor and limit the play time of (young) children. It is designed as a client server application running
 on several hosts and combining playing time spent across these hosts, but it also works on a standalone host.
 
-When the application determines that a user has exceeded her play time, it will terminate the configured 
+When the application determines that a user has exceeded her play time, it will terminate the running 
 process. Usually, the user will get several spoken notifications (using the 
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar)) before she is actually kicked out so 
 that she can log out gracefully in time.
@@ -17,13 +17,14 @@ that she can log out gracefully in time.
 
 The latest major feature changes are:
 
-| Version  | Feature/Fix                                                   | Issue Link                                                         |
-|----------|---------------------------------------------------------------|--------------------------------------------------------------------|
-| 0.4.9    | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150) |
-|          | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144) |
-|          | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138) |
-| 0.4.8    | *New*: Full support for requesting optional time by users     | [Issue 130](https://github.com/marcus67/little_brother/issues/130) |
-| 0.4.4    | *New*: Use user specific patterns to prohibit applications    | [Issue 129](https://github.com/marcus67/little_brother/issues/129) |
+| Version  | Feature/Fix                                                   | (Issue) Link                                                         |
+|----------|---------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.4.12   | *New*: Slave process available as snap                        | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
+| 0.4.9    | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
+|          | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
+|          | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138)   |
+| 0.4.8    | *New*: Full support for requesting optional time by users     | [Issue 130](https://github.com/marcus67/little_brother/issues/130)   |
+| 0.4.4    | *New*: Use user specific patterns to prohibit applications    | [Issue 129](https://github.com/marcus67/little_brother/issues/129)   |
 
 ## Contact
 
@@ -159,6 +160,14 @@ See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 | Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop              | 05.MAR.2020      |
 | Mint         | 19            | amd64        |                                                                        | 03.JAN.2020      |
 | Debian       | stretch       | armv6l       |                                                                        | 23.MAY.2020      |
+
+## Quick Install (Snap)
+
+There is a snap available for the slave process. See [snap-little-brother](https://github.com/marcus67/snap-little-brother) for details. 
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/little-brother-slave)
+
+ 
 
 ## Quick Install (Debian Package)
 

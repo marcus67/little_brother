@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.12 Revision 111 (November 28th, 2021)
+
+* Closes #87, see [here](https://github.com/marcus67/little_brother/issues/87)
+* Add hyperlinks to snap installation documentation
+
 ## Version 0.4.11 Revision 110 (November 22nd, 2021)
 
 * Requeue outgoing events on slave in case API call was not successful (potential fix for 
