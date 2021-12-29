@@ -8,6 +8,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 * Closes #87, see [here](https://github.com/marcus67/little_brother/issues/87)
 * Add hyperlinks to snap installation documentation
+* Include changes of the Italian translation
 
 ## Version 0.4.11 Revision 110 (November 22nd, 2021)
 
