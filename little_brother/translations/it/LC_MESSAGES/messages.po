@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2021-08-26 23:59+0200\n"
-"PO-Revision-Date: 2021-06-19 20:00+0200\n"
+"PO-Revision-Date: 2021-12-25 15:00+0100\n"
 "Last-Translator: albano battistella <albano_battistella@hotmail.com>\n"
 "Language: it\n"
 "Language-Team: it <LL@li.org>\n"
@@ -295,18 +295,16 @@ msgid "Selected Days"
 msgstr "Giorni Selezionati"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api/api_view_handler.py:142
-#, fuzzy
 msgid "parameter '{parameter_name}' not specified"
-msgstr "utente '{username}' non specificato"
+msgstr "parametro '{username}' non specificato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api/api_view_handler.py:147
 msgid "parameter '{parameter_name}' with value '{value}' has wrong format"
 msgstr "parametro '{parameter_name}' con valore '{value}' ha un formato sbagliato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/api/api_view_handler.py:152
-#, fuzzy
 msgid "username '{username}' does not exist or is not being monitored"
-msgstr "utente '{username}' non monitorato"
+msgstr "nome utente '{username}' non esiste o non viene monitorato"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_device.py:74
 msgid "Assigned users"

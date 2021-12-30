@@ -53,6 +53,7 @@ may be an option for you.
 This is most likely due to a version mismatch or an outdated version of `pip`. Try this:
 
      rm -rf /var/lib/little-brother/virtualenv/
+     apt-get update
      apt-get install python3-setuptools python3-pip
      apt-get install -f
      
