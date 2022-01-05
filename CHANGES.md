@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.13 Revision 113 (December 29th, 2021)
+## Version 0.4.13 Revision 113 (January 5th, 2022)
 
 * Add CODE_OF_CONDUCT.md and CONTRIBUTING.md
 * Added Snyk package health score badge
