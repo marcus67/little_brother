@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -63,7 +63,10 @@ extended_setup_params = {
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
     "docker_contexts": [ ('little-brother-base', False),
                          #'docker/little-brother-master',
-                         ('little-brother-slave', True),
+                         ('little-brother-client', True),
+                         ('little-brother-ubuntu-base', False),
+                         # 'docker/little-brother-master',
+                         ('little-brother-ubuntu-client', True),
                          ],
 
     # additional setup configuration used by CI stages
