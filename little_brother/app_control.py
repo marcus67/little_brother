@@ -89,7 +89,6 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._time_last_successful_send_events = tools.get_current_time()
         self._user_locale_handler = UserLocaleHandler()
         self._admin_data_handler = None
-        self._process_regex_map = None
 
         if self._config.hostname is None:
             self._host_name = socket.getfqdn()
@@ -204,17 +203,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             self._user_manager.reset_users(p_session_context=session_context)
             self._process_handler_manager.reset_process_patterns()
 
-    @property
-    def process_regex_map(self):
-
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            if self._process_regex_map is None:
-                self._process_regex_map = {}
-
-                for user in self.user_entity_manager.users(session_context):
-                    self._process_regex_map[user.username] = user.regex_process_name_pattern
-
-        return self._process_regex_map
+    def reset_process_patterns(self):
+        self._process_handler_manager.reset_process_patterns()
 
     def is_master(self):
 
@@ -464,7 +454,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                                                       p_reference_date=p_reference_time.date())
                             override = self.admin_data_handler.rule_overrides.get(key_rule_override)
 
-                            if rule_override is not None:
+                            if override is not None:
                                 self._logger.debug(str(override))
 
                             rule_result_info = self.rule_handler.process_rule_sets_for_user(
@@ -644,4 +634,5 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self.user_entity_manager.add_new_user(p_session_context=p_session_context, p_username=p_username,
                                               p_locale=p_locale)
         self._user_manager.add_monitored_user(p_username=p_username)
+        self._user_manager.reset_users(p_session_context=p_session_context)
         self.send_config_to_all_slaves()

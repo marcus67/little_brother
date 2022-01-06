@@ -35,8 +35,6 @@ class UserManager(PersistenceDependencyInjectionMixIn):
         super().__init__()
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
-        self._process_regex_map = None
-
         self._user_handler = None
         self._event_handler = None
 
@@ -81,10 +79,12 @@ class UserManager(PersistenceDependencyInjectionMixIn):
             p_event_type=admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING, p_handler=self.handle_event_update_login_mapping)
 
     def reset_users(self, p_session_context):
-        self._process_regex_map = None
-        self._usernames_not_found.extend(self.user_entity_manager.user_map(p_session_context=p_session_context).keys())
+        self._usernames = []
 
-        fmt = "Watching usernames: %s" % ",".join(self._usernames_not_found)
+        active_users = [ key for key, user in self.user_entity_manager.user_map(p_session_context=p_session_context).items() if user.active ]
+        self._usernames_not_found.extend(active_users)
+
+        fmt = "Watching usernames: %s" % ",".join(self. _usernames_not_found)
         self._logger.info(fmt)
 
     def handle_event_update_login_mapping(self, p_event):
@@ -182,6 +182,14 @@ class UserManager(PersistenceDependencyInjectionMixIn):
             self._usernames_not_found.append(p_username)
             fmt = "Adding new monitored user '{username}'"
             self._logger.info(fmt.format(username=p_username))
+
+    def remove_monitored_user(self, p_username):
+
+        if p_username in self._usernames:
+            fmt = "Remove monitored user '{username}'"
+            self._usernames.remove(p_username)
+            self._logger.info(fmt.format(username=p_username))
+
 
     def issue_notification(self, p_session_context, p_username, p_message):
 

@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.14 Revision 114 (January ???, 2022)
+
+* Closes #163, see [here](https://github.com/marcus67/little_brother/issues/163)
+
 ## Version 0.4.13 Revision 113 (January 5th, 2022)
 
 * Add CODE_OF_CONDUCT.md and CONTRIBUTING.md

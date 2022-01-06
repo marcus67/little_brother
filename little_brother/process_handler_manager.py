@@ -154,7 +154,8 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 self._process_regex_map = {}
 
                 for user in self.user_entity_manager.users(session_context):
-                    self._process_regex_map[user.username] = user.regex_process_name_pattern
+                    if user.active:
+                        self._process_regex_map[user.username] = user.regex_process_name_pattern
 
         return self._process_regex_map
 
