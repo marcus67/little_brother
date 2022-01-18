@@ -24,7 +24,6 @@
 ##################################################################################
 
 
-TMP_DIR=/tmp
 ETC_DIR=/etc/little-brother
 LOG_DIR=/var/log/little-brother
 SPOOL_DIR=/var/spool/little-brother
@@ -39,7 +38,8 @@ ROOT_DIR=
 SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
 INSTALL_BASE_DIR=$(realpath $SCRIPT_DIR/..)
 BIN_DIR=${INSTALL_BASE_DIR}/bin
-PIP3=${BIN_DIR}/pip3.sh
+PIP3=${LIB_DIR}/pip3.sh
+chmod +x ${PIP3}
 
 
 
@@ -50,25 +50,25 @@ if [ ! "$EUID" == "0" ] ; then
     exit 2
 fi
 
-echo "Checking if all Pip packages have been downloaded to $TMP_DIR..."
-if [ ! -f $TMP_DIR/little-brother-0.4.15.tar.gz ] ; then
-  echo "ERROR: package little-brother-0.4.15.tar.gz not found in $TMP_DIR!"
+echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
+if [ ! -f $LIB_DIR/little-brother-0.4.15.tar.gz ] ; then
+  echo "ERROR: package little-brother-0.4.15.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
   echo "Package little-brother-0.4.15.tar.gz was found."
 fi
 
-if [ ! -f $TMP_DIR/python-base-app-0.2.30.tar.gz ] ; then
-  echo "ERROR: package python-base-app-0.2.30.tar.gz not found in $TMP_DIR!"
+if [ ! -f $LIB_DIR/python-base-app-0.2.31.tar.gz ] ; then
+  echo "ERROR: package python-base-app-0.2.31.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package python-base-app-0.2.30.tar.gz was found."
+  echo "Package python-base-app-0.2.31.tar.gz was found."
 fi
 
-if [ ! -f $TMP_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
-  echo "ERROR: package some-flask-helpers-0.2.2.tar.gz not found in $TMP_DIR!"
+if [ ! -f $LIB_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
+  echo "ERROR: package some-flask-helpers-0.2.2.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
@@ -188,18 +188,18 @@ ${PIP3} --version
 ${PIP3} install wheel setuptools
 echo "Installing PIP packages..."
 echo "  * little-brother-0.4.15.tar.gz"
-echo "  * python-base-app-0.2.30.tar.gz"
+echo "  * python-base-app-0.2.31.tar.gz"
 echo "  * some-flask-helpers-0.2.2.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --force-reinstall \
-     ${TMP_DIR}/little-brother-0.4.15.tar.gz\
-     ${TMP_DIR}/python-base-app-0.2.30.tar.gz\
-     ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz
+     ${LIB_DIR}/little-brother-0.4.15.tar.gz\
+     ${LIB_DIR}/python-base-app-0.2.31.tar.gz\
+     ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
 
 
-echo "Removing installation file ${TMP_DIR}/little-brother-0.4.15.tar.gz..."
-rm ${TMP_DIR}/little-brother-0.4.15.tar.gz
-echo "Removing installation file ${TMP_DIR}/python-base-app-0.2.30.tar.gz..."
-rm ${TMP_DIR}/python-base-app-0.2.30.tar.gz
-echo "Removing installation file ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz..."
-rm ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz
+echo "Removing installation file ${LIB_DIR}/little-brother-0.4.15.tar.gz..."
+rm ${LIB_DIR}/little-brother-0.4.15.tar.gz
+echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.31.tar.gz..."
+rm ${LIB_DIR}/python-base-app-0.2.31.tar.gz
+echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz..."
+rm ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz

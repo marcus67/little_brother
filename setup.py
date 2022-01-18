@@ -91,10 +91,9 @@ extended_setup_params = {
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ],
     "build_pypi_package": True,
-    "publish_pypi_package": {
-        little_brother.settings.RELEASE_BRANCH_NAME: ('https://upload.pypi.org/legacy/', 'PYPI_API_TOKEN'),
-        little_brother.settings.MASTER_BRANCH_NAME: ('https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN')
-    },
+    "publish_pypi_package": { little_brother.settings.RELEASE_BRANCH_NAME: ('PYPI_API_URL', 'PYPI_API_TOKEN', 'TEST_PYPI_API_USER'),
+                              little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
+                              },
     "generate_generic_install": True,
     "analyze": True,
     "analyze_extra_exclusions" : "vagrant/**",

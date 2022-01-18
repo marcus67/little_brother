@@ -1,4 +1,4 @@
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -22,9 +22,6 @@
 ##################################################################################
 
 version: 2.0
-
-environment:
-  PIP3: "./bin/pip3.sh"
 
 jobs:
   build:

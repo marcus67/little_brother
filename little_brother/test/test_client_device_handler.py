@@ -30,6 +30,7 @@ from little_brother.process_handler import ProcessHandler
 from little_brother.test import test_data
 from little_brother.test.persistence import test_persistence
 from python_base_app import pinger
+from python_base_app.configuration import ConfigurationException
 from python_base_app.test import base_test
 
 
@@ -101,12 +102,12 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
             process_handler: ProcessHandler = client_device_handler.ClientDeviceHandler(
                 p_config=config, p_pinger=a_pinger)
 
-            events = process_handler.scan_processes(p_session_context=session_context,
-                                                    p_server_group=None,
-                                                    p_login_mapping=None,
-                                                    p_host_name=None,
-                                                    p_process_regex_map=None,
-                                                    p_prohibited_process_regex_map=None,
-                                                    p_reference_time=datetime.datetime.now())
+            with self.assertRaises(ConfigurationException):
+                _events = process_handler.scan_processes(p_session_context=session_context,
+                                                         p_server_group=None,
+                                                         p_login_mapping=None,
+                                                         p_host_name=None,
+                                                         p_process_regex_map=None,
+                                                         p_prohibited_process_regex_map=None,
+                                                         p_reference_time=datetime.datetime.now())
 
-            self.check_list_has_n_elements(p_list=events, p_n=0)
