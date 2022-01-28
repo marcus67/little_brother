@@ -56,6 +56,14 @@ class ClientInfo(object):
         return ""
 
     @property
+    def linux_distribution(self):
+        if self.client_stats is not None and self.client_stats.linux_distribution is not None:
+            return self.client_stats.linux_distribution
+
+        else:
+            return _("n/a")
+
+    @property
     def node_type(self):
         return _("Master") if self.is_master else _("Slave")
 

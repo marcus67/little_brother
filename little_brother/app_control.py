@@ -20,6 +20,7 @@ import socket
 import sys
 import time
 
+import distro
 import prometheus_client
 
 from little_brother import admin_event
@@ -564,7 +565,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                                               minor=sys.version_info.minor,
                                                               micro=sys.version_info.micro),
             p_running_in_docker=tools.running_in_docker(),
-            p_running_in_snap=tools.running_in_snap()
+            p_running_in_snap=tools.running_in_snap(),
+            p_linux_distribution=distro.name(pretty=True)
         )
 
         if not self.is_master():

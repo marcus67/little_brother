@@ -23,12 +23,14 @@ BUILT_IN_METRIC_PROCESS_CPU_SECONDS = 'process_cpu_seconds'
 
 class ClientStats(object):
     def __init__(self, p_version=None, p_revision=None, p_python_version=None,
-                 p_running_in_docker=None, p_running_in_snap=None):
+                 p_running_in_docker=None, p_running_in_snap=None,
+                 p_linux_distribution=None):
         self.version = p_version
         self.revision = p_revision
         self.python_version = p_python_version
         self.running_in_docker = p_running_in_docker
         self.running_in_snap = p_running_in_snap
+        self.linux_distribution = p_linux_distribution
         self.resident_memory_bytes = 0.0
         self.start_time_seconds = 0.0
         self.cpu_seconds_total = 0.0

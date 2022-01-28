@@ -19,6 +19,8 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                   | (Issue) Link                                                         |
 |----------|---------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.4.15   | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
+| 0.4.14   | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
 | 0.4.12   | *New*: Client process available as snap                       | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
 | 0.4.9    | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
 |          | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
@@ -156,6 +158,8 @@ See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
 | Distribution | Version       | Architecture | Comments                                                               | Most Recent Test |
 | ------------ | ------------- | ------------ | ---------------------------------------------------------------------- | ---------------- |
+| Ubuntu       | 20.04         | amd64        |                                                                        | 28.JAN.2022      |
+| Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop             | 28.JAN.2022      |
 | Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
 | Debian       | buster        | amd64        | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
 | Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop              | 05.MAR.2020      |
@@ -167,8 +171,6 @@ See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 There is a snap available for the client process. See [snap-little-brother](https://github.com/marcus67/snap-little-brother) for details. 
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/little-brother-slave)
-
- 
 
 ## Quick Install (Debian Package)
 
