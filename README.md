@@ -19,6 +19,7 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                   | (Issue) Link                                                         |
 |----------|---------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.4.16   | *Bug Fix*: Ingore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
 | 0.4.15   | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
 | 0.4.14   | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
 | 0.4.12   | *New*: Client process available as snap                       | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |

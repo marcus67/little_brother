@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.16 Revision 116 (January 30th, 2022)
+
+* Upgrade to `python_base_app` version 0.2.33
+* Closes #165, see [here](https://github.com/marcus67/little_brother/issues/165)
+
 ## Version 0.4.15 Revision 115 (January 28th, 2022)
 
 * Upgrade to `python_base_app` version 0.2.31

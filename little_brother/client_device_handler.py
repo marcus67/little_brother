@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@ from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import stats
 from python_base_app import tools
+from python_base_app.configuration import ConfigurationException
 
 SECTION_NAME = "ClientDeviceHandler"
 
@@ -234,11 +235,19 @@ class ClientDeviceHandler(PersistenceDependencyInjectionMixIn, ProcessHandler):
         fmt = "Pinging {device}..."
         self._logger.debug(fmt.format(device=p_device.hostname))
 
-        delay = self._pinger.ping(p_host=p_device.hostname)
-        device_info = self.get_device_info(p_device_name=p_device.device_name)
+        delay = None
+
+        try:
+            delay = self._pinger.ping(p_host=p_device.hostname)
+
+        except ConfigurationException as e:
+            msg = "Exception '{exception}' while pinging device '{device}'! Is the DNS name correct?"
+            self._logger.error(msg.format(exception=str(e), device=p_device.hostname))
 
         if delay is None:
             delay = self._config.inactive_factor * p_device.max_active_ping_delay
+
+        device_info = self.get_device_info(p_device_name=p_device.device_name)
 
         device_info.add_ping_delay(p_reference_time=p_reference_time, p_delay=delay)
 
