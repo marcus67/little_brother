@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-21  Marcus Rickert
+# Copyright (C) 2019-22  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -176,7 +176,8 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
                 "current_revision": current_revision,
                 "suggested_version": suggested_version_info.version,
                 "suggested_revision": suggested_version_info.revision,
-                "download_url": self.version_checker.get_download_url(p_channel=channel)
+                "download_url": self.version_checker.get_download_url(p_channel=channel),
+                "changes_url": self.version_checker.get_changes_url(p_channel=channel),
             }
 
             p_dict["version_format_dict"] = format_dict

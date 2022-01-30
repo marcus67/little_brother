@@ -19,7 +19,8 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                   | (Issue) Link                                                         |
 |----------|---------------------------------------------------------------|----------------------------------------------------------------------|
-| 0.4.16   | *Bug Fix*: Ingore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
+| 0.4.17   | *Bug Fix*: Remove incompatibilty with new `alembic` version   | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
+| 0.4.16   | *Bug Fix*: Ignore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
 | 0.4.15   | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
 | 0.4.14   | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
 | 0.4.12   | *New*: Client process available as snap                       | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
@@ -280,7 +281,7 @@ the following languages are supported or in preparation (in the order they were 
 | ---------------------------------------------------------------| ------------- | ------ | -------------- | ---------------------------|
 | ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Up-to-date     |  Marcus Rickert            |
 | ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Up-to-date     |  Marcus Rickert            |
-| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Revision 116   |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
 | ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 86    |  Albano Battistella        |
@@ -315,5 +316,7 @@ a translation. You do not necessarily have to clone this repository or be famili
 
 *   People contributing by providing pull requests:
 
-    *   [Bas Hulsken](https://github.com/bhulsken) (see [issue 120](https://github.com/marcus67/little_brother/issues/120))
-    *   [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 
+    * [Bas Hulsken](https://github.com/bhulsken)
+      * See [issue 120](https://github.com/marcus67/little_brother/issues/120)
+      * See [issue 166](https://github.com/marcus67/little_brother/issues/166)
+    * [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 

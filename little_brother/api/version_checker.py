@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -38,18 +38,23 @@ class VersionInfo:
 
 class ChannelInfo:
 
-    def __init__(self, p_channel: str, p_download_url: str):
+    def __init__(self, p_channel: str, p_download_url: str, p_changes_url):
         self.channel = p_channel
         self.download_url = p_download_url
+        self.changes_url = p_changes_url
 
 
 SOURCEFORGE_CHANNEL_INFOS = {
-    settings.MASTER_BRANCH_NAME: ChannelInfo(p_channel=settings.MASTER_BRANCH_NAME,
-                                             p_download_url="https://sourceforge.net/projects/little-brother/files/"
-                                                            "master/little-brother_{version}_{revision}.deb/download"),
-    settings.RELEASE_BRANCH_NAME: ChannelInfo(p_channel=settings.MASTER_BRANCH_NAME,
-                                              p_download_url="https://sourceforge.net/projects/little-brother/files/"
-                                                             "release/little-brother_{version}_{revision}.deb/download")
+    settings.MASTER_BRANCH_NAME:
+        ChannelInfo(p_channel=settings.MASTER_BRANCH_NAME,
+                    p_download_url="https://sourceforge.net/projects/little-brother/files/"
+                                   "master/little-brother_{version}_{revision}.deb/download",
+                    p_changes_url="https://github.com/marcus67/little_brother/blob/master/CHANGES.md"),
+    settings.RELEASE_BRANCH_NAME:
+        ChannelInfo(p_channel=settings.MASTER_BRANCH_NAME,
+                    p_download_url="https://sourceforge.net/projects/little-brother/files/"
+                                   "release/little-brother_{version}_{revision}.deb/download",
+                    p_changes_url="https://github.com/marcus67/little_brother/blob/master/CHANGES.md")
 }
 
 
@@ -158,6 +163,15 @@ class VersionChecker:
         url_format = self._channel_infos.get(p_channel).download_url
 
         return url_format.format(version=version_info.version, revision=version_info.revision, channel=p_channel)
+
+    def get_changes_url(self, p_channel) -> ChannelInfo:
+
+        self.retrieve_version_infos()
+
+        if self._version_infos is None:
+            return None
+
+        return self._channel_infos.get(p_channel).changes_url
 
     def is_revision_current(self, p_channel: str, p_revision: int):
 

@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.17 Revision 117 (January 30th, 2022)
+
+* Closes #166, see [here](https://github.com/marcus67/little_brother/issues/166) (Thanks to )
+* Upgrade package `alembic` to version 1.7.5
+* Make upgrade message in administration views more concise, include link to `CHANGES.md`
+
 ## Version 0.4.16 Revision 116 (January 30th, 2022)
 
 * Upgrade to `python_base_app` version 0.2.33

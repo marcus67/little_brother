@@ -1,5 +1,5 @@
 {#<!--
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -19,5 +19,5 @@
 -->#}
 
 {% if version_format_dict %}
-<div class="alert alert-info" role="alert">{{ _('New version of LittleBrother available for update channel <CODE>{channel}</CODE>: version <CODE>{suggested_version}</CODE> with revision <CODE>{suggested_revision}</CODE>. Currently installed: version <CODE>{current_version}</CODE> with revision <CODE>{current_revision}</CODE>. Download Debian package <a href="{download_url}">here</a>.')|format(version_format_dict)|safe  }}</div>
+<div class="alert alert-info" role="alert">{{ _('New version of LittleBrother available for update channel <CODE>{channel}</CODE>: version <CODE>{suggested_version}</CODE> with revision <CODE>{suggested_revision}</CODE>. See <A HREF="{changes_url}">here</A> for changes. Download Debian package <a href="{download_url}">here</a>.')|format(version_format_dict)|safe  }}</div>
 {% endif %}
