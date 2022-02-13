@@ -91,19 +91,22 @@ In order to keep the overview over the network of PCs the tab `Topology` provide
 
 It shows the master and all slave nodes with the following columns:
 
-*   *Node Type*: Denotes the type of node ("Master" or "Slave"). There is exactly one master and `0..N` slaves. If
+* *Node Type*: Denotes the type of node ("Master" or "Slave"). There is exactly one master and `0..N` slaves. If
     the node process is running in a Docker container it will have an additional `(Docker)` remark.
     
-*   *Node Name*: Denotes Unique name of the node. I usually corresponds to the host DNS name but it can be set in the
+* *Node Name*: Denotes Unique name of the node. I usually corresponds to the host DNS name but it can be set in the
     configuration file.
     
-*   *App Version*: Denotes the version of the `LittleBrother` process on that node.
+* *App Version*: Denotes the version of the `LittleBrother` process on that node.
 
-*   *Revision*: Denotes the revision of the `LittleBrother` process on that node.
+* *Revision*: Denotes the revision of the `LittleBrother` process on that node.
+ 
+* *Distribution*: Denotes the Linux distribution running on that node as reported 
+  by package [`distro`](https://pypi.org/project/distro/).
 
-*   *Python Version*: Denotes the version of the Python interpreter running the `LittleBrother` process on that node.
+* *Python Version*: Denotes the version of the Python interpreter running the `LittleBrother` process on that node.
 
-*   *Time Since Last Ping*: Denotes the time since the master has received the most recent statistics from that node.
+* *Time Since Last Ping*: Denotes the time since the master has received the most recent statistics from that node.
     Since the default ping time is five seconds this value will usually not exceed four seconds.
     
 ### Detection of Suspicious Constellations

@@ -1,4 +1,4 @@
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -22,11 +22,12 @@
 ##################################################################################
 
 version: 2.0
+
 jobs:
   build:
     #working_directory: ~
     docker:
-      - image: accso/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:latest
     steps:
       - checkout
 
@@ -34,7 +35,6 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
-
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
@@ -42,15 +42,15 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.4.12_112.deb
+          path: debian/little-brother_0.4.19_121.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.4.12_112.deb
+            - little-brother_0.4.19_121.deb
   build_pypi:
     #working_directory: ~
     docker:
-      - image: accso/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:latest
     steps:
       - checkout
 
@@ -58,18 +58,17 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
-
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - store_artifacts:
-          path: "dist/little-brother-0.4.12.tar.gz"
+          path: "dist/little-brother-0.4.19.tar.gz"
       - persist_to_workspace:
           root: dist
           paths:
-            - "little-brother-0.4.12.tar.gz"
+            - "little-brother-0.4.19.tar.gz"
   install_pypi:
     #working_directory: ~
     docker:
-      - image: accso/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:latest
     steps:
       - checkout
       - attach_workspace:
@@ -79,7 +78,6 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
-
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
       - run: codecov
@@ -88,7 +86,7 @@ jobs:
   publish_pypi:
     #working_directory: ~
     docker:
-      - image: accso/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:latest
     steps:
       - checkout
       - attach_workspace:
@@ -98,11 +96,10 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
-
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
   deploy:
     docker:
-      - image: accso/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:latest
     steps:
       - checkout
       - attach_workspace:

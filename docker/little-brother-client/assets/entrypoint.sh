@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
-#    See https://github.com/marcus67/python_base_app
+#    See https://github.com/marcus67/little_brother
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-echo "Starting Little-Brother in Slave Mode"
+echo "Starting Little-Brother in Client Mode"
 export MasterConnector__host_url=${MASTER_HOST_URL}
 export MasterConnector__access_token=${MASTER_ACCESS_TOKEN}
 export StatusServer__app_secret=${APP_SECRET}

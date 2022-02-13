@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -63,7 +63,10 @@ extended_setup_params = {
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
     "docker_contexts": [ ('little-brother-base', False),
                          #'docker/little-brother-master',
-                         ('little-brother-slave', True),
+                         ('little-brother-client', True),
+                         ('little-brother-ubuntu-base', False),
+                         # 'docker/little-brother-master',
+                         ('little-brother-ubuntu-client', True),
                          ],
 
     # additional setup configuration used by CI stages
@@ -88,10 +91,9 @@ extended_setup_params = {
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ],
     "build_pypi_package": True,
-    "publish_pypi_package": {
-        little_brother.settings.RELEASE_BRANCH_NAME: ('https://upload.pypi.org/legacy/', 'PYPI_API_TOKEN'),
-        little_brother.settings.MASTER_BRANCH_NAME: ('https://test.pypi.org/legacy/', 'TEST_PYPI_API_TOKEN')
-    },
+    "publish_pypi_package": { little_brother.settings.RELEASE_BRANCH_NAME: ('PYPI_API_URL', 'PYPI_API_TOKEN', 'TEST_PYPI_API_USER'),
+                              little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
+                              },
     "generate_generic_install": True,
     "analyze": True,
     "analyze_extra_exclusions" : "vagrant/**",

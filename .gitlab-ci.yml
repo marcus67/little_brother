@@ -1,4 +1,4 @@
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -21,14 +21,18 @@
 # but only to python_base_app/templates/gitlab-ci.template.yml!                  #
 ##################################################################################
 
+variables:
+  PIP3: "./bin/pip3.sh"
+
 stages:
   - build
   - install_and_check
   - analyze
   - deploy
+  - publish
   
 build_debian:
-  image: accso/docker-python-app:latest
+  image: marcusrickert/docker-python-app:latest
   stage: build
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
@@ -40,7 +44,7 @@ build_debian:
     GIT_SUBMODULE_STRATEGY: recursive
 
 test_debian:
-  image: accso/docker-python-app:latest
+  image: marcusrickert/docker-python-app:latest
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
@@ -55,7 +59,7 @@ test_debian:
     GIT_SUBMODULE_STRATEGY: recursive
 
 build_pypi:
-  image: accso/docker-python-app:latest
+  image: marcusrickert/docker-python-app:latest
   stage: build
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
@@ -64,13 +68,13 @@ build_pypi:
   artifacts:
       when: always
       paths:
-        - dist/little-brother-0.4.12.tar.gz
+        - dist/little-brother-0.4.19.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
 install_pypi:
-  image: accso/docker-python-app:latest
+  image: marcusrickert/docker-python-app:latest
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
@@ -87,7 +91,7 @@ install_pypi:
     GIT_SUBMODULE_STRATEGY: recursive
 
 analyze:
-  image: accso/docker-python-app:latest
+  image: marcusrickert/docker-python-app:latest
   stage: analyze
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
@@ -101,7 +105,13 @@ docker:
   image: marcusrickert/docker-docker-ci:release-0.9.1
   stage: deploy
   script:
-  - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
+
+publish_pypi:
+  image: marcusrickert/docker-python-app:latest
+  stage: publish
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.

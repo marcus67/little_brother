@@ -173,6 +173,22 @@ a.CVE_HYPERLINK:visited {
   padding-right: 2px;
 }
 
+.col-sm-1 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-sm-2 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-sm-3 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+
 .col-xs-1 input {
   padding-left: 1px;
   padding-right: 1px;

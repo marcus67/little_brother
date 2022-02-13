@@ -19,7 +19,11 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                   | (Issue) Link                                                         |
 |----------|---------------------------------------------------------------|----------------------------------------------------------------------|
-| 0.4.12   | *New*: Slave process available as snap                        | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
+| 0.4.17   | *Bug Fix*: Remove incompatibilty with new `alembic` version   | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
+| 0.4.16   | *Bug Fix*: Ignore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
+| 0.4.15   | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
+| 0.4.14   | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
+| 0.4.12   | *New*: Client process available as snap                       | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
 | 0.4.9    | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
 |          | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
 |          | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138)   |
@@ -71,9 +75,10 @@ See [here](CHANGES.md)
 |:------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | CircleCI            | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/master"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/master.svg?label=master"></A>                                                                                                                                                                                 | <A HREF="https://circleci.com/gh/marcus67/little_brother/tree/release"><IMG SRC="https://img.shields.io/circleci/project/github/marcus67/little_brother/release.svg?label=release"></A>                                                                                                                                                                              |
 | Test Coverage       | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/master"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother.svg?label=master"></A>                                                                                                                                                                                               | <A HREF="https://codecov.io/gh/marcus67/little_brother/branch/release"><IMG SRC="https://img.shields.io/codecov/c/github/marcus67/little_brother/release.svg?label=release"></A>                                                                                                                                                                                     |
-| Snyk Vulnerability  | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>         | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/release/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> |
 | Codacy Code Quality | <A href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd"/></a>                                                                                         | <A href="https://www.codacy.com/app/marcus67/little_brother?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marcus67/little_brother&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/3e3130c1c450404db9b16e10ab8af7fd?branch=release"/></a>                                                                          |
-| Code Climate        | <a href="https://codeclimate.com/github/marcus67/little_brother/maintainability"><img src="https://api.codeclimate.com/v1/badges/c42e65d566d1e10f1402/maintainability" /></a>                                                                                                                                                                                        | not available                                                                                                                                                                                                                                                                                                                                                        |                 
+| Code Climate        | <a href="https://codeclimate.com/github/marcus67/little_brother/maintainability"><img src="https://api.codeclimate.com/v1/badges/c42e65d566d1e10f1402/maintainability" /></a>                                                                                                                                                                                        | not available                                                                                                                                                                                                                                                                                                                                                        |
+| Snyk Vulnerability  | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a>         | <A href="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt"><img src="https://snyk.io/test/github/marcus67/little_brother/release/badge.svg?targetFile=requirements.txt" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/marcus67/little_brother?targetFile=requirements.txt" style="max-width:100%;"></a> |
+| Snyk Package Health | not available                                                                                                                                                                                                                                                                                                                                                        | [![little-brother](https://snyk.io/advisor/python/little-brother/badge.svg)](https://snyk.io/advisor/python/little-brother)                                                                                                                                                                                                                                          |
 
 Note: The vulnerability status is derived from the Python PIP packages found in `requirements.txt`.
 
@@ -126,7 +131,7 @@ hence will have an impact on the time allowed and also on the break time rules o
 *   As of version 0.3.12 `LittleBrother` is able to use [ProxyPing](https://github.com/marcus67/proxy_ping) to ping
 devices behind firewalls provided the tool can be deployed on a Debian server behind the firewall.
 
-*   As of version 0.3.13 `LittleBrother` slaves will terminate local user sessions if they cannot reach the master
+*   As of version 0.3.13 `LittleBrother` clients will terminate local user sessions if they cannot reach the master
 process for a certain time (defaults to 50 seconds). This ensures users cannot suppress being logged out by 
 *pulling the plug*.
 
@@ -136,7 +141,7 @@ extension all other restrictions (maximum time per session, time of day, and max
 Time extension can even extend into the next day making long night session possible. However, any computer time
 actually spent during a time extension will contribute to the overall time played in the course of a day.   
 
-*   There is a Docker image available (currently for the slave only) which makes it really easy to run a slave on a 
+*   There is a Docker image available (currently for the client only) which makes it really easy to run a client on a 
 Linux host with a Docker daemon available.
 
 *   The application uses voice generation to inform the user over impending logouts. Also, these spoken
@@ -155,6 +160,8 @@ See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
 | Distribution | Version       | Architecture | Comments                                                               | Most Recent Test |
 | ------------ | ------------- | ------------ | ---------------------------------------------------------------------- | ---------------- |
+| Ubuntu       | 20.04         | amd64        |                                                                        | 28.JAN.2022      |
+| Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop             | 28.JAN.2022      |
 | Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
 | Debian       | buster        | amd64        | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
 | Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop              | 05.MAR.2020      |
@@ -163,16 +170,14 @@ See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
 ## Quick Install (Snap)
 
-There is a snap available for the slave process. See [snap-little-brother](https://github.com/marcus67/snap-little-brother) for details. 
+There is a snap available for the client process. See [snap-little-brother](https://github.com/marcus67/snap-little-brother) for details. 
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/little-brother-slave)
-
- 
 
 ## Quick Install (Debian Package)
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
-on your system. This guide works both for master and slave setups. For setting up a slave there is a second option
+on your system. This guide works both for master and client setups. For setting up a client there is a second option
 using Docker. See the [Docker](DOCKER.md) page for more details.
 
 ### YouTube Videos
@@ -211,15 +216,15 @@ various additional aspects that may require additional configuration.
 | Aspect                      | Default Setting                                                            | Alternatives                                                    | Reference                                               |
 | --------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------- |
 | Admin Password              | User `admin` with password `test123`                                       | Use LDAP for authentication and authorization                   | See "Setting Admin Password" below                      | 
-| Database backend            | File oriented database [sqlite](https://www.sqlite.org/index.html)         | Full fledged database such as MySQL dor MariaDB                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Database backend            | File oriented database [sqlite](https://www.sqlite.org/index.html)         | Full fledged database such as MySQL dor MariaDB                 | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Web frontend port           | `5555`                                                                     | Any other available port                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Web frontend base URL       | `/`                                                                        | Any other path                                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | User registry               | `/etc/passwd`                                                              | Predefined users and UIDs or LDAP registry                      | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Master slave setup          | Use only a master host                                                     | Use any number of slave hosts                                   | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Master client setup         | Use only a master host                                                     | Use any number of client hosts                                  | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Docker Support              | Slave is installed as Debian package                                       | Slave is run as Docker container                                | See [Docker](DOCKER.md).                                |
+| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                 |
 | Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
 | Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 
@@ -264,19 +269,19 @@ solved by trying to kill the processes again using the master user. Database elo
 delete/correct the incorrect process time entries.
 
 *   The web server only responds to HTTP requests. This is probably always OK for communication between the
-slaves and the master in local area network. If the master host is to be accessible from the internet, it should
+clients and the master in local area network. If the master host is to be accessible from the internet, it should
 be put behind a reverse proxy handling the HTTPS termination (see below). 
 
 ## Internationalization
 
 The application uses the PIP package `Flask-Babel` to provide internationalization for the web frontend. Currently, 
-the following languages are supported or currently in preparation (in the order they were made available):
+the following languages are supported or in preparation (in the order they were made available):
 
 | Flag                                                           | Language      | Locale | Status         | Translation provided by    |
 | ---------------------------------------------------------------| ------------- | ------ | -------------- | ---------------------------|
 | ![Flag USA](doc/united-states-of-america-flag-icon-32.png)     | English       | en     | Up-to-date     |  Marcus Rickert            |
 | ![Flag Germany](doc/germany-flag-icon-32.png)                  | German        | de     | Up-to-date     |  Marcus Rickert            |
-| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Up-to-date     |  Albano Battistella        |
+| ![Flag Italy](doc/italy-flag-icon-32.png)                      | Italian       | it     | Revision 116   |  Albano Battistella        |
 | ![Flag Netherlands](doc/netherlands-flag-icon-32.png)          | Dutch         | nl     | Revision 63    |  Simone & Lex              |
 | ![Flag Finland](doc/finland-flag-icon-32.png)                  | Finnish       | fi     | Revision 63    |  Isakkii Kosonen           |
 | ![Flag France](doc/france-flag-icon-32.png)                    | French        | fr     | Revision 86    |  Albano Battistella        |
@@ -311,5 +316,7 @@ a translation. You do not necessarily have to clone this repository or be famili
 
 *   People contributing by providing pull requests:
 
-    *   [Bas Hulsken](https://github.com/bhulsken) (see [issue 120](https://github.com/marcus67/little_brother/issues/120))
-    *   [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 
+    * [Bas Hulsken](https://github.com/bhulsken)
+      * See [issue 120](https://github.com/marcus67/little_brother/issues/120)
+      * See [issue 166](https://github.com/marcus67/little_brother/issues/166)
+    * [Albano Battistella](https://github.com/albanobattistella) for providing Italian and French translations 

@@ -19,6 +19,7 @@ import os.path
 
 import alembic
 import alembic.config
+from alembic.migration import MigrationContext
 
 from little_brother import constants
 from little_brother import simple_context_rule_handlers
@@ -58,7 +59,7 @@ class DatabaseMigrations(object):
 
     def get_current_version(self):
 
-        context = alembic.migration.MigrationContext.configure(self._persistence.get_connection())
+        context = MigrationContext.configure(self._persistence.get_connection())
         return context.get_current_revision()
 
     def check_if_version_is_active(self, p_version):

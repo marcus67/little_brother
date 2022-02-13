@@ -24,7 +24,6 @@
 ##################################################################################
 
 
-TMP_DIR=/tmp
 ETC_DIR=/etc/little-brother
 LOG_DIR=/var/log/little-brother
 SPOOL_DIR=/var/spool/little-brother
@@ -35,10 +34,15 @@ TMPFILE_DIR=/usr/lib/tmpfiles.d
 SUDOERS_DIR=/etc/sudoers.d
 APPARMOR_DIR=/etc/apparmor.d
 
-
 ROOT_DIR=
 SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
 INSTALL_BASE_DIR=$(realpath $SCRIPT_DIR/..)
+BIN_DIR=${INSTALL_BASE_DIR}/bin
+PIP3=${LIB_DIR}/pip3.sh
+chmod +x ${PIP3}
+
+
+
 echo "Running generic installation script with base directory located in $INSTALL_BASE_DIR..."
 
 if [ ! "$EUID" == "0" ] ; then
@@ -46,25 +50,25 @@ if [ ! "$EUID" == "0" ] ; then
     exit 2
 fi
 
-echo "Checking if all Pip packages have been downloaded to $TMP_DIR..."
-if [ ! -f $TMP_DIR/little-brother-0.4.12.tar.gz ] ; then
-  echo "ERROR: package little-brother-0.4.12.tar.gz not found in $TMP_DIR!"
+echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
+if [ ! -f $LIB_DIR/little-brother-0.4.19.tar.gz ] ; then
+  echo "ERROR: package little-brother-0.4.19.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package little-brother-0.4.12.tar.gz was found."
+  echo "Package little-brother-0.4.19.tar.gz was found."
 fi
 
-if [ ! -f $TMP_DIR/python-base-app-0.2.26.tar.gz ] ; then
-  echo "ERROR: package python-base-app-0.2.26.tar.gz not found in $TMP_DIR!"
+if [ ! -f $LIB_DIR/python-base-app-0.2.36.tar.gz ] ; then
+  echo "ERROR: package python-base-app-0.2.36.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package python-base-app-0.2.26.tar.gz was found."
+  echo "Package python-base-app-0.2.36.tar.gz was found."
 fi
 
-if [ ! -f $TMP_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
-  echo "ERROR: package some-flask-helpers-0.2.2.tar.gz not found in $TMP_DIR!"
+if [ ! -f $LIB_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
+  echo "ERROR: package some-flask-helpers-0.2.2.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
@@ -73,6 +77,8 @@ fi
 
 mkdir -p ${SYSTEMD_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
+echo "Execute systemctl daemon-reload..."
+systemctl daemon-reload
 mkdir -p ${SUDOERS_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.sudo ${SUDOERS_DIR}/little-brother
 mkdir -p ${APPARMOR_DIR}
@@ -88,6 +94,7 @@ cp -f $INSTALL_BASE_DIR/etc/master.config ${ROOT_DIR}/etc/little-brother/master.
 
 
 
+# endif for if generic_script
 if grep -q 'little-brother:' /etc/group ; then
     echo "Group 'little-brother' already exists. Skipping group creation."
 else
@@ -140,8 +147,6 @@ echo "Creating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
 
 virtualenv -p /usr/bin/python3 ${VIRTUAL_ENV_DIR}
 
-PIP3=${VIRTUAL_ENV_DIR}/bin/pip3
-
 echo "Setting ownership..."
 echo "    * little-brother.little-brother ${ETC_DIR}"
 chown -R little-brother.little-brother ${ETC_DIR}
@@ -180,21 +185,21 @@ echo "    * little-brother.little-brother /etc/little-brother/little-brother.con
 chmod og-rwx /etc/little-brother/little-brother.config
 
 ${PIP3} --version
-${PIP3} install wheel setuptools
+${PIP3} install wheel # setuptools
 echo "Installing PIP packages..."
-echo "  * little-brother-0.4.12.tar.gz"
-echo "  * python-base-app-0.2.26.tar.gz"
+echo "  * little-brother-0.4.19.tar.gz"
+echo "  * python-base-app-0.2.36.tar.gz"
 echo "  * some-flask-helpers-0.2.2.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --force-reinstall \
-     ${TMP_DIR}/little-brother-0.4.12.tar.gz\
-     ${TMP_DIR}/python-base-app-0.2.26.tar.gz\
-     ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz
+     ${LIB_DIR}/little-brother-0.4.19.tar.gz\
+     ${LIB_DIR}/python-base-app-0.2.36.tar.gz\
+     ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
 
 
-echo "Removing installation file ${TMP_DIR}/little-brother-0.4.12.tar.gz..."
-rm ${TMP_DIR}/little-brother-0.4.12.tar.gz
-echo "Removing installation file ${TMP_DIR}/python-base-app-0.2.26.tar.gz..."
-rm ${TMP_DIR}/python-base-app-0.2.26.tar.gz
-echo "Removing installation file ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz..."
-rm ${TMP_DIR}/some-flask-helpers-0.2.2.tar.gz
+echo "Removing installation file ${LIB_DIR}/little-brother-0.4.19.tar.gz..."
+rm ${LIB_DIR}/little-brother-0.4.19.tar.gz
+echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.36.tar.gz..."
+rm ${LIB_DIR}/python-base-app-0.2.36.tar.gz
+echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz..."
+rm ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz

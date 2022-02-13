@@ -1,4 +1,3 @@
-{#<!--
 #    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,8 +15,16 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->#}
-
-{% if version_format_dict %}
-<div class="alert alert-info" role="alert">{{ _('New version of LittleBrother available for update channel <CODE>{channel}</CODE>: version <CODE>{suggested_version}</CODE> with revision <CODE>{suggested_revision}</CODE>. See <A HREF="{changes_url}">here</A> for changes. Download Debian package <a href="{download_url}">here</a>.')|format(version_format_dict)|safe  }}</div>
-{% endif %}
+FROM marcusrickert/docker-ubuntu-minipython:release-0.9.1
+LABEL maintainer="marcus.rickert@web.de"
+ENV RUNNING_IN_DOCKER=1
+COPY assets/*.deb /tmp
+# See https://superuser.com/questions/1456989/how-to-configure-apt-in-debian-buster-after-release
+RUN DEBIAN_FRONTEND=noninteractive \
+        apt-get update --allow-releaseinfo-change && \
+        apt-get install -y --no-install-recommends \
+            alsaplayer-alsa \
+            mpg123
+RUN (dpkg -i /tmp/*.deb || true) && \
+    DEBIAN_FRONTEND=noninteractive \
+        apt-get install -f -y --no-install-recommends

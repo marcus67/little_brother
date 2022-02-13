@@ -1,4 +1,3 @@
-{#<!--
 #    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,8 +15,14 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->#}
-
-{% if version_format_dict %}
-<div class="alert alert-info" role="alert">{{ _('New version of LittleBrother available for update channel <CODE>{channel}</CODE>: version <CODE>{suggested_version}</CODE> with revision <CODE>{suggested_revision}</CODE>. See <A HREF="{changes_url}">here</A> for changes. Download Debian package <a href="{download_url}">here</a>.')|format(version_format_dict)|safe  }}</div>
-{% endif %}
+ARG TAG
+ARG DOCKER_REGISTRY_ORG_UNIT
+FROM $DOCKER_REGISTRY_ORG_UNIT/little-brother-base:$TAG
+LABEL maintainer="marcus.rickert@web.de"
+ENV MASTER_HOST_URL=http://localhost:5555
+ENV MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN
+COPY assets/entrypoint.sh /entrypoint.sh
+COPY assets/little-brother.config /etc
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
+USER little-brother

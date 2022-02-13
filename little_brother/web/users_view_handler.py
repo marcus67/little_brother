@@ -123,7 +123,9 @@ class UsersViewHandler(BaseViewHandler):
             self.user_entity_manager.delete_user(
                 p_session_context=p_session_context, p_username=p_user.username)
             self.persistence.clear_cache()
+            self.user_manager.reset_users(p_session_context=p_session_context)
             self.app_control.send_config_to_all_slaves()
+            self.app_control.reset_process_patterns()
 
         elif p_submit_id == p_user.new_ruleset_html_key:
             self.user_entity_manager.assign_ruleset(
@@ -256,6 +258,7 @@ class UsersViewHandler(BaseViewHandler):
                 self._persistence.clear_cache()
                 self.app_control.send_config_to_all_slaves()
                 self.user_manager.reset_users(p_session_context=session_context)
+                self.app_control.reset_process_patterns()
 
     def save_for_user(self, p_forms, p_session_context, p_user):
 
