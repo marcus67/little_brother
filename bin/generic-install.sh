@@ -59,12 +59,12 @@ else
   echo "Package little-brother-0.4.19.tar.gz was found."
 fi
 
-if [ ! -f $LIB_DIR/python-base-app-0.2.35.tar.gz ] ; then
-  echo "ERROR: package python-base-app-0.2.35.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/python-base-app-0.2.36.tar.gz ] ; then
+  echo "ERROR: package python-base-app-0.2.36.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package python-base-app-0.2.35.tar.gz was found."
+  echo "Package python-base-app-0.2.36.tar.gz was found."
 fi
 
 if [ ! -f $LIB_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
@@ -188,18 +188,18 @@ ${PIP3} --version
 ${PIP3} install wheel # setuptools
 echo "Installing PIP packages..."
 echo "  * little-brother-0.4.19.tar.gz"
-echo "  * python-base-app-0.2.35.tar.gz"
+echo "  * python-base-app-0.2.36.tar.gz"
 echo "  * some-flask-helpers-0.2.2.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --force-reinstall \
      ${LIB_DIR}/little-brother-0.4.19.tar.gz\
-     ${LIB_DIR}/python-base-app-0.2.35.tar.gz\
+     ${LIB_DIR}/python-base-app-0.2.36.tar.gz\
      ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
 
 
 echo "Removing installation file ${LIB_DIR}/little-brother-0.4.19.tar.gz..."
 rm ${LIB_DIR}/little-brother-0.4.19.tar.gz
-echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.35.tar.gz..."
-rm ${LIB_DIR}/python-base-app-0.2.35.tar.gz
+echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.36.tar.gz..."
+rm ${LIB_DIR}/python-base-app-0.2.36.tar.gz
 echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz..."
 rm ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
