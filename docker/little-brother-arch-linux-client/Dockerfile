@@ -28,7 +28,7 @@ ENV MASTER_HOST_URL=http://localhost:5555
 ENV MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN
 ENV RUNNING_IN_DOCKER=1
 RUN cd /tmp && \
-    curl -L /${BRANCH}.zip -o /tmp/repo.zip && \
+    curl -L ${REPO_DOWNLOAD_BASE_URL}/little_brother-${BRANCH}.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
     /tmp/little_brother-${BRANCH}/bin/generic-install.sh

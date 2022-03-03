@@ -13,16 +13,25 @@ This page will outline how to do this.
 
 Install the following Linux packages. Note that the exact names may differ in your distribution.
 
-| Debian Package     | CentOS Package        | SuSe Package |
+python3,
+ python3-pip,
+ python3-dev,
+ libsasl2-dev,
+ libldap2-dev,
+ libssl-dev,
+
+| Debian Package     | CentOS Package        | Arch Linux Package |
 | ------------------ | --------------------- | ------------ |
 |   `python3`        | `python3`             | TODO         |
 |   `python3-pip`    | `python3-pip`         | TODO         |
-|   `python-dev`     | `python2-devel`       | TODO         |
 |   `python3-dev`    | `python3-devel`       | TODO         |
 |   `sudo`           | `sudo`                | TODO         |
 |   `gcc`            | `gcc`                 | TODO         |
 |   `procps`         | `procps-ng`           | TODO         |
 |   `virtualenv`     | `python3-virtualenv`  | TODO         |
+|   `libsasl2-dev`   | TODO
+|   `libldap2-dev`   | TODO
+|   `libssl-dev`     | TODO 
 
 ## Installation Steps
 

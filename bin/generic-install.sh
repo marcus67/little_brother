@@ -38,8 +38,6 @@ ROOT_DIR=
 SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
 INSTALL_BASE_DIR=$(realpath $SCRIPT_DIR/..)
 BIN_DIR=${INSTALL_BASE_DIR}/bin
-PIP3=${LIB_DIR}/pip3.sh
-chmod +x ${PIP3}
 
 
 
@@ -55,6 +53,7 @@ if [ ! "$EUID" == "0" ] ; then
 fi
 
 PIP3=${SCRIPT_DIR}/pip3.sh
+chmod +x ${PIP3}
 echo "Downloading Pip packages to $LIB_DIR..."
 ${PIP3} download -d $LIB_DIR --no-deps little_brother==0.4.20
 

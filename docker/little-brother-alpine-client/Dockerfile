@@ -17,17 +17,19 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ARG TAG
 ARG DOCKER_REGISTRY_ORG_UNIT
-ARG BRANCH
 FROM $DOCKER_REGISTRY_ORG_UNIT/little-brother-alpine-base:$TAG
+ARG BRANCH
+ARG REPO_DOWNLOAD_BASE_URL
+ARG TEST_PYPI_EXTRA_INDEX
 LABEL maintainer="marcus.rickert@web.de"
 ENV MASTER_HOST_URL=http://localhost:5555
 ENV MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN
 ENV RUNNING_IN_DOCKER=1
 RUN cd /tmp && \
-    curl -L https://github.com/marcus67/little_brother/archive/refs/heads/${BRANCH}.zip -o /tmp/repo.zip && \
+    curl -L $REPO_DOWNLOAD_BASE_URL/little_brother-$BRANCH.zip -o /tmp/repo.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
-    /tmp/little_brother-${BRANCH}/bin/generic-install.sh
+    /tmp/little_brother-*/bin/generic-install.sh
 COPY assets/entrypoint.sh /entrypoint.sh
 COPY assets/little-brother.config /etc
 ENTRYPOINT ["/entrypoint.sh"]

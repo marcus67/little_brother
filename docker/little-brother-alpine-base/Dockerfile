@@ -23,7 +23,8 @@
 FROM alpine:latest
 LABEL maintainer="marcus.rickert@web.de"
 RUN apk update && \
-    apk add  python3 \
+    apk add  bash \
+             python3 \
              python3-dev \
              py3-pip \
              py3-virtualenv \
