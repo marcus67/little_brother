@@ -133,9 +133,10 @@ workflows:
                 only:
                   - master
                   - release
-        - docker:
+        - docker
             requires:
               - build
+              - publish_pypi
         - build_pypi
         - install_pypi:
             requires:
@@ -143,7 +144,6 @@ workflows:
         - publish_pypi:
             requires:
               - install_pypi
-              - docker
             filters:
               branches:
                 only:

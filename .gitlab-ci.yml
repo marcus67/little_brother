@@ -28,8 +28,8 @@ stages:
   - build
   - install_and_check
   - analyze
-  - deploy
   - publish
+  - deploy
   
 build_debian:
   image: marcusrickert/docker-python-app:latest
@@ -101,6 +101,11 @@ analyze:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
+publish_pypi:
+  image: marcusrickert/docker-python-app:latest
+  stage: publish
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
 docker:
   image: marcusrickert/docker-docker-ci:release-0.9.1
   stage: deploy
@@ -109,9 +114,3 @@ docker:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-
-publish_pypi:
-  image: marcusrickert/docker-python-app:latest
-  stage: publish
-  script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
