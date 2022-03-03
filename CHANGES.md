@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.20 Revision 122 (March 3rd, 2022)
+
+* Configuration for Docker images based on Arch Linux and Alpine
+* Use of corrected `generic-install.sh`
+
 ## Version 0.4.19 Revision 121 (February 13th, 2022)
 
 * Upgrade to `python_base_app` version 0.2.36 (lots of trouble releasing `python_base_app`)

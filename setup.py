@@ -62,11 +62,13 @@ extended_setup_params = {
     "docker_registry_user": "marcusrickert",
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
     "docker_contexts": [ ('little-brother-base', False),
-                         #'docker/little-brother-master',
                          ('little-brother-client', True),
                          ('little-brother-ubuntu-base', False),
-                         # 'docker/little-brother-master',
                          ('little-brother-ubuntu-client', True),
+                         ('little-brother-arch-linux-base', False),
+                         ('little-brother-arch-linux-client', True),
+                         ('little-brother-alpine-base', False),
+                         ('little-brother-alpine-client', True),
                          ],
 
     # additional setup configuration used by CI stages
