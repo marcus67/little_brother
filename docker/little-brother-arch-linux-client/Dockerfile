@@ -18,17 +18,17 @@
 
 # http://gitlab.docker/mr/little_brother/-/archive/master/little_brother-master.zip
 
-ARG TAG
-ARG BRANCH
 ARG DOCKER_REGISTRY_ORG_UNIT
-ARG REPO_DOWNLOAD_BASE_URL
+ARG TAG
 FROM $DOCKER_REGISTRY_ORG_UNIT/little-brother-arch-linux-base:$TAG
+ARG BRANCH
+ARG REPO_DOWNLOAD_BASE_URL
+ARG TEST_PYPI_EXTRA_INDEX
 LABEL maintainer="marcus.rickert@web.de"
 ENV MASTER_HOST_URL=http://localhost:5555
 ENV MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN
 ENV RUNNING_IN_DOCKER=1
-RUN cd /tmp && \
-    curl -L ${REPO_DOWNLOAD_BASE_URL}/little_brother-${BRANCH}.zip -o /tmp/repo.zip && \
+RUN curl -L ${REPO_DOWNLOAD_BASE_URL}/little_brother-${BRANCH}.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
     /tmp/little_brother-${BRANCH}/bin/generic-install.sh

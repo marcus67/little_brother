@@ -28,8 +28,6 @@ RUN pacman -Sy && \
                python-virtualenv \
                cmake \
                gcc \
-               libsasl \
-               libldap \
                curl \
                unzip \
                --noconfirm && \

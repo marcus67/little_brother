@@ -13,25 +13,20 @@ This page will outline how to do this.
 
 Install the following Linux packages. Note that the exact names may differ in your distribution.
 
-python3,
- python3-pip,
- python3-dev,
- libsasl2-dev,
- libldap2-dev,
- libssl-dev,
-
-| Debian Package     | CentOS Package        | Arch Linux Package |
-| ------------------ | --------------------- | ------------ |
-|   `python3`        | `python3`             | TODO         |
-|   `python3-pip`    | `python3-pip`         | TODO         |
-|   `python3-dev`    | `python3-devel`       | TODO         |
-|   `sudo`           | `sudo`                | TODO         |
-|   `gcc`            | `gcc`                 | TODO         |
-|   `procps`         | `procps-ng`           | TODO         |
-|   `virtualenv`     | `python3-virtualenv`  | TODO         |
-|   `libsasl2-dev`   | TODO
-|   `libldap2-dev`   | TODO
-|   `libssl-dev`     | TODO 
+| Debian Package           | CentOS Package            | Arch Linux Package   |
+|--------------------------|-----------------------    |----------------------|
+|   `python3`              | `python3`                 | `python3`            |
+|   `python3-pip`          | `python3-pip`             | `python-pip`         |
+|   `python3-dev`          | `python3-devel`           | not required         |
+|   `sudo` (master only)   | `sudo`  (master only)     | TODO                 |
+|   `procps` (master only) | `procps-ng` (master only) | TODO                 |
+|   `virtualenv`           | `python3-virtualenv`      | `python-virtualenv`  |
+|   `libsasl2-dev`         | TODO                      | not required         |
+|   `libldap2-dev`         | TODO                      | not required         |
+|   `libssl-dev`           | TODO                      | not required         |
+|                          |                           | `curl`               |
+|                          |                           | `unzip`              |
+|                          |                           | `gcc`                |
 
 ## Installation Steps
 

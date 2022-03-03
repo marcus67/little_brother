@@ -87,10 +87,12 @@ else
   echo "Package some-flask-helpers-0.2.2.tar.gz was found."
 fi
 
-mkdir -p ${SYSTEMD_DIR}
-cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
-echo "Execute systemctl daemon-reload..."
-systemctl daemon-reload
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  mkdir -p ${SYSTEMD_DIR}
+  cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
+  echo "Execute systemctl daemon-reload..."
+  systemctl daemon-reload
+fi
 mkdir -p ${SUDOERS_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.sudo ${SUDOERS_DIR}/little-brother
 mkdir -p ${APPARMOR_DIR}
@@ -197,7 +199,6 @@ chmod -R og-rwx ${SPOOL_DIR}
 echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
 chmod og-rwx /etc/little-brother/little-brother.config
 
-${PIP3} --version
 ${PIP3} install wheel # setuptools
 echo "Installing PIP packages..."
 echo "  * little-brother-0.4.20.tar.gz"
