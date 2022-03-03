@@ -175,9 +175,10 @@ chown -R little-brother.little-brother ${LIB_DIR}
 
 echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
 chown little-brother.little-brother /etc/little-brother/little-brother.config
-echo "    * ${SYSTEMD_DIR}/little-brother.service"
-chown root.root ${SYSTEMD_DIR}/little-brother.service
-
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  echo "    * ${SYSTEMD_DIR}/little-brother.service"
+  chown root.root ${SYSTEMD_DIR}/little-brother.service
+fi
 echo "    * ${SUDOERS_DIR}"
 chown root.root ${SUDOERS_DIR}
 echo "    * ${SUDOERS_DIR}/little-brother"
