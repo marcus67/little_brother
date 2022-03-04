@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -22,6 +22,84 @@
 # Please, beware that this file has been generated! Do not make any changes here #
 # but only to python_base_app/templates/debian_postinst.template.sh!             #
 ##################################################################################
+
+##################################################################################
+# PARAMETERS                                                                     #
+##################################################################################
+# When set, will deactivate portions that are not applicable to Docker containers
+RUNNING_IN_DOCKER=${RUNNING_IN_DOCKER:-}
+
+# When set, contains an extra PIP index to download from
+TEST_PYPI_EXTRA_INDEX=${TEST_PYPI_EXTRA_INDEX:-https://github.com/marcus67/little_brother/archive/refs/heads}
+
+# When set, will create application user with a specific user id
+APP_UID=${APP_UID:-}
+
+# When set, will create application group with a specific group id
+APP_GID=${APP_UID:-}
+
+##################################################################################
+
+if [ -f /etc/os-release ] ; then
+  . /etc/os-release
+else
+  echo "Cannot read /etc/os-release!"
+  exit 2
+fi
+
+echo "Detected operating system architecture '${ID}'."
+
+function add_group() {
+  group_name=$1
+  group_id=$2
+
+  if [ "$ID" == "alpine" ] ; then
+    if [ "${group_id}" == "" ] ; then
+      addgroup ${group_name}
+    else
+      addgroup -g ${group_id} ${group_name}
+    fi
+  else
+    if [ "${group_id}" == "" ] ; then
+      groupadd little-brother
+    else
+      groupadd --gid ${group_id} ${group_name}
+    fi
+
+  fi
+}
+
+function add_user() {
+  user_name=$1
+  group_name=$2
+  user_id=$3
+
+  if [ "$ID" == "alpine" ] ; then
+    if  [ "${user_id}" == "" ] ; then
+        adduser -G ${group_name} -g "" -H -D ${user_name}
+    else
+        adduser -G ${group_name} -u ${user_id} -g "" -H -D ${user_name}
+    fi
+  else
+    if  [ "${user_id}" == "" ] ; then
+        useradd --gid ${group_name} --no-create-home ${user_name}
+    else
+        useradd --gid ${group_name} --uid ${user_id} --no-create-home ${user_name}
+    fi
+  fi
+
+}
+
+function add_user_to_group() {
+  user_name=$1
+  group_name=$2
+
+  if [ "$ID" == "alpine" ] ; then
+    adduser ${user_name} ${group_name}
+  else
+    usermod -aG ${group_name} ${user_name}
+  fi
+}
 
 
 ETC_DIR=/etc/little-brother
@@ -114,26 +192,16 @@ if grep -q 'little-brother:' /etc/group ; then
     echo "Group 'little-brother' already exists. Skipping group creation."
 else
     #echo "Adding group 'little-brother'..."
-    if [ "${APP_GID}" == "" ] ; then
-        groupadd little-brother
-    else
-	      groupadd --gid ${APP_GID} little-brother
-    fi
+    add_group little-brother ${APP_GID}
 fi
 if grep -q 'little-brother:' /etc/passwd ; then
     echo "User 'little-brother' already exists. Skipping user creation."
 else
-    if  [ "${APP_UID}" == "" ] ; then
-#        adduser --gid little-brother --gecos "" --no-create-home --disabled-password little-brother
-        useradd --gid little-brother --no-create-home little-brother
-    else
-#        adduser --gid little-brother --uid ${APP_UID} --gecos "" --no-create-home --disabled-password little-brother
-        useradd --gid little-brother --uid ${APP_UID} --no-create-home little-brother
-    fi
+    add_user little-brother little-brother ${APP_UID}
 fi
 
 set -e
-usermod -aG audio little-brother
+  add_user_to_group little-brother audio
 
 
 echo "Creating directories..."
@@ -206,7 +274,7 @@ echo "  * little-brother-0.4.20.tar.gz"
 echo "  * python-base-app-0.2.37.tar.gz"
 echo "  * some-flask-helpers-0.2.2.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
-${PIP3} install --upgrade --force-reinstall \
+${PIP3} install --upgrade \
      ${LIB_DIR}/little-brother-0.4.20.tar.gz\
      ${LIB_DIR}/python-base-app-0.2.37.tar.gz\
      ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz

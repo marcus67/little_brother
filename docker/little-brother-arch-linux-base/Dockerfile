@@ -23,7 +23,8 @@
 FROM archlinux:base
 LABEL maintainer="marcus.rickert@web.de"
 RUN pacman -Sy && \
-    pacman -S  python3 \
+    pacman -S  sudo \
+               python3 \
                python-pip \
                python-virtualenv \
                cmake \

@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 ARG TAG
 ARG DOCKER_REGISTRY_ORG_UNIT
 FROM $DOCKER_REGISTRY_ORG_UNIT/little-brother-alpine-base:$TAG
@@ -25,8 +26,7 @@ LABEL maintainer="marcus.rickert@web.de"
 ENV MASTER_HOST_URL=http://localhost:5555
 ENV MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN
 ENV RUNNING_IN_DOCKER=1
-RUN cd /tmp && \
-    curl -L $REPO_DOWNLOAD_BASE_URL/little_brother-$BRANCH.zip -o /tmp/repo.zip -o /tmp/repo.zip && \
+RUN curl -L ${REPO_DOWNLOAD_BASE_URL}${BRANCH}.zip -o /tmp/repo.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
     /tmp/little_brother-*/bin/generic-install.sh

@@ -13,20 +13,23 @@ This page will outline how to do this.
 
 Install the following Linux packages. Note that the exact names may differ in your distribution.
 
-| Debian Package           | CentOS Package            | Arch Linux Package   |
-|--------------------------|-----------------------    |----------------------|
-|   `python3`              | `python3`                 | `python3`            |
-|   `python3-pip`          | `python3-pip`             | `python-pip`         |
-|   `python3-dev`          | `python3-devel`           | not required         |
-|   `sudo` (master only)   | `sudo`  (master only)     | TODO                 |
-|   `procps` (master only) | `procps-ng` (master only) | TODO                 |
-|   `virtualenv`           | `python3-virtualenv`      | `python-virtualenv`  |
-|   `libsasl2-dev`         | TODO                      | not required         |
-|   `libldap2-dev`         | TODO                      | not required         |
-|   `libssl-dev`           | TODO                      | not required         |
-|                          |                           | `curl`               |
-|                          |                           | `unzip`              |
-|                          |                           | `gcc`                |
+| Debian Package           | CentOS Package            | Arch Linux Package   | Alpine package        |
+|--------------------------|-------------------------- |----------------------|-----------------------|
+|   preinstalled           | preinstalled              | preinstalled         | `bash`                |
+|   `python3`              | `python3`                 | `python3`            | `python3`             |
+|   `python3-pip`          | `python3-pip`             | `python-pip`         | `py3-pip`             |
+|   `python3-dev`          | `python3-devel`           | not required         | `python3-devel`       |
+|   `sudo`                 | `sudo`                    | `sudo`               | `sudo`                |
+|   `procps` (master only) | `procps-ng` (master only) | TODO                 | TODO                  |
+|   `virtualenv`           | `python3-virtualenv`      | `python-virtualenv`  | `py3-virtualenv`      |
+|   `libsasl2-dev`         | TODO                      | not required         | `libsasl`             |
+|   not required           | TODO                      | not required         | `libldap=2.5.58`      |
+|   not required           | TODO                      | not required         | `libldapcpp=2.5.58`   |
+|   `libldap2-dev`         | TODO                      | not required         | `openldap-dev=2.5.58` |
+|   not required           | TODO                      | not required         | `libffi-dev`          |
+|   `libssl-dev`           | TODO                      | not required         | not required          |
+|   not required           | TODO                      | `curl`               | `curl`                |
+|   not required           | TODO                      | `gcc`                | `gcc`                 |
 
 ## Installation Steps
 
