@@ -8,6 +8,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 * Configuration for Docker images based on Arch Linux and Alpine
 * Use of corrected `generic-install.sh`
+* Closes #170, see [here](https://github.com/marcus67/little_brother/issues/170)
 
 ## Version 0.4.19 Revision 121 (February 13th, 2022)
 
