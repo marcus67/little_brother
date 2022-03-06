@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.22 Revision 123 (March 6th, 2022)
+
+* Deactivate Arch Linux Docker image due to incompatibility of `glibc`
+
 ## Version 0.4.21 Revision 123 (March 6th, 2022)
 
 * Update documentation on generic installation script

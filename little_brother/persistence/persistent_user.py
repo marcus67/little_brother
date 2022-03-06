@@ -38,6 +38,7 @@ class User(Base, BaseEntity):
     id = Column(Integer, primary_key=True)
     process_name_pattern = Column(String(256))
     prohibited_process_name_pattern = Column(String(4096))
+    inactivity_process_name_pattern = Column(String(4096))
     username = Column(String(256))
     first_name = Column(String(256))
     last_name = Column(String(256))
@@ -84,6 +85,7 @@ class User(Base, BaseEntity):
 
         self.process_name_pattern = None
         self.prohibited_process_name_pattern = None
+        self.inactivity_process_name_pattern = None
         self.username = "willi"
         self.first_name = "Willi"
         self.last_name = "Wusel"
@@ -167,6 +169,17 @@ class User(Base, BaseEntity):
                                                  p_check_path_component=False)
 
         return self._regex_prohibited_process_name_pattern
+
+    @property
+    def regex_inactivity_process_name_pattern(self):
+
+
+        if self._regex_inactivity_process_name_pattern is None and self.inactivity_process_name_pattern is not None:
+            self._regex_inactivity_process_name_pattern = \
+                self.get_regex_from_pattern_list(p_pattern_list=self.inactivity_process_name_pattern,
+                                                 p_check_path_component=False)
+
+        return self._regex_inactivity_process_name_pattern
 
 
     @property
