@@ -30,12 +30,14 @@
 RUNNING_IN_DOCKER=${RUNNING_IN_DOCKER:-}
 
 # When set, contains an extra PIP index to download from
-TEST_PYPI_EXTRA_INDEX=${TEST_PYPI_EXTRA_INDEX:-https://github.com/marcus67/little_brother/archive/refs/heads}
+# This will be required when trying to install the version of the `master` branch since the required PIP packages
+# may not be available ot pypi.org yet. In this case, add the extra index https://test.pypi.org/simple/
+TEST_PYPI_EXTRA_INDEX=${TEST_PYPI_EXTRA_INDEX:-}
 
-# When set, will create application user with a specific user id
+# When set, will create the application user with a specific user id
 APP_UID=${APP_UID:-}
 
-# When set, will create application group with a specific group id
+# When set, will create the application group with a specific group id
 APP_GID=${APP_UID:-}
 
 ##################################################################################
@@ -135,7 +137,7 @@ fi
 PIP3=${SCRIPT_DIR}/pip3.sh
 chmod +x ${PIP3}
 echo "Downloading Pip packages to $LIB_DIR..."
-${PIP3} download -d $LIB_DIR --no-deps little_brother==0.4.20
+${PIP3} download -d $LIB_DIR --no-deps little_brother==0.4.21
 
 ${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.2.37
 
@@ -143,12 +145,12 @@ ${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.2
 
 
 echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
-if [ ! -f $LIB_DIR/little-brother-0.4.20.tar.gz ] ; then
-  echo "ERROR: package little-brother-0.4.20.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/little-brother-0.4.21.tar.gz ] ; then
+  echo "ERROR: package little-brother-0.4.21.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package little-brother-0.4.20.tar.gz was found."
+  echo "Package little-brother-0.4.21.tar.gz was found."
 fi
 
 if [ ! -f $LIB_DIR/python-base-app-0.2.37.tar.gz ] ; then
@@ -274,18 +276,18 @@ chmod og-rwx /etc/little-brother/little-brother.config
 
 ${PIP3} install wheel # setuptools
 echo "Installing PIP packages..."
-echo "  * little-brother-0.4.20.tar.gz"
+echo "  * little-brother-0.4.21.tar.gz"
 echo "  * python-base-app-0.2.37.tar.gz"
 echo "  * some-flask-helpers-0.2.2.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade \
-     ${LIB_DIR}/little-brother-0.4.20.tar.gz\
+     ${LIB_DIR}/little-brother-0.4.21.tar.gz\
      ${LIB_DIR}/python-base-app-0.2.37.tar.gz\
      ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
 
 
-echo "Removing installation file ${LIB_DIR}/little-brother-0.4.20.tar.gz..."
-rm ${LIB_DIR}/little-brother-0.4.20.tar.gz
+echo "Removing installation file ${LIB_DIR}/little-brother-0.4.21.tar.gz..."
+rm ${LIB_DIR}/little-brother-0.4.21.tar.gz
 echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.37.tar.gz..."
 rm ${LIB_DIR}/python-base-app-0.2.37.tar.gz
 echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz..."

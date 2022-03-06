@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.21 Revision 123 (March 6th, 2022)
+
+* Update documentation on generic installation script
+* Update documentation on distributions
+* Re-activate the build of all Docker images
+
 ## Version 0.4.20 Revision 122 (March 3rd, 2022)
 
 * Configuration for Docker images based on Arch Linux and Alpine

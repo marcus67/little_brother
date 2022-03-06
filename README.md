@@ -159,15 +159,17 @@ So far, `LittleBrother` has only been released as a Debian package. For other no
 there is some basic support using a generic installation script. 
 See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
-| Distribution | Version       | Architecture | Comments                                                               | Most Recent Test |
-| ------------ | ------------- | ------------ | ---------------------------------------------------------------------- | ---------------- |
-| Ubuntu       | 20.04         | amd64        |                                                                        | 28.JAN.2022      |
-| Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop             | 28.JAN.2022      |
-| Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
-| Debian       | buster        | amd64        | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
-| Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop              | 05.MAR.2020      |
-| Mint         | 19            | amd64        |                                                                        | 03.JAN.2020      |
-| Debian       | stretch       | armv6l       |                                                                        | 23.MAY.2020      |
+| Distribution | Version       | Architecture | Comments                                                                                                                                                     | Most Recent Test |
+| ------------ | ------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
+| Ubuntu       | 20.04         | amd64        | This version is used as base image for the [Ubuntu Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-ubuntu-client)        | 28.JAN.2022      |
+| Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop                                                                                                   | 06.MAR.2022      |
+| Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53)                                                                                       | 03.JUN.2019      |
+| Debian       | buster        | amd64        | The version `buster-slim` is used as base image for the [Debian Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-client)  | 01.JAN.2020      |
+| Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop                                                                                                    | 05.MAR.2020      |
+| Mint         | 19            | amd64        |                                                                                                                                                              | 03.JAN.2020      |
+| Arch Linux   |               | amd64        | See https://aur.archlinux.org/packages/little-brother                                                                                                        | 06.MAR.2022      |
+| Debian       | stretch       | armv6l       |                                                                                                                                                              | 23.MAY.2020      |
+| Alpine       | v3.13         | amd64        | This distribution is used as base image for the [Alpine Docker Image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-alpine-client)   | 06.MAR.2022      |
 
 ## Quick Install (Snap)
 
