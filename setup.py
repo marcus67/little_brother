@@ -67,7 +67,6 @@ extended_setup_params = {
                          ('little-brother-ubuntu-client', True),
                          ('little-brother-arch-linux-base', False),
                          ('little-brother-arch-linux-client', True),
-                         ('little-brother-alpine-base', False),
                          ('little-brother-alpine-client', True),
                          ],
 
