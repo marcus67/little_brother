@@ -9,12 +9,14 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Update documentation on generic installation script
 * Update documentation on distributions
 * Re-activate the build of all Docker images
+* Upgrade to `python_base_app` version 0.2.38
 
 ## Version 0.4.20 Revision 122 (March 3rd, 2022)
 
 * Configuration for Docker images based on Arch Linux and Alpine
 * Use of corrected `generic-install.sh`
 * Closes #170, see [here](https://github.com/marcus67/little_brother/issues/170)
+* Upgrade to `python_base_app` version 0.2.37
 
 ## Version 0.4.19 Revision 121 (February 13th, 2022)
 
