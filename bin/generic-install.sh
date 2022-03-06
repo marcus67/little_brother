@@ -101,12 +101,14 @@ function add_user_to_group() {
   fi
 }
 
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+export VIRTUAL_ENV_DIR=/var/lib/little-brother/virtualenv
+fi
 
 ETC_DIR=/etc/little-brother
 LOG_DIR=/var/log/little-brother
 SPOOL_DIR=/var/spool/little-brother
 LIB_DIR=/var/lib/little-brother
-VIRTUAL_ENV_DIR=/var/lib/little-brother/virtualenv
 SYSTEMD_DIR=/lib/systemd/system
 TMPFILE_DIR=/usr/lib/tmpfiles.d
 SUDOERS_DIR=/etc/sudoers.d
@@ -168,8 +170,6 @@ fi
 if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   mkdir -p ${SYSTEMD_DIR}
   cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
-  echo "Execute systemctl daemon-reload..."
-  systemctl daemon-reload
 fi
 mkdir -p ${SUDOERS_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.sudo ${SUDOERS_DIR}/little-brother
@@ -220,6 +220,7 @@ else
   cp -f /etc/little-brother/master.config /etc/little-brother/little-brother.config
 fi
 
+if [ "${VIRTUAL_ENV_DIR}" != "" ] ; then
 
 echo "Creating symbolic link /usr/local/bin/run_little_brother.py --> ${VIRTUAL_ENV_DIR}/bin/run_little_brother.py..."
 ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother.py /usr/local/bin/run_little_brother.py
@@ -229,6 +230,9 @@ ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother_test_suite.py /usr/local/bin/ru
 echo "Creating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
 
 virtualenv -p /usr/bin/python3 ${VIRTUAL_ENV_DIR}
+echo "Activating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
+. ${VIRTUAL_ENV_DIR}/bin/activate
+fi
 
 echo "Setting ownership..."
 echo "    * little-brother.little-brother ${ETC_DIR}"
@@ -243,10 +247,10 @@ chown -R little-brother.little-brother ${LIB_DIR}
 
 echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
 chown little-brother.little-brother /etc/little-brother/little-brother.config
-if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   echo "    * ${SYSTEMD_DIR}/little-brother.service"
   chown root.root ${SYSTEMD_DIR}/little-brother.service
-fi
+  fi
 echo "    * ${SUDOERS_DIR}"
 chown root.root ${SUDOERS_DIR}
 echo "    * ${SUDOERS_DIR}/little-brother"
@@ -286,3 +290,9 @@ echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.37.tar.gz..."
 rm ${LIB_DIR}/python-base-app-0.2.37.tar.gz
 echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz..."
 rm ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  echo "Execute systemctl daemon-reload..."
+  set +e
+  systemctl daemon-reload
+  set -e
+fi
