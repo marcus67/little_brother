@@ -133,7 +133,7 @@ workflows:
                 only:
                   - master
                   - release
-        - docker
+        - docker:
             requires:
               - build
               - publish_pypi
