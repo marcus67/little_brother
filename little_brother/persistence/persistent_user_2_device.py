@@ -35,6 +35,7 @@ class User2Device(Base, BaseEntity):
     id = Column(Integer, primary_key=True)
     active = Column(Boolean)
     percent = Column(Integer)
+    blockable = Column(Boolean, default=False)
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="devices", lazy="joined")

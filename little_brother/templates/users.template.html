@@ -292,14 +292,16 @@
 									<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW dense-font">
 										<DIV CLASS="col-xs-1 "></DIV>
 										<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  localetext">{{_('Monitored')}}</DIV>
+										<DIV CLASS="col-xs-3  col-sm-2  col-md-2  col-lg-2  localetext">{{_('Blockable')}}</DIV>
 										<DIV CLASS="col-xs-3  col-sm-2  col-md-1  col-lg-1  localetext">{{_('Percent')}}</DIV>
-										<DIV CLASS="col-xs-5  col-sm-2  col-md-8  col-lg-8  text-right"></DIV>
+										<DIV CLASS="col-xs-2  col-sm-5  col-md-6  col-lg-6  text-right"></DIV>
 									</DIV>
 									<DIV CLASS="row ALTERNATE2_ROWLEVEL_3">
 										<DIV CLASS="col-xs-1 "></DIV>
 										<DIV CLASS="col-xs-3  col-sm-2  col-md-2 col-lg-2  ">{{ helper.render_field(forms[user2device.html_key].active) }}</DIV>
+										<DIV CLASS="col-xs-3  col-sm-2  col-md-2 col-lg-2  ">{{ helper.render_field(forms[user2device.html_key].blockable) }}</DIV>
 										<DIV CLASS="col-xs-3  col-sm-2  col-md-1 col-lg-1  ">{{ helper.render_field(forms[user2device.html_key].percent) }}</DIV>
-										<DIV CLASS="col-xs-5  col-sm-7  col-md-8 col-lg-8 text-right ">
+										<DIV CLASS="col-xs-2  col-sm-5  col-md-6 col-lg-6 text-right ">
 											<BUTTON type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
 										</DIV>
 									</DIV>

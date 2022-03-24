@@ -114,3 +114,4 @@ def create_rulesets_form(prefix, p_localized_context_details, p_context_choices,
 class User2DeviceForm(custom_form.ModelForm):
     percent = wtforms.IntegerField("Percent", validators=[wtforms.validators.NumberRange(min=1, max=100)])
     active = custom_fields.BooleanField("Active")
+    blockable = custom_fields.BooleanField("Blockable")

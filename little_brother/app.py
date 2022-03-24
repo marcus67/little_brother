@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os.path
+from typing import Optional
 
 import alembic.config
 import alembic.util.messaging
@@ -36,6 +37,13 @@ from little_brother.api.version_checker import VersionChecker
 from little_brother.api.version_checker import VersionCheckerConfigModel, \
     SECTION_NAME as VERSION_CHECKER_SECTION_NAME, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
+from little_brother.devices.device_activation_manager import DeviceActivationManager
+from little_brother.devices.device_activation_manager_config_model import DeviceActivationManagerConfigModel, \
+    SECTION_NAME as DEVICE_ACTIVATION_MANAGER_SECTION_NAME
+from little_brother.devices.firewall_device_activation_handler import FirewallDeviceActivationHandler
+from little_brother.devices.firewall_handler import FirewallHandler
+from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, \
+    SECTION_NAME as FIREWALL_HANDLER_SECTION_NAME
 from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
@@ -107,10 +115,12 @@ class App(base_app.BaseApp):
         self._master_connector = None
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
-        self._prometheus_client : PrometheusClient = None
+        self._prometheus_client : Optional[PrometheusClient] = None
         self._user_handler = None
         self._locale_helper = None
         self._pinger = None
+        self._firewall_handler : Optional[FirewallHandler] = None
+        self._device_activation_manager : Optional[DeviceActivationManager] = None
 
     def prepare_configuration(self, p_configuration):
 
@@ -166,6 +176,12 @@ class App(base_app.BaseApp):
 
         version_checker_section = VersionCheckerConfigModel()
         p_configuration.add_section(version_checker_section)
+
+        firewall_handler_section = FirewallHandlerConfigModel()
+        p_configuration.add_section(firewall_handler_section)
+
+        device_activation_manager_section = DeviceActivationManagerConfigModel()
+        p_configuration.add_section(device_activation_manager_section)
 
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
@@ -387,6 +403,28 @@ class App(base_app.BaseApp):
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
+
+
+
+        device_activation_manager_config : DeviceActivationManagerConfigModel = \
+            self._config[DEVICE_ACTIVATION_MANAGER_SECTION_NAME]
+
+        self._device_activation_manager = DeviceActivationManager(p_config=device_activation_manager_config)
+
+        firewall_handler_config : FirewallHandlerConfigModel = self._config[FIREWALL_HANDLER_SECTION_NAME]
+
+        if firewall_handler_config.is_active():
+            self._firewall_handler = FirewallHandler(p_config=firewall_handler_config)
+            dependency_injection.container[FirewallHandler] = self._firewall_handler
+
+            firewall_device_activation_handler = FirewallDeviceActivationHandler()
+            self._device_activation_manager.add_handler(firewall_device_activation_handler)
+
+        task = self._device_activation_manager.get_recurring_task()
+
+        if task is not None:
+            self.add_recurring_task(p_recurring_task=task)
+
 
     def run_special_commands(self, p_arguments):
 
