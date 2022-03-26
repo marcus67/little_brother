@@ -15,18 +15,19 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from python_base_app import configuration
-
-SECTION_NAME = "DeviceActivationManager"
-DEFAULT_CHECK_INTERVAL = 60
+def key(p_source, p_destination):
+    return p_source + "|" + p_destination
 
 
-class DeviceActivationManagerConfigModel(configuration.ConfigModel):
+class FirewallEntry:
+
+    def key(self):
+        return key(p_source=self.source, p_destination=self.destination)
 
     def __init__(self):
-        super().__init__(p_section_name=SECTION_NAME)
 
-        self.check_interval: int = DEFAULT_CHECK_INTERVAL
-
-    def is_active(self):
-        return len(self.target_ip) > 0
+        self.index = None
+        self.target = None
+        self.source = None
+        self.destination = None
+        self.protocol = None

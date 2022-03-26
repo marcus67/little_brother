@@ -1,6 +1,6 @@
 #    Copyright (C) 2019  Marcus Rickert
 #
-#    See https://github.com/marcus67/little_brother
+#    See https://github.com/marcus67/python_base_app
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,6 +16,10 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-little-brother ALL=(root) NOPASSWD: /bin/kill *
-little-brother ALL=(root) NOPASSWD: /bin/launchctl *
-little-brother ALL=(root) NOPASSWD: /usr/sbin/iptables -n -L FORWARD --linenumbers
+from python_base_app.test import base_test
+
+
+class TestPytest(base_test.BaseTestCase):
+
+    def test_pytest(self):
+        self.execute_pytest()

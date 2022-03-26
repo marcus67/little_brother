@@ -55,21 +55,25 @@ class DeviceActivationManager(PersistenceDependencyInjectionMixIn):
             handler.set_usage_permission_for_device(p_device=p_device, p_usage_permitted=p_usage_permitted)
 
     def check_device_activation_status(self):
-        with SessionContext(p_persistence=self.persistence) as session_context:
-            for device in self.device_entity_manager.devices(p_session_context=session_context):
-                usage_permitted = True
+        try:
+            with SessionContext(p_persistence=self.persistence) as session_context:
+                for device in self.device_entity_manager.devices(p_session_context=session_context):
+                    usage_permitted = True
 
-                for user2device in device.users:
-                    if user2device.active and user2device.blockable and user2device.user.active:
-                        user_status = self.user_manager.get_current_user_status(
-                            p_session_context=session_context, p_username=user2device.user.username)
+                    for user2device in device.users:
+                        if user2device.active and user2device.blockable and user2device.user.active:
+                            user_status = self.user_manager.get_current_user_status(
+                                p_session_context=session_context, p_username=user2device.user.username)
 
-                        if user_status is not None and not user_status.activity_allowed:
-                            usage_permitted = False
-                            break
+                            if user_status is not None and not user_status.activity_allowed:
+                                usage_permitted = False
+                                break
 
-                self.set_usage_permission_status_for_device(p_device=device,
-                                                            p_usage_permitted=usage_permitted)
+                    self.set_usage_permission_status_for_device(p_device=device,
+                                                                p_usage_permitted=usage_permitted)
+
+        except Exception as e:
+            self._logger.error(f"Exception '{str(e)}' while checking device activation status")
 
     def get_recurring_task(self) -> Optional[RecurringTask]:
         if not self._handlers:

@@ -1,6 +1,8 @@
-#    Copyright (C) 2019  Marcus Rickert
+# -*- coding: utf-8 -*-
+
+#    Copyright (C) 2021-2022  Marcus Rickert
 #
-#    See https://github.com/marcus67/little_brother
+#    See https://github.com/marcus67/python_base_app
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,6 +18,8 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-little-brother ALL=(root) NOPASSWD: /bin/kill *
-little-brother ALL=(root) NOPASSWD: /bin/launchctl *
-little-brother ALL=(root) NOPASSWD: /usr/sbin/iptables -n -L FORWARD --linenumbers
+from little_brother.devices.firewall_entry import FirewallEntry
+
+def test_create_firewall_entry():
+
+    assert FirewallEntry() is not None
