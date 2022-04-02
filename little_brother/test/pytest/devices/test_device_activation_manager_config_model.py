@@ -1,6 +1,8 @@
-#    Copyright (C) 2019  Marcus Rickert
+# -*- coding: utf-8 -*-
+
+#    Copyright (C) 2021-2022  Marcus Rickert
 #
-#    See https://github.com/marcus67/python_base_app
+#    See https://github.com/marcus67/little_brother
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,13 +17,10 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-import os
 
-from python_base_app.test import base_test
+from little_brother.devices.device_activation_manager_config_model import DeviceActivationManagerConfigModel
 
-
-class TestPytest(base_test.BaseTestCase):
-
-    def test_pytest(self):
-        base_dir = os.path.dirname(__file__)
-        self.execute_pytest(p_base_dir=base_dir)
+def test_create_device_activation_manager_config_model():
+    config = DeviceActivationManagerConfigModel()
+    assert config is not None
+    assert config.check_interval is not None

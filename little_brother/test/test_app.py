@@ -76,7 +76,7 @@ class TestApp(base_test.BaseTestCase):
 
         self.assertIsNotNone(config)
 
-        self.assertEqual(14, len(configuration._sections))
+        self.assertEqual(16, len(configuration._sections))
 
     @classmethod
     def create_dummy_app(cls, p_logger):

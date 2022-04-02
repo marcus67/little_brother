@@ -476,6 +476,9 @@ class App(base_app.BaseApp):
         fmt = "Shutting down services -- START"
         self._logger.info(fmt)
 
+        if self._device_activation_manager is not None:
+            self._device_activation_manager.shutdown()
+
         if self._status_server is not None:
             self._status_server.stop_server()
             self._status_server.destroy()

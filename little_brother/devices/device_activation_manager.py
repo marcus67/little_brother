@@ -25,6 +25,7 @@ from little_brother.persistence.persistent_device import Device
 from little_brother.persistence.session_context import SessionContext
 from little_brother.user_manager import UserManager
 from python_base_app import log_handling
+from python_base_app import tools
 from python_base_app.base_app import RecurringTask
 
 
@@ -46,6 +47,9 @@ class DeviceActivationManager(PersistenceDependencyInjectionMixIn):
 
         return self._user_manager
 
+    def shutdown(self):
+        self._logger.info("Shutting down -> unblock all devices...")
+        self.check_device_activation_status(p_force_usage_permitted=True)
 
     def add_handler(self, p_handler: BaseDeviceActivationHandler):
         self._handlers.append(p_handler)
@@ -54,14 +58,16 @@ class DeviceActivationManager(PersistenceDependencyInjectionMixIn):
         for handler in self._handlers:
             handler.set_usage_permission_for_device(p_device=p_device, p_usage_permitted=p_usage_permitted)
 
-    def check_device_activation_status(self):
-        try:
-            with SessionContext(p_persistence=self.persistence) as session_context:
-                for device in self.device_entity_manager.devices(p_session_context=session_context):
-                    usage_permitted = True
+    def check_device_activation_status(self, p_force_usage_permitted=False):
+        with SessionContext(p_persistence=self.persistence) as session_context:
+            for device in self.device_entity_manager.devices(p_session_context=session_context):
+                usage_permitted = True
+                set_status = tools.is_valid_ip_address_or_dns_name(device.hostname)
 
+                if not p_force_usage_permitted:
                     for user2device in device.users:
                         if user2device.active and user2device.blockable and user2device.user.active:
+                            set_status = True
                             user_status = self.user_manager.get_current_user_status(
                                 p_session_context=session_context, p_username=user2device.user.username)
 
@@ -69,20 +75,20 @@ class DeviceActivationManager(PersistenceDependencyInjectionMixIn):
                                 usage_permitted = False
                                 break
 
+                if set_status:
                     self.set_usage_permission_status_for_device(p_device=device,
                                                                 p_usage_permitted=usage_permitted)
 
-        except Exception as e:
-            self._logger.error(f"Exception '{str(e)}' while checking device activation status")
 
     def get_recurring_task(self) -> Optional[RecurringTask]:
-        if not self._handlers:
+        if len(self._handlers) == 0:
             self._logger.info("No handlers for device activation registered.")
             return None
 
         task = RecurringTask(
             p_name="DeviceActivationManager.check_device_activation_status",
             p_handler_method=lambda: self.check_device_activation_status(),
-            p_interval=self._config.check_interval)
+            p_interval=self._config.check_interval,
+            p_ignore_exceptions=True)
 
         return task

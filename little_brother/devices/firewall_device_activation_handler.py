@@ -28,9 +28,8 @@ from python_base_app import tools
 class FirewallDeviceActivationHandler(BaseDeviceActivationHandler):
 
     def __init__(self):
-        self._firewall_handler : Optional[FirewallHandler] = None
+        self._firewall_handler: Optional[FirewallHandler] = None
         self._logger = log_handling.get_logger(self.__class__.__name__)
-
 
     @property
     def firewall_handler(self) -> FirewallHandler:
@@ -39,9 +38,8 @@ class FirewallDeviceActivationHandler(BaseDeviceActivationHandler):
 
         return self._firewall_handler
 
-
     def set_usage_permission_for_device(self, p_device: Device, p_usage_permitted: bool):
-        self._logger.info(f"Set usage permission for device '{p_device.device_name}' to {p_usage_permitted}")
+        self._logger.debug(f"Set usage permission for device '{p_device.device_name}' to {p_usage_permitted}")
 
         ip_address = tools.get_ip_address_by_dns_name(p_dns_name=p_device.hostname)
 

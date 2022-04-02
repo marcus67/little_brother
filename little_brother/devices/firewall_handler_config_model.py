@@ -18,6 +18,7 @@
 from typing import Optional
 
 from python_base_app import configuration
+from python_base_app.tools import PATTERN_IP_ADDRESS
 
 SECTION_NAME = "FirewallHandler"
 
@@ -25,18 +26,19 @@ DEFAULT_SUDO_COMMAND = "/usr/bin/sudo"
 DEFAULT_CHAIN = "FORWARD"
 DEFAULT_TARGET = "DROP"
 DEFAULT_PROTOCOL = "all"
+DEFAULT_CACHE_TTL = 300 # seconds
 
 DEFAULT_IPTABLES_LIST_FORWARD_COMMAND = "/usr/sbin/iptables -n --line-numbers  -L " + DEFAULT_CHAIN
 DEFAULT_IPTABLES_ADD_FORWARD_COMMAND_PATTERN = "iptables -I " + DEFAULT_CHAIN + " -p " + DEFAULT_PROTOCOL + " -j " + DEFAULT_TARGET + " -s {source_ip} -d {destination_ip}"
 DEFAULT_IPTABLES_REMOVE_FORWARD_COMMAND_PATTERN = "iptables -D " + DEFAULT_CHAIN + " {index}"
 DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN = \
-    r"^([0-9]+)\s+(\w+)\s+(\w+)\s+(\S+)\s+([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/[0-9]+\s+([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/[0-9]+.*?"
+    r"^([0-9]+)\s+(\w+)\s+(\w+)\s+(\S+)\s+(" + PATTERN_IP_ADDRESS + ")(/[0-9]+)?\s+(" + PATTERN_IP_ADDRESS + ")(/[0-9]+)?.*?"
 DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_INDEX_GROUP = 1
 DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_TARGET_GROUP = 2
 DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_PROTOCOL_GROUP = 3
 DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_OPTION_GROUP = 4
 DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_SOURCE_GROUP = 5
-DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_DESTINATION_GROUP = 6
+DEFAULT_IPTABLES_LIST_FORWARD_ENTRY_PATTERN_DESTINATION_GROUP = 7
 
 
 class FirewallHandlerConfigModel(configuration.ConfigModel):
@@ -45,6 +47,7 @@ class FirewallHandlerConfigModel(configuration.ConfigModel):
         super().__init__(p_section_name=SECTION_NAME)
 
         self.sudo_command = DEFAULT_SUDO_COMMAND
+        self.cache_ttl = DEFAULT_CACHE_TTL
 
         self.target_ip: Optional[list[str]] = [configuration.NONE_STRING]
 

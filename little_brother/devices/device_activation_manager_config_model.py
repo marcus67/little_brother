@@ -20,13 +20,9 @@ from python_base_app import configuration
 SECTION_NAME = "DeviceActivationManager"
 DEFAULT_CHECK_INTERVAL = 60
 
-
 class DeviceActivationManagerConfigModel(configuration.ConfigModel):
 
     def __init__(self):
         super().__init__(p_section_name=SECTION_NAME)
 
         self.check_interval: int = DEFAULT_CHECK_INTERVAL
-
-    def is_active(self):
-        return len(self.target_ip) > 0

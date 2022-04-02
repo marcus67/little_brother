@@ -34,7 +34,7 @@ http://localhost:PORT/PREFIX.
 
 ## Users and UIDs
 
-The default behavior of little brother is to retrieve user names and UIDs from the file `/etc/passwd` using standard
+The default behavior of little brother is to retrieve usernames and UIDs from the file `/etc/passwd` using standard
 Python libraries. All users in `/etc/passwd` are eligible to be monitored which match these additional criteria:
 
 *   the UID is between 500 and 65000,
@@ -65,9 +65,9 @@ The `USERNAME*` and `UID*` must match those on the slave hosts.
 
 ## Providing a Mapping between UIDs
 
-When using a master-slave setup the assumption is that UIDs on the master host and the slave hosts match. In this
+When using a master-slave set up the assumption is that UIDs on the master host and the slave hosts match. In this
 case no further configuration will be necessary. If, however, there are differences between master and slaves, it is
-possible to provide a mapping of the UIDs for the user names. This mapping is done for each group of hosts sharing
+possible to provide a mapping of the UIDs for the usernames. This mapping is done for each group of hosts sharing
 the same mapping by defining a `LoginMapping*` entry in the configuration file of the master host:
 
     [LoginMappingSomeServerGroup]
@@ -88,9 +88,9 @@ In the slave configuration the name of the server group has to be configured:
 ### Example
 
 In the example below there are two server groups with two slaves each: `AB` and `CD`. The blue boxes contain the
-local usernames ans UIDs on all servers. The green boxes contain the required configuration for `LittleBrother`.
+local usernames and UIDs on all servers. The green boxes contain the required configuration for `LittleBrother`.
 
-![Login Mappings](doc/login-mappings.png)
+![Login Mappings](doc/login-mappings.drawio.png)
 
 Note the following aspects:
 
@@ -109,7 +109,7 @@ options are configured in the master configuration file. See section `[LdapUserH
 `[UnixUserHandler]`. If at least one mandatory setting is missing `[UnixUserHandler]` will be used as a fallback. 
 
 All users/accounts in the administration group (setting `ldap_admin_group_name`) 
-will be able to login and have access to the restricted pages. The logged in user will be displayed in the 
+will be able to login and have access to the restricted pages. The logged-in user will be displayed in the 
 menu bar as shown below (`mr` in this case).
 
 ![MenubarLdapLogin](doc/menubar-ldap-login.png)
@@ -148,7 +148,7 @@ These settings can be removed. If they are still found a warning will be issued.
 ## Installation on a Slave Host (Client Server Mode)
 
 In addition to the master host any number of slave hosts may be configured. The assumption is that the users
-to be monitored have login permission to all those hosts and that the user names on all hosts match. In this
+to be monitored have login permission to all those hosts and that the usernames on all hosts match. In this
 case access times on all hosts are communicated to the master host and accumulated there. The master will
 apply the rule sets and determine which users have exceeded their access times. 
 
@@ -184,9 +184,9 @@ See [Docker](DOCKER.md) for details.
 ## Using a Full Fledged Database as Backend
 
 The default backend for `LittleBrother` is a Sqlite file oriented database. It works out of the box. If you prefer
-a more mature backend you can switch to a full fledged database such as MySQL or MariaDB. This is possible, since 
+a more mature backend you can switch to a full-fledged database such as MySQL or MariaDB. This is possible, since 
 the persistence uses the abstraction layer [SQLAlchemy](https://www.sqlalchemy.org/) which can be used with many 
-different database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
+database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
 
 **IMPORTANT NOTE**: The steps shown below only refer to the MASTER host. The slave(s) should ALWAYS use the simple
 sqlite backend no matter which kind of backend the master will use! This is due to the fact that the slaves never have
@@ -219,7 +219,7 @@ must be set as follows:
 | MariaDB     | `mysql+pymysql`      | 3306                |
 | PostgreSQL  | `postgresql`         | 5432                |
 
-Note that in revision 64 and above there is no default value for `database_user` anymore (is was `little_brother`).
+Note that in revision 64 and above there is no default value for `database_user` anymore. It was `little_brother`.
 The name has to be set explicitly now!
 
 ### Create the Database
@@ -323,7 +323,7 @@ We start out the same way by taking a look at the menu entry:
 
 ![Minecraft-Launcher-Settings](doc/minecraft-settings.png)
 
-In this case the command ("Befehl" in German) contains the exlicit path so that we can skip the `which` command.
+In this case the command ("Befehl" in German) contains the explicit path so that we can skip the `which` command.
 We continue by issuing the `file` command:
 
 ![Minecraft-Launcher-Type-Check](doc/minecraft-type-check.png)
@@ -333,3 +333,81 @@ and type `ps uax|grep APPNAME` at the prompt. Deliberately omit the path of the 
 the process list returns `/vol/java8/bin/java -jar /vol/mirecraft/Minecraft.jar` as the actual application call.
 We cannot use `java` as the pattern since this would be too general and prevent ANY java application from being
 started. A better choice is the name of the Java JAR, which is `Minecraft.jar` in our case
+
+## Configuring Firewall Support
+
+One of the major drawbacks of `LittleBrother` is its restriction as to which devices can be controlled. Although it
+is possible to monitor any device that is *pingable* it may not be possible to deactivate the same device once the 
+playtime has been exceeded. As of version 0.4.23, at least it is possible to restrict internet access of the relevant 
+devices by installing `iptables` rules during the time that a monitored user is not allowed to use the computer. 
+Since most modern games depend on internet access this is tantamount to deactivating the games.  
+
+### Prerequisites
+
+There are some prerequisites before the firewall feature can be used:
+
+* The firewall support will only work in a master-client setup of `LittleBrother` since the master will be used
+  to restrict the network access of the clients. If you only have a master node, unfortunately, there's no
+  support yet.
+* The network traffic of the clients has to routed through the master. This usually requires two changes in the network 
+  setup:
+  * The clients have to be configured in such a way that their default route points to the master. This can be done
+    manually in the setup of the interfaces or can be triggered by using a DHCP server on the master from which the
+    clients draw their IP addresses and also their default route.
+  * The master has to be configured to forward IP packages. This requires a setting in `sysctl`. 
+    See [here](https://linuxconfig.org/how-to-turn-on-off-ip-forwarding-in-linux) for example. 
+* The package `iptables` has to be activated. In most cases it should suffice to install the package if not already 
+  on the system. 
+* The default chain `FORWARD` has to exist. This should also be the default. You can find out by issuing
+ 
+      iptables -L FORWARD
+
+  If this command does not throw an error everything should be OK.
+  
+* The devices/hosts that need to be blocked have to be configured as devices in `LittleBrother`, the monitoring
+  and the blocking of the devices have to be activated. 
+  See the [Web Frontend Manual](WEB_FRONTEND_MANUAL.md) for details. 
+* There should be not any other programs creating `iptables` entries for the monitored devices since `LittleBrother` 
+  will assume that all rules for the IP addresses of the devices (as sources) are handled by itself. This allows the 
+  host process to clean out all entries for the clients after a crash. Otherwise, some rules may be left in the system
+  which would require the user to issue manual `iptables` commands to fix it. 
+
+### Routing in `iptables`
+
+The diagram below shows the routing which is assumed for the master-client setup for `iptables`. There are two
+clients A and B. Both have the IP address of the master node as their default route. The master has its default
+route set to the IP address of the DSL modem.
+
+Client A is assigned to user A and the flags "is monitored" and "blockable" are  activated for client A.
+
+Normally, all traffic from the client A is routed through the master and ends up in the DSL modem. When the client has
+to be restricted because user A has exceeded his time budget, `LittleBrother` will insert a `FORWARD` saying that all 
+packets from the source IP address (`-s`)of the clients to all destinations (`-d 0.0.0.0/0`) have to be dropped.
+The client B is not affected by this.
+
+Note that this setup only makes sense if there is a one-to-one relationship between users and clients since there
+is no way to restrict network from a specific user on a client. The blocking `iptables` rule always affects ALL users
+on the client. If a client is assigned to several users, `LittleBrother` will block it if at least one of the users
+has exceeded his time limit!
+
+Note that all IP addresses in this example except for `0.0.0.0` are arbitrary and may differ from your setup!
+
+![iptables-routing](doc/iptables-firewall.drawio.png)
+
+### Configuration
+
+The configuration consists of supplying the IP addresses which are supposed to be blocked for the clients. In the 
+normal case this is just the default route to the artificial IP address `0.0.0.0`. For the time being it has to be set 
+in the configuration file of the master node:
+
+    [FirewallHandler]
+    target_ip[0] = 0.0.0.0
+
+If you want block specific hosts instead, you can supply one or several concrete IP addresses or DNS names, e.g.
+
+    [FirewallHandler]
+    target_ip[0] = twerion.net
+    target_ip[1] = purpleprison.net
+    target_ip[2] = sgpggb.de
+
+would block the top three Minecraft servers in Germany.

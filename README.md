@@ -19,6 +19,7 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                   | (Issue) Link                                                         |
 |----------|---------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.4.23   | Optionally use `iptables` to restrict network access          | [Issue 169](https://github.com/marcus67/little_brother/issues/169)   |
 | 0.4.20   | *Bug Fix*: Use Python virtual environment again               | [Issue 170](https://github.com/marcus67/little_brother/issues/170)   |
 | 0.4.17   | *Bug Fix*: Remove incompatibility with new `alembic` version  | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
 | 0.4.16   | *Bug Fix*: Ignore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
@@ -227,9 +228,10 @@ various additional aspects that may require additional configuration.
 | Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                 |
+| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                |
 | Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
 | Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Firewall support            | Do not restrict network access of client hosts                             | Configure targets IP addresses to be blocked                    | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 
 ### Setting the Admin Password
 

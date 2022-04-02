@@ -15,6 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
 import re
 import shlex
 import subprocess
@@ -23,7 +24,7 @@ from typing import Optional
 from little_brother.devices.firewall_entry import FirewallEntry, key
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, DEFAULT_PROTOCOL, \
     DEFAULT_TARGET
-from python_base_app import log_handling
+from python_base_app import log_handling, tools
 from python_base_app.configuration import ConfigurationException
 
 
@@ -34,24 +35,32 @@ class FirewallHandler:
 
         self._config: FirewallHandlerConfigModel = p_config
         self._entries : Optional[list[FirewallEntry]] = None
+        self._last_table_scan : Optional[datetime.datetime] = None
+
+    @property
+    def entries(self) -> Optional[list[FirewallEntry]]:
+        self.read_forward_entries()
+        return self._entries
 
     def get_active_forward_entries(self, p_ip_address) -> dict[str, FirewallEntry]:
 
-        return { entry.key(): entry for entry in self._entries
+        source = tools.get_ip_address_by_dns_name(p_dns_name=p_ip_address)
+
+        return { entry.key(): entry for entry in self.entries
                  if (entry.protocol == DEFAULT_PROTOCOL and
-                     entry.source == p_ip_address and
+                     entry.source == source and
                      entry.target == DEFAULT_TARGET) }
 
     def add_entry_to_cache(self, p_new_entry: FirewallEntry):
 
-        for entry in self._entries:
+        for entry in self.entries:
             entry.index += 1
 
-        self._entries.insert(0, p_new_entry)
+        self.entries.insert(0, p_new_entry)
 
     def remove_entry_from_cache(self, p_entry: FirewallEntry):
 
-        self._entries.remove(p_entry)
+        self.entries.remove(p_entry)
 
         for entry in self._entries:
             if entry.index > p_entry.index:
@@ -61,15 +70,13 @@ class FirewallHandler:
 
         self._logger.info(f"Removing iptables entry for blocking {p_entry.source} -> {p_entry.destination}...")
 
-        iptables_command = self._config.iptables_remove_forward_command_pattern.format(
-            index=p_entry.index
-        )
+        iptables_command = self._config.iptables_remove_forward_command_pattern.format(index=p_entry.index)
         command = shlex.split(self._config.sudo_command + " " + iptables_command)
 
         self._logger.debug(f"Executing command {command} in subprocess")
         proc = subprocess.run(command, stdout=subprocess.PIPE)
 
-        if proc.returncode >= 2:
+        if proc.returncode >= 1:
             raise ConfigurationException(f"{command} returns exit code {proc.returncode}")
 
         self.remove_entry_from_cache(p_entry=p_entry)
@@ -83,14 +90,21 @@ class FirewallHandler:
         self._logger.info(f"Adding iptables entry for blocking {p_ip_address} -> {p_target_ip}...")
 
         iptables_command = self._config.iptables_add_forward_command_pattern.format(
-            source_ip=p_ip_address, destination_ip=p_target_ip
+            source_ip=p_ip_address,
+            destination_ip=p_target_ip
         )
+
+        # Remove the specification of the default route (= "any IP address") from the command since this is not an
+        # allowed ip address! However, iptables will list the default route as such so we will use the string "0.0.0.0"
+        # everywhere else.
+        iptables_command = iptables_command.replace("-d 0.0.0.0", "")
+
         command = shlex.split(self._config.sudo_command + " " + iptables_command)
 
         self._logger.debug(f"Executing command {command} in subprocess")
         proc = subprocess.run(command, stdout=subprocess.PIPE)
 
-        if proc.returncode >= 2:
+        if proc.returncode >= 1:
             raise ConfigurationException(f"{command} returns exit code {proc.returncode}")
 
         new_entry = FirewallEntry()
@@ -125,15 +139,19 @@ class FirewallHandler:
 
     def read_forward_entries(self):
 
-        if self._entries is not None:
-            return
+        if self._entries is not None and self._last_table_scan is not None:
+            if datetime.datetime.now() < self._last_table_scan + datetime.timedelta(seconds=self._config.cache_ttl):
+                return
+
+            self._logger.debug("Clearing iptables cache.")
+            self._entries = []
 
         command = shlex.split(self._config.sudo_command + " " + self._config.iptables_list_forward_command)
 
         self._logger.debug(f"Executing command {command} in subprocess")
         proc = subprocess.run(command, stdout=subprocess.PIPE)
 
-        if proc.returncode >= 2:
+        if proc.returncode >= 1:
             raise ConfigurationException(f"{command} returns exit code {proc.returncode}")
 
         stdout_string = proc.stdout.decode("UTF-8")
@@ -158,3 +176,4 @@ class FirewallHandler:
                     result.group(self._config.iptables_list_forward_entry_pattern_destination_group)
                 self._entries.append(entry)
 
+        self._last_table_scan = datetime.datetime.now()
