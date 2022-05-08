@@ -19,11 +19,11 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import time
 
 import pytest
+import time
 
-from little_brother.devices.firewall_entry import key
+from little_brother.devices.firewall_entry import key, FirewallEntry
 from little_brother.devices.firewall_handler import FirewallHandler
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, \
     DEFAULT_IPTABLES_ADD_FORWARD_COMMAND_PATTERN, DEFAULT_IPTABLES_REMOVE_FORWARD_COMMAND_PATTERN, \
@@ -176,8 +176,12 @@ def test_iptables_list_entries_with_cache_timeout(default_firewall_handler_confi
 
     entries = handler.entries
 
-    assert entries == handler.entries
+    assert id(entries) == id(handler.entries)
+
+    entries.append(FirewallEntry())
+
+    assert id(entries) == id(handler.entries)
 
     time.sleep(default_firewall_handler_config.cache_ttl + 1)
 
-    assert  entries != handler.entries
+    assert  id(entries) != id(handler.entries)
