@@ -61,7 +61,6 @@ from python_base_app import pinger
 from python_base_app import unix_user_handler
 from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.locale_helper import LocaleHelper
-from python_base_app_ldap_extension import ldap_user_handler
 
 APP_NAME = 'LittleBrother'
 DIR_NAME = 'little-brother'
@@ -69,6 +68,8 @@ PACKAGE_NAME = 'little_brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
 DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60  # seconds
+
+LDAP_USER_HANDLER_SECTION_NAME = "LdapUserHandler"
 
 
 class AppConfigModel(base_app.BaseAppConfigModel):
@@ -166,7 +167,7 @@ class App(base_app.BaseApp):
         p_configuration.add_section(user_handler_section)
 
         section_handler_definition = configuration.OptionalSectionHandlerDefinition()
-        section_handler_definition.section_name = "LdapUserHandler"
+        section_handler_definition.section_name = LDAP_USER_HANDLER_SECTION_NAME
         section_handler_definition.package_name = "python_base_app_ldap_extension"
         section_handler_definition.module_name = "ldap_user_handler"
         section_handler_definition.config_model_class_name = "LdapUserHandlerConfigModel"
@@ -307,10 +308,14 @@ class App(base_app.BaseApp):
 
         if self.is_master():
             if status_server_config.is_active():
-                ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
+                # The section name has to be manually synchronized with the name in python_base_app_ldap_extension!
+                ldap_user_handler_config = self._config[LDAP_USER_HANDLER_SECTION_NAME]
 
                 if ldap_user_handler_config is not None and ldap_user_handler_config.is_active():
-                    self._user_handler = ldap_user_handler.LdapUserHandler(p_config=ldap_user_handler_config)
+                    # Note that we will only end up here if the configuration contains the section 'LdapUserHandler'
+                    from python_base_app_ldap_extension.ldap_user_handler import LdapUserHandler
+
+                    self._user_handler = LdapUserHandler(p_config=ldap_user_handler_config)
 
                 else:
                     if status_server_config.admin_password is not None:
