@@ -18,4 +18,6 @@
 
 little-brother ALL=(root) NOPASSWD: /bin/kill *
 little-brother ALL=(root) NOPASSWD: /bin/launchctl *
-little-brother ALL=(root) NOPASSWD: /usr/sbin/iptables -n -L FORWARD --linenumbers
+little-brother ALL=(root) NOPASSWD: /usr/sbin/iptables -n --line-numbers -L FORWARD
+little-brother ALL=(root) NOPASSWD: /usr/sbin/iptables -I FORWARD -p all -j DROP -s *
+little-brother ALL=(root) NOPASSWD: /usr/sbin/iptables -D FORWARD *

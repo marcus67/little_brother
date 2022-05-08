@@ -36,10 +36,13 @@ setup_params = {
 
     "packages": ['little_brother',
                  'little_brother.api',
+                 'little_brother.devices',
                  'little_brother.persistence',
                  'little_brother.web',
                  'little_brother.test',
                  'little_brother.test.persistence',
+                 'little_brother.test.pytest.devices',
+                 'little_brother.test.pytest',
                  'little_brother.test.web',
                  'little_brother.test.api',
                  ],
@@ -80,7 +83,10 @@ extended_setup_params = {
     # "deploy_tmpfile_conf": True,
     "deploy_sudoers_file": True,
     "deploy_apparmor_file": True,
-    "contributing_setups": ["python_base_app", "some_flask_helpers"],
+    "contributing_setups": [
+        "python_base_app",
+        "some_flask_helpers",
+    ],
     "publish_debian_package": little_brother.settings.SOURCEFORGE_CHANNELS,
     "publish_docker_images": little_brother.settings.DOCKER_CHANNELS,
     "publish_latest_docker_image": little_brother.settings.RELEASE_BRANCH_NAME,
@@ -92,9 +98,10 @@ extended_setup_params = {
         ("/etc/little-brother/master.config", "/etc/little-brother/little-brother.config")
     ],
     "build_pypi_package": True,
-    "publish_pypi_package": { little_brother.settings.RELEASE_BRANCH_NAME: ('PYPI_API_URL', 'PYPI_API_TOKEN', 'TEST_PYPI_API_USER'),
-                              little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
-                              },
+    "publish_pypi_package": {
+        little_brother.settings.RELEASE_BRANCH_NAME: ('PYPI_API_URL', 'PYPI_API_TOKEN', 'TEST_PYPI_API_USER'),
+        little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
+    },
     "generate_generic_install": True,
     "analyze": True,
     "analyze_extra_exclusions" : "vagrant/**",

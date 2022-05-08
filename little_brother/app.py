@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -57,11 +57,11 @@ from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
-from python_base_app import ldap_user_handler
 from python_base_app import pinger
 from python_base_app import unix_user_handler
 from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.locale_helper import LocaleHelper
+from python_base_app_ldap_extension import ldap_user_handler
 
 APP_NAME = 'LittleBrother'
 DIR_NAME = 'little-brother'
@@ -115,14 +115,14 @@ class App(base_app.BaseApp):
         self._master_connector = None
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
-        self._prometheus_client : Optional[PrometheusClient] = None
+        self._prometheus_client: Optional[PrometheusClient] = None
         self._user_handler = None
         self._locale_helper = None
         self._pinger = None
-        self._firewall_handler : Optional[FirewallHandler] = None
-        self._device_activation_manager : Optional[DeviceActivationManager] = None
+        self._firewall_handler: Optional[FirewallHandler] = None
+        self._device_activation_manager: Optional[DeviceActivationManager] = None
 
-    def prepare_configuration(self, p_configuration):
+    def prepare_configuration(self, p_configuration: configuration.Configuration):
 
         app_control_section = AppControlConfigModel()
         p_configuration.add_section(app_control_section)
@@ -165,8 +165,14 @@ class App(base_app.BaseApp):
         user_handler_section = unix_user_handler.UnixUserHandlerConfigModel()
         p_configuration.add_section(user_handler_section)
 
-        ldap_handler_section = ldap_user_handler.LdapUserHandlerConfigModel()
-        p_configuration.add_section(ldap_handler_section)
+        section_handler_definition = configuration.OptionalSectionHandlerDefinition()
+        section_handler_definition.section_name = "LdapUserHandler"
+        section_handler_definition.package_name = "python_base_app_ldap_extension"
+        section_handler_definition.module_name = "ldap_user_handler"
+        section_handler_definition.config_model_class_name = "LdapUserHandlerConfigModel"
+
+        p_configuration.register_optional_section_handler_definition(
+            p_optional_section_handler_definition=section_handler_definition)
 
         self._login_mapping_section_handler = login_mapping.LoginMappingSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._login_mapping_section_handler)
@@ -289,7 +295,6 @@ class App(base_app.BaseApp):
         dependency_injection.container[PrometheusClient] = self._prometheus_client
 
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
-        ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
         status_server_config = self._config[web_server.SECTION_NAME]
 
         self.init_babel(p_localeselector=self.get_request_locale)
@@ -302,7 +307,9 @@ class App(base_app.BaseApp):
 
         if self.is_master():
             if status_server_config.is_active():
-                if ldap_user_handler_config.is_active():
+                ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
+
+                if ldap_user_handler_config is not None and ldap_user_handler_config.is_active():
                     self._user_handler = ldap_user_handler.LdapUserHandler(p_config=ldap_user_handler_config)
 
                 else:
@@ -399,19 +406,16 @@ class App(base_app.BaseApp):
 
         dependency_injection.container[VersionChecker] = self._version_checker
 
-
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
 
-
-
-        device_activation_manager_config : DeviceActivationManagerConfigModel = \
+        device_activation_manager_config: DeviceActivationManagerConfigModel = \
             self._config[DEVICE_ACTIVATION_MANAGER_SECTION_NAME]
 
         self._device_activation_manager = DeviceActivationManager(p_config=device_activation_manager_config)
 
-        firewall_handler_config : FirewallHandlerConfigModel = self._config[FIREWALL_HANDLER_SECTION_NAME]
+        firewall_handler_config: FirewallHandlerConfigModel = self._config[FIREWALL_HANDLER_SECTION_NAME]
 
         if firewall_handler_config.is_active():
             self._firewall_handler = FirewallHandler(p_config=firewall_handler_config)
@@ -424,7 +428,6 @@ class App(base_app.BaseApp):
 
         if task is not None:
             self.add_recurring_task(p_recurring_task=task)
-
 
     def run_special_commands(self, p_arguments):
 

@@ -20,8 +20,9 @@
 
 import os
 import os.path
-import sys
 import unittest
+
+import sys
 
 from little_brother import dependency_injection
 from little_brother.api.master_connector import MasterConnector
@@ -76,7 +77,8 @@ class TestApp(base_test.BaseTestCase):
 
         self.assertIsNotNone(config)
 
-        self.assertEqual(16, len(configuration._sections))
+        self.assertEqual(15, len(configuration._sections))
+        self.assertEqual(1, len(configuration._optional_section_handler_definitions))
 
     @classmethod
     def create_dummy_app(cls, p_logger):
