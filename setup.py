@@ -74,6 +74,7 @@ extended_setup_params = {
                          ],
 
     # additional setup configuration used by CI stages
+    "owasp": True,
 
     # technical name used for e.g. directories, PIP-package, and users
     "create_user": True,
