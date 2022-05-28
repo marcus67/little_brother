@@ -92,7 +92,7 @@ extended_setup_params = {
     "publish_docker_images": little_brother.settings.DOCKER_CHANNELS,
     "publish_latest_docker_image": little_brother.settings.RELEASE_BRANCH_NAME,
     "debian_extra_files": [
-        ("etc/slave.config", "etc/little-brother/slave.config"),
+        ("etc/client.config", "etc/little-brother/client.config"),
         ("etc/master.config", "etc/little-brother/master.config"),
     ],
     "debian_templates": [

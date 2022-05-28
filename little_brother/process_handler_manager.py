@@ -59,7 +59,7 @@ LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT = "0.3.8"
 MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT = "0.3.9"
 
 CSS_CLASS_MAXIMUM_PING_EXCEEDED = "node_inactive"
-CSS_CLASS_SLAVE_VERSION_OUTDATED = "node_outdated"
+CSS_CLASS_CLIENT_VERSION_OUTDATED = "node_outdated"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x, y=None: x
@@ -385,7 +385,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                 self.queue_event_historic_process_start(p_pinfo=pinfo)
                 counter = counter + 1
 
-        fmt = "Sent %d historic process infos to slaves" % counter
+        fmt = "Sent %d historic process infos to clients" % counter
         self._logger.info(fmt)
 
     def queue_event_historic_process_start(self, p_pinfo):

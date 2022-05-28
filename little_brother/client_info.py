@@ -24,7 +24,7 @@ LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT = "0.3.8"
 MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT = "0.3.9"
 
 CSS_CLASS_MAXIMUM_PING_EXCEEDED = "node_inactive"
-CSS_CLASS_SLAVE_VERSION_OUTDATED = "node_outdated"
+CSS_CLASS_CLIENT_VERSION_OUTDATED = "node_outdated"
 
 def _(x):
     return x
@@ -65,7 +65,7 @@ class ClientInfo(object):
 
     @property
     def node_type(self):
-        return _("Master") if self.is_master else _("Slave")
+        return _("Master") if self.is_master else _("Client")
 
     @property
     def seconds_without_ping(self):
@@ -114,6 +114,6 @@ class ClientInfo(object):
                 client_version = LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT
 
             if version.parse(client_version) < version.parse(self.master_version):
-                return CSS_CLASS_SLAVE_VERSION_OUTDATED
+                return CSS_CLASS_CLIENT_VERSION_OUTDATED
 
         return ""

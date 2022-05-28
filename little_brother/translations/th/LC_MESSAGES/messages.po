@@ -68,7 +68,7 @@ msgstr "ผู้ใช้"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/client_info.py:68
 #, fuzzy
-msgid "Slave"
+msgid "Client"
 msgstr "บันทึก"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/context_rule_handler.py:62

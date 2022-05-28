@@ -84,14 +84,14 @@ After successful login the user will be display in the menu bar.
 
 ![Menubar-Topology](doc/menubar-topology.png)
 
-Although `LittleBrother` can run on a single PC (master), it is possible to monitor several slave PCs at the same time.
+Although `LittleBrother` can run on a single PC (master), it is possible to monitor several client PCs at the same time.
 In order to keep the overview over the network of PCs the tab `Topology` provides a list of the currently known PCs.
 
 ![Topology](doc/topology.png)
 
-It shows the master and all slave nodes with the following columns:
+It shows the master and all client nodes with the following columns:
 
-* *Node Type*: Denotes the type of node ("Master" or "Slave"). There is exactly one master and `0..N` slaves. If
+* *Node Type*: Denotes the type of node ("Master" or "Client"). There is exactly one master and `0..N` clients. If
     the node process is running in a Docker container it will have an additional `(Docker)` remark.
     
 * *Node Name*: Denotes the unique name of the node. It usually corresponds to the host DNS name, but it can be set in 
@@ -119,7 +119,7 @@ in red.
 #### Outdated Clients and Version Checks
 
 If a client is detected whose version is older than 0.3.9 the additional metadata (AppVersion, Revision and Python
-Version) is not available. In this case the AppVersion will show "< 0.3.9" in red color. If the slave version is 
+Version) is not available. In this case the AppVersion will show "< 0.3.9" in red color. If the client version is 
 smaller than the master version, the AppVersion will also show in red. See screenshot above.
 
 As of version 0.4.9 of `LittleBrother` the master node will check SourceForge for versions automatically. If a 
@@ -136,7 +136,7 @@ checked once a day.
 If the master has not received a message from the client for more than a certain number of seconds (defaults to `60`)
 the value in column *Time Since Last Ping* will be displayed in red. See screenshot above.
 
-**Note:** The master cannot differentiate between slaves that are only temporarily not available and slaves which have
+**Note:** The master cannot differentiate between clients that are only temporarily not available and clients which have
 completely been removed from the topology. In the latter case the master has to be restarted to "forget" the 
 removed clients.
 

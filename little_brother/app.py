@@ -239,7 +239,7 @@ class App(base_app.BaseApp):
 
         super().prepare_services(p_full_startup=p_full_startup)
 
-        # TODO: Activate in memory sqlite backend for slaves
+        # TODO: Activate in memory sqlite backend for clients
         self._persistence = persistence.Persistence(
             p_config=self._config[persistence.SECTION_NAME])
 
@@ -403,7 +403,7 @@ class App(base_app.BaseApp):
             raise configuration.ConfigurationException(msg)
 
         else:
-            msg = "Slave instance will not start web server due to missing port number"
+            msg = "Client instance will not start web server due to missing port number"
             self._logger.warn(msg)
 
         self._version_checker = VersionChecker(p_config=self._config[VERSION_CHECKER_SECTION_NAME],

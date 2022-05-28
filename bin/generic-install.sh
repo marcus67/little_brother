@@ -177,10 +177,10 @@ mkdir -p ${SUDOERS_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.sudo ${SUDOERS_DIR}/little-brother
 mkdir -p ${APPARMOR_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.apparmor ${APPARMOR_DIR}/little-brother.conf
-TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/slave.config )
+TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/client.config )
 mkdir -p ${TARGET_DIRECTORY}
-echo "Deploying extra file '$INSTALL_BASE_DIR/etc/slave.config' to '${ROOT_DIR}/etc/little-brother/slave.config'..."
-cp -f $INSTALL_BASE_DIR/etc/slave.config ${ROOT_DIR}/etc/little-brother/slave.config
+echo "Deploying extra file '$INSTALL_BASE_DIR/etc/client.config' to '${ROOT_DIR}/etc/little-brother/client.config'..."
+cp -f $INSTALL_BASE_DIR/etc/client.config ${ROOT_DIR}/etc/little-brother/client.config
 TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/master.config )
 mkdir -p ${TARGET_DIRECTORY}
 echo "Deploying extra file '$INSTALL_BASE_DIR/etc/master.config' to '${ROOT_DIR}/etc/little-brother/master.config'..."

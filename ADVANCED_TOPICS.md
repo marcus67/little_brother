@@ -11,7 +11,7 @@ of the configuration files. See here for templates:
 *   <A HREF="etc/master.config">`master.config`</A>: A configuration file to run the 
     application on a single host.
 
-*   <A HREF="etc/slave.config">`slave.config`</A>: A configuration file to run the 
+*   <A HREF="etc/client.config">`client.config`</A>: A configuration file to run the 
     application on a client. This file is relatively simple since it only contains the details to connect 
     to the master host.
 
@@ -27,7 +27,7 @@ the relative path can be changed. Edit the appropriate settings in the configura
 
     [StatusServer]
     port=PORT
-    proxy_prefix=PREFIX
+    base_url=PREFIX
 
 After restarting the server (see above) the web frontend can be reached at 
 http://localhost:PORT/PREFIX.
@@ -53,7 +53,7 @@ to override the defaults.
 
 Using `/etc/passwd`, however, may be a problem in two cases:
 
-*   The master host does not have the users defined which will be monitored on the slaves.
+*   The master host does not have the users defined which will be monitored on the clients.
 *   The master host is using an LDAP server to store the users and their credentials.
 
 In both cases you can provide the users and their respective UIDs explicitly in the configuration file:
@@ -61,12 +61,12 @@ In both cases you can provide the users and their respective UIDs explicitly in 
     [UnixUserHandler]
     user_list=USERNAME1:UID1, USERNAME2:UID2, ...
  
-The `USERNAME*` and `UID*` must match those on the slave hosts.
+The `USERNAME*` and `UID*` must match those on the client hosts.
 
 ## Providing a Mapping between UIDs
 
-When using a master-slave set up the assumption is that UIDs on the master host and the slave hosts match. In this
-case no further configuration will be necessary. If, however, there are differences between master and slaves, it is
+When using a master-client set up the assumption is that UIDs on the master host and the client hosts match. In this
+case no further configuration will be necessary. If, however, there are differences between master and clients, it is
 possible to provide a mapping of the UIDs for the usernames. This mapping is done for each group of hosts sharing
 the same mapping by defining a `LoginMapping*` entry in the configuration file of the master host:
 
@@ -77,27 +77,27 @@ the same mapping by defining a `LoginMapping*` entry in the configuration file o
     
 The name after `LoginMapping` can be chosen freely. It just has to be unique across all mappings. The actual name
 of the server is given by option `server_group`. It is followed by entries for each user in format `username:UID`.
-The `username` has to match the username on the master. The `uid` is the UID for that user on the slaves of the
-server group. Note that the actual username of the user on the slaves is irrelevant for the mapping!
+The `username` has to match the username on the master. The `uid` is the UID for that user on the clients of the
+server group. Note that the actual username of the user on the clients is irrelevant for the mapping!
 
-In the slave configuration the name of the server group has to be configured:
+In the client configuration the name of the server group has to be configured:
 
     [AppControl]
     server_group = SomeServerGroup
   
 ### Example
 
-In the example below there are two server groups with two slaves each: `AB` and `CD`. The blue boxes contain the
+In the example below there are two server groups with two clients each: `AB` and `CD`. The blue boxes contain the
 local usernames and UIDs on all servers. The green boxes contain the required configuration for `LittleBrother`.
 
 ![Login Mappings](doc/login-mappings.drawio.png)
 
 Note the following aspects:
 
-*   The UIDs on the master and the slaves do not match.
-*   The login mappings always contain the usernames on the master. They may differ from the usernames on the slaves
-   (see `sam` on the slave who is called `sammy` on servers in group `AB`).
-*   The login mappings always contain the UIDs on the slaves.
+*   The UIDs on the master and the clients do not match.
+*   The login mappings always contain the usernames on the master. They may differ from the usernames on the clients
+   (see `sam` on the client who is called `sammy` on servers in group `AB`).
+*   The login mappings always contain the UIDs on the clients.
 *   If users do not exist on servers of a group there is no need to supply a mapping entry. See mapping for group
 `CD`.   
 
@@ -145,26 +145,26 @@ configuration file to the database, `LittleBrother` will start an automatic migr
 configuration file upon startup. For every subsequent run the user and rule set data in the file will be ignored.
 These settings can be removed. If they are still found a warning will be issued.  
 
-## Installation on a Slave Host (Client Server Mode)
+## Installation on a Client Host (Client Server/Master Mode)
 
-In addition to the master host any number of slave hosts may be configured. The assumption is that the users
+In addition to the master host any number of client hosts may be configured. The assumption is that the users
 to be monitored have login permission to all those hosts and that the usernames on all hosts match. In this
 case access times on all hosts are communicated to the master host and accumulated there. The master will
 apply the rule sets and determine which users have exceeded their access times. 
 
 
-The basic installation of `LittleBrother` on a slave host is basically the same as on the master host. See the 
+The basic installation of `LittleBrother` on a client host is basically the same as on the master host. See the 
 main [README](README.md) on how to install the Debian package. Then follow these steps:
 
-*   Copy the slave configuration template <A HREF="etc/slave.config">`slave.config`</A> to 
-`/etc/little-brother/little-brother.conf` on each slave host.
+*   Copy the client configuration template <A HREF="etc/client.config">`client.config`</A> to 
+`/etc/little-brother/little-brother.conf` on each client host.
 
 *   Choose a secret access token and set this token in the configuration on the master host:   
 
         [MasterConnector]
         access_token=SOME_LONG_AND_SECRET_TOKEN
 
-*   Set the same access token in the configuration on all slave hosts. On the latter also the address of the 
+*   Set the same access token in the configuration on all client hosts. On the latter also the address of the 
 master host must be set. Replace `[MASTERHOST]` by the appropriate host DNS name or IP address and
 `[PORT]` by the appropriate port.
 
@@ -172,13 +172,13 @@ master host must be set. Replace `[MASTERHOST]` by the appropriate host DNS name
         host_url=http://[MASTERHOST]:[PORT]
         access_token=SOME_LONG_AND_SECRET_TOKEN
 
-Note that for the time being the communication between slaves and master is always simple HTTP.
+Note that for the time being the communication between clients and master is always simple HTTP.
  
-Restart the application on the slave host again by issuing
+Restart the application on the client host again by issuing
 
     systemctl start little-brother
     
-Beside the Debian package, there is also a Docker image available which can be used on the slave host. 
+Beside the Debian package, there is also a Docker image available which can be used on the client host. 
 See [Docker](DOCKER.md) for details.
 
 ## Using a Full Fledged Database as Backend
@@ -188,8 +188,8 @@ a more mature backend you can switch to a full-fledged database such as MySQL or
 the persistence uses the abstraction layer [SQLAlchemy](https://www.sqlalchemy.org/) which can be used with many 
 database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
 
-**IMPORTANT NOTE**: The steps shown below only refer to the MASTER host. The slave(s) should ALWAYS use the simple
-sqlite backend no matter which kind of backend the master will use! This is due to the fact that the slaves never have
+**IMPORTANT NOTE**: The steps shown below only refer to the MASTER host. The client(s) should ALWAYS use the simple
+sqlite backend no matter which kind of backend the master will use! This is due to the fact that the clients never have
 to store any data persistently. This is completely handled by the master.
 
 ### Configuring the Database
@@ -259,7 +259,7 @@ The `[StatusServer]` configuration section of the master host should contain the
 
     [StatusServer]
     ...
-    proxy_prefix=/LittleBrother
+    base_url=/LittleBrother
     ...
 
 ## Monitoring the Application
@@ -268,21 +268,21 @@ The `[StatusServer]` configuration section of the master host should contain the
 
 ## Network Tempering Detection
 
-The master-slave approach of `LittleBrother` results in all runtime data about processes to be held and evaluated on
-the master node. It is there that the decision to terminate a user session will be made. The slaves only execute
-these decisions. If the network connection between master and slaves is cut the slaves are basically "headless".
+The master-client approach of `LittleBrother` results in all runtime data about processes to be held and evaluated on
+the master node. It is there that the decision to terminate a user session will be made. The clients only execute
+these decisions. If the network connection between master and clients is cut the clients are basically "headless".
 This could be abused by a user (whose activity does not depend on network access) to simply cut the connection to
 the master by *pulling the plug*.
 
 As of version 0.3.13 a detected network downtime will result in an automatic termination of user sessions on the
-affected slaves. The default timeout is 10 times the default scan interval of 5 seconds, that is 50 seconds. This value
+affected clients. The default timeout is 10 times the default scan interval of 5 seconds, that is 50 seconds. This value
 (`maximum_time_without_send_events`) can be changed in the configuration file:
 
-    # Number of seconds before warnings are issued about missing connectivity (no successful send events from slave to master)
+    # Number of seconds before warnings are issued about missing connectivity (no successful send events from client to master)
     # Defaults to 3 * DEFAULT_CHECK_INTERVAL.
     warning_time_without_send_events = 15
     
-    # Number of seconds before slave terminates processes due to missing connectivity (no successful send events from slave to master)
+    # Number of seconds before client terminates processes due to missing connectivity (no successful send events from client to master)
     # Defaults to 10 * DEFAULT_CHECK_INTERVAL.
     maximum_time_without_send_events = 50
  

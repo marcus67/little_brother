@@ -178,7 +178,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 client_stats = self.app_control.receive_client_stats(p_json_data=json_client_stats)
 
             else:
-                # old format: 2 entries without slave statistics
+                # old format: 2 entries without client statistics
                 (hostname, json_events) = event_info
 
             msg = "Received {count} events from host '{hostname}'"

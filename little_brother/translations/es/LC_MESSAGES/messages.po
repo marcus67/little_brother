@@ -66,7 +66,7 @@ msgid "Master"
 msgstr "Usuario"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/client_info.py:68
-msgid "Slave"
+msgid "Client"
 msgstr "Asegura"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/context_rule_handler.py:62

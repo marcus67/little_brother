@@ -4,11 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.23 Revision 124 (March 26th, 2022)
+## Version 0.4.23 Revision 127 (March 26th, 2022)
 
 * Closes #169, see [here](https://github.com/marcus67/little_brother/issues/169)
 * Closes #172, see [here](https://github.com/marcus67/little_brother/issues/172)
 * Upgrade to `python_base_app` version 0.2.39
+* Finalize renaming "slave" into "client"
 
 ## Version 0.4.22 Revision 123 (March 6th, 2022)
 
@@ -74,7 +75,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 ## Version 0.4.11 Revision 110 (November 22nd, 2021)
 
-* Requeue outgoing events on slave in case API call was not successful (potential fix for 
+* Requeue outgoing events on client in case API call was not successful (potential fix for 
   [issue 157](https://github.com/marcus67/little_brother/issues/157))
 
 ## Version 0.4.10 Revision 109 (October 12th, 2021)
@@ -318,7 +319,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.3.1 Revision 67 (July 20th, 2020)
 
 *   Fix issue with master process not detecting user activity when new users are activated
-*   Change the default configuration on the Docker slave image:
+*   Change the default configuration on the Docker client image:
     *   Set sqlite as the default backend
     *   Deactivate audio output and pop notifications
 
@@ -353,7 +354,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Deactivate settings changes to log handling by alembic
 *   Support broadcasting of user settings, activate on all relevant changes
 *   Increase connection pool size
-*   Activate mandatory sqlite backend for slaves
+*   Activate mandatory sqlite backend for clients
 *   Make sure database session are always closed
 *   Deploy etc/master.config as a template
 *   Closes #93, see [here](https://github.com/marcus67/little_brother/issues/93)
@@ -466,14 +467,14 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 ## Version 0.1 Revision 48 (December 26th, 2019)
 
-*   Added Docker image for slave process
+*   Added Docker image for client process
 *   Support for overriding of settings using environment
 *   Abstraction of the audio engine (class `BaseAudioPlayer`)
 *   Support for `mpg123` as audio engine (new)
 *   Support for `playsound` as audio engine (rewritten as engine)
 *   Support for `pyglet` as audio engine (new)
-*   Correct handling of default locale on slave device
-*   Distribution of login mappings from master to slave (for Docker containers and macOS)
+*   Correct handling of default locale on client host
+*   Distribution of login mappings from master to client (for Docker containers and macOS)
 *   New CI stage to build docker images
 *   Consistent hiding of sensitive variable values in logging
 *   Packages `sudo` and `procps` added to the Debian package dependencies

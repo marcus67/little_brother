@@ -151,7 +151,7 @@ class UserManager(PersistenceDependencyInjectionMixIn):
             p_payload=p_login_mapping)
         self.event_handler.queue_event(p_event=event, p_is_action=True)
 
-    def send_login_mapping_to_slave(self, p_hostname):
+    def send_login_mapping_to_client(self, p_hostname):
 
         self.queue_event_update_login_mapping(p_hostname=p_hostname,
                                               p_login_mapping=self._login_mapping.to_json())

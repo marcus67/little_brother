@@ -58,7 +58,7 @@ class TestClientInfo(base_test.BaseTestCase):
 
         ci = client_info.ClientInfo(p_is_master=False, p_host_name=HOSTNAME, p_client_stats=None)
 
-        self.assertEqual(ci.node_type, "Slave")
+        self.assertEqual(ci.node_type, "Client")
 
     def test_property_seconds_without_ping(self):
 
@@ -117,7 +117,7 @@ class TestClientInfo(base_test.BaseTestCase):
         ci = client_info.ClientInfo(p_is_master=True, p_host_name=HOSTNAME, p_client_stats=None,
                                     p_master_version=MASTER_VERSION)
 
-        self.assertEqual(ci.version_class, client_info.CSS_CLASS_SLAVE_VERSION_OUTDATED)
+        self.assertEqual(ci.version_class, client_info.CSS_CLASS_CLIENT_VERSION_OUTDATED)
 
         ci.client_stats = ClientStats(p_version=MASTER_VERSION)
 
@@ -125,7 +125,7 @@ class TestClientInfo(base_test.BaseTestCase):
 
         ci.client_stats = ClientStats(p_version=OLD_CLIENT_VERSION)
 
-        self.assertEqual(ci.version_class, client_info.CSS_CLASS_SLAVE_VERSION_OUTDATED)
+        self.assertEqual(ci.version_class, client_info.CSS_CLASS_CLIENT_VERSION_OUTDATED)
 
 if __name__ == "__main__":
     unittest.main()
