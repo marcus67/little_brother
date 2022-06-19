@@ -1,5 +1,5 @@
 {#<!--
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -83,8 +83,8 @@
 					{% call accordion.details() %}{{device.html_key}}{% endcall %}
 				<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
 					<DIV CLASS="col-xs-1 "></DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-3 localetext">{{_('Name')}}</DIV>
-					<DIV CLASS="col-xs-7  col-md-3  col-lg-5 localetext">{{_('Host Name')}}</DIV>
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-2 localetext">{{_('Name')}}</DIV>
+					<DIV CLASS="col-xs-7  col-md-3  col-lg-3 localetext">{{_('Host Name')}}</DIV>
 					<!-- line break for xs -->
 					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
 					<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
@@ -94,20 +94,29 @@
 					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Min Activity Duration [s]')}}</DIV>
 					<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{_('Sample Size')}}</DIV>
 					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Max Active Response Delay [ms]')}}</DIV>
+
+					<!-- line break for xs START -->
+					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+					<DIV CLASS="col-xs-1                                    hidden-lg SEPERATOR_ROW"></DIV>
+					<DIV CLASS="col-xs-11                                   hidden-lg SEPERATOR_ROW_LINE"></DIV>
+					<!-- line break for xs END -->
+
+					<DIV CLASS="col-xs-1            hidden-lg  "></DIV>
+					<DIV CLASS="col-xs-11           col-lg-3 localetext">{{_('Blocked URLs')}}</DIV>
 				</DIV>
 				<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
 					<DIV CLASS="col-xs-1 "></DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-3 localetext">{{
+					<DIV CLASS="col-xs-4  col-md-2  col-lg-2 localetext">{{
 						helper.render_field(forms[device.device_name].device_name) }}
 					</DIV>
-					<DIV CLASS="col-xs-7  col-md-3  col-lg-5 localetext">{{
+					<DIV CLASS="col-xs-7  col-md-3  col-lg-3 localetext">{{
 						helper.render_field(forms[device.device_name].hostname) }}
 					</DIV>
-					<!-- line break for xs -->
+					<!-- line break for xs START -->
 					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
 					<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
 					<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-					<!-- line break for xs -->
+					<!-- line break for xs END -->
 					<DIV CLASS="col-xs-1 hidden-md hidden-lg  "></DIV>
 					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
 						helper.render_field(forms[device.device_name].min_activity_duration) }}
@@ -117,6 +126,15 @@
 					</DIV>
 					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
 						helper.render_field(forms[device.device_name].max_active_ping_delay) }}
+					</DIV>
+					<!-- line break for xs START -->
+					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+					<DIV CLASS="col-xs-1                                    hidden-lg SEPERATOR_ROW"></DIV>
+					<DIV CLASS="col-xs-11                                   hidden-lg SEPERATOR_ROW_LINE"></DIV>
+					<!-- line break for xs END -->
+					<DIV CLASS="col-xs-1            hidden-lg  "></DIV>
+					<DIV CLASS="col-xs-11            col-lg-3 localetext">{{
+						helper.render_field(forms[device.device_name].blocked_urls, rows=5) }}
 					</DIV>
 				</DIV>
 					{{ accordion.end() }}

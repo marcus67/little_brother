@@ -22,7 +22,6 @@ from little_brother.devices.base_device_activation_handler import BaseDeviceActi
 from little_brother.devices.firewall_handler import FirewallHandler
 from little_brother.persistence.persistent_device import Device
 from python_base_app import log_handling
-from python_base_app import tools
 
 
 class FirewallDeviceActivationHandler(BaseDeviceActivationHandler):
@@ -41,6 +40,6 @@ class FirewallDeviceActivationHandler(BaseDeviceActivationHandler):
     def set_usage_permission_for_device(self, p_device: Device, p_usage_permitted: bool):
         self._logger.debug(f"Set usage permission for device '{p_device.device_name}' to {p_usage_permitted}")
 
-        ip_address = tools.get_ip_address_by_dns_name(p_dns_name=p_device.hostname)
-
-        self.firewall_handler.set_usage_permission_for_ip(p_ip_address=ip_address, p_usage_permitted=p_usage_permitted)
+        self.firewall_handler.set_usage_permission_for_ip(p_ip_address=p_device.ip_address,
+                                                          p_blocked_ip_addresses=p_device.list_of_blocked_ip_addresses,
+                                                          p_usage_permitted=p_usage_permitted)

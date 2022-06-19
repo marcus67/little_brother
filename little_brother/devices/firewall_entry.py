@@ -31,3 +31,4 @@ class FirewallEntry:
         self.source = None
         self.destination = None
         self.protocol = None
+        self.comment = None

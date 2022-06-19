@@ -8,8 +8,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 * Closes #169, see [here](https://github.com/marcus67/little_brother/issues/169)
 * Closes #172, see [here](https://github.com/marcus67/little_brother/issues/172)
-* Upgrade to `python_base_app` version 0.2.39
+* Upgrade to `python_base_app` version 0.2.40
 * Finalize renaming "slave" into "client"
+* Lock width of multiline text fields in forms
 
 ## Version 0.4.22 Revision 123 (March 6th, 2022)
 

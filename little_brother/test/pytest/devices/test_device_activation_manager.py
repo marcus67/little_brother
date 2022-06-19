@@ -31,7 +31,7 @@ from little_brother.devices.firewall_device_activation_handler import FirewallDe
 from little_brother.devices.firewall_entry import key
 from little_brother.devices.firewall_handler import FirewallHandler
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, \
-    DEFAULT_IPTABLES_ADD_FORWARD_COMMAND_PATTERN
+    DEFAULT_IPTABLES_ADD_FORWARD_COMMAND_PATTERN, DEFAULT_COMMENT
 from little_brother.login_mapping import LoginMapping
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_device import Device
@@ -47,6 +47,8 @@ from python_base_app.configuration import ConfigurationException
 DEFAULT_SERVER_GROUP = "default-group"
 DEFAULT_TARGET_IP = "0.0.0.0"
 DEFAULT_SOURCE_IP = "192.1.0.254"
+
+DEFAULT_SPECIFIC_TARGET_IPS = [ "1.2.3.4", "4.3.2.1" ]
 
 
 @pytest.fixture
@@ -106,6 +108,12 @@ def default_firewall_handler_config():
     config.target_ip = [DEFAULT_TARGET_IP]
     return config
 
+@pytest.fixture
+def firewall_handler_config_with_several_ips():
+    config = FirewallHandlerConfigModel()
+    config.target_ip = DEFAULT_SPECIFIC_TARGET_IPS
+    return config
+
 
 @pytest.fixture
 def firewall_device_activation_handler(default_firewall_handler_config):
@@ -114,8 +122,15 @@ def firewall_device_activation_handler(default_firewall_handler_config):
     dependency_injection.container[FirewallHandler] = firewall_handler
     return handler
 
+@pytest.fixture
+def firewall_device_activation_handler_with_several_ips(firewall_handler_config_with_several_ips):
+    handler = FirewallDeviceActivationHandler()
+    firewall_handler = FirewallHandler(p_config=firewall_handler_config_with_several_ips)
+    dependency_injection.container[FirewallHandler] = firewall_handler
+    return handler
 
-def populate_user_and_device(p_session_context):
+
+def populate_user_and_device(p_session_context : SessionContext, p_blocked_urls : list[str]=None):
     session = p_session_context.get_session()
     user = User()
     session.add(user)
@@ -123,6 +138,10 @@ def populate_user_and_device(p_session_context):
     device = Device()
     session.add(device)
     device.populate_test_data(p_session_context=p_session_context)
+
+    if p_blocked_urls is not None:
+        device.blocked_urls = "\n".join(p_blocked_urls)
+
     device.hostname = "localhost"
     user2device = User2Device()
     session.add(user2device)
@@ -200,6 +219,122 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden(dummy_pe
         finally:
             manager.shutdown()
 
+@pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
+def test_set_usage_permission_status_for_device_with_activity_forbidden_check_comment(
+        dummy_persistence,
+        user_manager_with_activity_forbidden,
+        default_device_activation_manager_config,
+        firewall_device_activation_handler):
+    with SessionContext(p_persistence=dummy_persistence) as session_context:
+
+        device = populate_user_and_device(p_session_context=session_context)
+
+        manager = DeviceActivationManager(default_device_activation_manager_config)
+
+        manager.add_handler(p_handler=firewall_device_activation_handler)
+        handler = dependency_injection.container[FirewallHandler]
+
+        try:
+            entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=DEFAULT_TARGET_IP)
+
+            manager.check_device_activation_status()
+
+            forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
+            assert entry_key in forward_entries
+
+            forward_entry = forward_entries.get(entry_key)
+
+            assert DEFAULT_COMMENT in forward_entry.comment
+
+        finally:
+            manager.shutdown()
+
+@pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
+def test_set_usage_permission_status_for_device_with_activity_forbidden_several_ip_addresses(
+        dummy_persistence,
+        user_manager_with_activity_forbidden,
+        default_device_activation_manager_config,
+        firewall_device_activation_handler_with_several_ips):
+    with SessionContext(p_persistence=dummy_persistence) as session_context:
+
+        device = populate_user_and_device(p_session_context=session_context)
+
+        firewall_device_activation_handler.target_ip = DEFAULT_SPECIFIC_TARGET_IPS
+
+        manager = DeviceActivationManager(default_device_activation_manager_config)
+
+        manager.add_handler(p_handler=firewall_device_activation_handler_with_several_ips)
+        handler = dependency_injection.container[FirewallHandler]
+
+        try:
+
+            forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
+
+            for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
+                entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
+                assert entry_key not in forward_entries
+
+            entries = handler.entries
+            number_of_entries = len(entries)
+
+            manager.check_device_activation_status()
+            forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
+
+            entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=DEFAULT_TARGET_IP)
+            assert entry_key not in forward_entries
+
+            for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
+                entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
+                assert entry_key in forward_entries
+
+            assert len(entries) == number_of_entries + len(DEFAULT_SPECIFIC_TARGET_IPS)
+
+        finally:
+            manager.shutdown()
+
+@pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
+def test_set_usage_permission_status_for_device_with_activity_forbidden_device_ip_addresses_override(
+        dummy_persistence,
+        user_manager_with_activity_forbidden,
+        default_device_activation_manager_config,
+        firewall_device_activation_handler):
+    with SessionContext(p_persistence=dummy_persistence) as session_context:
+
+        device = populate_user_and_device(p_session_context=session_context, p_blocked_urls=DEFAULT_SPECIFIC_TARGET_IPS)
+
+        firewall_device_activation_handler.target_ip = DEFAULT_SPECIFIC_TARGET_IPS
+
+        manager = DeviceActivationManager(default_device_activation_manager_config)
+
+        manager.add_handler(p_handler=firewall_device_activation_handler)
+        handler = dependency_injection.container[FirewallHandler]
+
+        try:
+
+            forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
+
+            for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
+                entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
+                assert entry_key not in forward_entries
+
+            entries = handler.entries
+            number_of_entries = len(entries)
+
+            manager.check_device_activation_status()
+            forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
+
+            entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=DEFAULT_TARGET_IP)
+            assert entry_key not in forward_entries
+
+            for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
+                entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
+                assert entry_key in forward_entries
+
+            assert len(entries) == number_of_entries + len(DEFAULT_SPECIFIC_TARGET_IPS)
+
+        finally:
+            manager.shutdown()
+
 
 @pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
 def test_set_usage_permission_status_for_device_with_activity_allowed(dummy_persistence,
@@ -272,9 +407,11 @@ def test_iptables_insert_entry_invalid_binary(default_firewall_handler_config):
         handler._config.iptables_add_forward_command_pattern = "x" + DEFAULT_IPTABLES_ADD_FORWARD_COMMAND_PATTERN
 
         with pytest.raises(ConfigurationException) as e:
-            handler.set_usage_permission_for_ip(p_ip_address=DEFAULT_SOURCE_IP, p_usage_permitted=False)
+            handler.set_usage_permission_for_ip(p_ip_address=DEFAULT_SOURCE_IP, p_blocked_ip_addresses=[],
+                                                p_usage_permitted=False)
 
         assert "returns exit code" in str(e)
 
     finally:
-        handler.set_usage_permission_for_ip(p_ip_address=DEFAULT_SOURCE_IP, p_usage_permitted=True)
+        handler.set_usage_permission_for_ip(p_ip_address=DEFAULT_SOURCE_IP, p_blocked_ip_addresses=[],
+                                            p_usage_permitted=True)

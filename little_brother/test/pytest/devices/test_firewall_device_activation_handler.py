@@ -40,9 +40,11 @@ class CallResult:
     def __init__(self):
         self.ip_address = None
         self.usage_permitted = None
+        self.blocked_ip_addresses = []
 
-    def set(self, p_ip_address, p_usage_permitted):
+    def set(self, p_ip_address, p_blocked_ip_addresses, p_usage_permitted):
         self.ip_address = p_ip_address
+        self.blocked_ip_addresses = p_blocked_ip_addresses
         self.usage_permitted = p_usage_permitted
 
 
@@ -65,8 +67,10 @@ def patched_firewall_handler_test_result(default_firewall_handler_config):
     handler = FirewallHandler(p_config=default_firewall_handler_config)
     test_result = CallResult()
     with patch(FirewallHandler.set_usage_permission_for_ip,
-               lambda p_ip_address, p_usage_permitted: test_result.set(p_ip_address=p_ip_address,
-                                                                       p_usage_permitted=p_usage_permitted)):
+               lambda p_ip_address, p_blocked_ip_addresses, p_usage_permitted:
+               test_result.set(p_ip_address=p_ip_address,
+                               p_blocked_ip_addresses=p_blocked_ip_addresses,
+                               p_usage_permitted=p_usage_permitted)):
         dependency_injection.container[FirewallHandler] = handler
         yield test_result
 
@@ -75,8 +79,10 @@ def patched_firewall_handler_test_result(default_firewall_handler_config):
 def logger():
     return log_handling.get_logger("pytest-executor")
 
+
 def setup_function():
     dependency_injection.reset()
+
 
 @pytest.fixture
 def dummy_persistence(logger):

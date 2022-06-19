@@ -487,10 +487,10 @@ Clicking on a device name opens the second level showing details on the specific
 
 The fields have the following meaning:
 
-*   *Name*: The logical name of the device which will show up in lists. The logical name has to be unique across all
+* *Name*: The logical name of the device which will show up in lists. The logical name has to be unique across all
 devices.
 
-*   *Host Name*: The DNS name or IP address of the device. This address will be used for *pinging* the device. It has to
+* *Host Name*: The DNS name or IP address of the device. This address will be used for *pinging* the device. It has to
 be a valid address which can be resolved by the name server. Otherwise, the entry will be rejected. Also, the hostname
 has to be unique across all devices. If you want to monitor devices in your local WI-FI you have to see to it 
 that your WI-FI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
@@ -519,19 +519,22 @@ router accordingly. Look out for *persistent IP addresses* in the manual.
     name, whereas the `device.host.name` will not be checked. For the time being, format errors in the specification above
     or a wrong device host name will silently be ignored resulting in the device being regarded as *down* all the time.   
 
-*   *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
+* *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
 as active. Durations shorter than this period will be ignored completely.
 
-*   *Max Active Response Delay \[ms\]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
+* *Max Active Response Delay \[ms\]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
 still be regarded as 'active'. For game consoles (often using the local area network) a low value of 10 \[ms\] is 
 usually OK. For smartphone using WI-FI the value needs to be higher since these devices have a more sluggish response. 
 For iPhones over WI-FI values between 50 \[ms\] and 80 \[ms\] have been tested to work pretty well. You will have to 
 monitor the value a bit during the initial phase. If `LittleBrother` often detects activity where there is none, 
 decrease the value. If, on the other had, activity often goes undetected, increase the value.
 
-*   *Sample Size*: Denotes the number of delay samples used to compute the effective delay as moving average. This value
-can probably be left as it is.   
-
+* *Sample Size*: Denotes the number of delay samples used to compute the effective delay as moving average. This value
+can probably be left as it is.
+* *Blocked URLs*: Use this text are to override the globally URLs which are blocked for the device if the assigned user
+  has exceeded his time budget. Use one DNS name or IP address per line. Each DNS address is checked before the entry
+  can be saved. **Note:** These entries completely *replace* the default entries. If you want to have some of the 
+  default entries active you will have to repeat them here! 
 To make changes enter the desired values and click the save button.
 
 ![Save-Button](doc/save-button.png)

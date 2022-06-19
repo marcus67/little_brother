@@ -27,6 +27,7 @@ import humanize
 import little_brother
 from little_brother import app_control
 from little_brother import constants
+from little_brother import entity_forms
 from little_brother.api import api_view_handler
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.web.about_view_handler import AboutViewHandler
@@ -139,6 +140,8 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._babel = flask_babel.Babel(self._app)
         self._babel.localeselector(self._locale_helper.locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
+
+        entity_forms.set_get_text(self.gettext)
 
     def invert(self, rel_font_size):
 

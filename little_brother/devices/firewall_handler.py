@@ -23,7 +23,7 @@ from typing import Optional
 
 from little_brother.devices.firewall_entry import FirewallEntry, key
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, DEFAULT_PROTOCOL, \
-    DEFAULT_TARGET
+    DEFAULT_TARGET, DEFAULT_COMMENT
 from python_base_app import log_handling, tools
 from python_base_app.configuration import ConfigurationException
 
@@ -34,8 +34,8 @@ class FirewallHandler:
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._config: FirewallHandlerConfigModel = p_config
-        self._entries : Optional[list[FirewallEntry]] = None
-        self._last_table_scan : Optional[datetime.datetime] = None
+        self._entries: Optional[list[FirewallEntry]] = None
+        self._last_table_scan: Optional[datetime.datetime] = None
 
     @property
     def entries(self) -> Optional[list[FirewallEntry]]:
@@ -46,10 +46,10 @@ class FirewallHandler:
 
         source = tools.get_ip_address_by_dns_name(p_dns_name=p_ip_address)
 
-        return { entry.key(): entry for entry in self.entries
-                 if (entry.protocol == DEFAULT_PROTOCOL and
-                     entry.source == source and
-                     entry.target == DEFAULT_TARGET) }
+        return {entry.key(): entry for entry in self.entries
+                if (entry.protocol == DEFAULT_PROTOCOL and
+                    entry.source == source and
+                    entry.target == DEFAULT_TARGET)}
 
     def add_entry_to_cache(self, p_new_entry: FirewallEntry):
 
@@ -85,13 +85,14 @@ class FirewallHandler:
         for entry in p_forward_entries.values():
             self.remove_entry(p_entry=entry)
 
-    def add_missing_entry(self, p_ip_address:str, p_target_ip:str):
+    def add_missing_entry(self, p_ip_address: str, p_target_ip: str, p_comment:str):
 
         self._logger.info(f"Adding iptables entry for blocking {p_ip_address} -> {p_target_ip}...")
 
         iptables_command = self._config.iptables_add_forward_command_pattern.format(
             source_ip=p_ip_address,
-            destination_ip=p_target_ip
+            destination_ip=p_target_ip,
+            comment=p_comment
         )
 
         # Remove the specification of the default route (= "any IP address") from the command since this is not an
@@ -113,19 +114,25 @@ class FirewallHandler:
         new_entry.destination = p_target_ip
         new_entry.target = DEFAULT_TARGET
         new_entry.protocol = DEFAULT_PROTOCOL
+        new_entry.comment = p_comment
 
         self.add_entry_to_cache(new_entry)
 
+    def add_missing_entries(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
+                            p_forward_entries: dict[str, FirewallEntry], p_comment:str):
 
-    def add_missing_entries(self, p_ip_address: str, p_forward_entries: dict[str, FirewallEntry]):
+        # Use the devices blocked ip addresses if they defined else use the globally defined addresses
+        effective_list_of_ip_addresses = self._config.target_ip \
+            if len(p_blocked_ip_addresses) == 0 else p_blocked_ip_addresses
 
-        for target_ip in self._config.target_ip:
+        for target_ip in effective_list_of_ip_addresses:
             entry_key = key(p_source=p_ip_address, p_destination=target_ip)
 
             if entry_key not in p_forward_entries:
-                self.add_missing_entry(p_ip_address=p_ip_address, p_target_ip=target_ip)
+                self.add_missing_entry(p_ip_address=p_ip_address, p_target_ip=target_ip, p_comment=p_comment)
 
-    def set_usage_permission_for_ip(self, p_ip_address : str, p_usage_permitted: bool):
+    def set_usage_permission_for_ip(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
+                                    p_usage_permitted: bool):
 
         self.read_forward_entries()
 
@@ -135,7 +142,8 @@ class FirewallHandler:
             self.remove_entries(p_forward_entries=forward_entries)
 
         elif not p_usage_permitted:
-            self.add_missing_entries(p_ip_address=p_ip_address, p_forward_entries=forward_entries)
+            self.add_missing_entries(p_ip_address=p_ip_address, p_blocked_ip_addresses=p_blocked_ip_addresses,
+                                     p_forward_entries=forward_entries, p_comment=DEFAULT_COMMENT)
 
     def read_forward_entries(self):
 
@@ -174,6 +182,8 @@ class FirewallHandler:
                 entry.source = result.group(self._config.iptables_list_forward_entry_pattern_source_group)
                 entry.destination = \
                     result.group(self._config.iptables_list_forward_entry_pattern_destination_group)
+                entry.comment = \
+                    result.group(self._config.iptables_list_forward_entry_pattern_comment_group)
                 self._entries.append(entry)
 
         self._last_table_scan = datetime.datetime.now()
