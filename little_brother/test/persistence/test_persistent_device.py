@@ -27,8 +27,8 @@ from little_brother.test.persistence import test_persistence
 from python_base_app import tools
 from python_base_app.test import base_test
 
-SPECIFIC_DNS_NAME = "web.de"
-SPECIFIC_DNS_NAMES = [ "web.de", "ikea.de" ]
+SPECIFIC_DNS_NAME = "welt.de"
+SPECIFIC_DNS_NAMES = [ "welt.de", "ikea.de" ]
 SPECIFIC_DNS_NAMES_STRING = "\n".join(SPECIFIC_DNS_NAMES)
 
 class TestDevice(base_test.BaseTestCase):
