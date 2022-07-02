@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -21,6 +21,7 @@
 import unittest
 
 import selenium.webdriver.support.ui
+from selenium.webdriver.common.by import By
 
 from little_brother import constants
 from little_brother import dependency_injection
@@ -70,11 +71,11 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
         self.login_users()
 
-        elem = self._driver.find_element_by_id("username")
+        elem = self._driver.find_element(By.ID, "username")
         dropdown = selenium.webdriver.support.ui.Select(elem)
         dropdown.select_by_value(test_unix_user_handler.USER_2_UID)
 
-        add_button = self._driver.find_element_by_id("add_user")
+        add_button = self._driver.find_element(By.ID, "add_user")
         add_button.click()
 
         user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
@@ -87,12 +88,12 @@ class TestStatusServerUsers(BaseTestStatusServer):
         user_id = user.id
 
         xpath = "//DIV/A[@aria-controls='detailsuser_1']"
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
-        delete_button = self._driver.find_element_by_id("delete_user_1")
+        delete_button = self._driver.find_element(By.ID, "delete_user_1")
         self.click(delete_button)
 
-        delete_button = self._driver.find_element_by_id("delete_user_1-modal-confirm")
+        delete_button = self._driver.find_element(By.ID, "delete_user_1-modal-confirm")
         self.click(delete_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -115,22 +116,22 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
         elem_prefix = "user_{id}_".format(id=user_id)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "first_name")
+        elem = self._driver.find_element(By.ID, elem_prefix + "first_name")
         self.set_value(p_elem=elem, p_value=NEW_USER_FIRST_NAME)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "last_name")
+        elem = self._driver.find_element(By.ID, elem_prefix + "last_name")
         self.set_value(p_elem=elem, p_value=NEW_USER_LAST_NAME)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "process_name_pattern")
+        elem = self._driver.find_element(By.ID, elem_prefix + "process_name_pattern")
         self.set_value(p_elem=elem, p_value=NEW_USER_PROCESS_NAME_PATTERN)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "locale")
+        elem = self._driver.find_element(By.ID, elem_prefix + "locale")
         self.set_value(p_elem=elem, p_value=NEW_USER_LOCALE)
 
-        check_box = self._driver.find_element_by_id(elem_prefix + "active")
+        check_box = self._driver.find_element(By.ID, elem_prefix + "active")
         self.click(check_box)
 
-        save_button = self._driver.find_element_by_id("save")
+        save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -157,7 +158,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         elem_name = "new_ruleset_user_{id}".format(id=user_id)
-        add_button = self._driver.find_element_by_id(elem_name)
+        add_button = self._driver.find_element(By.ID, elem_name)
         self.click(add_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -185,10 +186,10 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         elem_name = "delete_ruleset_{id}".format(id=rule_set_id)
-        unassign_button = self._driver.find_element_by_id(elem_name)
+        unassign_button = self._driver.find_element(By.ID, elem_name)
         self.click(unassign_button)
 
-        confirm_button = self._driver.find_element_by_id(elem_name + "-modal-confirm")
+        confirm_button = self._driver.find_element(By.ID, elem_name + "-modal-confirm")
         self.click(confirm_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -218,7 +219,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         elem_name = "move_down_ruleset_{id}".format(id=rule_set_2_id)
-        add_button = self._driver.find_element_by_id(elem_name)
+        add_button = self._driver.find_element(By.ID, elem_name)
         self.click(add_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -246,7 +247,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         elem_name = "move_up_ruleset_{id}".format(id=rule_set_1_id)
-        add_button = self._driver.find_element_by_id(elem_name)
+        add_button = self._driver.find_element(By.ID, elem_name)
         self.click(add_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -292,11 +293,11 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         elem_name = "user_{id}_device_id".format(id=user_id)
-        select_device = self._driver.find_element_by_id(elem_name)
+        select_device = self._driver.find_element(By.ID, elem_name)
         self.set_value(p_elem=select_device, p_value=device_id)
 
         elem_name = "new_device_user_{id}".format(id=user_id)
-        add_button = self._driver.find_element_by_id(elem_name)
+        add_button = self._driver.find_element(By.ID, elem_name)
         self.click(add_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -334,10 +335,10 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.login_users()
 
         elem_name = "delete_user2device_{id}".format(id=user_2_device_id)
-        unassign_button = self._driver.find_element_by_id(elem_name)
+        unassign_button = self._driver.find_element(By.ID, elem_name)
         self.click(unassign_button)
 
-        confirm_button = self._driver.find_element_by_id(elem_name + "-modal-confirm")
+        confirm_button = self._driver.find_element(By.ID, elem_name + "-modal-confirm")
         self.click(confirm_button)
 
         with SessionContext(self._persistence) as session_context:

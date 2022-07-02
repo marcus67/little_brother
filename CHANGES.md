@@ -4,13 +4,15 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.23 Revision 127 (March 26th, 2022)
+## Version 0.4.23 Revision 127 (July 2nd, 2022)
 
 * Closes #169, see [here](https://github.com/marcus67/little_brother/issues/169)
 * Closes #172, see [here](https://github.com/marcus67/little_brother/issues/172)
+* Closes #174, see [here](https://github.com/marcus67/little_brother/issues/174)
 * Upgrade to `python_base_app` version 0.2.41
 * Finalize renaming "slave" into "client"
 * Lock width of multiline text fields in forms
+* Bump `selenium` to 4.3.0
 
 ## Version 0.4.22 Revision 123 (March 6th, 2022)
 

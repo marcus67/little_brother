@@ -117,7 +117,29 @@ menu bar as shown below (`mr` in this case).
 If a user group (setting `ldap_user_object_class`)
 is provided all users in that group will be offered as potential users to be monitored. If the group is missing
 all users in `/etc/passwd` will be offered that fulfill the same requirements as described above for the 
-section `[UnixUserHandler]`. Also as above, the requirements can be changed using the same options. 
+section `[UnixUserHandler]`. Also as above, the requirements can be changed using the same options.
+
+### Installation of the LDAP Package Extension
+
+The functionality required to use the LDAP interface is not included in either `python-base-app` or `little-brother`.
+Hence, it is not included in the Debian package either. If you want to use it you will have to load an extra package
+AFTER the successful installation of the Debian package. Note that the extension is not relevant for the clients, since
+the LDAP configuration solely takes place on the master.
+
+Let's assume that you have successfully installed LittleBrother using the Debian package. In this case you should
+have a virtual Python environment at `/var/lib/little-brother/virtualenv/`. We need to use the `pip` located in that
+directory as follows:
+
+    /var/lib/little-brother/virtualenv/bin/pip install python-base-app-ldap-extension
+
+Note that this step will require Python to compile the LDAP package so it will take considerably longer than installing
+a source-only Python package. This was also the rationale behind excluding the LDAP extension from the 
+`python-base-app` since all other dependencies of that package are source-only.
+
+After the package has been successfully installed make sure you have your master configuration setup correctly for LDAP
+and restart the LittleBrothe process:
+
+    systemctl restart little-brother
 
 ## Migrating From Older Revisions 
 

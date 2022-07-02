@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -19,6 +19,8 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import unittest
+
+from selenium.webdriver.common.by import By
 
 from little_brother import constants
 from little_brother.test.web.base_test_status_server import BaseTestStatusServer
@@ -44,7 +46,7 @@ class TestStatusServerTopology(BaseTestStatusServer):
         # After logging in we are on the users page
         xpath = "//DIV/DIV[DIV[1] = 'Node Type' and DIV[2] = 'Node Name']"
         assert "Topology" in self._driver.title
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
         # The second time we call the users page.
         self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.TOPOLOGY_REL_URL))
@@ -53,7 +55,7 @@ class TestStatusServerTopology(BaseTestStatusServer):
 
         # we are on the users page right away...
         xpath = "//DIV/DIV[DIV[1] = 'Node Type' and DIV[2] = 'Node Name']"
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
 
 if __name__ == "__main__":

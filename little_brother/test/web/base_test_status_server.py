@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -23,6 +23,7 @@ import os
 import unittest
 
 import selenium
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -48,6 +49,7 @@ from little_brother.user_manager import UserManager
 from little_brother.web import web_server
 from python_base_app import locale_helper
 from python_base_app.base_user_handler import BaseUserHandler
+from python_base_app.configuration import ConfigurationException
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
@@ -159,7 +161,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             self._driver = selenium.webdriver.Chrome(options=options)
 
         else:
-            self._driver = selenium.webdriver.PhantomJS()
+            raise ConfigurationException("No valid Selenium driver selected! Use SELENIUM_CHROME_DRIVER=1.")
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs):
 
@@ -213,17 +215,17 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         assert "Administration" in self._driver.title
 
     def check_empty_user_list(self):
-        self._driver.find_element_by_xpath(XPATH_EMPTY_USER_LIST)
+        self._driver.find_element(By.XPATH, XPATH_EMPTY_USER_LIST)
 
     def check_empty_device_list(self):
-        self._driver.find_element_by_xpath(XPATH_EMPTY_DEVICE_LIST)
+        self._driver.find_element(By.XPATH, XPATH_EMPTY_DEVICE_LIST)
 
     def login(self):
-        elem = self._driver.find_element_by_name("username")
+        elem = self._driver.find_element(By.NAME, "username")
         elem.clear()
         elem.send_keys(test_unix_user_handler.ADMIN_USER)
 
-        elem = self._driver.find_element_by_name("password")
+        elem = self._driver.find_element(By.NAME, "password")
         elem.clear()
         elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
         elem.send_keys(Keys.RETURN)
@@ -249,7 +251,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         user.active = True
         session.commit()
 
-        user_manager : UserManager = dependency_injection.container[UserManager]
+        user_manager: UserManager = dependency_injection.container[UserManager]
 
         user_manager.add_monitored_user(p_username=self.get_new_user_name())
         user_manager.retrieve_user_mappings()

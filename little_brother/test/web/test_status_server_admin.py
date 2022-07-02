@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -20,6 +20,8 @@
 
 import unittest
 from typing import List
+
+from selenium.webdriver.common.by import By
 
 from little_brother import constants
 from little_brother import dependency_injection
@@ -113,25 +115,25 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
         elem_name_prefix = self.get_admin_elem_name_prefix(p_reference_date=reference_date)
 
-        elem = self._driver.find_element_by_id(elem_name_prefix + "min_time_of_day")
+        elem = self._driver.find_element(By.ID, elem_name_prefix + "min_time_of_day")
         self.set_value(p_value=NEW_MIN_TIME_OF_DAY, p_elem=elem)
 
-        elem = self._driver.find_element_by_id(elem_name_prefix + "max_time_of_day")
+        elem = self._driver.find_element(By.ID, elem_name_prefix + "max_time_of_day")
         self.set_value(p_value=NEW_MAX_TIME_OF_DAY, p_elem=elem)
 
-        elem = self._driver.find_element_by_id(elem_name_prefix + "max_time_per_day")
+        elem = self._driver.find_element(By.ID, elem_name_prefix + "max_time_per_day")
         self.set_value(p_value=NEW_MAX_TIME_PER_DAY, p_elem=elem)
 
-        elem = self._driver.find_element_by_id(elem_name_prefix + "max_activity_duration")
+        elem = self._driver.find_element(By.ID, elem_name_prefix + "max_activity_duration")
         self.set_value(p_value=NEW_MAX_ACTIVITY_DURATION, p_elem=elem)
 
-        elem = self._driver.find_element_by_id(elem_name_prefix + "min_break")
+        elem = self._driver.find_element(By.ID, elem_name_prefix + "min_break")
         self.set_value(p_value=NEW_MIN_BREAK, p_elem=elem)
 
-        elem = self._driver.find_element_by_id(elem_name_prefix + "free_play")
+        elem = self._driver.find_element(By.ID, elem_name_prefix + "free_play")
         self.click(elem)
 
-        save_button = self._driver.find_element_by_id("save")
+        save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -173,7 +175,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         elem_name = "time_extension_{username}_{extension}".format(
             username=self.get_new_user_name(), extension=EXTENSION_IN_MINUTES)
 
-        elem = self._driver.find_element_by_id(elem_name)
+        elem = self._driver.find_element(By.ID, elem_name)
         self.click(elem)
 
         with SessionContext(self._persistence) as session_context:
@@ -212,7 +214,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
 
         elem_name = "time_extension_{username}_0".format(username=self.get_new_user_name())
 
-        elem = self._driver.find_element_by_id(elem_name)
+        elem = self._driver.find_element(By.ID, elem_name)
         self.click(elem)
 
         with SessionContext(self._persistence) as session_context:
@@ -248,7 +250,7 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         elem_name = "time_extension_{username}_{extension}".format(username=self.get_new_user_name(),
                                                                    extension=SECOND_EXTENSION_IN_MINUTES)
 
-        elem = self._driver.find_element_by_id(elem_name)
+        elem = self._driver.find_element(By.ID, elem_name)
         self.click(elem)
 
         with SessionContext(self._persistence) as session_context:
@@ -281,14 +283,14 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         elem_name_prefix = self.get_admin_elem_name_prefix(p_reference_date=reference_date)
 
         elem_name = elem_name_prefix + "max_activity_duration"
-        elem = self._driver.find_element_by_id(elem_name)
+        elem = self._driver.find_element(By.ID, elem_name)
         self.set_value(p_value=NEW_INVALID_DURATION, p_elem=elem)
 
-        save_button = self._driver.find_element_by_id("save")
+        save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
         xpath = "//LABEL[@CLASS = 'error-label' and @FOR = '{elem_name}']".format(elem_name=elem_name)
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
         # Data was not saved!
         with SessionContext(self._persistence) as session_context:
@@ -315,14 +317,14 @@ class TestStatusServerAdmin(BaseTestStatusServer):
         elem_name_prefix = self.get_admin_elem_name_prefix(p_reference_date=reference_date)
 
         elem_name = elem_name_prefix + p_elem_name
-        elem = self._driver.find_element_by_id(elem_name)
+        elem = self._driver.find_element(By.ID, elem_name)
         self.set_value(p_value=p_invalid_data, p_elem=elem)
 
-        save_button = self._driver.find_element_by_id("save")
+        save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
         xpath = "//LABEL[@CLASS = 'error-label' and @FOR = '{elem_name}']".format(elem_name=elem_name)
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
         # Data was not saved!
         with SessionContext(self._persistence) as session_context:

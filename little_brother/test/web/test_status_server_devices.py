@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -19,6 +19,8 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import unittest
+
+from selenium.webdriver.common.by import By
 
 from little_brother import constants
 from little_brother import dependency_injection
@@ -74,7 +76,7 @@ class TestStatusServerDevices(BaseTestStatusServer):
             new_device_name = device_entity_manager.get_new_device_name(
                 p_session_context=session_context, p_name_pattern=constants.DEFAULT_DEVICE_NEW_NAME_PATTERN)
 
-            add_button = self._driver.find_element_by_id("add_device")
+            add_button = self._driver.find_element(By.ID, "add_device")
             add_button.click()
 
             device: Device = device_entity_manager.get_by_device_name(
@@ -84,12 +86,12 @@ class TestStatusServerDevices(BaseTestStatusServer):
         device_id = device.id
 
         xpath = "//DIV/A[@aria-controls='detailsdevice_1']"
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
-        delete_button = self._driver.find_element_by_id("delete_device_1")
+        delete_button = self._driver.find_element(By.ID, "delete_device_1")
         delete_button.click()
 
-        delete_button = self._driver.find_element_by_id("delete_device_1-modal-confirm")
+        delete_button = self._driver.find_element(By.ID, "delete_device_1-modal-confirm")
 
         self.click(delete_button)
 
@@ -115,22 +117,22 @@ class TestStatusServerDevices(BaseTestStatusServer):
 
         elem_prefix = "device_{id}_".format(id=device_id)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "device_name")
+        elem = self._driver.find_element(By.ID, elem_prefix + "device_name")
         self.set_value(p_elem=elem, p_value=NEW_DEVICE_NAME)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "hostname")
+        elem = self._driver.find_element(By.ID, elem_prefix + "hostname")
         self.set_value(p_elem=elem, p_value=NEW_DEVICE_HOST_NAME)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "min_activity_duration")
+        elem = self._driver.find_element(By.ID, elem_prefix + "min_activity_duration")
         self.set_value(p_elem=elem, p_value=NEW_DEVICE_MIN_ACTIVITY_DURATION)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "max_active_ping_delay")
+        elem = self._driver.find_element(By.ID, elem_prefix + "max_active_ping_delay")
         self.set_value(p_elem=elem, p_value=NEW_DEVICE_MAX_ACTIVE_PING_DELAY)
 
-        elem = self._driver.find_element_by_id(elem_prefix + "sample_size")
+        elem = self._driver.find_element(By.ID, elem_prefix + "sample_size")
         self.set_value(p_elem=elem, p_value=NEW_DEVICE_SAMPLE_SIZE)
 
-        save_button = self._driver.find_element_by_id("save")
+        save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
         with SessionContext(self._persistence) as session_context:
@@ -163,14 +165,14 @@ class TestStatusServerDevices(BaseTestStatusServer):
         elem_name_prefix = "device_{id}_".format(id=device_id)
 
         elem_name = elem_name_prefix + p_elem_name
-        elem = self._driver.find_element_by_id(elem_name)
+        elem = self._driver.find_element(By.ID, elem_name)
         self.set_value(p_value=p_invalid_data, p_elem=elem)
 
-        save_button = self._driver.find_element_by_id("save")
+        save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
         xpath = "//LABEL[@CLASS = 'error-label' and @FOR = '{elem_name}']".format(elem_name=elem_name)
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
         # Data was not saved!
         with SessionContext(self._persistence) as session_context:

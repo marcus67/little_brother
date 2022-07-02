@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -19,6 +19,8 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import unittest
+
+from selenium.webdriver.common.by import By
 
 from little_brother import constants
 from little_brother import settings
@@ -39,11 +41,12 @@ class TestStatusServerAbout(BaseTestStatusServer):
         assert "About" in self._driver.title
 
         xpath = "//DIV[DIV[1] = 'Version' and DIV[2] = '{version}']"
-        self._driver.find_element_by_xpath(xpath.format(version=settings.settings['version']))
+        self._driver.find_element(By.XPATH, xpath.format(version=settings.settings['version']))
 
         xpath = "//DIV[DIV[1] = 'Debian Package Revision' and DIV[2] = '{debian_package_revision}']"
-        self._driver.find_element_by_xpath(
-            xpath.format(debian_package_revision=settings.extended_settings['debian_package_revision']))
+        self._driver.find_element(By.XPATH,
+                                  xpath.format(
+                                      debian_package_revision=settings.extended_settings['debian_package_revision']))
 
 
 if __name__ == "__main__":
