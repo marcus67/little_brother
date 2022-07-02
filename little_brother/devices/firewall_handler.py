@@ -118,8 +118,8 @@ class FirewallHandler:
 
         self.add_entry_to_cache(new_entry)
 
-    def add_missing_entries(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
-                            p_forward_entries: dict[str, FirewallEntry], p_comment:str):
+    def update_active_entries(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
+                              p_forward_entries: dict[str, FirewallEntry], p_comment:str):
 
         # Use the devices blocked ip addresses if they defined else use the globally defined addresses
         effective_list_of_ip_addresses = self._config.target_ip \
@@ -130,6 +130,11 @@ class FirewallHandler:
 
             if entry_key not in p_forward_entries:
                 self.add_missing_entry(p_ip_address=p_ip_address, p_target_ip=target_ip, p_comment=p_comment)
+
+        for forward_entry in p_forward_entries.values():
+            if forward_entry.destination not in p_blocked_ip_addresses:
+                self.remove_entry(p_entry=forward_entry)
+
 
     def set_usage_permission_for_ip(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
                                     p_usage_permitted: bool):
@@ -142,8 +147,8 @@ class FirewallHandler:
             self.remove_entries(p_forward_entries=forward_entries)
 
         elif not p_usage_permitted:
-            self.add_missing_entries(p_ip_address=p_ip_address, p_blocked_ip_addresses=p_blocked_ip_addresses,
-                                     p_forward_entries=forward_entries, p_comment=DEFAULT_COMMENT)
+            self.update_active_entries(p_ip_address=p_ip_address, p_blocked_ip_addresses=p_blocked_ip_addresses,
+                                       p_forward_entries=forward_entries, p_comment=DEFAULT_COMMENT)
 
     def read_forward_entries(self):
 

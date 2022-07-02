@@ -77,7 +77,7 @@ class Device(Base, BaseEntity):
         if self.blocked_urls is None:
             return []
 
-        return [ tools.get_ip_address_by_dns_name(url) for url in self.blocked_urls.splitlines() if url.strip() != '' ]
+        return [ ip for url in self.blocked_urls.splitlines() if url.strip() != '' for ip in tools.get_ip_addresses_by_dns_name(url) ]
 
     @property
     def summary(self):

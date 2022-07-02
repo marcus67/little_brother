@@ -65,8 +65,6 @@ class TestDevice(base_test.BaseTestCase):
                 ip_address = tools.get_ip_address_by_dns_name(dns_name)
                 self.assertIn(ip_address, ip_addresses)
 
-            self.assertEqual(len(SPECIFIC_DNS_NAMES), len(ip_addresses))
-
 
     def test_ip_address(self):
 
