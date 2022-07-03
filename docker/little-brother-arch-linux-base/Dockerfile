@@ -31,6 +31,4 @@ RUN pacman -Sy && \
                gcc \
                curl \
                unzip \
-               --noconfirm && \
-    curl https://archive.archlinux.org/packages/l/libldap/libldap-2.4.59-2-x86_64.pkg.tar.zst -o /tmp/libldap-2.4.59-2-x86_64.pkg.tar.zst && \
-    pacman -U --noconfirm /tmp/libldap-2.4.59-2-x86_64.pkg.tar.zst
+               --noconfirm

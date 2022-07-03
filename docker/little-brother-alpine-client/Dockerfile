@@ -25,24 +25,18 @@ ENV MASTER_HOST_URL=http://localhost:5555
 ENV MASTER_ACCESS_TOKEN=SOME_LONG_AND_SECRET_TOKEN
 ENV RUNNING_IN_DOCKER=1
 RUN apk update && \
-    apk add  bash \
-             sudo \
-             python3 \
-             python3-dev \
-             py3-pip \
-             build-base \
-             libffi-dev \
-             libsasl \
-             unzip \
-             gcc \
-             curl && \
+    apk add bash \
+            sudo \
+            python3 \
+            python3-dev \
+            py3-pip \
+            py3-packaging \
+            unzip \
+            linux-headers \
+            build-base \
+            gcc \
+            curl && \
     pip install --upgrade pip && \
-    curl http://dl-cdn.alpinelinux.org/alpine/v3.14/main/x86_64/libldap-2.4.58-r0.apk -o /tmp/libldap-2.4.58-r0.apk && \
-    curl http://dl-cdn.alpinelinux.org/alpine/v3.14/main/x86_64/openldap-dev-2.4.58-r0.apk -o /tmp/openldap-dev-2.4.58-r0.apk && \
-    curl http://dl-cdn.alpinelinux.org/alpine/v3.14/main/x86_64/libldapcpp-2.4.58-r0.apk -o /tmp/libldapcpp-2.4.58-r0.apk && \
-    apk add /tmp/libldap-2.4.58-r0.apk \
-            /tmp/openldap-dev-2.4.58-r0.apk \
-            /tmp/libldapcpp-2.4.58-r0.apk && \
     curl -L ${REPO_DOWNLOAD_BASE_URL}${BRANCH}.zip -o /tmp/repo.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
@@ -50,14 +44,12 @@ RUN apk update && \
     rm -rf /tmp/little_brother-* && \
     rm -f /tmp/*.apk && \
     rm -f /tmp/repo.zip && \
-    apk del bash \
+    apk del py3-pip \
             python3-dev \
-            py3-pip \
             build-base \
-            libffi-dev \
+            linux-headers \
             unzip \
-            gcc \
-            curl
+            gcc
 COPY assets/entrypoint.sh /entrypoint.sh
 COPY assets/little-brother.config /etc
 ENTRYPOINT ["/entrypoint.sh"]

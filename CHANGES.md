@@ -4,6 +4,14 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.24 Revision 131 (July 3rd, 2022)
+
+* Fixed broken Docker images (Debian, Ubuntu, and Alpine)
+* Re-Activated Arch Linux Docker image
+* Removed LDAP dependencies in all images
+* Add missing PIP dependency for `packaging` (caused trouble on Alpine)
+* Remove vagrant directory
+
 ## Version 0.4.23 Revision 129 (July 2nd, 2022)
 
 * Closes #169, see [here](https://github.com/marcus67/little_brother/issues/169)
