@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.25 Revision 131 (July 3rd, 2022)
+
+* Re-activate all images (left deactivated by mistake for testing purposes)
+
 ## Version 0.4.24 Revision 131 (July 3rd, 2022)
 
 * Fixed broken Docker images (Debian, Ubuntu, and Alpine)

@@ -54,7 +54,10 @@ setup_params = {
         "run_little_brother_test_suite.py",
     ],
     "long_description": "Tool to monitor login time of users on Debian hosts and terminate processes if usage times "
-                        "are exceeded.",
+                        "are exceeded. Note that this package is not meant as a simple install with PIP since it "
+                        "also requires additional work in the operating system (e.g. add a user, create directories, "
+                        "define a startup service). This is all done by the Debian package provided at "
+                        "https://sourceforge.net/projects/little-brother/ .",
 }
 
 extended_setup_params = {
@@ -64,12 +67,12 @@ extended_setup_params = {
 
     "docker_registry_user": "marcusrickert",
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
-    "docker_contexts": [ #('little-brother-base', False),
-                         #('little-brother-client', True),
-                         #('little-brother-ubuntu-base', False),
-                         #('little-brother-ubuntu-client', True),
-                         #('little-brother-arch-linux-base', False),
-                         #('little-brother-arch-linux-client', True),
+    "docker_contexts": [ ('little-brother-base', False),
+                         ('little-brother-client', True),
+                         ('little-brother-ubuntu-base', False),
+                         ('little-brother-ubuntu-client', True),
+                         ('little-brother-arch-linux-base', False),
+                         ('little-brother-arch-linux-client', True),
                          ('little-brother-alpine-client', True),
                          ],
 
