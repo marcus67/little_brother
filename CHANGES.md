@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.25 Revision 131 (July 3rd, 2022)
+## Version 0.4.25 Revision 132 (July 3rd, 2022)
 
 * Re-activate all images (left deactivated by mistake for testing purposes)
 * Upgrade to package `Flask` > 2
