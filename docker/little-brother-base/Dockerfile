@@ -1,4 +1,4 @@
-FROM marcusrickert/docker-minipython:release-0.9
+FROM marcusrickert/docker-minipython:release-3.10.9
 LABEL maintainer="marcus.rickert@web.de"
 ENV RUNNING_IN_DOCKER=1
 COPY assets/*.deb /tmp
