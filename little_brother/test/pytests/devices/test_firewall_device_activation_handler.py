@@ -66,7 +66,7 @@ def default_firewall_handler(default_firewall_handler_config):
 def patched_firewall_handler_test_result(default_firewall_handler_config):
     handler = FirewallHandler(p_config=default_firewall_handler_config)
     test_result = CallResult()
-    with patch(FirewallHandler.set_usage_permission_for_ip,
+    with patch(handler.set_usage_permission_for_ip,
                lambda p_ip_address, p_blocked_ip_addresses, p_usage_permitted:
                test_result.set(p_ip_address=p_ip_address,
                                p_blocked_ip_addresses=p_blocked_ip_addresses,

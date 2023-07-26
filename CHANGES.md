@@ -4,6 +4,14 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.26 Revision 133 (July 25th, 2023)
+
+* Rename pytest folder to `pytests` (see https://stackoverflow.com/questions/62581901/attribute-error-module-pytest-has-no-attribute-hookimpl/69062733#69062733)
+* Fix error in `migrate_client_device_configs()`
+* Fix error in `patched_firewall_handler_test_result()`
+* General upgrade of most packages
+* Bump python_base_app to 0.2.45
+
 ## Version 0.4.25 Revision 132 (July 3rd, 2022)
 
 * Re-activate all images (left deactivated by mistake for testing purposes)
