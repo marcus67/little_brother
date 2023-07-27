@@ -11,6 +11,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Fix error in `patched_firewall_handler_test_result()`
 * General upgrade of most packages
 * Bump python_base_app to 0.2.45
+* Closes https://github.com/marcus67/little_brother/issues/177
 
 ## Version 0.4.25 Revision 132 (July 3rd, 2022)
 
