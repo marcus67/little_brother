@@ -17,11 +17,11 @@
 
 import datetime
 import socket
-import sys
-import time
 
 import distro
 import prometheus_client
+import sys
+import time
 
 from little_brother import admin_event
 from little_brother import client_stats
@@ -56,7 +56,7 @@ LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT = "0.3.8"
 MINIMUM_VERSION_WITH_CLIENT_STAT_SUPPORT = "0.3.9"
 
 CSS_CLASS_MAXIMUM_PING_EXCEEDED = "node_inactive"
-CSS_CLASS_SLAVE_VERSION_OUTDATED = "node_outdated"
+CSS_CLASS_CLIENT_VERSION_OUTDATED = "node_outdated"
 
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x, y=None: x
@@ -307,7 +307,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         #             self.queue_broadcast_event_start_master()
 
         else:
-            fmt = "Starting application in SLAVE mode communicating with master at URL {master_url}"
+            fmt = "Starting application in CLIENT mode communicating with master at URL {master_url}"
             self._logger.info(fmt.format(master_url=self.master_connector._get_api_url()))
 
             self.queue_event_start_client()
@@ -377,8 +377,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                      p_master_version=self.get_client_version(),
                                      )
             self._client_infos[p_hostname] = client_info
-            self.send_config_to_slave(p_hostname)
-            self._user_manager.send_login_mapping_to_slave(p_hostname)
+            self.send_config_to_client(p_hostname)
+            self._user_manager.send_login_mapping_to_client(p_hostname)
 
         client_info.last_message = tools.get_current_time()
         client_info.client_stats = p_client_stats
@@ -386,15 +386,15 @@ class AppControl(PersistenceDependencyInjectionMixIn):
     def handle_event_start_client(self, p_event):
 
         self.update_client_info(p_event.hostname, p_suppress_send_state_update=True)
-        self.send_config_to_slave(p_event.hostname)
-        self._user_manager.send_login_mapping_to_slave(p_event.hostname)
+        self.send_config_to_client(p_event.hostname)
+        self._user_manager.send_login_mapping_to_client(p_event.hostname)
         self._process_handler_manager.send_historic_process_infos()
 
     def handle_event_start_master(self, p_event):
 
         self._process_handler_manager.queue_artificial_activation_events()
 
-    def send_config_to_slave(self, p_hostname):
+    def send_config_to_client(self, p_hostname):
 
         config = {}
 
@@ -411,10 +411,10 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         self.queue_event_update_config(p_hostname=p_hostname, p_config=config)
 
-    def send_config_to_all_slaves(self):
+    def send_config_to_all_clients(self):
 
         for client in self._client_infos.values():
-            self.send_config_to_slave(p_hostname=client.host_name)
+            self.send_config_to_client(p_hostname=client.host_name)
 
     def process_rule_sets_for_all_users(self, p_reference_time):
 
@@ -637,4 +637,4 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                               p_locale=p_locale)
         self._user_manager.add_monitored_user(p_username=p_username)
         self._user_manager.reset_users(p_session_context=p_session_context)
-        self.send_config_to_all_slaves()
+        self.send_config_to_all_clients()

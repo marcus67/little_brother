@@ -1,6 +1,8 @@
 ![LittleBrother-Logo](little_brother/static/icons/icon-baby-panda-128x128.png)
 ![CentOS-Logo](doc/centos-logo.png)
 ![OpenSuSe-Logo](doc/opensuse-logo.png)
+![ArchLinux-Logo](doc/arch-linux-logo.jpeg)
+![Alpine-Logo](doc/alpine-linux-logo.png)
 
 # Installation on Non-Debian Distributions
 
@@ -13,34 +15,39 @@ This page will outline how to do this.
 
 Install the following Linux packages. Note that the exact names may differ in your distribution.
 
-| Debian Package     | CentOS Package        | SuSe Package |
-| ------------------ | --------------------- | ------------ |
-|   `python3`        | `python3`             | TODO         |
-|   `python3-pip`    | `python3-pip`         | TODO         |
-|   `python-dev`     | `python2-devel`       | TODO         |
-|   `python3-dev`    | `python3-devel`       | TODO         |
-|   `sudo`           | `sudo`                | TODO         |
-|   `gcc`            | `gcc`                 | TODO         |
-|   `procps`         | `procps-ng`           | TODO         |
-|   `virtualenv`     | `python3-virtualenv`  | TODO         |
+| Debian Package           | CentOS Package            | Arch Linux Package   | Alpine package        |
+|--------------------------|-------------------------- |----------------------|-----------------------|
+|   preinstalled           | preinstalled              | preinstalled         | `bash`                |
+|   `python3`              | `python3`                 | `python3`            | `python3`             |
+|   `python3-pip`          | `python3-pip`             | `python-pip`         | `py3-pip`             |
+|   `python3-dev`          | `python3-devel`           | not required         | `python3-devel`       |
+|   `sudo`                 | `sudo`                    | `sudo`               | `sudo`                |
+|   `procps` (master only) | `procps-ng` (master only) | TODO                 | TODO                  |
+|   `virtualenv`           | `python3-virtualenv`      | `python-virtualenv`  | `py3-virtualenv`      |
+|   `libsasl2-dev`         | TODO                      | not required         | `libsasl`             |
+|   not required           | TODO                      | not required         | `libldap=2.5.58`      |
+|   not required           | TODO                      | not required         | `libldapcpp=2.5.58`   |
+|   `libldap2-dev`         | TODO                      | not required         | `openldap-dev=2.5.58` |
+|   not required           | TODO                      | not required         | `libffi-dev`          |
+|   `libssl-dev`           | TODO                      | not required         | not required          |
+|   not required           | TODO                      | `curl`               | `curl`                |
+|   not required           | TODO                      | `gcc`                | `gcc`                 |
 
 ## Installation Steps
 
-*   Download the current GitHub project as a 
-    [zipped tar file](https://github.com/marcus67/little_brother/archive/master.zip) and store it locally.
+* Download the current GitHub project as a 
+  [master branch zipped tar file](https://github.com/marcus67/little_brother/archive/master.zip) or
+  [release branch zipped tar file](https://github.com/marcus67/little_brother/archive/release.zip) 
+ and store it locally.
     
-*   Unzip the archive by executing `unzip master.zip`.
+* Unzip the archive by executing `unzip master.zip`.
 
-*   The base directory of the unzipped archive containing the `README.md` will be referenced as `$INSTALL_BASE_DIR`
+* The base directory of the unzipped archive containing the `README.md` will be referenced as `$INSTALL_BASE_DIR`
     hence forward.
 
-*   Download the current PIP3 packages for `LittleBrother`, `python_base_app` and `some_flask_helpers` from 
-    the test PyPi repository using these links 
-    
-    *   [LittleBrother](https://test.pypi.org/project/little-brother/#files) 
-    *   [python_base_app](https://test.pypi.org/project/python-base-app/#files) 
-    *   [some_flask_helpers](https://test.pypi.org/project/some-flask-helpers/#files) 
-    
-    and store a copy of them into `/tmp`.
-    Note: By default, these three files are included in the Debian package.
-*   Change to `root` and execute the script [`$INSTALL_BASE_DIR/bin/generic-install.sh`](bin/generic-install.sh)
+* Open the script [`$INSTALL_BASE_DIR/bin/generic-install.sh`](bin/generic-install.sh) and scan the header
+  for required environment settings. 
+
+* Set environment variables if applicable (or patch the script).
+
+* Change to `root` and execute the script [`$INSTALL_BASE_DIR/bin/generic-install.sh`](bin/generic-install.sh)

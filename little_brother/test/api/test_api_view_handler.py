@@ -19,8 +19,9 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 import datetime
 import os
-import time
 import unittest
+
+import time
 
 # from little_brother import constants, dependency_injection
 from little_brother import dependency_injection, admin_event, constants
@@ -64,7 +65,7 @@ class TestApiViewHandler(BaseTestStatusServer):
 
         master_connector = MasterConnector(p_config=master_connector_config)
 
-        hostname = "SLAVE"
+        hostname = "CLIENT"
         process_name = "MY_PROCESS"
 
         event = AdminEvent(p_event_type=admin_event.EVENT_TYPE_DUMMY_1,

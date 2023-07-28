@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -37,6 +37,7 @@ class Device(Base, BaseEntity):
     max_active_ping_delay = Column(Integer)
     sample_size = Column(Integer)
     users = relationship("User2Device", back_populates="device", lazy="joined")
+    blocked_urls = Column(String(2048))
 
     def __init__(self):
         super(BaseEntity).__init__()
@@ -45,6 +46,7 @@ class Device(Base, BaseEntity):
         self.sample_size = constants.DEFAULT_DEVICE_SAMPLE_SIZE
         self.min_activity_duration = constants.DEFAULT_DEVICE_MIN_ACTIVITY_DURATION
         self.max_active_ping_delay = constants.DEFAULT_DEVICE_MAX_ACTIVE_PING_DELAY
+        self.blocked_urls = None
 
     def populate_test_data(self, p_session_context: SessionContext):
         self.device_name = "SomeDeviceName"
@@ -65,6 +67,17 @@ class Device(Base, BaseEntity):
         return ", ".join(["{name} ({percent}%)".format(name=user2device.user.full_name, percent=user2device.percent)
                           for user2device in self.users
                           if p_exclude is None or not user2device.user is p_exclude])
+
+    @property
+    def ip_address(self) -> str:
+        return tools.get_ip_address_by_dns_name(self.hostname)
+
+    @property
+    def list_of_blocked_ip_addresses(self) -> list[str]:
+        if self.blocked_urls is None:
+            return []
+
+        return [ ip for url in self.blocked_urls.splitlines() if url.strip() != '' for ip in tools.get_ip_addresses_by_dns_name(url) ]
 
     @property
     def summary(self):

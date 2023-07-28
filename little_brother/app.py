@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os.path
+from typing import Optional
 
 import alembic.config
 import alembic.util.messaging
@@ -36,6 +37,13 @@ from little_brother.api.version_checker import VersionChecker
 from little_brother.api.version_checker import VersionCheckerConfigModel, \
     SECTION_NAME as VERSION_CHECKER_SECTION_NAME, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel, SECTION_NAME as APP_CONTROL_SECTION_NAME
+from little_brother.devices.device_activation_manager import DeviceActivationManager
+from little_brother.devices.device_activation_manager_config_model import DeviceActivationManagerConfigModel, \
+    SECTION_NAME as DEVICE_ACTIVATION_MANAGER_SECTION_NAME
+from little_brother.devices.firewall_device_activation_handler import FirewallDeviceActivationHandler
+from little_brother.devices.firewall_handler import FirewallHandler
+from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, \
+    SECTION_NAME as FIREWALL_HANDLER_SECTION_NAME
 from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
@@ -49,7 +57,6 @@ from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
-from python_base_app import ldap_user_handler
 from python_base_app import pinger
 from python_base_app import unix_user_handler
 from python_base_app.base_user_handler import BaseUserHandler
@@ -61,6 +68,8 @@ PACKAGE_NAME = 'little_brother'
 
 DEFAULT_USER_HANDLER = unix_user_handler.HANDLER_NAME
 DEFAULT_CLEAN_HISTORY_INTERVAL = 24 * 60 * 60  # seconds
+
+LDAP_USER_HANDLER_SECTION_NAME = "LdapUserHandler"
 
 
 class AppConfigModel(base_app.BaseAppConfigModel):
@@ -107,12 +116,14 @@ class App(base_app.BaseApp):
         self._master_connector = None
         self._rule_set_section_handler = None
         self._client_device_section_handler = None
-        self._prometheus_client : PrometheusClient = None
+        self._prometheus_client: Optional[PrometheusClient] = None
         self._user_handler = None
         self._locale_helper = None
         self._pinger = None
+        self._firewall_handler: Optional[FirewallHandler] = None
+        self._device_activation_manager: Optional[DeviceActivationManager] = None
 
-    def prepare_configuration(self, p_configuration):
+    def prepare_configuration(self, p_configuration: configuration.Configuration):
 
         app_control_section = AppControlConfigModel()
         p_configuration.add_section(app_control_section)
@@ -155,8 +166,14 @@ class App(base_app.BaseApp):
         user_handler_section = unix_user_handler.UnixUserHandlerConfigModel()
         p_configuration.add_section(user_handler_section)
 
-        ldap_handler_section = ldap_user_handler.LdapUserHandlerConfigModel()
-        p_configuration.add_section(ldap_handler_section)
+        section_handler_definition = configuration.OptionalSectionHandlerDefinition()
+        section_handler_definition.section_name = LDAP_USER_HANDLER_SECTION_NAME
+        section_handler_definition.package_name = "python_base_app_ldap_extension"
+        section_handler_definition.module_name = "ldap_user_handler"
+        section_handler_definition.config_model_class_name = "LdapUserHandlerConfigModel"
+
+        p_configuration.register_optional_section_handler_definition(
+            p_optional_section_handler_definition=section_handler_definition)
 
         self._login_mapping_section_handler = login_mapping.LoginMappingSectionHandler()
         p_configuration.register_section_handler(p_section_handler=self._login_mapping_section_handler)
@@ -166,6 +183,12 @@ class App(base_app.BaseApp):
 
         version_checker_section = VersionCheckerConfigModel()
         p_configuration.add_section(version_checker_section)
+
+        firewall_handler_section = FirewallHandlerConfigModel()
+        p_configuration.add_section(firewall_handler_section)
+
+        device_activation_manager_section = DeviceActivationManagerConfigModel()
+        p_configuration.add_section(device_activation_manager_section)
 
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
@@ -216,7 +239,7 @@ class App(base_app.BaseApp):
 
         super().prepare_services(p_full_startup=p_full_startup)
 
-        # TODO: Activate in memory sqlite backend for slaves
+        # TODO: Activate in memory sqlite backend for clients
         self._persistence = persistence.Persistence(
             p_config=self._config[persistence.SECTION_NAME])
 
@@ -273,7 +296,6 @@ class App(base_app.BaseApp):
         dependency_injection.container[PrometheusClient] = self._prometheus_client
 
         unix_user_handler_config = self._config[unix_user_handler.SECTION_NAME]
-        ldap_user_handler_config = self._config[ldap_user_handler.SECTION_NAME]
         status_server_config = self._config[web_server.SECTION_NAME]
 
         self.init_babel(p_localeselector=self.get_request_locale)
@@ -286,8 +308,14 @@ class App(base_app.BaseApp):
 
         if self.is_master():
             if status_server_config.is_active():
-                if ldap_user_handler_config.is_active():
-                    self._user_handler = ldap_user_handler.LdapUserHandler(p_config=ldap_user_handler_config)
+                # The section name has to be manually synchronized with the name in python_base_app_ldap_extension!
+                ldap_user_handler_config = self._config[LDAP_USER_HANDLER_SECTION_NAME]
+
+                if ldap_user_handler_config is not None and ldap_user_handler_config.is_active():
+                    # Note that we will only end up here if the configuration contains the section 'LdapUserHandler'
+                    from python_base_app_ldap_extension.ldap_user_handler import LdapUserHandler
+
+                    self._user_handler = LdapUserHandler(p_config=ldap_user_handler_config)
 
                 else:
                     if status_server_config.admin_password is not None:
@@ -375,7 +403,7 @@ class App(base_app.BaseApp):
             raise configuration.ConfigurationException(msg)
 
         else:
-            msg = "Slave instance will not start web server due to missing port number"
+            msg = "Client instance will not start web server due to missing port number"
             self._logger.warn(msg)
 
         self._version_checker = VersionChecker(p_config=self._config[VERSION_CHECKER_SECTION_NAME],
@@ -383,10 +411,28 @@ class App(base_app.BaseApp):
 
         dependency_injection.container[VersionChecker] = self._version_checker
 
-
         task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
+
+        device_activation_manager_config: DeviceActivationManagerConfigModel = \
+            self._config[DEVICE_ACTIVATION_MANAGER_SECTION_NAME]
+
+        self._device_activation_manager = DeviceActivationManager(p_config=device_activation_manager_config)
+
+        firewall_handler_config: FirewallHandlerConfigModel = self._config[FIREWALL_HANDLER_SECTION_NAME]
+
+        if firewall_handler_config.is_active():
+            self._firewall_handler = FirewallHandler(p_config=firewall_handler_config)
+            dependency_injection.container[FirewallHandler] = self._firewall_handler
+
+            firewall_device_activation_handler = FirewallDeviceActivationHandler()
+            self._device_activation_manager.add_handler(firewall_device_activation_handler)
+
+        task = self._device_activation_manager.get_recurring_task()
+
+        if task is not None:
+            self.add_recurring_task(p_recurring_task=task)
 
     def run_special_commands(self, p_arguments):
 
@@ -437,6 +483,9 @@ class App(base_app.BaseApp):
 
         fmt = "Shutting down services -- START"
         self._logger.info(fmt)
+
+        if self._device_activation_manager is not None:
+            self._device_activation_manager.shutdown()
 
         if self._status_server is not None:
             self._status_server.stop_server()

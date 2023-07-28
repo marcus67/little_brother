@@ -84,18 +84,18 @@ After successful login the user will be display in the menu bar.
 
 ![Menubar-Topology](doc/menubar-topology.png)
 
-Although `LittleBrother` can run on a single PC (master), it is possible to monitor several slave PCs at the same time.
+Although `LittleBrother` can run on a single PC (master), it is possible to monitor several client PCs at the same time.
 In order to keep the overview over the network of PCs the tab `Topology` provides a list of the currently known PCs.
 
 ![Topology](doc/topology.png)
 
-It shows the master and all slave nodes with the following columns:
+It shows the master and all client nodes with the following columns:
 
-* *Node Type*: Denotes the type of node ("Master" or "Slave"). There is exactly one master and `0..N` slaves. If
+* *Node Type*: Denotes the type of node ("Master" or "Client"). There is exactly one master and `0..N` clients. If
     the node process is running in a Docker container it will have an additional `(Docker)` remark.
     
-* *Node Name*: Denotes Unique name of the node. I usually corresponds to the host DNS name but it can be set in the
-    configuration file.
+* *Node Name*: Denotes the unique name of the node. It usually corresponds to the host DNS name, but it can be set in 
+  the configuration file.
     
 * *App Version*: Denotes the version of the `LittleBrother` process on that node.
 
@@ -119,11 +119,11 @@ in red.
 #### Outdated Clients and Version Checks
 
 If a client is detected whose version is older than 0.3.9 the additional metadata (AppVersion, Revision and Python
-Version) is not available. In this case the AppVersion will show "< 0.3.9" in red color. If the slave version is 
+Version) is not available. In this case the AppVersion will show "< 0.3.9" in red color. If the client version is 
 smaller than the master version, the AppVersion will also show in red. See screenshot above.
 
 As of version 0.4.9 of `LittleBrother` the master node will check SourceForge for versions automatically. If a 
-new version is found, this version will be reported in a banner underneath the navigation bar. The bannner also
+new version is found, this version will be reported in a banner underneath the navigation bar. The banner also
 includes a download link.
 
 ![Version Check Banner](doc/version-check-banner.png)
@@ -136,7 +136,7 @@ checked once a day.
 If the master has not received a message from the client for more than a certain number of seconds (defaults to `60`)
 the value in column *Time Since Last Ping* will be displayed in red. See screenshot above.
 
-**Note:** The master cannot differentiate between slaves that are only temporarily not available and slaves which have
+**Note:** The master cannot differentiate between clients that are only temporarily not available and clients which have
 completely been removed from the topology. In the latter case the master has to be restarted to "forget" the 
 removed clients.
 
@@ -217,7 +217,7 @@ and having the length of the selected number of minutes.
 to play at least until the end of the time extension. It will, however, **not** change the daily limit, nor will it
 influence the way minimum break times are computed.
 
-*   In the rule summary, active restrictive rules will still be displayed but they will be inactive. The only rule
+*   In the rule summary, active restrictive rules will still be displayed, but they will be inactive. The only rule
 that will always show the "right" time is the one regarding the remaining number of minutes in the current session.
 
 *   In contrast to the normal rule sets which usually have trouble to cover computer times spanning midnight
@@ -227,7 +227,7 @@ elegantly, time extensions will handle this case nicely.
 
 In addition to the time extensions handled by the administrator, it is also possible to grant a certain time a day
 which can be used by the user to request time extensions on the fly. This optional time is administered with the
-corresponding ruleset. See the configuration of rulesets further below.
+corresponding rule set. See the configuration of rule sets further below.
 
 The idea is that time extensions may be required very urgently at the end of session to "kill that final invader" or
 maybe save a game context. For the user, it would be contact the administrator to ask for a time extension 
@@ -245,11 +245,11 @@ Before a user can be monitored she has to be added to the users list of `LittleB
 users list is empty. The application will try to retrieve the users on the master host by querying the 
 `/etc/passwd` file using standard Python libraries. See [Users and UIDs in README](README.md) for details. 
 
-All users found that are not being monitored yet will be offered in the drop down menu following "Add to monitoring":
+All users found that are not being monitored yet will be offered in the dropdown menu following "Add to monitoring":
 
 ![Users-Add-User-From-List](doc/users-add-user-list.png)
 
-To add the user choose the user name from the drop down list and click the add button:
+To add the user choose the username from the dropdown list and click the add button:
 
 ![Add-Button](doc/add-button.png)
 
@@ -356,7 +356,7 @@ a *fair* break duration as follows:
 *   If a user has played less than her maximum session time the break time will be enforced proportionally that is
 the effective break time compared to the configured break time will have the same ratio as the actual session time
 to the maximum session time. Example: the maximum session time is set to 1 hour and the break time to 30 minutes. The
-user decides to play for 40 minutes in her session which accounts for two thirds of the maximum session time. Hence
+user decides to play for 40 minutes in her session which accounts for two thirds of the maximum session time. Hence,
 the break time will be `2/3*30=20` minutes.    
 
 ### Rule Contexts
@@ -393,20 +393,20 @@ federal state in Germany. In this case the value of `context_details` denotes th
 *   `Schleswig-Holstein`, or
 *   `Thüringen`.
 
-Note that the vacation schedules are retrieved from the web site 
+Note that the vacation schedules are retrieved from the website 
 [www.mehr-schulferien.de](https://www.mehr-schulferien.de). The author of `LittleBrother` cannot be held responsible 
 for incorrect schedules.
  
 ### Associating Devices with Users
 
 In addition to the hosts which are scanned for logins of the monitored users `LittleBrother` can be configured to
-also scan the activity on other devices, e.g. game consoles or smart phones. The assumption is that there is activity 
+also scan the activity on other devices, e.g. game consoles or smartphones. The assumption is that there is activity 
 on one of these
 devices when they respond to a [ping](https://searchnetworking.techtarget.com/definition/ping). Of course, this is a
-simplification but it may work in some cases. Please, consider the inherent restrictions:
+simplification, but it may work in some cases. Please, consider the inherent restrictions:
 
 *   The fact that a ping is received just means that the device is "on". However, there may not be any activity on it.
-In this case the play time will be overestimated. Also some devices may automatically turn on to check for updates.
+In this case the play time will be overestimated. Also, some devices may automatically turn on to check for updates.
 This will result in phantom play time (sometimes at very odd hours of a day).
 
 *   The ping cannot differentiate between users. So this setup only works well, if the devices can clearly be
@@ -415,9 +415,9 @@ associated with monitored users and are not shared too often.
 *   Devices which can be played offline will not respond to a ping if disconnected from the local network. In this 
 case the play time will be underestimated.
 
-*   The ping returned by smart phones is sometimes hard to interpret. The correlation between successful pings and
+*   The ping returned by smartphones is sometimes hard to interpret. The correlation between successful pings and
 actual usage is small. The monitoring has to be improved by actually measuring the delay of the ping which requires
-some fine tuning.
+some fine-tuning.
 
 **Note**: The following steps are only available if devices have already been set up. See section 
 *Configuring Devices* below. 
@@ -444,12 +444,15 @@ In order to change the settings of a device association clicking on the device n
 
 The columns contain the following details:
 
-*   *Monitored*: denotes if the device is scanned for the user. Use this switch to temporarily deactivate the scanning.
+* *Monitored*: denotes if the device is scanned for the user. Use this switch to temporarily deactivate the scanning.
 The flag is off by default. It needs to be activated for a new association.
+* *Blockable*: denotes if the network communication of this device is to be blocked when the user has exceeded her
+  time budget. This is done by inserting an appropriate rule into `iptables`. See 
+* [Advanced Topics](ADVANCED_TOPICS.md) for setting up this functionality.   
 
-*   *Percent*: denotes the percentage with which the active time of this device will added as play time to the 
+* *Percent*: denotes the percentage with which the active time of this device will be added as play time to the 
 associated user. The default is 100%. Choosing a value below 100% can be interpreted as e.g. a "social" bonus for a 
-console which allows multi player games or e.g. a typical fraction of time that the user spends on the device 
+console which allows multiplayer games or e.g. a typical fraction of time that the user spends on the device 
 compared to the overall use of the device (by other users).
 
 To save the settings click on the save button:    
@@ -465,10 +468,13 @@ activity on other devices by using the ICMP protocol (`ping`). The assumption is
 quick response to ping it is currently active (or rather has an active user logged in). If, on the other hand,
 the response is slow or if there is no response at all the device is regarded as inactive.
 
-Note that `LittleBrother` is not able terminate any processes on the monitored devices so that the users
+Note that `LittleBrother` is not able to terminate any processes on the monitored devices so that the users
 may easily exceed their permitted access times there. However, any login times on these devices are added to
 the access times on the Linux hosts so that the remaining access time is still influenced. Also, the minimum
-break time will apply the point of time when the last other device became inactive.      
+break time will apply the point of time when the last other device became inactive.    
+
+As of version 0.4.23 `LittleBrother` may be able to at least restrict network access to the monitored devices.
+See the section on `iptables` in [Advanced Topics](ADVANCED_TOPICS.md) for details.
 
 The top level of the devices page shows a list of all configured devices. If the devices are associated with users
 their names are shown and also their respective usage percentages.
@@ -481,13 +487,13 @@ Clicking on a device name opens the second level showing details on the specific
 
 The fields have the following meaning:
 
-*   *Name*: The logical name of the device which will show up in lists. The logical name has to be unique across all
+* *Name*: The logical name of the device which will show up in lists. The logical name has to be unique across all
 devices.
 
-*   *Host Name*: The DNS name or IP address of the device. This address will be used for *pinging* the device. It has to
-be a valid address which can be resolved by the name server. Otherwise the entry will be rejected. Also, the hostname
-has to be unique across all devices. If you want to monitor devices in your local WIFI you have to see to it 
-that your WIFI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
+* *Host Name*: The DNS name or IP address of the device. This address will be used for *pinging* the device. It has to
+be a valid address which can be resolved by the name server. Otherwise, the entry will be rejected. Also, the hostname
+has to be unique across all devices. If you want to monitor devices in your local WI-FI you have to see to it 
+that your WI-FI router always issues the same IP numbers to the same devices. Usually, there is a way to configure the
 router accordingly. Look out for *persistent IP addresses* in the manual.
 
     As of version 0.3.12 of `LittleBrother` the host name may also have an extended format permitting to ping devices
@@ -513,19 +519,22 @@ router accordingly. Look out for *persistent IP addresses* in the manual.
     name, whereas the `device.host.name` will not be checked. For the time being, format errors in the specification above
     or a wrong device host name will silently be ignored resulting in the device being regarded as *down* all the time.   
 
-*   *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
+* *Min Activity Duration \[s\]*:  Denotes how many seconds a ping has to be responsive before the device is regarded 
 as active. Durations shorter than this period will be ignored completely.
 
-*   *Max Active Response Delay \[ms\]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
+* *Max Active Response Delay \[ms\]*: Denotes the maximum response time (measured in milliseconds) a ping may have to 
 still be regarded as 'active'. For game consoles (often using the local area network) a low value of 10 \[ms\] is 
-usually OK. For smart phone using WIFI the value needs to be higher since these devices have a more sluggish response. 
-For iPhones over WIFI values between 50 \[ms\] and 80 \[ms\] have been tested to work pretty well. You will have to 
-monitor the value a little bit during the initial phase. If `LittleBrother` often detects activity where there is none, 
+usually OK. For smartphone using WI-FI the value needs to be higher since these devices have a more sluggish response. 
+For iPhones over WI-FI values between 50 \[ms\] and 80 \[ms\] have been tested to work pretty well. You will have to 
+monitor the value a bit during the initial phase. If `LittleBrother` often detects activity where there is none, 
 decrease the value. If, on the other had, activity often goes undetected, increase the value.
 
-*   *Sample Size*: Denotes the number of delay samples used to compute the effective delay as moving average. This value
-can probably be left as it is.   
-
+* *Sample Size*: Denotes the number of delay samples used to compute the effective delay as moving average. This value
+can probably be left as it is.
+* *Blocked URLs*: Use this text are to override the globally URLs which are blocked for the device if the assigned user
+  has exceeded his time budget. Use one DNS name or IP address per line. Each DNS address is checked before the entry
+  can be saved. **Note:** These entries completely *replace* the default entries. If you want to have some of the 
+  default entries active you will have to repeat them here! 
 To make changes enter the desired values and click the save button.
 
 ![Save-Button](doc/save-button.png)

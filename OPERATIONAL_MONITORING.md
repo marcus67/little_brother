@@ -7,7 +7,7 @@
 The application `LittleBrother` has a simple HTTP health check endpoint with relative url `/health` which 
 can be monitored by systems such as `icinga`. 
 The endpoint will always return HTTP code `200` and the text `OK`. It is automatically active for the master
-host since the master host always has its web frontend active anyway. For the slaves the endpoint has to be
+host since the master host always has its web frontend active anyway. For the clients the endpoint has to be
 activated by setting at least the port the section `[StatusServer]` as in the example below.
 
     ...

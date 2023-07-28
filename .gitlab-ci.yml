@@ -28,8 +28,10 @@ stages:
   - build
   - install_and_check
   - analyze
-  - deploy
+  - owasp_check
+  - owasp_upload
   - publish
+  - deploy
   
 build_debian:
   image: marcusrickert/docker-python-app:latest
@@ -68,7 +70,7 @@ build_pypi:
   artifacts:
       when: always
       paths:
-        - dist/little-brother-0.4.19.tar.gz
+        - dist/little-brother-0.4.26.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
@@ -101,6 +103,47 @@ analyze:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
+
+
+owasp_check:
+  image:
+    name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
+    entrypoint: [""]
+  stage: owasp_check
+  script:
+    # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 0 are found
+    - /usr/share/dependency-check/bin/dependency-check.sh --enableExperimental --scan "./" --format XML --project "$CI_PROJECT_NAME"
+    # Dependency Check will only fail the job based on CVSS scores, and in some cases vulnerabilities do not
+    # have CVSS scores (e.g. those from NPM audit), so they don't cause failure.  To fail for any vulnerabilities
+    # grep the resulting report for any "vulnerabilities" sections and exit if any are found (count > 0).
+  allow_failure: false
+  artifacts:
+    when: always
+    paths:
+        # Save the HTML and JSON report artifacts
+      - "./dependency-check-report.xml"
+
+owasp_upload:
+  image:
+    name: "$VULSCAN_ADAPTER_IMAGE"
+    entrypoint: ["python", "run.py"]
+  stage: owasp_upload
+  allow_failure: false
+  variables:
+    VULSCAN_SERVER_URL: "$VULSCAN_URL/analyzer/api"
+    REPORT_FILE_NAME: dependency-check-report.xml
+    FILE_FORMAT: xml
+    TOOL_NAME: owasp
+    PROJECT_ID: "little-brother"
+    PROJECT_NAME: "little-brother"
+  script:
+    - echo "Analysis successful."
+
+publish_pypi:
+  image: marcusrickert/docker-python-app:latest
+  stage: publish
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
 docker:
   image: marcusrickert/docker-docker-ci:release-0.9.1
   stage: deploy
@@ -109,9 +152,3 @@ docker:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-
-publish_pypi:
-  image: marcusrickert/docker-python-app:latest
-  stage: publish
-  script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.

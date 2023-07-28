@@ -19,7 +19,9 @@ The latest major feature changes are:
 
 | Version  | Feature/Fix                                                   | (Issue) Link                                                         |
 |----------|---------------------------------------------------------------|----------------------------------------------------------------------|
-| 0.4.17   | *Bug Fix*: Remove incompatibilty with new `alembic` version   | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
+| 0.4.23   | Optionally use `iptables` to restrict network access          | [Issue 169](https://github.com/marcus67/little_brother/issues/169)   |
+| 0.4.20   | *Bug Fix*: Use Python virtual environment again               | [Issue 170](https://github.com/marcus67/little_brother/issues/170)   |
+| 0.4.17   | *Bug Fix*: Remove incompatibility with new `alembic` version  | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
 | 0.4.16   | *Bug Fix*: Ignore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
 | 0.4.15   | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
 | 0.4.14   | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
@@ -158,15 +160,17 @@ So far, `LittleBrother` has only been released as a Debian package. For other no
 there is some basic support using a generic installation script. 
 See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
-| Distribution | Version       | Architecture | Comments                                                               | Most Recent Test |
-| ------------ | ------------- | ------------ | ---------------------------------------------------------------------- | ---------------- |
-| Ubuntu       | 20.04         | amd64        |                                                                        | 28.JAN.2022      |
-| Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop             | 28.JAN.2022      |
-| Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53) | 03.JUN.2019      |
-| Debian       | buster        | amd64        | This distribution (buster-slim) is used as base image for Docker       | 01.JAN.2020      |
-| Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop              | 05.MAR.2020      |
-| Mint         | 19            | amd64        |                                                                        | 03.JAN.2020      |
-| Debian       | stretch       | armv6l       |                                                                        | 23.MAY.2020      |
+| Distribution | Version       | Architecture | Comments                                                                                                                                                     | Most Recent Test |
+| ------------ | ------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
+| Ubuntu       | 20.04         | amd64        | This version is used as base image for the [Ubuntu Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-ubuntu-client)        | 28.JAN.2022      |
+| Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop                                                                                                   | 06.MAR.2022      |
+| Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53)                                                                                       | 03.JUN.2019      |
+| Debian       | buster        | amd64        | The version `buster-slim` is used as base image for the [Debian Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-client)  | 01.JAN.2020      |
+| Debian       | 10.3 (buster) | amd64        | Feedback from a user as regular install with Mate desktop                                                                                                    | 05.MAR.2020      |
+| Mint         | 19            | amd64        |                                                                                                                                                              | 03.JAN.2020      |
+| Arch Linux   |               | amd64        | See https://aur.archlinux.org/packages/little-brother                                                                                                        | 06.MAR.2022      |
+| Debian       | stretch       | armv6l       |                                                                                                                                                              | 23.MAY.2020      |
+| Alpine       | v3.13         | amd64        | This distribution is used as base image for the [Alpine Docker Image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-alpine-client)   | 06.MAR.2022      |
 
 ## Quick Install (Snap)
 
@@ -224,9 +228,10 @@ various additional aspects that may require additional configuration.
 | Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 | Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
-| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                 |
+| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                |
 | Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md).|
 | Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
+| Firewall support            | Do not restrict network access of client hosts                             | Configure targets IP addresses to be blocked                    | See [Advanced Configuration](ADVANCED_TOPICS.md)        |
 
 ### Setting the Admin Password
 

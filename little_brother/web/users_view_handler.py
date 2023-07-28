@@ -124,7 +124,7 @@ class UsersViewHandler(BaseViewHandler):
                 p_session_context=p_session_context, p_username=p_user.username)
             self.persistence.clear_cache()
             self.user_manager.reset_users(p_session_context=p_session_context)
-            self.app_control.send_config_to_all_slaves()
+            self.app_control.send_config_to_all_clients()
             self.app_control.reset_process_patterns()
 
         elif p_submit_id == p_user.new_ruleset_html_key:
@@ -256,7 +256,7 @@ class UsersViewHandler(BaseViewHandler):
             if changed:
                 session.commit()
                 self._persistence.clear_cache()
-                self.app_control.send_config_to_all_slaves()
+                self.app_control.send_config_to_all_clients()
                 self.user_manager.reset_users(p_session_context=session_context)
                 self.app_control.reset_process_patterns()
 

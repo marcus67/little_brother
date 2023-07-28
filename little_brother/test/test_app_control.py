@@ -98,7 +98,7 @@ class TestAppControl(base_test.BaseTestCase):
 
         user_manager.retrieve_user_mappings()
 
-    def test_is_slave(self):
+    def test_is_client(self):
         mc_config = master_connector.MasterConnectorConfigModel()
         mc_config.host_url = "htt" + "p://master.domain/"
         config = app_control.AppControlConfigModel()

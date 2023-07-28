@@ -4,6 +4,57 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.26 Revision 133 (July 25th, 2023)
+
+* Rename pytest folder to `pytests` (see https://stackoverflow.com/questions/62581901/attribute-error-module-pytest-has-no-attribute-hookimpl/69062733#69062733)
+* Fix error in `migrate_client_device_configs()`
+* Fix error in `patched_firewall_handler_test_result()`
+* General upgrade of most packages
+* Bump python_base_app to 0.2.45
+* Closes https://github.com/marcus67/little_brother/issues/177
+
+## Version 0.4.25 Revision 132 (July 3rd, 2022)
+
+* Re-activate all images (left deactivated by mistake for testing purposes)
+* Upgrade to package `Flask` > 2
+* Upgrade to `some-flask-helpers` 0.2.3
+
+## Version 0.4.24 Revision 131 (July 3rd, 2022)
+
+* Fixed broken Docker images (Debian, Ubuntu, and Alpine)
+* Re-Activated Arch Linux Docker image
+* Removed LDAP dependencies in all images
+* Add missing PIP dependency for `packaging` (caused trouble on Alpine)
+* Remove vagrant directory
+
+## Version 0.4.23 Revision 129 (July 2nd, 2022)
+
+* Closes #169, see [here](https://github.com/marcus67/little_brother/issues/169)
+* Closes #172, see [here](https://github.com/marcus67/little_brother/issues/172)
+* Closes #174, see [here](https://github.com/marcus67/little_brother/issues/174)
+* Upgrade to `python_base_app` version 0.2.42
+* Finalize renaming "slave" into "client"
+* Lock width of multiline text fields in forms
+* Bump `selenium` to 4.3.0
+
+## Version 0.4.22 Revision 123 (March 6th, 2022)
+
+* Deactivate Arch Linux Docker image due to incompatibility of `glibc`
+
+## Version 0.4.21 Revision 123 (March 6th, 2022)
+
+* Update documentation on generic installation script
+* Update documentation on distributions
+* Re-activate the build of all Docker images
+* Upgrade to `python_base_app` version 0.2.38
+
+## Version 0.4.20 Revision 122 (March 3rd, 2022)
+
+* Configuration for Docker images based on Arch Linux and Alpine
+* Use of corrected `generic-install.sh`
+* Closes #170, see [here](https://github.com/marcus67/little_brother/issues/170)
+* Upgrade to `python_base_app` version 0.2.37
+
 ## Version 0.4.19 Revision 121 (February 13th, 2022)
 
 * Upgrade to `python_base_app` version 0.2.36 (lots of trouble releasing `python_base_app`)
@@ -50,7 +101,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 ## Version 0.4.11 Revision 110 (November 22nd, 2021)
 
-* Requeue outgoing events on slave in case API call was not successful (potential fix for 
+* Requeue outgoing events on client in case API call was not successful (potential fix for 
   [issue 157](https://github.com/marcus67/little_brother/issues/157))
 
 ## Version 0.4.10 Revision 109 (October 12th, 2021)
@@ -294,7 +345,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.3.1 Revision 67 (July 20th, 2020)
 
 *   Fix issue with master process not detecting user activity when new users are activated
-*   Change the default configuration on the Docker slave image:
+*   Change the default configuration on the Docker client image:
     *   Set sqlite as the default backend
     *   Deactivate audio output and pop notifications
 
@@ -329,7 +380,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 *   Deactivate settings changes to log handling by alembic
 *   Support broadcasting of user settings, activate on all relevant changes
 *   Increase connection pool size
-*   Activate mandatory sqlite backend for slaves
+*   Activate mandatory sqlite backend for clients
 *   Make sure database session are always closed
 *   Deploy etc/master.config as a template
 *   Closes #93, see [here](https://github.com/marcus67/little_brother/issues/93)
@@ -442,14 +493,14 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 
 ## Version 0.1 Revision 48 (December 26th, 2019)
 
-*   Added Docker image for slave process
+*   Added Docker image for client process
 *   Support for overriding of settings using environment
 *   Abstraction of the audio engine (class `BaseAudioPlayer`)
 *   Support for `mpg123` as audio engine (new)
 *   Support for `playsound` as audio engine (rewritten as engine)
 *   Support for `pyglet` as audio engine (new)
-*   Correct handling of default locale on slave device
-*   Distribution of login mappings from master to slave (for Docker containers and macOS)
+*   Correct handling of default locale on client host
+*   Distribution of login mappings from master to client (for Docker containers and macOS)
 *   New CI stage to build docker images
 *   Consistent hiding of sensitive variable values in logging
 *   Packages `sudo` and `procps` added to the Debian package dependencies

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -23,12 +23,94 @@
 # but only to python_base_app/templates/debian_postinst.template.sh!             #
 ##################################################################################
 
+##################################################################################
+# PARAMETERS                                                                     #
+##################################################################################
+# When set, will deactivate portions that are not applicable to Docker containers
+RUNNING_IN_DOCKER=${RUNNING_IN_DOCKER:-}
+
+# When set, contains an extra PIP index to download from
+# This will be required when trying to install the version of the `master` branch since the required PIP packages
+# may not be available ot pypi.org yet. In this case, add the extra index https://test.pypi.org/simple/
+TEST_PYPI_EXTRA_INDEX=${TEST_PYPI_EXTRA_INDEX:-}
+
+# When set, will create the application user with a specific user id
+APP_UID=${APP_UID:-}
+
+# When set, will create the application group with a specific group id
+APP_GID=${APP_UID:-}
+
+##################################################################################
+
+if [ -f /etc/os-release ] ; then
+  . /etc/os-release
+else
+  echo "Cannot read /etc/os-release!"
+  exit 2
+fi
+
+echo "Detected operating system architecture '${ID}'."
+
+function add_group() {
+  group_name=$1
+  group_id=$2
+
+  if [ "$ID" == "alpine" ] ; then
+    if [ "${group_id}" == "" ] ; then
+      addgroup ${group_name}
+    else
+      addgroup -g ${group_id} ${group_name}
+    fi
+  else
+    if [ "${group_id}" == "" ] ; then
+      groupadd little-brother
+    else
+      groupadd --gid ${group_id} ${group_name}
+    fi
+
+  fi
+}
+
+function add_user() {
+  user_name=$1
+  group_name=$2
+  user_id=$3
+
+  if [ "$ID" == "alpine" ] ; then
+    if  [ "${user_id}" == "" ] ; then
+        adduser -G ${group_name} -g "" -H -D ${user_name}
+    else
+        adduser -G ${group_name} -u ${user_id} -g "" -H -D ${user_name}
+    fi
+  else
+    if  [ "${user_id}" == "" ] ; then
+        useradd --gid ${group_name} --no-create-home ${user_name}
+    else
+        useradd --gid ${group_name} --uid ${user_id} --no-create-home ${user_name}
+    fi
+  fi
+
+}
+
+function add_user_to_group() {
+  user_name=$1
+  group_name=$2
+
+  if [ "$ID" == "alpine" ] ; then
+    adduser ${user_name} ${group_name}
+  else
+    usermod -aG ${group_name} ${user_name}
+  fi
+}
+
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+export VIRTUAL_ENV_DIR=/var/lib/little-brother/virtualenv
+fi
 
 ETC_DIR=/etc/little-brother
 LOG_DIR=/var/log/little-brother
 SPOOL_DIR=/var/spool/little-brother
 LIB_DIR=/var/lib/little-brother
-VIRTUAL_ENV_DIR=/var/lib/little-brother/virtualenv
 SYSTEMD_DIR=/lib/systemd/system
 TMPFILE_DIR=/usr/lib/tmpfiles.d
 SUDOERS_DIR=/etc/sudoers.d
@@ -38,10 +120,12 @@ ROOT_DIR=
 SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
 INSTALL_BASE_DIR=$(realpath $SCRIPT_DIR/..)
 BIN_DIR=${INSTALL_BASE_DIR}/bin
-PIP3=${LIB_DIR}/pip3.sh
-chmod +x ${PIP3}
 
 
+
+echo "Creating lib directories..."
+echo "    * ${LIB_DIR}"
+mkdir -p ${LIB_DIR}
 
 echo "Running generic installation script with base directory located in $INSTALL_BASE_DIR..."
 
@@ -50,43 +134,53 @@ if [ ! "$EUID" == "0" ] ; then
     exit 2
 fi
 
+PIP3=${SCRIPT_DIR}/pip3.sh
+chmod +x ${PIP3}
+echo "Downloading Pip packages to $LIB_DIR..."
+${PIP3} download -d $LIB_DIR --no-deps little_brother==0.4.26
+
+${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.2.45
+
+${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.3
+
+
 echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
-if [ ! -f $LIB_DIR/little-brother-0.4.19.tar.gz ] ; then
-  echo "ERROR: package little-brother-0.4.19.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/little-brother-0.4.26.tar.gz ] ; then
+  echo "ERROR: package little-brother-0.4.26.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package little-brother-0.4.19.tar.gz was found."
+  echo "Package little-brother-0.4.26.tar.gz was found."
 fi
 
-if [ ! -f $LIB_DIR/python-base-app-0.2.36.tar.gz ] ; then
-  echo "ERROR: package python-base-app-0.2.36.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/python-base-app-0.2.45.tar.gz ] ; then
+  echo "ERROR: package python-base-app-0.2.45.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package python-base-app-0.2.36.tar.gz was found."
+  echo "Package python-base-app-0.2.45.tar.gz was found."
 fi
 
-if [ ! -f $LIB_DIR/some-flask-helpers-0.2.2.tar.gz ] ; then
-  echo "ERROR: package some-flask-helpers-0.2.2.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/some-flask-helpers-0.2.3.tar.gz ] ; then
+  echo "ERROR: package some-flask-helpers-0.2.3.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package some-flask-helpers-0.2.2.tar.gz was found."
+  echo "Package some-flask-helpers-0.2.3.tar.gz was found."
 fi
 
-mkdir -p ${SYSTEMD_DIR}
-cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
-echo "Execute systemctl daemon-reload..."
-systemctl daemon-reload
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  mkdir -p ${SYSTEMD_DIR}
+  cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
+fi
 mkdir -p ${SUDOERS_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.sudo ${SUDOERS_DIR}/little-brother
 mkdir -p ${APPARMOR_DIR}
 cp ${INSTALL_BASE_DIR}/etc/little-brother.apparmor ${APPARMOR_DIR}/little-brother.conf
-TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/slave.config )
+TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/client.config )
 mkdir -p ${TARGET_DIRECTORY}
-echo "Deploying extra file '$INSTALL_BASE_DIR/etc/slave.config' to '${ROOT_DIR}/etc/little-brother/slave.config'..."
-cp -f $INSTALL_BASE_DIR/etc/slave.config ${ROOT_DIR}/etc/little-brother/slave.config
+echo "Deploying extra file '$INSTALL_BASE_DIR/etc/client.config' to '${ROOT_DIR}/etc/little-brother/client.config'..."
+cp -f $INSTALL_BASE_DIR/etc/client.config ${ROOT_DIR}/etc/little-brother/client.config
 TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/master.config )
 mkdir -p ${TARGET_DIRECTORY}
 echo "Deploying extra file '$INSTALL_BASE_DIR/etc/master.config' to '${ROOT_DIR}/etc/little-brother/master.config'..."
@@ -94,31 +188,22 @@ cp -f $INSTALL_BASE_DIR/etc/master.config ${ROOT_DIR}/etc/little-brother/master.
 
 
 
-# endif for if generic_script
+
+
 if grep -q 'little-brother:' /etc/group ; then
     echo "Group 'little-brother' already exists. Skipping group creation."
 else
     #echo "Adding group 'little-brother'..."
-    if [ "${APP_GID}" == "" ] ; then
-        groupadd little-brother
-    else
-	      groupadd --gid ${APP_GID} little-brother
-    fi
+    add_group little-brother ${APP_GID}
 fi
 if grep -q 'little-brother:' /etc/passwd ; then
     echo "User 'little-brother' already exists. Skipping user creation."
 else
-    if  [ "${APP_UID}" == "" ] ; then
-#        adduser --gid little-brother --gecos "" --no-create-home --disabled-password little-brother
-        useradd --gid little-brother --no-create-home little-brother
-    else
-#        adduser --gid little-brother --uid ${APP_UID} --gecos "" --no-create-home --disabled-password little-brother
-        useradd --gid little-brother --uid ${APP_UID} --no-create-home little-brother
-    fi
+    add_user little-brother little-brother ${APP_UID}
 fi
 
 set -e
-usermod -aG audio little-brother
+  add_user_to_group little-brother audio
 
 
 echo "Creating directories..."
@@ -137,6 +222,7 @@ else
   cp -f /etc/little-brother/master.config /etc/little-brother/little-brother.config
 fi
 
+if [ "${VIRTUAL_ENV_DIR}" != "" ] ; then
 
 echo "Creating symbolic link /usr/local/bin/run_little_brother.py --> ${VIRTUAL_ENV_DIR}/bin/run_little_brother.py..."
 ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother.py /usr/local/bin/run_little_brother.py
@@ -146,6 +232,9 @@ ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother_test_suite.py /usr/local/bin/ru
 echo "Creating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
 
 virtualenv -p /usr/bin/python3 ${VIRTUAL_ENV_DIR}
+echo "Activating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
+. ${VIRTUAL_ENV_DIR}/bin/activate
+fi
 
 echo "Setting ownership..."
 echo "    * little-brother.little-brother ${ETC_DIR}"
@@ -160,9 +249,10 @@ chown -R little-brother.little-brother ${LIB_DIR}
 
 echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
 chown little-brother.little-brother /etc/little-brother/little-brother.config
-echo "    * ${SYSTEMD_DIR}/little-brother.service"
-chown root.root ${SYSTEMD_DIR}/little-brother.service
-
+  if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  echo "    * ${SYSTEMD_DIR}/little-brother.service"
+  chown root.root ${SYSTEMD_DIR}/little-brother.service
+  fi
 echo "    * ${SUDOERS_DIR}"
 chown root.root ${SUDOERS_DIR}
 echo "    * ${SUDOERS_DIR}/little-brother"
@@ -184,22 +274,27 @@ chmod -R og-rwx ${SPOOL_DIR}
 echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
 chmod og-rwx /etc/little-brother/little-brother.config
 
-${PIP3} --version
 ${PIP3} install wheel # setuptools
 echo "Installing PIP packages..."
-echo "  * little-brother-0.4.19.tar.gz"
-echo "  * python-base-app-0.2.36.tar.gz"
-echo "  * some-flask-helpers-0.2.2.tar.gz"
+echo "  * little-brother-0.4.26.tar.gz"
+echo "  * python-base-app-0.2.45.tar.gz"
+echo "  * some-flask-helpers-0.2.3.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
-${PIP3} install --upgrade --force-reinstall \
-     ${LIB_DIR}/little-brother-0.4.19.tar.gz\
-     ${LIB_DIR}/python-base-app-0.2.36.tar.gz\
-     ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
+${PIP3} install --upgrade --ignore-installed \
+     ${LIB_DIR}/little-brother-0.4.26.tar.gz\
+     ${LIB_DIR}/python-base-app-0.2.45.tar.gz\
+     ${LIB_DIR}/some-flask-helpers-0.2.3.tar.gz
 
 
-echo "Removing installation file ${LIB_DIR}/little-brother-0.4.19.tar.gz..."
-rm ${LIB_DIR}/little-brother-0.4.19.tar.gz
-echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.36.tar.gz..."
-rm ${LIB_DIR}/python-base-app-0.2.36.tar.gz
-echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz..."
-rm ${LIB_DIR}/some-flask-helpers-0.2.2.tar.gz
+echo "Removing installation file ${LIB_DIR}/little-brother-0.4.26.tar.gz..."
+rm ${LIB_DIR}/little-brother-0.4.26.tar.gz
+echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.45.tar.gz..."
+rm ${LIB_DIR}/python-base-app-0.2.45.tar.gz
+echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.3.tar.gz..."
+rm ${LIB_DIR}/some-flask-helpers-0.2.3.tar.gz
+if [ "$RUNNING_IN_DOCKER" == "" ] ; then
+  echo "Execute systemctl daemon-reload..."
+  set +e
+  systemctl daemon-reload
+  set -e
+fi

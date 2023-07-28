@@ -264,7 +264,7 @@ class ClientDeviceHandler(PersistenceDependencyInjectionMixIn, ProcessHandler):
 
         for pinfo in self._process_infos.values():
             if pinfo.hostname == p_hostname and pinfo.username == p_username and \
-                    max_start_time is None or pinfo.start_time > max_start_time:
+                    (max_start_time is None or pinfo.start_time > max_start_time):
                 max_start_time = pinfo.start_time
                 most_recent_pinfo = pinfo
 

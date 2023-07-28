@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,10 @@ from python_base_app import pinger
 
 _ = lambda x: x
 
+def set_get_text(p_get_text):
+    global _
+    _ = p_get_text
+
 a_pinger = pinger.Pinger()
 
 
@@ -42,10 +46,9 @@ class UserForm(custom_form.ModelForm):
     first_name = wtforms.StringField("FirstName")
     last_name = wtforms.StringField("LastName")
     locale = wtforms.SelectField("Locale")
-    process_name_pattern = wtforms.TextAreaField("ProcessNamePattern",
-                                                 validators=[regex_validator])
-    prohibited_process_name_pattern = wtforms.TextAreaField("ProhibitedProcessNamePattern",
-                                                 validators=[regex_validator])
+    process_name_pattern = custom_fields.TextArea("ProcessNamePattern", validators=[regex_validator])
+    prohibited_process_name_pattern = custom_fields.TextArea("ProhibitedProcessNamePattern",
+                                                             validators=[regex_validator])
     active = custom_fields.BooleanField("Active")
 
 
@@ -66,8 +69,13 @@ class DummyAdminForm(custom_form.ModelForm):
 
 
 def dns_validator(_form, field):
-    if not a_pinger.is_valid_ping(field.data):
-        raise wtforms.validators.ValidationError(_("Not a valid host address"))
+    urls = field.data.splitlines()
+
+    for url in urls:
+        if url.strip() != "":
+            if not a_pinger.is_valid_ping(url):
+                msg = _("Not a valid host address: {url}")
+                raise wtforms.validators.ValidationError(msg.format(url=url))
 
 
 class DeviceForm(custom_form.ModelForm):
@@ -92,6 +100,9 @@ class DeviceForm(custom_form.ModelForm):
                                        validators=[wtforms.validators.NumberRange(
                                            min=constants.DEVICE_MIN_SAMPLE_SIZE,
                                            max=constants.DEVICE_MAX_SAMPLE_SIZE)])
+    blocked_urls = custom_fields.TextArea("BlockedUrls",
+                                          validators=[wtforms.validators.length(max=2048),
+                                                      dns_validator])
 
 
 def create_rulesets_form(prefix, p_localized_context_details, p_context_choices, p_context_details_filters):
@@ -114,3 +125,4 @@ def create_rulesets_form(prefix, p_localized_context_details, p_context_choices,
 class User2DeviceForm(custom_form.ModelForm):
     percent = wtforms.IntegerField("Percent", validators=[wtforms.validators.NumberRange(min=1, max=100)])
     active = custom_fields.BooleanField("Active")
+    blockable = custom_fields.BooleanField("Blockable")

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  little-brother\n"
 "Report-Msgid-Bugs-To: marcus.rickert@web.de\n"
-"POT-Creation-Date: 2022-01-30 21:24+0100\n"
+"POT-Creation-Date: 2022-06-19 18:18+0200\n"
 "PO-Revision-Date: 2019-02-27 23:25+0100\n"
 "Last-Translator: Marcus Rickert <marcus.rickert@web.de>\n"
 "Language: de\n"
@@ -75,8 +75,8 @@ msgid "Master"
 msgstr "Master"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/client_info.py:68
-msgid "Slave"
-msgstr "Slave"
+msgid "Client"
+msgstr "Client"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/context_rule_handler.py:62
 msgid "Details"
@@ -86,9 +86,9 @@ msgstr "Details"
 msgid "Sub pattern must be longer than one character"
 msgstr "Teilmuster muss länger als ein Zeichen sein"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:70
-msgid "Not a valid host address"
-msgstr "Keine gültige Computer-Adresse"
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/entity_forms.py:74
+msgid "Not a valid host address: {url}"
+msgstr "Keine gültige Computer-Adresse: {url}"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/german_vacation_context_rule_handler.py:33
 msgid "vacation"
@@ -321,11 +321,11 @@ msgstr ""
 msgid "username '{username}' does not exist or is not being monitored"
 msgstr "Benutzer '{username}' wird nicht überwacht"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_device.py:74
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_device.py:87
 msgid "Assigned users"
 msgstr "Zugewiesene Benutzer"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_device.py:76
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_device.py:89
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:87
 msgid "Host Name"
 msgstr "Computername"
@@ -336,7 +336,7 @@ msgid "Username"
 msgstr "Benutzername"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user.py:192
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user_2_device.py:48
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user_2_device.py:49
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:101
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:294
 msgid "Monitored"
@@ -351,7 +351,7 @@ msgstr "Unbekannt"
 msgid "Locale"
 msgstr "Lokalisierung"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user_2_device.py:52
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/persistence/persistent_user_2_device.py:53
 msgid "Shared with"
 msgstr "Geteilt mit"
 
@@ -488,7 +488,7 @@ msgstr "ersetzt"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:80
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:106
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:198
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:303
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:305
 msgid "Save"
 msgstr "Sichern"
 
@@ -529,18 +529,22 @@ msgstr "Stichproben- größe"
 msgid "Max Active Response Delay [ms]"
 msgstr "Max. Verzögerung der Antwort [ms]"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:99
+msgid "Blocked URLs"
+msgstr "Blockierte URLs"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:140
 msgid "Do you really want to permanently remove the device from monitoring?"
 msgstr "Möchten Sie die Beobachtung des Geräts permanent beenden?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:132
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:140
 msgid "Remove from Monitoring"
 msgstr "Beobachtung beenden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:132
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:319
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:324
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:329
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/devices.template.html:140
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:321
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:326
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:331
 msgid "Cancel"
 msgstr "Abbruch"
 
@@ -749,7 +753,7 @@ msgid "Edit ruleset details"
 msgstr "Ändere Details des Regelsatzes"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:182
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:324
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:326
 msgid "Remove ruleset"
 msgstr "Regelsatz entfernen"
 
@@ -778,23 +782,27 @@ msgid "Remove monitoring of this device for the user"
 msgstr "Beobachtung dieses Geräts für den Benutzer beenden"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:295
+msgid "Blockable"
+msgstr "Blockierbar"
+
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:296
 msgid "Percent"
 msgstr "Prozent"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:319
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:321
 msgid "Do you really want to permanently remove the user from monitoring?"
 msgstr "Möchten Sie die Beobachtung des Benutzers permanent beenden?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:319
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:329
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:321
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:331
 msgid "Remove from monitoring"
 msgstr "Beobachtung beenden"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:324
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:326
 msgid "Do you really want to permanently remove the ruleset?"
 msgstr "Möchten Sie den Regelsatz permanent entfernen?"
 
-#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:329
+#: /home/mr/projects/LittleBrotherGitHub/little_brother/templates/users.template.html:331
 msgid ""
 "Do you really want to permanently remove monitoring of the device for "
 "this user?"
@@ -808,11 +816,13 @@ msgid ""
 "HREF=\"{changes_url}\">here</A> for changes. Download Debian package <a "
 "href=\"{download_url}\">here</a>."
 msgstr ""
-"Neue Version von LittleBrother für den"
-" Update-Kanal <CODE>{channel}</CODE> verfügbar:"
-" Version <CODE>{suggested_version}</CODE> in "
-"Revision <CODE>{suggested_revision}</CODE>. "
-"Siehe <A HREF=\"{changes_url}\">hier</A> für eine Liste der Änderungen. "
-"Debian-Paket <a href=\"{download_url}\">hier</a> "
-"herunterladen."
+"Neue Version von LittleBrother für den Update-Kanal "
+"<CODE>{channel}</CODE> verfügbar: Version "
+"<CODE>{suggested_version}</CODE> in Revision "
+"<CODE>{suggested_revision}</CODE>. Siehe <A "
+"HREF=\"{changes_url}\">hier</A> für eine Liste der Änderungen. Debian-"
+"Paket <a href=\"{download_url}\">hier</a> herunterladen."
+
+#~ msgid "Not a valid host address"
+#~ msgstr "Keine gültige Computer-Adresse"
 

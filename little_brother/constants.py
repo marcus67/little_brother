@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2022  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ DEVICE_MAX_MIN_ACTIVITY_DURATION = 1000
 DEVICE_MIN_MAX_ACTIVE_PING_DELAY = 1
 DEVICE_MAX_MAX_ACTIVE_PING_DELAY = 1000
 
-DEVICE_MIN_SAMPLE_SIZE = 5
+DEVICE_MIN_SAMPLE_SIZE = 2
 DEVICE_MAX_SAMPLE_SIZE = 100
 
 LANGUAGES = {
@@ -68,7 +68,7 @@ LANGUAGES = {
 
 TEXT_SEPERATOR = ' <i style="font-size: 0.5rem; vertical-align: +25%" class="fas fa-circle fa-sm"></i> '
 
-API_URL = "/api"
+API_URL = "/api/"
 API_REL_URL_EVENTS = "events"
 API_URL_EVENTS = os.path.join(API_URL, API_REL_URL_EVENTS)
 

@@ -53,11 +53,11 @@ class TestMasterConnector(base_test.BaseTestCase):
         self.assertIsNotNone(received_message)
         self.assertEqual(3, len(received_message))
 
-        hostname, json_events, json_slave_stats = received_message
+        hostname, json_events, json_client_stats = received_message
 
         self.assertEqual(HOSTNAME, hostname)
         self.assertEqual(1, len(json_events))
-        self.assertEqual(1, len(json_slave_stats))
+        self.assertEqual(1, len(json_client_stats))
 
 
 if __name__ == "__main__":

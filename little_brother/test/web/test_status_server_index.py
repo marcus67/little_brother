@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -20,6 +20,8 @@
 
 import unittest
 
+from selenium.webdriver.common.by import By
+
 from little_brother import constants
 from little_brother.test import test_data
 from little_brother.test.web.base_test_status_server import BaseTestStatusServer
@@ -30,7 +32,7 @@ class TestStatusServerIndex(BaseTestStatusServer):
 
     def check_index_page_visible(self):
         xpath = "//DIV[DIV[1] = 'User' and DIV[2] = 'Context' and DIV[12] = 'Reasons']"
-        self._driver.find_element_by_xpath(xpath)
+        self._driver.find_element(By.XPATH, xpath)
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS")
     def test_page_index_with_process_no_restrictions(self):

@@ -42,7 +42,7 @@ if [ "${PIP3}" == "" ] ; then
   exit 1
 fi
 
-EXTRA_INDEX_URL=""
+EXTRA_INDEX_URL="$TEST_PYPI_EXTRA_INDEX"
 
 
 if [ "${EXTRA_INDEX_URL}" == "" ] ; then

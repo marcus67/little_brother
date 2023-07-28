@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -118,8 +118,6 @@ class TestPersistence(base_test.BaseTestCase):
 
         self.assertIsNotNone(session2)
         self.assertEqual(session, session2)
-
-
 
     @staticmethod
     def create_pinfo(p_age_in_days, p_include_end_time=False):

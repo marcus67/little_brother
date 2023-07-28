@@ -27,6 +27,7 @@ import humanize
 import little_brother
 from little_brother import app_control
 from little_brother import constants
+from little_brother import entity_forms
 from little_brother.api import api_view_handler
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.web.about_view_handler import AboutViewHandler
@@ -136,12 +137,14 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._app.jinja_env.filters['seconds_as_humanized_duration'] = self.format_seconds_as_humanized_duration
         self._app.jinja_env.filters['_base'] = self._base_gettext
 
-        self._babel = flask_babel.Babel(self._app)
-        self._babel.localeselector(self._locale_helper.locale_selector)
+        self._babel = flask_babel.Babel()
+        #self._babel.localeselector(self._locale_helper.locale_selector)
+        self._babel.init_app(app=self._app, locale_selector=self._locale_helper.locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
 
-    def invert(self, rel_font_size):
+        entity_forms.set_get_text(self.gettext)
 
+    def invert(self, rel_font_size):
         return str(int(1.0 / float(rel_font_size) * 10000.0))
 
     def format_datetime(self, value):

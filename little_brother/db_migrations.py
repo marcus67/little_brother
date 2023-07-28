@@ -142,6 +142,7 @@ class DatabaseMigrations(object):
                     user2device.percent = constants.DEFAULT_USER2DEVICE_PERCENT
                     user2device.active = True
                     user2device.user = user
+                    session.add(user2device)
 
                 else:
                     msg = "Username '{username}' for found for device '{device_name}' -> not linking to user!"

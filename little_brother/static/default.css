@@ -1,5 +1,5 @@
 /*
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -387,10 +387,15 @@ ul {
   80% { opacity: 0.5; }
 }
 
-/* https://stackoverflow.com/questions/41081275/bootstrap-left-align-checkbox-in-horizontal-form */
+/* See https://stackoverflow.com/questions/41081275/bootstrap-left-align-checkbox-in-horizontal-form */
 .move-left {
   width: auto;
   box-shadow: none;
+}
+
+/* See https://de.w3docs.com/snippets/css/wie-kann-man-die-grossenanderung-des-elements-textarea-deaktivieren.html */
+.text-field-lock-width {
+  resize: vertical;
 }
 
 .fas {

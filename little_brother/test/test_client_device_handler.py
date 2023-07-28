@@ -41,7 +41,7 @@ class TestClientDeviceHandler(base_test.BaseTestCase):
     def check_list_has_n_elements(self, p_list, p_n):
         self.assertIsNotNone(p_list)
         self.assertIsInstance(p_list, list)
-        self.assertEqual(len(p_list), p_n)
+        self.assertEqual(p_n, len(p_list))
 
     @base_test.skip_if_env("NO_PING")
     def test_existing_host(self):
