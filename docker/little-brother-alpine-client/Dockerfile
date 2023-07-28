@@ -36,7 +36,7 @@ RUN apk update && \
             gcc \
             curl && \
     pip install --ignore-installed --upgrade pip && \
-    curl -L ${REPO_DOWNLOAD_BASE_URL}${BRANCH}.zip -o /tmp/repo.zip -o /tmp/repo.zip && \
+    curl -L ${REPO_DOWNLOAD_BASE_URL}${BRANCH}.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
     /tmp/little_brother-*/bin/generic-install.sh && \

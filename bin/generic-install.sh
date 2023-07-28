@@ -280,7 +280,7 @@ echo "  * little-brother-0.4.26.tar.gz"
 echo "  * python-base-app-0.2.45.tar.gz"
 echo "  * some-flask-helpers-0.2.3.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
-${PIP3} install --upgrade \
+${PIP3} install --upgrade --ignore-installed \
      ${LIB_DIR}/little-brother-0.4.26.tar.gz\
      ${LIB_DIR}/python-base-app-0.2.45.tar.gz\
      ${LIB_DIR}/some-flask-helpers-0.2.3.tar.gz
