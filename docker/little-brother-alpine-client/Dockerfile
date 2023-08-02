@@ -16,7 +16,7 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-FROM alpine:latest
+FROM alpine:3.18.2
 LABEL maintainer="marcus.rickert@web.de"
 ARG BRANCH
 ARG REPO_DOWNLOAD_BASE_URL
@@ -29,6 +29,7 @@ RUN apk update && \
             sudo \
             python3 \
             python3-dev \
+            py3-packaging \
             py3-pip \
             unzip \
             linux-headers \
