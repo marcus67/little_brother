@@ -70,7 +70,7 @@ build_pypi:
   artifacts:
       when: always
       paths:
-        - dist/little-brother-0.4.26.tar.gz
+        - dist/little-brother-0.4.27.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
