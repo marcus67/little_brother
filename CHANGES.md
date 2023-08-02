@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.27 Revision 134 (Aug 2nd, 2023)
+
+* Fix broken Alpine image
+
 ## Version 0.4.26 Revision 133 (July 25th, 2023)
 
 * Rename pytest folder to `pytests` (see https://stackoverflow.com/questions/62581901/attribute-error-module-pytest-has-no-attribute-hookimpl/69062733#69062733)
