@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.28 Revision 135 (Aug 26th, 2023)
+* Remove incompatibility with Python 3.8 in `python_base_app`
+* Bump python_base_app to 0.2.46
+* Closes https://github.com/marcus67/little_brother/issues/180
+
+
 ## Version 0.4.27 Revision 134 (Aug 2nd, 2023)
 
 * Fix broken Alpine image
