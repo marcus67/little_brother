@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.29 Revision 135 (Sep 1st, 2023)
+
+* Fix problem version 0.4.28 in which an older version of `python_base_app` was included 
+
 ## Version 0.4.28 Revision 135 (Aug 26th, 2023)
 * Remove incompatibility with Python 3.8 in `python_base_app`
 * Bump python_base_app to 0.2.46
