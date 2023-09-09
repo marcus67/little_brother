@@ -15,6 +15,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from typing import List
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -73,7 +75,7 @@ class Device(Base, BaseEntity):
         return tools.get_ip_address_by_dns_name(self.hostname)
 
     @property
-    def list_of_blocked_ip_addresses(self) -> list[str]:
+    def list_of_blocked_ip_addresses(self) -> List[str]:
         if self.blocked_urls is None:
             return []
 

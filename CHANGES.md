@@ -4,7 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.29 Revision 135 (Sep 1st, 2023)
+## Version 0.4.30 Revision 137 (Sep 9th, 2023)
+ 
+* Remove incompatibility with Python 3.8 in `firewall_handler.py` and `persistent_device.py`
+* Closes https://github.com/marcus67/little_brother/issues/180 (again)
+
+## Version 0.4.29 Revision 136 (Sep 1st, 2023)
 
 * Fix problem version 0.4.28 in which an older version of `python_base_app` was included 
 

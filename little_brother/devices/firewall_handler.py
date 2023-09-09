@@ -19,7 +19,7 @@ import datetime
 import re
 import shlex
 import subprocess
-from typing import Optional
+from typing import Optional, List, Dict
 
 from little_brother.devices.firewall_entry import FirewallEntry, key
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, DEFAULT_PROTOCOL, \
@@ -34,15 +34,15 @@ class FirewallHandler:
         self._logger = log_handling.get_logger(self.__class__.__name__)
 
         self._config: FirewallHandlerConfigModel = p_config
-        self._entries: Optional[list[FirewallEntry]] = None
+        self._entries: Optional[List[FirewallEntry]] = None
         self._last_table_scan: Optional[datetime.datetime] = None
 
     @property
-    def entries(self) -> Optional[list[FirewallEntry]]:
+    def entries(self) -> Optional[List[FirewallEntry]]:
         self.read_forward_entries()
         return self._entries
 
-    def get_active_forward_entries(self, p_ip_address) -> dict[str, FirewallEntry]:
+    def get_active_forward_entries(self, p_ip_address) -> Dict[str, FirewallEntry]:
 
         source = tools.get_ip_address_by_dns_name(p_dns_name=p_ip_address)
 
@@ -81,11 +81,11 @@ class FirewallHandler:
 
         self.remove_entry_from_cache(p_entry=p_entry)
 
-    def remove_entries(self, p_forward_entries: dict[str, FirewallEntry]):
+    def remove_entries(self, p_forward_entries: Dict[str, FirewallEntry]):
         for entry in p_forward_entries.values():
             self.remove_entry(p_entry=entry)
 
-    def add_missing_entry(self, p_ip_address: str, p_target_ip: str, p_comment:str):
+    def add_missing_entry(self, p_ip_address: str, p_target_ip: str, p_comment: str):
 
         self._logger.info(f"Adding iptables entry for blocking {p_ip_address} -> {p_target_ip}...")
 
@@ -96,7 +96,7 @@ class FirewallHandler:
         )
 
         # Remove the specification of the default route (= "any IP address") from the command since this is not an
-        # allowed ip address! However, iptables will list the default route as such so we will use the string "0.0.0.0"
+        # allowed ip address! However, iptables will list the default route as such, so we will use the string "0.0.0.0"
         # everywhere else.
         iptables_command = iptables_command.replace("-d 0.0.0.0", "")
 
@@ -118,8 +118,8 @@ class FirewallHandler:
 
         self.add_entry_to_cache(new_entry)
 
-    def update_active_entries(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
-                              p_forward_entries: dict[str, FirewallEntry], p_comment:str):
+    def update_active_entries(self, p_ip_address: str, p_blocked_ip_addresses: List[str],
+                              p_forward_entries: Dict[str, FirewallEntry], p_comment: str):
 
         # Use the devices blocked ip addresses if they defined else use the globally defined addresses
         effective_list_of_ip_addresses = self._config.target_ip \
@@ -135,8 +135,7 @@ class FirewallHandler:
             if forward_entry.destination not in p_blocked_ip_addresses:
                 self.remove_entry(p_entry=forward_entry)
 
-
-    def set_usage_permission_for_ip(self, p_ip_address: str, p_blocked_ip_addresses: list[str],
+    def set_usage_permission_for_ip(self, p_ip_address: str, p_blocked_ip_addresses: List[str],
                                     p_usage_permitted: bool):
 
         self.read_forward_entries()
