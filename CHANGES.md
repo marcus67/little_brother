@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.31 Revision 138 (October 7th, 2023)
+* Bump python_base_app to 0.2.47
+* Fix all packages at minor release
+* Bump minor release of some packages
+
 ## Version 0.4.30 Revision 137 (Sep 9th, 2023)
  
 * Remove incompatibility with Python 3.8 in `firewall_handler.py` and `persistent_device.py`
