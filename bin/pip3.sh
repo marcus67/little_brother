@@ -44,7 +44,6 @@ fi
 
 EXTRA_INDEX_URL="$TEST_PYPI_EXTRA_INDEX"
 
-
 if [ "${EXTRA_INDEX_URL}" == "" ] ; then
   echo "No extra PIP indexes defined!"
   EXTRA_INDEX_OPTION=
@@ -72,4 +71,4 @@ else
 fi
 
 echo "Using pip3 binary at ${PIP3}..."
-${PIP3} $@ ${EXTRA_INDEX_OPTION}
+${PIP3} "$@" ${EXTRA_INDEX_OPTION}
