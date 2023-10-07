@@ -137,7 +137,7 @@ fi
 PIP3=${SCRIPT_DIR}/pip3.sh
 chmod +x ${PIP3}
 echo "Downloading Pip packages to $LIB_DIR..."
-${PIP3} download -d $LIB_DIR --no-deps little_brother==0.4.30
+${PIP3} download -d $LIB_DIR --no-deps little_brother==0.4.31
 
 ${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.2.47
 
@@ -145,12 +145,12 @@ ${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.3
 
 
 echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
-if [ ! -f $LIB_DIR/little-brother-0.4.30.tar.gz ] ; then
-  echo "ERROR: package little-brother-0.4.30.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/little-brother-0.4.31.tar.gz ] ; then
+  echo "ERROR: package little-brother-0.4.31.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package little-brother-0.4.30.tar.gz was found."
+  echo "Package little-brother-0.4.31.tar.gz was found."
 fi
 
 if [ ! -f $LIB_DIR/python-base-app-0.2.47.tar.gz ] ; then
@@ -276,18 +276,18 @@ chmod og-rwx /etc/little-brother/little-brother.config
 
 ${PIP3} install wheel # setuptools
 echo "Installing PIP packages..."
-echo "  * little-brother-0.4.30.tar.gz"
+echo "  * little-brother-0.4.31.tar.gz"
 echo "  * python-base-app-0.2.47.tar.gz"
 echo "  * some-flask-helpers-0.2.3.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --ignore-installed \
-     ${LIB_DIR}/little-brother-0.4.30.tar.gz\
+     ${LIB_DIR}/little-brother-0.4.31.tar.gz\
      ${LIB_DIR}/python-base-app-0.2.47.tar.gz\
      ${LIB_DIR}/some-flask-helpers-0.2.3.tar.gz
 
 
-echo "Removing installation file ${LIB_DIR}/little-brother-0.4.30.tar.gz..."
-rm ${LIB_DIR}/little-brother-0.4.30.tar.gz
+echo "Removing installation file ${LIB_DIR}/little-brother-0.4.31.tar.gz..."
+rm ${LIB_DIR}/little-brother-0.4.31.tar.gz
 echo "Removing installation file ${LIB_DIR}/python-base-app-0.2.47.tar.gz..."
 rm ${LIB_DIR}/python-base-app-0.2.47.tar.gz
 echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.3.tar.gz..."
