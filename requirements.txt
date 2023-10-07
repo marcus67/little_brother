@@ -19,6 +19,7 @@ python-dateutil==2.8.*
 requests==2.31.*
 secure==0.3.*
 urllib3==2.0.*
+werkzeug==2.3.*
 
 ##############################################################################################################
 # The package version of selenium is linked to the setup of the test environment (e.g. the version of Chrome).
