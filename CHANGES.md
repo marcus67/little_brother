@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.32 Revision 139 (October 12th, 2023)
+* Bump `some_flask_helpers` to 0.2.4
+* Bump `python_base_app` to 0.2.48
+
 ## Version 0.4.31 Revision 138 (October 7th, 2023)
 * Closes https://github.com/marcus67/little_brother/issues/183
 * Bump `python_base_app` to 0.2.47

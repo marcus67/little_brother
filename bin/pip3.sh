@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2023  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
