@@ -107,7 +107,7 @@ extended_setup_params = {
         little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
     },
     "generate_generic_install": True,
-    "analyze": True,
+    "analyze": False,
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
 }
