@@ -1,3 +1,4 @@
+// See https://realpython.com/user-authentication-with-angular-4-and-flask/
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { User } from '../models/user';
@@ -5,7 +6,7 @@ import { User } from '../models/user';
 
 @Injectable()
 export class AuthService {
-  private BASE_URL: string = 'http://localhost:5560/angular-api';
+  private BASE_URL: string = '/angular-api';
   private headers: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient) {}
