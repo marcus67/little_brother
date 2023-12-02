@@ -7,18 +7,13 @@ import { User } from '../../models/user';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-
 export class LoginComponent {
-
+  user: User = new User();
   constructor(private auth: AuthService) {}
-    ngOnInit(): void {
-      let sampleUser: User = {
-      username: 'schule' as string,
-      password: 'schule' as string
-    };
-
-    this.auth.login(sampleUser).then((result) => {
-      console.log(result.json());
+  onLogin(): void {
+    this.auth.login(this.user)
+    .then((user) => {
+      console.log(user);
     })
     .catch((err) => {
       console.log(err);

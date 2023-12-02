@@ -40,6 +40,7 @@ from little_brother.web.users_view_handler import UsersViewHandler
 from python_base_app import base_web_server
 from python_base_app import locale_helper
 from python_base_app import tools
+from python_base_app import angular_auth_view_handler
 
 SECTION_NAME = "StatusServer"
 
@@ -58,6 +59,8 @@ class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
         self.time_format = "%H:%M"
         self.date_format = "%a %d.%m.%Y"
         self.simple_date_format = "%d.%m.%Y"
+        self.classic_gui_active = True
+        self.angular_gui_active = False
 
 
 class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebServer):
@@ -74,33 +77,45 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                  p_user_handler=None):
 
         self._api_view_handler = None
-        self._about_view_handler = AboutViewHandler(p_package=little_brother, p_languages=p_languages)
-        self._admin_view_handler = AdminViewHandler(p_package=little_brother)
-        self._devices_view_handler = DevicesViewHandler(p_package=little_brother)
-        self._login_view_handler = LoginViewHandler(p_package=little_brother, p_languages=p_languages)
-        self._status_view_handler = StatusViewHandler(p_package=little_brother)
-        self._topology_view_handler = TopologyViewHandler(p_package=little_brother)
-        self._users_view_handler = UsersViewHandler(p_package=little_brother, p_languages=p_languages)
+        self._login_view_handler = None
 
-        super(StatusServer, self).__init__(
+        if p_config.angular_gui_active:
+            login_view = None
+
+        else:
+            self._login_view_handler = LoginViewHandler(p_package=little_brother, p_languages=p_languages)
+            login_view = self._login_view_handler.login_view
+
+        super().__init__(
             p_config=p_config,
             p_name="Web Server",
             p_package_name=p_package_name,
             p_user_handler=p_user_handler,
-            p_login_view=self._login_view_handler.login_view,
+            p_login_view=login_view,
             p_logged_out_endpoint=constants.STATUS_BLUEPRINT_NAME + '.' + constants.STATUS_VIEW_NAME)
 
         # This blueprint handles static resources...
         self._blueprint = flask.Blueprint("little_brother", little_brother.__name__, static_folder="static")
         self._app.register_blueprint(self._blueprint, url_prefix=self._config.base_url)
 
-        self._about_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
-        self._admin_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
-        self._devices_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
-        self._login_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
-        self._status_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
-        self._topology_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
-        self._users_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+        if self._config.angular_gui_active:
+            self._logger.info("Starting web server with Angular GUI")
+
+        else:
+            self._about_view_handler = AboutViewHandler(p_package=little_brother, p_languages=p_languages)
+            self._admin_view_handler = AdminViewHandler(p_package=little_brother)
+            self._devices_view_handler = DevicesViewHandler(p_package=little_brother)
+            self._status_view_handler = StatusViewHandler(p_package=little_brother)
+            self._topology_view_handler = TopologyViewHandler(p_package=little_brother)
+            self._users_view_handler = UsersViewHandler(p_package=little_brother, p_languages=p_languages)
+
+            self._about_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+            self._admin_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+            self._devices_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+            self._login_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+            self._status_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+            self._topology_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
+            self._users_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url)
 
         self._is_master: bool = p_is_master
         self.app_control: app_control.AppControl = p_app_control
@@ -122,7 +137,13 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         if self._is_master:
             self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
-            self._csrf.exempt(self._api_view_handler.blueprint)
+
+            if self._csrf is not None:
+                self._csrf.exempt(self._api_view_handler.blueprint)
+
+            if self._config.angular_gui_active:
+                self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
+                    p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time
