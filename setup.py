@@ -63,7 +63,7 @@ setup_params = {
 extended_setup_params = {
 
     # Target version to be used to upgrade the database
-    "target_alembic_version": "ed5e0310d209",
+    "target_alembic_version": "a6ff3cabbf7d",
 
     "docker_registry_user": "marcusrickert",
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded

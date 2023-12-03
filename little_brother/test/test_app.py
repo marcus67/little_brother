@@ -77,7 +77,7 @@ class TestApp(base_test.BaseTestCase):
 
         self.assertIsNotNone(config)
 
-        self.assertEqual(15, len(configuration._sections))
+        self.assertEqual(16, len(configuration._sections))
         self.assertEqual(1, len(configuration._optional_section_handler_definitions))
 
     @classmethod
