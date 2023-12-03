@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.33 Revision 140 (December 3rd, 2023)
+* Bump `urllib3` to 2.1.0 (CVE-2023-45803)
+* Bump `werkzeug` to 2.3.8 (CVE-2023-46136)
+* Bump `some_flask_helpers` to 0.2.5 (CVE-2023-46136)
+* Bump `python_base_app` to 0.2.50 (CVE-2023-45803, CVE-2023-46136)
+
 ## Version 0.4.32 Revision 139 (October 12th, 2023)
 * Bump `some_flask_helpers` to 0.2.4
 * Bump `python_base_app` to 0.2.49
