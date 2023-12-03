@@ -46,6 +46,7 @@ from little_brother.devices.firewall_handler_config_model import FirewallHandler
     SECTION_NAME as FIREWALL_HANDLER_SECTION_NAME
 from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
+from little_brother.persistence.persistent_blacklisted_token_entity_manager import BlacklistedTokenEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
@@ -54,12 +55,14 @@ from little_brother.prometheus import PrometheusClient, PrometheusClientConfigMo
     SECTION_NAME as PROMETHEUS_SECTION_NAME
 from little_brother.rule_handler import RuleHandler
 from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
+from little_brother.token_handler import TokenHandler
 from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import pinger
 from python_base_app import unix_user_handler
+from python_base_app.base_token_handler import BaseTokenHandlerConfigModel
 from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.locale_helper import LocaleHelper
 
@@ -191,6 +194,9 @@ class App(base_app.BaseApp):
         device_activation_manager_section = DeviceActivationManagerConfigModel()
         p_configuration.add_section(device_activation_manager_section)
 
+        token_handler_section = BaseTokenHandlerConfigModel()
+        p_configuration.add_section(token_handler_section)
+
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
     def is_master(self):
@@ -251,6 +257,7 @@ class App(base_app.BaseApp):
         dependency_injection.container[persistence.Persistence] = self._persistence
         dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
         dependency_injection.container[TimeExtensionEntityManager] = TimeExtensionEntityManager()
+        dependency_injection.container[BlacklistedTokenEntityManager] = BlacklistedTokenEntityManager()
 
         if self.is_master():
             self._rule_handler = RuleHandler(
@@ -393,7 +400,7 @@ class App(base_app.BaseApp):
 
         if status_server_config.is_active():
             self._status_server = web_server.StatusServer(
-                p_config=self._config[web_server.SECTION_NAME],
+                p_configs=self._config,
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
@@ -403,6 +410,8 @@ class App(base_app.BaseApp):
                 p_languages=constants.LANGUAGES,
                 p_user_handler=self._user_handler
             )
+            for task in self._status_server.get_recurring_tasks():
+                self.add_recurring_task(p_recurring_task=task)
 
         elif self.is_master():
             msg = "Master instance requires port number for web server"
@@ -417,7 +426,7 @@ class App(base_app.BaseApp):
 
         dependency_injection.container[VersionChecker] = self._version_checker
 
-        task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
+        task = base_app.RecurringTask(p_name="AppControl.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
 

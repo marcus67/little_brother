@@ -142,19 +142,20 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
             status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
-            version_checker_config = VersionCheckerConfigModel()
-            version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
-            dependency_injection.container[VersionChecker] = version_checker
+        version_checker_config = VersionCheckerConfigModel()
+        version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
+        dependency_injection.container[VersionChecker] = version_checker
+        configs = { web_server.SECTION_NAME: status_server_config }
 
-            self._status_server = web_server.StatusServer(
-                p_config=status_server_config,
-                p_package_name=app.PACKAGE_NAME,
-                p_app_control=self._app_control,
-                p_master_connector=self._master_connector,
-                p_is_master=True,
-                p_user_handler=self._user_handler,
-                p_locale_helper=locale_helper.LocaleHelper(),
-                p_languages=constants.LANGUAGES)
+        self._status_server = web_server.StatusServer(
+            p_configs=configs,
+            p_package_name=app.PACKAGE_NAME,
+            p_app_control=self._app_control,
+            p_master_connector=self._master_connector,
+            p_is_master=True,
+            p_user_handler=self._user_handler,
+            p_locale_helper=locale_helper.LocaleHelper(),
+            p_languages=constants.LANGUAGES)
 
     def create_selenium_driver(self):
 

@@ -20,7 +20,7 @@
 
 import unittest
 
-from little_brother.test import test_app, test_client_info, test_pytest
+from little_brother.test import test_app, test_client_info, test_pytest, test_token_handler
 from little_brother.test import test_app_control
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
@@ -42,6 +42,10 @@ from python_base_app.test import base_test
 
 
 def add_test_cases(p_test_suite, p_config_filename=None):
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_token_handler.TestTokenHandler, p_config_filename=p_config_filename)
+
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_pytest.TestPytest, p_config_filename=p_config_filename)
@@ -119,6 +123,7 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_client_info.TestClientInfo, p_config_filename=p_config_filename)
+
 
 
 def main():

@@ -1,0 +1,249 @@
+/*
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+/*
+  Colors of check mark and cross denoting activity permitted or prohibited
+*/
+.active {
+  color: green;
+}
+
+.inactive {
+  color: red;
+}
+
+input {
+  margin: 0px 0px 2px -3px;
+}
+
+/* mark rule entries overriding the defaults
+*/
+
+.rule-override {
+  font-weight: bold;
+  color: blue;
+}
+
+.btn {
+  padding: 0px 3px 0px 3px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.btn-save {
+  background-color: lightgray; /* Blue background */
+  color: green; /* Green symbol */
+}
+
+.btn-time-extension-plus {
+  background-color: lightgray; /* Blue background */
+  color: green; /* Green symbol */
+}
+
+.btn-time-extension-minus {
+  background-color: lightgray; /* Blue background */
+  color: red; /* Red symbol */
+}
+
+.btn-time-extension-off {
+  background-color: lightgray; /* Blue background */
+  color: red; /* Red symbol */
+  /* font-size: small; */
+}
+
+.error-label {
+  color: #a94442;
+}
+
+.alert-danger {
+  padding: 2px;
+}
+
+/* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  80% { opacity: 0.5; }
+}
+
+.title-row {
+  font-weight: bold;
+}
+
+
+.downtime {
+  font-weight: bold;
+  color: yellow;
+}
+
+.col-xs-1 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-2 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-3 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-4 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-5 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-6 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-7 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-8 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-9 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-10 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-11 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-12 {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-lg-1 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-lg-2 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-lg-3 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-lg-4 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-lg-5 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-lg-6 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-1 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-2 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-3 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-4 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-5 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-md-6 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-sm-1 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-sm-2 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.col-sm-3 {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+
+.col-xs-1 input {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-2 input {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-3 input {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.col-xs-4 input {
+  padding-left: 1px;
+  padding-right: 1px;
+}

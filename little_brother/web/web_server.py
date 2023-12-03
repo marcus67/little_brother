@@ -18,6 +18,7 @@
 import datetime
 import gettext
 import os
+from typing import List, Optional
 
 import babel.dates
 import flask
@@ -30,6 +31,7 @@ from little_brother import constants
 from little_brother import entity_forms
 from little_brother.api import api_view_handler
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.token_handler import TokenHandler, SECTION_NAME as TOKEN_HANDLER_SECTION_NAME
 from little_brother.web.about_view_handler import AboutViewHandler
 from little_brother.web.admin_view_handler import AdminViewHandler
 from little_brother.web.devices_view_handler import DevicesViewHandler
@@ -41,6 +43,7 @@ from python_base_app import base_web_server
 from python_base_app import locale_helper
 from python_base_app import tools
 from python_base_app import angular_auth_view_handler
+from python_base_app.base_app import RecurringTask
 
 SECTION_NAME = "StatusServer"
 
@@ -66,7 +69,7 @@ class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
 class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebServer):
 
     def __init__(self,
-                 p_config,
+                 p_configs,
                  p_package_name,
                  p_app_control,
                  p_master_connector,
@@ -76,10 +79,15 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                  p_languages=None,
                  p_user_handler=None):
 
+
+
         self._api_view_handler = None
         self._login_view_handler = None
+        self._token_handler : Optional[TokenHandler] = None
 
-        if p_config.angular_gui_active:
+        my_config = p_configs[SECTION_NAME]
+
+        if my_config.angular_gui_active:
             login_view = None
 
         else:
@@ -87,7 +95,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             login_view = self._login_view_handler.login_view
 
         super().__init__(
-            p_config=p_config,
+            p_config=my_config,
             p_name="Web Server",
             p_package_name=p_package_name,
             p_user_handler=p_user_handler,
@@ -100,6 +108,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         if self._config.angular_gui_active:
             self._logger.info("Starting web server with Angular GUI")
+            self._token_handler = TokenHandler(p_config=p_configs[TOKEN_HANDLER_SECTION_NAME], p_secret_key=self._app.config.get('SECRET_KEY'))
 
         else:
             self._about_view_handler = AboutViewHandler(p_package=little_brother, p_languages=p_languages)
@@ -122,7 +131,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._master_connector = p_master_connector
 
         self._stat_dict = {}
-        self._server_exception: Exception = None
+        self._server_exception: Optional[Exception] = None
         self._locale_helper: locale_helper.LocaleHelper = p_locale_helper
         self._languages = p_languages
         self._base_gettext = p_base_gettext
@@ -143,7 +152,8 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
             if self._config.angular_gui_active:
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
-                    p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url)
+                    p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url,
+                    p_token_handler=self._token_handler)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time
@@ -264,3 +274,12 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._topology_view_handler.destroy()
         self._users_view_handler.destroy()
         super().destroy()
+
+    def get_recurring_tasks(self) -> List[RecurringTask]:
+
+        tasks = []
+
+        if self._token_handler is not None:
+            tasks.append(self._token_handler.get_recurring_task())
+
+        return tasks

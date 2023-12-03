@@ -7,7 +7,10 @@ from little_brother.persistence import persistence_base, persistent_user_2_devic
     persistent_process_info, \
     persistent_daily_user_status, persistent_user, persistent_rule_set, persistent_rule_override, \
     persistent_time_extension, \
-    persistent_admin_event, persistence, persistent_uid_mapping
+    persistent_admin_event, \
+    persistent_blacklisted_token, \
+    persistence, \
+    persistent_uid_mapping
 
 # *************************************************************************************************
 # IMPORTANT
