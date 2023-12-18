@@ -1,0 +1,215 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2023-12-10T00:26:26.627Z",
+  "__export_source": "insomnia.desktop.app:v8.4.5",
+  "resources": [
+    {
+      "_id": "req_083a2bf0344649a1a3865ccb5b57252d",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702167714413,
+      "created": 1702166360187,
+      "url": "http://localhost:4200/angular-api/login",
+      "name": "Valid login",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"username\" : \"admin\",\n\t\"password\" : \"test123\"\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/8.4.5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1702166360188,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "parentId": null,
+      "modified": 1702166347114,
+      "created": 1702166347114,
+      "name": "LittleBrotherAngularAPI",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_3162f32ec29f4428a516546359eff83a",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702167720362,
+      "created": 1702167706117,
+      "url": "http://localhost:4200/angular-api/login",
+      "name": "Invalid login (invalid password)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"username\" : \"admin\",\n\t\"password\" : \"test123x\"\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/8.4.5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1702166314493.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_e30f6023af904952824eb2156134a3f7",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702167754689,
+      "created": 1702167742625,
+      "url": "http://localhost:4200/angular-api/login",
+      "name": "Invalid login (invalid parameters)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"usernamex\" : \"admin\",\n\t\"password\" : \"test123\"\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/8.4.5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1702166291646.25,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_bda827f2506646658c8b8092b5703609",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702167901204,
+      "created": 1702167796471,
+      "url": "http://localhost:4200/angular-api/login",
+      "name": "Invalid login (invalid JSON)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"usernamex\" : \"admin\"\n\t\"password\" : \"test123\"\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/8.4.5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1702166280222.625,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_b6e09ea334074b41810218b6437a4c3d",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702167923832,
+      "created": 1702167918759,
+      "url": "http://localhost:4200/angular-api/login",
+      "name": "Invalid login (wrong mimetype)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "text/plain",
+        "text": "{\n\t\"usernamex\" : \"admin\"\n\t\"password\" : \"test123\"\n}\n"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/plain"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/8.4.5"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1702166274510.8125,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_5ea3a69d5b2870c88674d86f2b574641595cc140",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702166347117,
+      "created": 1702166347117,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1702166347117,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_5ea3a69d5b2870c88674d86f2b574641595cc140",
+      "parentId": "wrk_4ebd0db7baeb40c6aee3290b09d38a61",
+      "modified": 1702166347120,
+      "created": 1702166347120,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    }
+  ]
+}
