@@ -43,6 +43,7 @@ from python_base_app import base_web_server
 from python_base_app import locale_helper
 from python_base_app import tools
 from python_base_app import angular_auth_view_handler
+from python_base_app.angular_auth_view_handler import ANGULAR_BASE_URL
 from python_base_app.base_app import RecurringTask
 
 SECTION_NAME = "StatusServer"
@@ -152,7 +153,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
             if self._config.angular_gui_active:
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
-                    p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url,
+                    p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL,
                     p_token_handler=self._token_handler)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
