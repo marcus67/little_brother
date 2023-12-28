@@ -23,7 +23,19 @@ export class AuthService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     });
-    return this.http.get(url, {headers: headers}).toPromise();
+    return new Promise((resolve, reject) => {
+      this.http.get(url, {headers: headers}).toPromise().then(
+      (result) => {
+          //if (result.status != "OK") {
+//            localStorage.removeItem('token');
+            //reject("ERROR")
+          //}
+          resolve(result);
+      }).catch( (error) => {
+          localStorage.removeItem('token');
+          reject(error)
+      })
+    })
   }
 
   logout(token: string): Promise<any> {
