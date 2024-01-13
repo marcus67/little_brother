@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { StatusComponent } from './components/status/status.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { HelpersComponent } from './components/helpers/helpers.component';
+import { AboutComponent } from './components/about/about.component';
 
 import { AuthService } from './services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +21,9 @@ import { LoginRedirect } from './services/login-redirect.service';
     AppComponent,
     LoginComponent,
     StatusComponent,
-    NavBarComponent
+    NavBarComponent,
+    HelpersComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,

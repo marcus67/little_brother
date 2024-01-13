@@ -10,16 +10,19 @@ import { User } from '../../models/user';
 })
 export class LoginComponent {
   user: User = new User();
+  message: string = "";
+
   constructor(private router: Router, private auth: AuthService) {}
   onLogin(): void {
     this.auth.login(this.user)
     .then((result) => {
       localStorage.setItem('token', result.auth_token);
-      console.log(result);
+      this.message = ""
       this.router.navigateByUrl('/status');
     })
     .catch((err) => {
       console.log(err);
+      this.message = err.error.error_details;
     });
   }
 
