@@ -1,17 +1,19 @@
+<app-helpers></app-helpers>
 <div class="wrapper">
   <form class="form-signin" (ngSubmit)="onLogin()" novalidate>
     <IMG SRC="assets/icons/icon-baby-panda-128x128.png">
-    <h2 class="form-signin-heading localetext">
+    <div class="form-signin-heading localetext">
       Little Brother
-    </h2>
-    <div class="form-group">
-     <label for="username">Username</label>
-     <input type="text" class="form-control" id="username" placeholder="enter username" [(ngModel)]="user.username" name="username" required>
     </div>
     <div class="form-group">
-     <label for="password">Password</label>
-     <input type="password" class="form-control" id="password" placeholder="enter password" [(ngModel)]="user.password" name="password" required>
+        <div *ngIf="message">
+          <div class="alert alert-warning fade in localetext">
+          {{ message }}
+          </div>
+        </div>
+     <input type="text" class="form-control" placeholder="Username" [(ngModel)]="user.username" name="username" autofocus="" required="">
+     <input type="password" class="form-control" placeholder="Password" [(ngModel)]="user.password" name="password" required="">
     </div>
-    <button type="submit" class="btn btn-default btn-lg btn-primary btn-block">Submit</button>
+    <button type="submit" class="btn btn-default btn-lg btn-primary btn-block">Login</button>
   </form>
 </div>

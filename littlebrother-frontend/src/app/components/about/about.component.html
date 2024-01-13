@@ -1,0 +1,51 @@
+<app-nav-bar></app-nav-bar>
+<span class="border">
+  <div class="container-lg">
+    <table CLASS="table table-primary table-striped rounded-4 overflow-hidden table-borderless">
+      <thead class="">
+        <tr>
+          <th>Setting</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody class="table-secondary">
+        <tr>
+          <td>Repository</td>
+          <td>{{ metadata.extended_settings.display_url }}</td>
+        </tr>
+        <tr>
+          <td>Version</td>
+          <td>{{ metadata.settings.version }}</td>
+        </tr>
+        <tr>
+          <td>Debian Package Revision</td>
+          <td>{{ metadata.extended_settings.debian_package_revision }}</td>
+        </tr>
+        <tr>
+          <td>Git Commit ID</td>
+          <td>{{ metadata.git_metadata.commit_id }}</td>
+        </tr>
+        <tr>
+          <td>Git Branch Name</td>
+          <td>{{ metadata.git_metadata.branch }}</td>
+        </tr>
+        <tr>
+          <td>Git Author's Name</td>
+          <td>{{ metadata.git_metadata.author_name }}</td>
+        </tr>
+        <tr>
+          <td>Git Author's Email Address</td>
+          <td>{{ metadata.git_metadata.author_email }}</td>
+        </tr>
+        <tr>
+          <td>Supported Languages</td>
+          <td>
+            <UL>
+              <LI *ngFor="let language of metadata.languages">{{ language[1] }} ({{ language[0] }})</LI>
+					  </UL>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</span>

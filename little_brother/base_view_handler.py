@@ -153,13 +153,16 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
             rel_font_size = 100
         return rel_font_size
 
-    def add_general_template_data(self, p_dict):
+    # TODO: Remove p_add_authentication_data
+    def add_general_template_data(self, p_dict, p_add_authentication_data=True):
 
         p_dict["rel_font_size"] = self.get_rel_font_size()
         p_dict["settings"] = settings.settings
         p_dict["extended_settings"] = settings.extended_settings
         p_dict["git_metadata"] = git.git_metadata
-        p_dict["authentication"] = BaseWebServer.get_authentication_info()
+
+        if p_add_authentication_data:
+            p_dict["authentication"] = BaseWebServer.get_authentication_info()
 
     def add_version_info(self, p_dict):
 

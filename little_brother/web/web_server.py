@@ -26,10 +26,11 @@ import flask_babel
 import humanize
 
 import little_brother
-from little_brother import app_control
+from little_brother import app_control, dependency_injection
 from little_brother import constants
 from little_brother import entity_forms
 from little_brother.api import api_view_handler
+from little_brother.api.new_api_view_handler import NewApiViewHandler
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.token_handler import TokenHandler, SECTION_NAME as TOKEN_HANDLER_SECTION_NAME
 from little_brother.web.about_view_handler import AboutViewHandler
@@ -80,10 +81,9 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                  p_languages=None,
                  p_user_handler=None):
 
-
-
         self._api_view_handler = None
         self._login_view_handler = None
+        self._new_api_view_handler = None
         self._token_handler : Optional[TokenHandler] = None
 
         my_config = p_configs[SECTION_NAME]
@@ -155,6 +155,10 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
                     p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL,
                     p_token_handler=self._token_handler)
+                dependency_injection.container[angular_auth_view_handler.AngularAuthViewHandler] = (
+                    self._angular_auth_view_handler)
+                self._new_api_view_handler = NewApiViewHandler(p_package=little_brother, p_languages=p_languages)
+                self._new_api_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time

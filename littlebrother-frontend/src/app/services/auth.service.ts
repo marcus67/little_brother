@@ -26,10 +26,6 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       this.http.get(url, {headers: headers}).toPromise().then(
       (result) => {
-          //if (result.status != "OK") {
-//            localStorage.removeItem('token');
-            //reject("ERROR")
-          //}
           resolve(result);
       }).catch( (error) => {
           localStorage.removeItem('token');

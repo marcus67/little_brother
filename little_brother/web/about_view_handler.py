@@ -18,7 +18,7 @@
 import flask
 
 from little_brother import constants
-from little_brother.web.base_view_handler import BaseViewHandler
+from little_brother.base_view_handler import BaseViewHandler
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
 

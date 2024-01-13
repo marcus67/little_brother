@@ -20,7 +20,7 @@ export class NavBarComponent implements OnInit {
         console.log(result);
         if (result.status === 'OK') {
           this.isLoggedIn = true;
-          this.activeUser = result.data.username;
+          this.activeUser = result.authorization.username;
         } else {
           localStorage.removeItem('token');
         }
