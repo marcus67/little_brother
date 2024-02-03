@@ -46,6 +46,7 @@ from python_base_app import tools
 from python_base_app import angular_auth_view_handler
 from python_base_app.angular_auth_view_handler import ANGULAR_BASE_URL
 from python_base_app.base_app import RecurringTask
+from python_base_app.configuration import ConfigurationException
 
 SECTION_NAME = "StatusServer"
 
@@ -107,11 +108,17 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._blueprint = flask.Blueprint("little_brother", little_brother.__name__, static_folder="static")
         self._app.register_blueprint(self._blueprint, url_prefix=self._config.base_url)
 
+        if not (self._config.angular_gui_active or self._config.classic_gui_active):
+            raise ConfigurationException("Neither classic nor Angular GUI active!")
+
+        self._logger.info("Starting web server")
+
         if self._config.angular_gui_active:
-            self._logger.info("Starting web server with Angular GUI")
+            self._logger.info("Activating Angular GUI support...")
             self._token_handler = TokenHandler(p_config=p_configs[TOKEN_HANDLER_SECTION_NAME], p_secret_key=self._app.config.get('SECRET_KEY'))
 
         if self._config.classic_gui_active:
+            self._logger.info("Activating classic GUI support...")
             self._about_view_handler = AboutViewHandler(p_package=little_brother, p_languages=p_languages)
             self._admin_view_handler = AdminViewHandler(p_package=little_brother)
             self._devices_view_handler = DevicesViewHandler(p_package=little_brother)
@@ -148,17 +155,21 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         if self._is_master:
             self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
 
-            if self._csrf is not None:
+            if not self._config.use_csrf:
                 self._csrf.exempt(self._api_view_handler.blueprint)
 
             if self._config.angular_gui_active:
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
-                    p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL,
+                    p_app=self._app, p_user_handler=p_user_handler,
+                    p_url_prefix=self._config.base_url + ANGULAR_BASE_URL,
                     p_token_handler=self._token_handler)
                 dependency_injection.container[angular_auth_view_handler.AngularAuthViewHandler] = \
                     self._angular_auth_view_handler
                 self._new_api_view_handler = NewApiViewHandler(p_package=little_brother, p_languages=p_languages)
-                self._new_api_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL)
+                self._new_api_view_handler.register(p_app=self._app,
+                                                    p_url_prefix=self._config.base_url + ANGULAR_BASE_URL)
+                if not self._config.use_csrf:
+                    self._csrf.exempt(self._angular_auth_view_handler.blueprint)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time
