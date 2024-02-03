@@ -18,7 +18,7 @@ export class EnsureAuthenticated implements CanActivate {
     }
   }
 
-  addAuthentication(headers: HttpHeaders): HttpHeaders | undefined {
+  addAuthentication(headers: HttpHeaders): HttpHeaders{
     let token : string | null = localStorage.getItem('token');
 
     if (token) {
@@ -26,7 +26,7 @@ export class EnsureAuthenticated implements CanActivate {
     }
     else {
       this.router.navigateByUrl('/login');
-      return undefined;
+      return headers;
     }
   }
 }

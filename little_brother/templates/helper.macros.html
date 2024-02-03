@@ -59,6 +59,13 @@
     {% endwith %}
 {% endmacro %}
 
+{% macro locale_font( rel_font_size ) %}
+<style>
+   .localetext { font-size: {{ rel_font_size }}%; }
+   .nonlocaletext { font-size: {{ rel_font_size|invert }}%; }
+</style>
+{% endmacro %}
+
 <!-- https://www.it-swarm.dev/de/jquery/bestaetigen-sie-den-loeschvorgang-mit-der-modifizierten-box-von-bootstrap-3/1044781339/ -->
 <!-- https://getbootstrap.com/docs/3.4/javascript/#modals -->
 {% macro modal_confirm( id, message, action_text, cancel_text ) %}
@@ -85,6 +92,11 @@ $('button[id="{{ id }}"]').on('click', function(e) {
     });
 });
 </SCRIPT>
+{% endmacro %}
+
+{% macro fontawesome_script() %}
+<SCRIPT src="{{ url_for('little_brother.static', filename='contrib/fontawesome/js/all.min.js') }}"
+        crossorigin="anonymous"></SCRIPT>
 {% endmacro %}
 
 {% macro check_or_cross(flag) %}

@@ -1,5 +1,42 @@
 <app-nav-bar></app-nav-bar>
-
-<P>Status</P>
-
-
+<span class="border">
+  <div class="container-lg">
+    <table CLASS="table table-primary table-striped rounded-4 overflow-hidden table-borderless">
+      <thead class="">
+        <tr>
+          <th>User</th>
+          <th>Context</th>
+          <th>Today's Activity</th>
+          <th>Previous Activity Start Time</th>
+          <th>Previous Activity End Time</th>
+          <th>Current Activity Start Time</th>
+          <th>Current Activity Duration</th>
+          <th>Activity permitted</th>
+          <th>Reasons</th>
+        </tr>
+      </thead>
+      <tbody class="table-secondary">
+        <tr *ngFor="let entry of userStatus">
+          <td>{{ entry.full_name }}</td>
+          <td>{{ entry.context_label }}</td>
+          <td>
+            {{ entry.todays_activity_duration() }} /
+            <div *ngIf="entry.free_play; then freePlay else noFreePlay"></div>
+            <ng-template #freePlay>unlimited</ng-template>
+            <ng-template #noFreePlay>{{ entry.max_time_per_day() }}</ng-template>
+           {{ entry.todays_downtime() }}
+          </td>
+          <td>{{ entry.previous_activity_start_time_as_string() }}</td>
+          <td>{{ entry.previous_activity_end_time_as_string() }}</td>
+          <td>{{ entry.current_activity_start_time_as_string() }}</td>
+          <td>{{ entry.current_activity_duration() }}</td>
+          <td>
+            <div *ngIf="entry.activity_permitted; then activityPermitted else activityNotPermitted"></div>
+            <ng-template #activityPermitted><I class="fas fa-check active"></I></ng-template>
+            <ng-template #activityNotPermitted><I class="fas fa-times inactive"></I></ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</span>

@@ -91,7 +91,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         if my_config.angular_gui_active:
             login_view = None
 
-        else:
+        if my_config.classic_gui_active:
             self._login_view_handler = LoginViewHandler(p_package=little_brother, p_languages=p_languages)
             login_view = self._login_view_handler.login_view
 
@@ -111,7 +111,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             self._logger.info("Starting web server with Angular GUI")
             self._token_handler = TokenHandler(p_config=p_configs[TOKEN_HANDLER_SECTION_NAME], p_secret_key=self._app.config.get('SECRET_KEY'))
 
-        else:
+        if self._config.classic_gui_active:
             self._about_view_handler = AboutViewHandler(p_package=little_brother, p_languages=p_languages)
             self._admin_view_handler = AdminViewHandler(p_package=little_brother)
             self._devices_view_handler = DevicesViewHandler(p_package=little_brother)
@@ -155,8 +155,8 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
                     p_app=self._app, p_user_handler=p_user_handler, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL,
                     p_token_handler=self._token_handler)
-                dependency_injection.container[angular_auth_view_handler.AngularAuthViewHandler] = (
-                    self._angular_auth_view_handler)
+                dependency_injection.container[angular_auth_view_handler.AngularAuthViewHandler] = \
+                    self._angular_auth_view_handler
                 self._new_api_view_handler = NewApiViewHandler(p_package=little_brother, p_languages=p_languages)
                 self._new_api_view_handler.register(p_app=self._app, p_url_prefix=self._config.base_url + ANGULAR_BASE_URL)
 
