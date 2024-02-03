@@ -28,7 +28,8 @@ class UserStatusTO:
                  p_previous_activity_start_time_in_iso_8601: str,
                  p_previous_activity_end_time_in_iso_8601: str,
                  p_current_activity_start_time_in_iso_8601: str,
-                 p_current_activity_duration_in_seconds: int):
+                 p_current_activity_duration_in_seconds: int,
+                 p_reasons: list[str]):
 
         self.username = p_username
         self.full_name = p_full_name
@@ -42,3 +43,4 @@ class UserStatusTO:
         self.previous_activity_end_time_in_iso_8601 = p_previous_activity_end_time_in_iso_8601
         self.current_activity_start_time_in_iso_8601 = p_current_activity_start_time_in_iso_8601
         self.current_activity_duration_in_seconds = p_current_activity_duration_in_seconds
+        self.reasons = p_reasons

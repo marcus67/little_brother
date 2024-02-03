@@ -236,14 +236,17 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_free_play=rule_set.free_play,
                     p_activity_permitted=rule_result_info.activity_allowed(),
                     p_context_label=rule_set.context_label,
-                    p_todays_activity_duration_in_seconds=int(stat_info.todays_activity_duration) if stat_info.todays_activity_duration else None,
+                    p_todays_activity_duration_in_seconds=int(stat_info.todays_activity_duration)
+                    if stat_info.todays_activity_duration else None,
                     p_todays_downtime_in_seconds=int(stat_info.todays_downtime) if stat_info.todays_downtime else None,
                     p_max_time_per_day_in_seconds=rule_set.max_time_per_day,
                     p_current_activity_duration_in_seconds=
                     int(stat_info.todays_activity_duration) if stat_info.todays_activity_duration else None,
                     p_current_activity_start_time_in_iso_8601=stat_info.current_activity_start_time_in_iso_8601,
                     p_previous_activity_start_time_in_iso_8601=stat_info.previous_activity_start_time_in_iso_8601,
-                    p_previous_activity_end_time_in_iso_8601=stat_info.previous_activity_end_time_in_iso_8601
+                    p_previous_activity_end_time_in_iso_8601=stat_info.previous_activity_end_time_in_iso_8601,
+                    p_reasons=[template.format(**value_dict)
+                               for template, value_dict in rule_result_info.applying_rule_text_templates]
                 )
 
         return user_status_to
