@@ -6,11 +6,20 @@
         <tr>
           <th>User</th>
           <th>Context</th>
-          <th>Today's Activity</th>
+          <th>
+            Today's Activity
+            <div *ngIf="hasDowntime; then todayHasDowntime"></div>
+              <ng-template #todayHasDowntime><DIV CLASS="downtime">Downtime</DIV></ng-template>
+          </th>
+
           <th>Previous Activity Start Time</th>
           <th>Previous Activity End Time</th>
           <th>Current Activity Start Time</th>
-          <th>Current Activity Duration</th>
+          <th>
+            Current Activity Duration
+            <div *ngIf="hasDowntime; then currentActivityHasDowntime"></div>
+              <ng-template #currentActivityHasDowntime><DIV CLASS="downtime">Downtime</DIV></ng-template>
+          </th>
           <th>Activity permitted</th>
           <th>Reasons</th>
         </tr>
@@ -22,18 +31,24 @@
           <td>
             {{ entry.todays_activity_duration() }} /
             <div *ngIf="entry.free_play; then freePlay else noFreePlay"></div>
-            <ng-template #freePlay>unlimited</ng-template>
-            <ng-template #noFreePlay>{{ entry.max_time_per_day() }}</ng-template>
-           {{ entry.todays_downtime() }}
+              <ng-template #freePlay>unlimited</ng-template>
+              <ng-template #noFreePlay>{{ entry.max_time_per_day() }}</ng-template>
+            <div *ngIf="entry.todays_downtime_in_seconds; then downtime"></div>
+              <ng-template #downtime><DIV CLASS="downtime"> {{ entry.todays_downtime() }}</DIV></ng-template>
           </td>
           <td>{{ entry.previous_activity_start_time_as_string() }}</td>
           <td>{{ entry.previous_activity_end_time_as_string() }}</td>
           <td>{{ entry.current_activity_start_time_as_string() }}</td>
-          <td>{{ entry.current_activity_duration() }}</td>
+          <td>
+            <div [ngClass] = "{'blink': entry.current_activity_duration_in_seconds }">{{ entry.current_activity_duration() }}</div>
+            <div *ngIf="entry.current_activity_downtime_in_seconds; then currentDowntime"></div>
+                <ng-template #currentDowntime><DIV CLASS="downtime"> {{ entry.current_activity_downtime() }}</DIV></ng-template>
+
+          </td>
           <td>
             <div *ngIf="entry.activity_permitted; then activityPermitted else activityNotPermitted"></div>
-            <ng-template #activityPermitted><I class="fas fa-check active"></I></ng-template>
-            <ng-template #activityNotPermitted><I class="fas fa-times inactive"></I></ng-template>
+              <ng-template #activityPermitted><I class="fas fa-check active"></I></ng-template>
+              <ng-template #activityNotPermitted><I class="fas fa-times inactive"></I></ng-template>
           </td>
           <td>
             <ul>
