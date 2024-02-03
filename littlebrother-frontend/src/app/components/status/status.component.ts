@@ -10,6 +10,7 @@ import { UserStatus } from '../../models/user-status'
 })
 export class StatusComponent {
   userStatus: UserStatus[] = [];
+  hasDowntime: boolean = false;
 
   constructor(private userStatusService: UserStatusService) {
   }
@@ -17,7 +18,15 @@ export class StatusComponent {
   getUserStatus(): void {
     this.userStatusService.loadUserStatus().subscribe( jsonArray => {
       this.userStatus = jsonArray.map(jsonEntry => new UserStatus(jsonEntry));
+      this.hasDowntime = false;
+
+      this.userStatus.forEach( entry => {
+        if (entry.todays_downtime_in_seconds)
+           this.hasDowntime = true;
+        }
+      );
     });
+
   }
 
   ngOnInit(): void {

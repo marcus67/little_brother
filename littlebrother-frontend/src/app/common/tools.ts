@@ -1,15 +1,15 @@
 import {formatDate} from '@angular/common';
 
-export const get_duration_as_string = (seconds: number | undefined, include_seconds:boolean=true) : any => {
+export const get_duration_as_string = (seconds: number | undefined, include_seconds:boolean=false) : any => {
     if (seconds) {
         let hours = Math.trunc(seconds / 3600)
         let minutes = Math.trunc((seconds - hours * 3600) / 60)
 
         if (include_seconds) {
             let remaining_seconds = Math.trunc(seconds - hours * 3600 - minutes * 60)
-            return zeroPad(hours,2) + ":" + zeroPad(minutes,2) + ":" + zeroPad(remaining_seconds, 2)
+            return hours + "h" + zeroPad(minutes,2) + "m" + zeroPad(remaining_seconds, 2) + "s"
         } else {
-            return zeroPad(hours,2) + ":" + zeroPad(minutes,2)
+            return hours + "h" + zeroPad(minutes,2) + "m"
         }
     } else {
         return "-"

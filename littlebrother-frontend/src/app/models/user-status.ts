@@ -12,6 +12,7 @@ export class UserStatus {
 	previous_activity_end_time_in_iso_8601?: string;
 	current_activity_start_time_in_iso_8601?: string;
 	current_activity_duration_in_seconds?: number;
+	current_activity_downtime_in_seconds?: number;
 	reasons?: string[];
 
 	constructor(otherObject: UserStatus) {
@@ -33,6 +34,11 @@ export class UserStatus {
   current_activity_duration() : string {
    return get_duration_as_string(this.current_activity_duration_in_seconds);
   }
+
+  current_activity_downtime() : string {
+   return get_duration_as_string(this.current_activity_downtime_in_seconds);
+  }
+
 
   current_activity_start_time() : Date {
     return get_date_from_iso_string(this.current_activity_start_time_in_iso_8601)
