@@ -22,9 +22,11 @@ from little_brother import process_statistics
 from little_brother import rule_override
 from little_brother import rule_result_info
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
 from little_brother.rule_handler import RuleHandler
+from little_brother.transport.UserStatusTO import UserStatusTO
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
@@ -129,7 +131,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
     def get_admin_info_for_user(self, p_session_context, p_user_infos, p_time_extensions, p_days, p_username):
 
-        user : User = self.user_entity_manager.user_map(p_session_context).get(p_username)
+        user: User = self.user_entity_manager.user_map(p_session_context).get(p_username)
 
         if user is None or not user.active:
             return None
@@ -155,7 +157,6 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                         admin_info.time_extension.end_datetime + \
                         datetime.timedelta(minutes=period) >= admin_info.time_extension.start_datetime:
                     admin_info.time_extension_periods.append(period)
-
 
         admin_info.day_infos = []
 
@@ -198,6 +199,54 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                 admin_infos.append(admin_info)
 
         return sorted(admin_infos, key=lambda info: info.full_name)
+
+    def get_user_status_transfer_object(self, p_session_context, p_user, p_reference_time,
+                                        p_users_stat_infos, p_active_time_extensions) -> UserStatusTO:
+
+        user_status_to: UserStatusTO | None = None
+
+        rule_set: RuleSet = self.rule_handler.get_active_ruleset(
+            p_rule_sets=p_user.rulesets, p_reference_date=p_reference_time.date())
+        stat_infos = p_users_stat_infos.get(p_user.username)
+        active_time_extension = p_active_time_extensions.get(p_user.username)
+        user_locale = self.user_locale_handler.get_user_locale(
+            p_session_context=p_session_context, p_username=p_user.username)
+
+        if stat_infos is not None:
+            stat_info: process_statistics.ProcessStatisticsInfo = stat_infos.get(rule_set.context)
+
+            if stat_info is not None:
+                self._logger.debug(str(stat_info))
+
+                key_rule_override = rule_override.get_key(p_username=p_user.username,
+                                                          p_reference_date=p_reference_time.date())
+                override = self._rule_overrides.get(key_rule_override)
+
+                rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                    p_rule_sets=p_user.rulesets,
+                    p_stat_info=stat_info,
+                    p_active_time_extension=active_time_extension,
+                    p_reference_time=p_reference_time,
+                    p_rule_override=override,
+                    p_locale=user_locale)
+
+                user_status_to = UserStatusTO(
+                    p_username=p_user.username,
+                    p_full_name=stat_info.full_name,
+                    p_free_play=rule_set.free_play,
+                    p_activity_permitted=rule_result_info.activity_allowed(),
+                    p_context_label=rule_set.context_label,
+                    p_todays_activity_duration_in_seconds=int(stat_info.todays_activity_duration) if stat_info.todays_activity_duration else None,
+                    p_todays_downtime_in_seconds=int(stat_info.todays_downtime) if stat_info.todays_downtime else None,
+                    p_max_time_per_day_in_seconds=rule_set.max_time_per_day,
+                    p_current_activity_duration_in_seconds=
+                    int(stat_info.todays_activity_duration) if stat_info.todays_activity_duration else None,
+                    p_current_activity_start_time_in_iso_8601=stat_info.current_activity_start_time_in_iso_8601,
+                    p_previous_activity_start_time_in_iso_8601=stat_info.previous_activity_start_time_in_iso_8601,
+                    p_previous_activity_end_time_in_iso_8601=stat_info.previous_activity_end_time_in_iso_8601
+                )
+
+        return user_status_to
 
     def update_rule_override(self, p_rule_override):
 
@@ -284,6 +333,35 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     user_infos[username] = user_info
 
         return user_infos
+
+    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatusTO]:
+
+        user_status_tos = []
+
+        reference_time = datetime.datetime.now()
+
+        active_time_extensions = self.time_extension_entity_manager.get_active_time_extensions(
+            p_session_context=p_session_context, p_reference_datetime=reference_time)
+
+        users_stat_infos = process_statistics.get_process_statistics(
+            p_process_infos=p_process_infos,
+            p_reference_time=reference_time,
+            p_user_map=self.user_entity_manager.user_map(p_session_context),
+            p_max_lookback_in_days=1,
+            p_min_activity_duration=self._config.min_activity_duration)
+
+        for username in self.user_entity_manager.user_map(p_session_context).keys():
+            user: User = self.user_entity_manager.user_map(p_session_context).get(username)
+
+            if user is not None:
+                user_status_to = self.get_user_status_transfer_object(
+                    p_session_context=p_session_context, p_user=user, p_users_stat_infos=users_stat_infos,
+                    p_active_time_extensions=active_time_extensions, p_reference_time=reference_time)
+
+                if user_status_to is not None:
+                    user_status_tos.append(user_status_to)
+
+        return user_status_tos
 
     def load_rule_overrides(self):
 

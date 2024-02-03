@@ -19,6 +19,7 @@ import datetime
 import json
 
 import flask
+import jsonpickle
 from flask import jsonify
 
 from little_brother import constants
@@ -144,3 +145,26 @@ class NewApiViewHandler(BaseViewHandler):
 
             except Exception as e:
                 return self.internal_server_error(p_exception=e)
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_STATUS, methods=["GET"])
+    def api_status(self):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return jsonify(result), http_status
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+                    process_infos = self.processs_handler_manager.get_process_infos()
+                    user_status_tos = self.admin_data_handler.get_user_status_transfer_objects(
+                        p_session_context=session_context,
+                        p_process_infos=process_infos)
+
+                return jsonpickle.encode(user_status_tos, unpicklable=False), 200
+
+        except Exception as e:
+            return jsonify(e), 503

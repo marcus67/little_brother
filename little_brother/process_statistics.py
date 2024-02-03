@@ -269,6 +269,15 @@ class ProcessStatisticsInfo(object):
             return self.current_activity.start_time
 
     @property
+    def current_activity_start_time_in_iso_8601(self) -> str | None:
+
+        if self.current_activity is None:
+            return None
+
+        else:
+            return self.current_activity.start_time.isoformat(timespec='seconds')
+
+    @property
     def previous_activity_start_time(self):
 
         if self.previous_activity is None:
@@ -278,6 +287,15 @@ class ProcessStatisticsInfo(object):
             return self.previous_activity.start_time
 
     @property
+    def previous_activity_start_time_in_iso_8601(self) -> str | None:
+
+        if self.previous_activity is None:
+            return None
+
+        else:
+            return self.previous_activity.start_time.isoformat(timespec='seconds')
+
+    @property
     def previous_activity_end_time(self):
 
         if self.previous_activity is None:
@@ -285,6 +303,15 @@ class ProcessStatisticsInfo(object):
 
         else:
             return self.previous_activity.end_time
+
+    @property
+    def previous_activity_end_time_in_iso_8601(self):
+
+        if self.previous_activity is None:
+            return None
+
+        else:
+            return self.previous_activity.end_time.isoformat(timespec='seconds')
 
     @property
     def previous_activity_duration(self):
@@ -445,7 +472,7 @@ def get_process_statistics(
                 login_date = user_stat_info.current_activity.start_time.date()
                 lookback = int((user_stat_info.reference_date - login_date).total_seconds() / (24 * 3600))
 
-                # If there's an actity more than lookback days back enlarge the stat array accordingly...
+                # If there's an activity more than lookback days back enlarge the stat array accordingly...
                 if lookback >= len(user_stat_info.day_statistics):
                     for i in range(len(user_stat_info.day_statistics), lookback + 1):
                         user_stat_info.day_statistics.append(DayStatistics())

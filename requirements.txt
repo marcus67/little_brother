@@ -20,6 +20,7 @@ sqlalchemy==2.0.21
 urllib3==2.1.0
 werkzeug==2.3.8
 wtforms==3.0.1
+jsonpickle==3.0.2
 
 ##############################################################################################################
 # The package version of selenium is linked to the setup of the test environment (e.g. the version of Chrome).

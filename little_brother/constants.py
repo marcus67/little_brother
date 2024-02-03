@@ -51,19 +51,6 @@ DEVICE_MAX_SAMPLE_SIZE = 100
 
 LANGUAGES = {
     'en': 'English',
-    'de': 'Deutsch',
-    'fr': 'Français',
-    'hr': 'Hrvatski',
-    'it': 'Italiano',
-    'nl': 'Nederlands',
-    'fi': 'Suomen kieli',
-    'tr': 'Türkçe',
-    'ru': 'Русский язык',
-    'ja': '日本語',
-    'bn': 'বাংলা',
-    'th': 'ภาษาไทย',
-    'da': 'Dansk',
-    'es': 'Español'
 }
 
 TEXT_SEPERATOR = ' <i style="font-size: 0.5rem; vertical-align: +25%" class="fas fa-circle fa-sm"></i> '
