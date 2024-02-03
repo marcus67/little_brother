@@ -35,6 +35,13 @@
             <ng-template #activityPermitted><I class="fas fa-check active"></I></ng-template>
             <ng-template #activityNotPermitted><I class="fas fa-times inactive"></I></ng-template>
           </td>
+          <td>
+            <ul>
+              <li *ngFor="let reason of entry.reasons">
+                {{ reason }}
+              </li>
+            </ul>
+          </td>
         </tr>
       </tbody>
     </table>

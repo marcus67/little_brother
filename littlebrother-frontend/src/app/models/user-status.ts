@@ -12,9 +12,9 @@ export class UserStatus {
 	previous_activity_end_time_in_iso_8601?: string;
 	current_activity_start_time_in_iso_8601?: string;
 	current_activity_duration_in_seconds?: number;
+	reasons?: string[];
 
 	constructor(otherObject: UserStatus) {
-	  //this = { ... json }
 	  Object.assign(this, otherObject)
 	}
 
