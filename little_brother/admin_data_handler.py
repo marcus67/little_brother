@@ -26,6 +26,7 @@ from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
 from little_brother.rule_handler import RuleHandler
+from little_brother.transport.ControlTO import ControlTO
 from little_brother.transport.UserStatusTO import UserStatusTO
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
@@ -241,7 +242,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_todays_downtime_in_seconds=int(stat_info.todays_downtime) if stat_info.todays_downtime else None,
                     p_max_time_per_day_in_seconds=rule_set.max_time_per_day,
                     p_current_activity_duration_in_seconds=
-                    int(stat_info.todays_activity_duration) if stat_info.todays_activity_duration else None,
+                    int(stat_info.current_activity_duration) if stat_info.current_activity_duration else None,
                     p_current_activity_start_time_in_iso_8601=stat_info.current_activity_start_time_in_iso_8601,
                     p_current_activity_downtime_in_seconds=int(stat_info.current_activity_downtime)
                     if stat_info.current_activity_downtime else None,
@@ -338,6 +339,9 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     user_infos[username] = user_info
 
         return user_infos
+
+    def get_control_transfer_object(self) -> ControlTO:
+        return ControlTO(p_refresh_interval_in_milliseconds=self._config.index_refresh_interval * 1000)
 
     def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatusTO]:
 

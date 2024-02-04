@@ -24,6 +24,7 @@ export class MetadataService {
     headers = this.ensureAuthenticatedService.addAuthentication(headers);
     if (headers) {
       console.log(headers.getAll('Authorization'))
+
       return new Promise((resolve, reject) => {
         this.http.get(url, {headers: headers}).toPromise().then(
         (result) => {
