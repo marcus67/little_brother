@@ -30,6 +30,7 @@ from little_brother.event_handler import EventHandler
 from little_brother.persistence.persistent_daily_user_status import DailyUserStatus
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
+from little_brother.transport.ControlTO import ControlTO
 from python_base_app import tools
 from python_base_app.angular_auth_view_handler import AngularAuthViewHandler
 from some_flask_helpers import blueprint_adapter
@@ -165,6 +166,26 @@ class NewApiViewHandler(BaseViewHandler):
                         p_process_infos=process_infos)
 
                 return jsonpickle.encode(user_status_tos, unpicklable=False), 200
+
+        except Exception as e:
+            return jsonify(e), 503
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_CONTROL, methods=["GET"])
+    def api_control(self):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return jsonify(result), http_status
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+                    control_to = self.admin_data_handler.get_control_transfer_object()
+
+                return jsonpickle.encode(control_to, unpicklable=False), 200
 
         except Exception as e:
             return jsonify(e), 503

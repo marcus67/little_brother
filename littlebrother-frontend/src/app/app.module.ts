@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { ControlComponent } from './components/control/control.component';
 import { LoginComponent } from './components/login/login.component';
 import { StatusComponent } from './components/status/status.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
@@ -23,7 +24,8 @@ import { LoginRedirect } from './services/login-redirect.service';
     StatusComponent,
     NavBarComponent,
     HelpersComponent,
-    AboutComponent
+    AboutComponent,
+    ControlComponent
   ],
   imports: [
     BrowserModule,
