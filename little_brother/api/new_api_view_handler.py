@@ -165,7 +165,7 @@ class NewApiViewHandler(BaseViewHandler):
                         p_session_context=session_context,
                         p_process_infos=process_infos)
 
-                return jsonpickle.encode(user_status_tos, unpicklable=False), 200
+                return jsonpickle.encode(user_status_tos), 200
 
         except Exception as e:
             return jsonify(e), 503
