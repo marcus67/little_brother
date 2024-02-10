@@ -27,7 +27,7 @@ from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
 from little_brother.rule_handler import RuleHandler
 from little_brother.transport.ControlTO import ControlTO
-from little_brother.transport.UserStatusTO import UserStatusTO
+from little_brother.transport.UserStatus import UserStatus
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
@@ -202,9 +202,9 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         return sorted(admin_infos, key=lambda info: info.full_name)
 
     def get_user_status_transfer_object(self, p_session_context, p_user, p_reference_time,
-                                        p_users_stat_infos, p_active_time_extensions) -> UserStatusTO:
+                                        p_users_stat_infos, p_active_time_extensions) -> UserStatus:
 
-        user_status_to: UserStatusTO | None = None
+        user_status_to: UserStatus | None = None
 
         rule_set: RuleSet = self.rule_handler.get_active_ruleset(
             p_rule_sets=p_user.rulesets, p_reference_date=p_reference_time.date())
@@ -231,7 +231,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_rule_override=override,
                     p_locale=user_locale)
 
-                user_status_to = UserStatusTO(
+                user_status_to = UserStatus(
                     p_username=p_user.username,
                     p_full_name=stat_info.full_name,
                     p_free_play=rule_set.free_play,
@@ -343,7 +343,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
     def get_control_transfer_object(self) -> ControlTO:
         return ControlTO(p_refresh_interval_in_milliseconds=self._config.index_refresh_interval * 1000)
 
-    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatusTO]:
+    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatus]:
 
         user_status_tos = []
 

@@ -3,7 +3,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    /* See https://stackoverflow.com/questions/31173738/typescript-getting-error-ts2304-cannot-find-name-require */
+    "types": [ "node"],
+    "typeRoots": [ "../node_modules/@types" ]
   },
   "files": [
     "src/main.ts"
