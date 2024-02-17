@@ -34,6 +34,7 @@ from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
 from python_base_app import view_info
+from python_base_app.tools import get_datetime_in_iso_8601
 from python_base_app.view_info import ViewInfo
 
 
@@ -242,14 +243,15 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     for i in range(0, stat_info.max_lookback_in_days):
                         user_status_activity_details: list[UserStatusDetailTO] = []
 
-                        # for activity in stat_info.day_statistics[i].activities:
-                        #     user_status_activity : UserStatusDetailTO = UserStatusDetailTO(
-                        #         p_history_label=None,
-                        #         p_duration_in_seconds=activity.duration,
-                        #         p_downtime_in_seconds=activity.downtime,
-                        #         p_min_time_in_iso_8601=activity.start_time,
-                        #         p_max_time_in_iso_8601=activity.end_time,
-                        #         p_host_infos=activity.host_infos)
+                        for activity in stat_info.day_statistics[i].activities:
+                            user_status_activity : UserStatusDetailTO = UserStatusDetailTO(
+                                p_history_label=None,
+                                p_duration_in_seconds=int(activity.duration) if activity.duration else None,
+                                p_downtime_in_seconds=int(activity.downtime) if activity.downtime else None,
+                                p_min_time_in_iso_8601=get_datetime_in_iso_8601(activity.start_time),
+                                p_max_time_in_iso_8601=get_datetime_in_iso_8601(activity.end_time),
+                                p_host_infos=activity.host_infos)
+                            user_status_activity_details.append(user_status_activity)
 
                         day_info: DayStatistics = stat_info.day_statistics[i]
 
@@ -259,7 +261,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                             p_downtime_in_seconds=day_info.downtime,
                             p_min_time_in_iso_8601=day_info.min_time_in_iso_8601,
                             p_max_time_in_iso_8601=day_info.max_time_in_iso_8601,
-                            p_host_infos=day_info.host_infos)
+                            p_host_infos=day_info.host_infos,
+                            p_user_status_details=user_status_activity_details)
 
                         user_status_details.append(user_status_day_detail)
 
