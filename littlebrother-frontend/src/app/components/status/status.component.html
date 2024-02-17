@@ -26,7 +26,7 @@
       </thead>
       <tbody class="table-secondary">
         <tr *ngFor="let entry of userStatus">
-          <td>{{ entry.full_name }}</td>
+          <td><a [routerLink]="['/status', entry.user_id]">{{ entry.full_name }}</a></td>
           <td>{{ entry.context_label }}</td>
           <td>
             {{ entry.todays_activity_duration() }} /
@@ -43,12 +43,14 @@
             <div [ngClass] = "{'blink': entry.current_activity_duration_in_seconds }">{{ entry.current_activity_duration() }}</div>
             <div *ngIf="entry.current_activity_downtime_in_seconds; then currentDowntime"></div>
                 <ng-template #currentDowntime><DIV CLASS="downtime"> {{ entry.current_activity_downtime() }}</DIV></ng-template>
-
           </td>
           <td>
-            <div *ngIf="entry.activity_permitted; then activityPermitted else activityNotPermitted"></div>
-              <ng-template #activityPermitted><I class="fas fa-check active"></I></ng-template>
-              <ng-template #activityNotPermitted><I class="fas fa-times inactive"></I></ng-template>
+            <div *ngIf="entry.activity_permitted">
+              <I class="fas fa-check active"></I>
+            </div>
+            <div *ngIf="! entry.activity_permitted">
+              <I class="fas fa-times inactive"></I>
+            </div>
           </td>
           <td>
             <ul>

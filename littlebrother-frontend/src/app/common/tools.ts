@@ -16,9 +16,12 @@ export const get_duration_as_string = (seconds: number | undefined, include_seco
     }
 }
 
-export const get_date_as_string = (a_date: Date | undefined, include_seconds:boolean=true) : any => {
+export const get_date_as_string = (a_date: Date | undefined, include_date:boolean=true) : any => {
   if (a_date)
-    return formatDate(a_date, "dd.MM.YYYY HH:mm", "en_US")
+    if (include_date)
+      return formatDate(a_date, "dd.MM.YYYY HH:mm", "en_US")
+    else
+      return formatDate(a_date, "HH:mm", "en_US")
   else
     return "-";
 }

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Copyright (C) 2019-24  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
@@ -15,9 +14,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-class UserStatus:
+from little_brother.transport.user_status_detail_to import UserStatusDetailTO
 
-    def __init__(self, p_username: str,
+
+class UserStatusTO:
+
+    def __init__(self,
+                 p_username: str,
+                 p_user_id: int,
                  p_full_name: str,
                  p_context_label: str,
                  p_todays_activity_duration_in_seconds: int,
@@ -30,9 +34,10 @@ class UserStatus:
                  p_current_activity_start_time_in_iso_8601: str,
                  p_current_activity_duration_in_seconds: int,
                  p_current_activity_downtime_in_seconds: int,
-                 p_reasons: list[str]):
-
+                 p_reasons: list[str],
+                 p_user_status_details: list[UserStatusDetailTO] = None):
         self.username = p_username
+        self.user_id = p_user_id
         self.full_name = p_full_name
         self.context_label = p_context_label
         self.todays_activity_duration_in_seconds = p_todays_activity_duration_in_seconds
@@ -46,3 +51,4 @@ class UserStatus:
         self.current_activity_duration_in_seconds = p_current_activity_duration_in_seconds
         self.current_activity_downtime_in_seconds = p_current_activity_downtime_in_seconds
         self.reasons = p_reasons
+        self.user_status_details = p_user_status_details

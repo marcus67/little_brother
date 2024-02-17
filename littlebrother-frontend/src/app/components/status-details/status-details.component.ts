@@ -1,49 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { NavBarComponent } from '../nav-bar/nav-bar.component'
 import { UserStatusService } from '../../services/user-status.service'
 import { ControlService } from '../../services/control.service'
 import { UserStatus } from '../../models/user-status'
-import { Control } from '../../models/control'
+import { UserStatusDetail } from '../../models/user-status-detail'
 import { unpickle } from '../../common/unpickle'
+import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
-import { MapType } from '@angular/compiler';
-
-// https://levelup.gitconnected.com/auto-refresh-or-polling-using-rxjs-timer-operator-2141016c7a53
 
 @Component({
-  selector: 'status',
-  templateUrl: './status.component.html',
-  styleUrls: ['./status.component.css']
+  selector: 'app-status-details',
+  templateUrl: './status-details.component.html',
+  styleUrls: ['./status-details.component.css']
 })
 
-
-export class StatusComponent {
-  userStatus: UserStatus[] = [];
-  hasDowntime: boolean = false;
+export class StatusDetailsComponent {
+  userStatus: UserStatus = new UserStatus();
+  private userId: number = -1;
   private intervalId?: number;
 
   constructor(private controlService: ControlService,
-              private userStatusService: UserStatusService) {
+              private userStatusService: UserStatusService,
+              private route: ActivatedRoute) {
+    this.userId = Number(this.route.snapshot.params['user_id']);
   }
 
   getUserStatus(): void {
-    this.userStatusService.loadUserStatus().subscribe( jsonData => {
+    this.userStatusService.loadUserStatusDetails(this.userId).subscribe( jsonData => {
+      // extract from JSON...
       this.userStatus = unpickle(jsonData, my_handlers)
-      this.userStatus.sort( (a:UserStatus, b:UserStatus) => {
-             var upper_full_name_a = a.full_name || "";
-             var upper_full_name_b = b.full_name || "";
-             return  (upper_full_name_a < upper_full_name_b) ? -1 : (upper_full_name_a > upper_full_name_b) ? 1 : 0;
-           }
-       );
-
-      this.hasDowntime = false;
-
-      this.userStatus.forEach( entry => {
-        if (entry.todays_downtime_in_seconds)
-           this.hasDowntime = true;
-        }
-      );
     });
   }
 
