@@ -27,10 +27,13 @@
     </DIV>
   </DIV>
 </div>
+<div class="container p-2">
+
+</div>
 <div class="container rounded-2 overflow-hidden">
-  <!--<div class="accordion"> -->
+  <div class="accordion" id="statusDetailAccordion">
       <DIV CLASS="row title-row bg-primary-subtle">
-        <DIV CLASS="col col-3 col-md-2 localetext">Day</DIV>
+        <DIV CLASS="col col-3 col-sm-2 localetext">Day</DIV>
         <DIV CLASS="col col-2 d-none d-md-block localetext">
           Active Time
           <div *ngIf="userStatus.todays_downtime_in_seconds">
@@ -42,13 +45,16 @@
         <DIV CLASS="col col-2 d-md-none localetext">Start</DIV>
         <DIV CLASS="col col-2 d-none d-md-block localetext">Activity End</DIV>
         <DIV CLASS="col col-2 d-none d-sm-block d-md-none localetext">End</DIV>
-        <DIV CLASS="col col-5 col-md-4 localetext">Host(#procs)</DIV>
+        <DIV CLASS="col col-5 col-sm-4 col-md-4 localetext">Host(#procs)</DIV>
       </DIV>
-      <!--<div *ngFor="let detail of userStatus.user_status_details" class="accordion-item"> -->
-         <!-- <h2 class="accordion-header"> -->
-            <DIV  *ngFor="let detail of userStatus.user_status_details"  CLASS="row bg-secondary-subtle">
-              <DIV CLASS="col col-3 col-md-2 localetext">
-                {{ detail.history_label }}
+      <div *ngFor="let detail of userStatus.user_status_details; index as i" class="accordion-item">
+         <div class="accordion-header">
+            <DIV CLASS="row bg-secondary-subtle">
+              <DIV CLASS="col col-3 col-sm-2 localetext">
+                <A data-bs-toggle="collapse" href="#statusDetailAccordionItem{{i}}" aria-expanded="false" 
+                  attr.aria-controls="statusDetailAccordionItem{{i}}" role="button" title="Open details">
+                  {{ detail.history_label }}
+                </A>
               </DIV>
               <DIV CLASS="col col-2">
                 {{ detail.duration_as_string() }}
@@ -62,11 +68,35 @@
               <DIV CLASS="col col-2 d-none d-sm-block">
                 {{ detail.max_time_as_string(false) }}
               </DIV>
-              <DIV CLASS="col col-5 col-md-4">
+              <DIV CLASS="col col-5 col-sm-4">
                 {{ detail.host_infos }}
               </DIV>
             </DIV>
-         <!-- </h2> -->
-      <!-- </div> -->
-   <!--</div> -->
+          </div>
+          <div id="statusDetailAccordionItem{{i}}" class="accordion-collapse collapse"
+               [class.show] = "accordionState.get('statusDetailAccordionItem' + i)"
+               data-bs-parent="#statusDetailAccordion">
+              <div *ngFor="let subDetail of detail.user_status_details; index as i">
+                <DIV CLASS="row bg-warning-subtle">
+                  <DIV CLASS="col col-3 col-sm-2 localetext"></DIV>
+                  <DIV CLASS="col col-2">
+                    {{ subDetail.duration_as_string() }}
+                    <div *ngIf="userStatus.todays_downtime_in_seconds">
+                      <DIV CLASS="downtime"> {{ subDetail.downtime_as_string() }}</DIV>
+                    </div>
+                  </DIV>
+                  <DIV CLASS="col col-2">
+                    {{ subDetail.min_time_as_string(false) }}
+                  </DIV>
+                  <DIV CLASS="col col-2 d-none d-sm-block">
+                    {{ subDetail.max_time_as_string(false) }}
+                  </DIV>
+                  <DIV CLASS="col col-5 col-sm-4">
+                    {{ subDetail.host_infos }}
+                  </DIV>    
+                </DIV>
+              </div>
+          </div>
+      </div>
+   </div>
 </div>

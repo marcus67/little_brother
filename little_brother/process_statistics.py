@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 
 from python_base_app import log_handling
 from python_base_app import tools
+from python_base_app.tools import get_datetime_in_iso_8601
 
 
 class HostStat(object):
@@ -307,11 +308,7 @@ class ProcessStatisticsInfo(object):
     @property
     def previous_activity_start_time_in_iso_8601(self) -> str | None:
 
-        if self.previous_activity is None:
-            return None
-
-        else:
-            return self.previous_activity.start_time.isoformat(timespec='seconds')
+        return get_datetime_in_iso_8601(self.previous_activity_start_time)
 
     @property
     def previous_activity_end_time(self):
@@ -325,11 +322,7 @@ class ProcessStatisticsInfo(object):
     @property
     def previous_activity_end_time_in_iso_8601(self):
 
-        if self.previous_activity is None:
-            return None
-
-        else:
-            return self.previous_activity.end_time.isoformat(timespec='seconds')
+        return get_datetime_in_iso_8601(self.previous_activity_end_time)
 
     @property
     def previous_activity_duration(self):

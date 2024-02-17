@@ -10,6 +10,8 @@ import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
 
+declare var jQuery: any; 
+
 @Component({
   selector: 'app-status-details',
   templateUrl: './status-details.component.html',
@@ -18,8 +20,11 @@ import { my_handlers } from '../../models/registry'
 
 export class StatusDetailsComponent {
   userStatus: UserStatus = new UserStatus();
+  accordionState: Map<String, Boolean> = new Map<String, Boolean>();
+
   private userId: number = -1;
   private intervalId?: number;
+
 
   constructor(private controlService: ControlService,
               private userStatusService: UserStatusService,
@@ -28,9 +33,11 @@ export class StatusDetailsComponent {
   }
 
   getUserStatus(): void {
+
     this.userStatusService.loadUserStatusDetails(this.userId).subscribe( jsonData => {
+      this.storeAccordionState();
       // extract from JSON...
-      this.userStatus = unpickle(jsonData, my_handlers)
+      this.userStatus = unpickle(jsonData, my_handlers);
     });
   }
 
@@ -58,5 +65,11 @@ export class StatusDetailsComponent {
 
   ngOnDestroy(): void {
     this.deactivateRefresh();
+  }
+
+  storeAccordionState(): void {
+    jQuery(".accordion-collapse").each( (index:number, element:any) => {
+      this.accordionState.set(element.id, element.classList.contains("show"))
+    })
   }
 }
