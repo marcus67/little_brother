@@ -16,6 +16,7 @@ import { AuthService } from './services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { EnsureAuthenticated } from './services/ensure-authenticated.service';
 import { LoginRedirect } from './services/login-redirect.service';
+import { StatusDetailsComponent } from './components/status-details/status-details.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { LoginRedirect } from './services/login-redirect.service';
     NavBarComponent,
     HelpersComponent,
     AboutComponent,
-    ControlComponent
+    ControlComponent,
+    StatusDetailsComponent
   ],
   imports: [
     BrowserModule,

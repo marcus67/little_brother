@@ -1,6 +1,8 @@
+import { UserStatusDetail } from '../models/user-status-detail'
 import { get_duration_as_string, get_date_from_iso_string, get_date_as_string } from '../common/tools'
 
 export class UserStatus {
+  user_id?: number;
   full_name?: String;
 	context_label?: String;
 	todays_activity_duration_in_seconds?: number;
@@ -14,6 +16,7 @@ export class UserStatus {
 	current_activity_duration_in_seconds?: number;
 	current_activity_downtime_in_seconds?: number;
 	reasons?: string[];
+  user_status_details?: UserStatusDetail[];
 
 	constructor(otherObject?: object) {
 	  if (otherObject)

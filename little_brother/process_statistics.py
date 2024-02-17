@@ -187,6 +187,24 @@ class DayStatistics(object):
 
         return ", ".join(host_stat.summary for host_stat in self.host_stats.values())
 
+    @property
+    def min_time_in_iso_8601(self) -> str | None:
+
+        if self.min_time is None:
+            return None
+
+        else:
+            return self.min_time.isoformat(timespec='seconds')
+
+    @property
+    def max_time_in_iso_8601(self) -> str | None:
+
+        if self.max_time is None:
+            return None
+
+        else:
+            return self.max_time.isoformat(timespec='seconds')
+
 
 class ProcessStatisticsInfo(object):
 

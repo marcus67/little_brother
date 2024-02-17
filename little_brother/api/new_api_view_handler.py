@@ -15,9 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import datetime
-import json
-
 import flask
 import jsonpickle
 from flask import jsonify
@@ -27,10 +24,7 @@ from little_brother import dependency_injection
 from little_brother.api.master_connector import MasterConnector
 from little_brother.base_view_handler import BaseViewHandler
 from little_brother.event_handler import EventHandler
-from little_brother.persistence.persistent_daily_user_status import DailyUserStatus
-from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
-from little_brother.transport.ControlTO import ControlTO
 from python_base_app import tools
 from python_base_app.angular_auth_view_handler import AngularAuthViewHandler
 from some_flask_helpers import blueprint_adapter
@@ -39,6 +33,7 @@ MIME_TYPE_APPLICATION_JSON = 'application/json'
 
 API_BLUEPRINT_NAME = "NEW_API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
+
 
 # Dummy function to trigger extraction by pybabel...
 
@@ -117,14 +112,13 @@ class NewApiViewHandler(BaseViewHandler):
         return self.api_error(p_message="invalid access code",
                               p_status_code=constants.HTTP_STATUS_CODE_UNAUTHORIZED)
 
-    def internal_server_error(self, p_exception : Exception):
+    def internal_server_error(self, p_exception: Exception):
         return self.api_error(p_message=f"internal server error: {str(p_exception)}",
                               p_status_code=constants.HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR)
 
-
     def destroy(self):
         API_BLUEPRINT_ADAPTER.unassign_view_handler_instances()
-        
+
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ABOUT, methods=["GET"])
     def api_about(self):
         request = flask.request
@@ -166,6 +160,33 @@ class NewApiViewHandler(BaseViewHandler):
                         p_process_infos=process_infos)
 
                 return jsonpickle.encode(user_status_tos), 200
+
+        except Exception as e:
+            return jsonify(e), 503
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_STATUS_DETAILS, methods=["GET"])
+    def api_status_detail(self, user_id):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return jsonify(result), http_status
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+                    process_infos = self.processs_handler_manager.get_process_infos()
+                    user_status_to = self.admin_data_handler.get_user_status_and_details_transfer_object(
+                        p_session_context=session_context,
+                        p_process_infos=process_infos,
+                        p_user_id=user_id)
+
+                if user_status_to is None:
+                    return "user id not found", 404
+
+                return jsonpickle.encode(user_status_to), 200
 
         except Exception as e:
             return jsonify(e), 503

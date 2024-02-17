@@ -14,7 +14,7 @@ export class UserStatusService {
 
   constructor(private http: HttpClient, private ensureAuthenticatedService : EnsureAuthenticated) {}
 
-  loadUserStatus() : Observable<string> {
+  loadUserStatus() : Observable<object> {
     let url: string = `${this.BASE_URL}/status`;
     let headers: HttpHeaders | undefined = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -24,6 +24,19 @@ export class UserStatusService {
 
     console.log(headers.getAll('Authorization'))
 
-    return this.http.get<string>(url, {headers: headers});
+    return this.http.get<object>(url, {headers: headers});
+  }
+
+  loadUserStatusDetails(userId: number) : Observable<object> {
+    let url: string = `${this.BASE_URL}/status-details/${userId}`;
+    let headers: HttpHeaders | undefined = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    headers = this.ensureAuthenticatedService.addAuthentication(headers);
+
+    console.log(headers.getAll('Authorization'))
+
+    return this.http.get<object>(url, {headers: headers});
   }
 }

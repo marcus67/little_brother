@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,11 @@ from little_brother.persistence.persistent_dependency_injection_mix_in import Pe
 from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
+from little_brother.process_statistics import DayStatistics
 from little_brother.rule_handler import RuleHandler
-from little_brother.transport.ControlTO import ControlTO
-from little_brother.transport.UserStatus import UserStatus
+from little_brother.transport.control_to import ControlTO
+from little_brother.transport.user_status_detail_to import UserStatusDetailTO
+from little_brother.transport.user_status_to import UserStatusTO
 from little_brother.user_locale_handler import UserLocaleHandler
 from python_base_app import log_handling
 from python_base_app import tools
@@ -202,9 +204,10 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         return sorted(admin_infos, key=lambda info: info.full_name)
 
     def get_user_status_transfer_object(self, p_session_context, p_user, p_reference_time,
-                                        p_users_stat_infos, p_active_time_extensions) -> UserStatus:
+                                        p_users_stat_infos, p_active_time_extensions,
+                                        p_include_details: bool) -> UserStatusTO:
 
-        user_status_to: UserStatus | None = None
+        user_status_to: UserStatusTO | None = None
 
         rule_set: RuleSet = self.rule_handler.get_active_ruleset(
             p_rule_sets=p_user.rulesets, p_reference_date=p_reference_time.date())
@@ -231,7 +234,37 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_rule_override=override,
                     p_locale=user_locale)
 
-                user_status_to = UserStatus(
+                user_status_details: list[UserStatusDetailTO] | None = None
+
+                if p_include_details:
+                    user_status_details = []
+
+                    for i in range(0, stat_info.max_lookback_in_days):
+                        user_status_activity_details: list[UserStatusDetailTO] = []
+
+                        # for activity in stat_info.day_statistics[i].activities:
+                        #     user_status_activity : UserStatusDetailTO = UserStatusDetailTO(
+                        #         p_history_label=None,
+                        #         p_duration_in_seconds=activity.duration,
+                        #         p_downtime_in_seconds=activity.downtime,
+                        #         p_min_time_in_iso_8601=activity.start_time,
+                        #         p_max_time_in_iso_8601=activity.end_time,
+                        #         p_host_infos=activity.host_infos)
+
+                        day_info: DayStatistics = stat_info.day_statistics[i]
+
+                        user_status_day_detail: UserStatusDetailTO = UserStatusDetailTO(
+                            p_history_label=self.history_labels[i][0].format(**self.history_labels[i][1]),
+                            p_duration_in_seconds=day_info.duration,
+                            p_downtime_in_seconds=day_info.downtime,
+                            p_min_time_in_iso_8601=day_info.min_time_in_iso_8601,
+                            p_max_time_in_iso_8601=day_info.max_time_in_iso_8601,
+                            p_host_infos=day_info.host_infos)
+
+                        user_status_details.append(user_status_day_detail)
+
+                user_status_to = UserStatusTO(
+                    p_user_id=p_user.id,
                     p_username=p_user.username,
                     p_full_name=stat_info.full_name,
                     p_free_play=rule_set.free_play,
@@ -249,7 +282,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_previous_activity_start_time_in_iso_8601=stat_info.previous_activity_start_time_in_iso_8601,
                     p_previous_activity_end_time_in_iso_8601=stat_info.previous_activity_end_time_in_iso_8601,
                     p_reasons=[template.format(**value_dict)
-                               for template, value_dict in rule_result_info.applying_rule_text_templates]
+                               for template, value_dict in rule_result_info.applying_rule_text_templates],
+                    p_user_status_details=user_status_details
                 )
 
         return user_status_to
@@ -343,7 +377,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
     def get_control_transfer_object(self) -> ControlTO:
         return ControlTO(p_refresh_interval_in_milliseconds=self._config.index_refresh_interval * 1000)
 
-    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatus]:
+    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatusTO]:
 
         user_status_tos = []
 
@@ -365,12 +399,39 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
             if user is not None:
                 user_status_to = self.get_user_status_transfer_object(
                     p_session_context=p_session_context, p_user=user, p_users_stat_infos=users_stat_infos,
-                    p_active_time_extensions=active_time_extensions, p_reference_time=reference_time)
+                    p_active_time_extensions=active_time_extensions, p_reference_time=reference_time,
+                    p_include_details=False)
 
                 if user_status_to is not None:
                     user_status_tos.append(user_status_to)
 
         return user_status_tos
+
+    def get_user_status_and_details_transfer_object(self, p_user_id: int, p_session_context,
+                                                    p_process_infos) -> UserStatusTO | None:
+
+        reference_time = datetime.datetime.now()
+
+        active_time_extensions = self.time_extension_entity_manager.get_active_time_extensions(
+            p_session_context=p_session_context, p_reference_datetime=reference_time)
+
+        users_stat_infos = process_statistics.get_process_statistics(
+            p_process_infos=p_process_infos,
+            p_reference_time=reference_time,
+            p_user_map=self.user_entity_manager.user_map(p_session_context),
+            p_max_lookback_in_days=self._config.process_lookback_in_days,
+            p_min_activity_duration=self._config.min_activity_duration)
+
+        user: User = self.user_entity_manager.get_by_id(p_session_context=p_session_context, p_id=p_user_id)
+
+        if user is None:
+            return None
+
+        return self.get_user_status_transfer_object(
+            p_session_context=p_session_context, p_user=user, p_users_stat_infos=users_stat_infos,
+            p_active_time_extensions=active_time_extensions, p_reference_time=reference_time,
+            p_include_details=True)
+
 
     def load_rule_overrides(self):
 
