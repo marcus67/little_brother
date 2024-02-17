@@ -3,14 +3,14 @@
   <DIV CLASS="row title-row bg-primary-subtle">
     <DIV CLASS="col col-2">User</DIV>
     <DIV CLASS="col col-2">Context</DIV>
-    <DIV CLASS="col col-2 d-none d-lg-block">Activity permitted</DIV>
-    <DIV CLASS="col col-1 col-sm-1 col-md-1 d-lg-none">OK?</DIV>
+    <DIV CLASS="col col-lg-2 d-none d-lg-block">Activity permitted</DIV>
+    <DIV CLASS="col col-1 col-sm-1 d-lg-none">OK?</DIV>
     <DIV CLASS="col col-7 col-sm-7 col-md-6 col-lg-6">Comments</DIV>
   </DIV>
   <DIV CLASS="row bg-secondary-subtle">
     <DIV CLASS="col col-2">{{ userStatus.full_name }}</DIV>
     <DIV CLASS="col col-2">{{ userStatus.context_label }}</DIV>
-    <DIV CLASS="col col-1 col-sm-1 col-md-1 col-lg-2">
+    <DIV CLASS="col col-1 col-md-1 col-sm-1 col-lg-2">
       <div *ngIf="userStatus.activity_permitted">
         <I class="fas fa-check active"></I>
       </div>
@@ -18,7 +18,7 @@
         <I class="fas fa-times inactive"></I>
       </div>
     </DIV>
-    <DIV CLASS="col col-7 col-sm-7 col-md-6 col-lg-6">
+    <DIV CLASS="col col-7 col-lg-6">
       <ul>
         <li *ngFor="let reason of userStatus.reasons">
           {{ reason }}
@@ -74,7 +74,7 @@
             </DIV>
           </div>
           <div id="statusDetailAccordionItem{{i}}" class="accordion-collapse collapse"
-               [class.show] = "accordionState.get('statusDetailAccordionItem' + i)"
+               [class.show] = "getAccordionState('statusDetailAccordionItem' + i)"
                data-bs-parent="#statusDetailAccordion">
               <div *ngFor="let subDetail of detail.user_status_details; index as i">
                 <DIV CLASS="row bg-warning-subtle">
