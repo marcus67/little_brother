@@ -1,0 +1,104 @@
+<app-nav-bar></app-nav-bar>
+<div class="container rounded-2 overflow-hidden">
+  <DIV CLASS="row title-row bg-primary-subtle">
+    <DIV CLASS="col col-2">User</DIV>
+    <DIV CLASS="col col-2">Context</DIV>
+    <DIV CLASS="col col-lg-2 d-none d-lg-block">Activity permitted</DIV>
+    <DIV CLASS="col col-1 col-sm-1 d-lg-none">OK?</DIV>
+    <DIV CLASS="col col-7 col-sm-7 col-md-6 col-lg-6">Comments</DIV>
+  </DIV>
+  <DIV CLASS="row bg-secondary-subtle">
+    <DIV CLASS="col col-2">{{ userStatus.full_name }}</DIV>
+    <DIV CLASS="col col-2">{{ userStatus.context_label }}</DIV>
+    <DIV CLASS="col col-1 col-md-1 col-sm-1 col-lg-2">
+      <div *ngIf="userStatus.activity_permitted">
+        <I class="fas fa-check active"></I>
+      </div>
+      <div *ngIf="! userStatus.activity_permitted">
+        <I class="fas fa-times inactive"></I>
+      </div>
+    </DIV>
+    <DIV CLASS="col col-7 col-lg-6">
+      <ul>
+        <li *ngFor="let reason of userStatus.reasons">
+          {{ reason }}
+        </li>
+      </ul>
+    </DIV>
+  </DIV>
+</div>
+
+<!-- seperator -->
+<div class="container p-2">
+</div>
+
+<div class="container rounded-2 overflow-hidden">
+  <div class="accordion" id="statusDetailAccordion">
+      <DIV CLASS="row title-row bg-primary-subtle">
+        <DIV CLASS="col col-3 col-sm-2 localetext">Day</DIV>
+        <DIV CLASS="col col-2 d-none d-md-block localetext">
+          Active Time
+          <div *ngIf="userStatus.todays_downtime_in_seconds">
+            <DIV CLASS="downtime"> Downtime</DIV>
+          </div>
+        </DIV>
+        <DIV CLASS="col col-2 d-md-none localetext">Active</DIV>
+        <DIV CLASS="col col-2 d-none d-md-block  localetext">Activity Start</DIV>
+        <DIV CLASS="col col-2 d-md-none localetext">Start</DIV>
+        <DIV CLASS="col col-2 d-none d-md-block localetext">Activity End</DIV>
+        <DIV CLASS="col col-2 d-none d-sm-block d-md-none localetext">End</DIV>
+        <DIV CLASS="col col-5 col-sm-4 col-md-4 localetext">Host(#procs)</DIV>
+      </DIV>
+      <div *ngFor="let detail of userStatus.user_status_details; index as i" class="accordion-item">
+         <div class="accordion-header">
+            <DIV CLASS="row bg-secondary-subtle">
+              <DIV CLASS="col col-3 col-sm-2 localetext">
+                <A data-bs-toggle="collapse" href="#statusDetailAccordionItem{{i}}" aria-expanded="false" 
+                  attr.aria-controls="statusDetailAccordionItem{{i}}" role="button" title="Open details">
+                  {{ detail.history_label }}
+                </A>
+              </DIV>
+              <DIV CLASS="col col-2">
+                {{ detail.duration_as_string() }}
+                <div *ngIf="userStatus.todays_downtime_in_seconds">
+                  <DIV CLASS="downtime"> {{ detail.downtime_as_string() }}</DIV>
+                </div>
+              </DIV>
+              <DIV CLASS="col col-2">
+                {{ detail.min_time_as_string(false) }}
+              </DIV>
+              <DIV CLASS="col col-2 d-none d-sm-block">
+                {{ detail.max_time_as_string(false) }}
+              </DIV>
+              <DIV CLASS="col col-5 col-sm-4">
+                {{ detail.host_infos }}
+              </DIV>
+            </DIV>
+          </div>
+          <div id="statusDetailAccordionItem{{i}}" class="accordion-collapse collapse"
+               [class.show] = "getAccordionState('statusDetailAccordionItem' + i)"
+               data-bs-parent="#statusDetailAccordion">
+              <div *ngFor="let subDetail of detail.user_status_details; index as i">
+                <DIV CLASS="row bg-warning-subtle">
+                  <DIV CLASS="col col-3 col-sm-2 localetext"></DIV>
+                  <DIV CLASS="col col-2">
+                    {{ subDetail.duration_as_string() }}
+                    <div *ngIf="userStatus.todays_downtime_in_seconds">
+                      <DIV CLASS="downtime"> {{ subDetail.downtime_as_string() }}</DIV>
+                    </div>
+                  </DIV>
+                  <DIV CLASS="col col-2">
+                    {{ subDetail.min_time_as_string(false) }}
+                  </DIV>
+                  <DIV CLASS="col col-2 d-none d-sm-block">
+                    {{ subDetail.max_time_as_string(false) }}
+                  </DIV>
+                  <DIV CLASS="col col-5 col-sm-4">
+                    {{ subDetail.host_infos }}
+                  </DIV>    
+                </DIV>
+              </div>
+          </div>
+      </div>
+   </div>
+</div>

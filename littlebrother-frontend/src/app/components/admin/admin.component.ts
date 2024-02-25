@@ -9,16 +9,13 @@ import { unpickle } from '../../common/unpickle'
 import { my_handlers } from '../../models/registry'
 import { MapType } from '@angular/compiler';
 
-// https://levelup.gitconnected.com/auto-refresh-or-polling-using-rxjs-timer-operator-2141016c7a53
-
 @Component({
-  selector: 'status',
-  templateUrl: './status.component.html',
-  styleUrls: ['./status.component.css']
+  selector: 'app-admin',
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
 
-
-export class StatusComponent implements OnInit, OnDestroy {
+export class AdminComponent {
   userStatus: UserStatus[] = [];
   hasDowntime: boolean = false;
   private intervalId?: number;

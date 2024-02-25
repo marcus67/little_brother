@@ -17,6 +17,8 @@ import { FormsModule } from '@angular/forms';
 import { EnsureAuthenticated } from './services/ensure-authenticated.service';
 import { LoginRedirect } from './services/login-redirect.service';
 import { StatusDetailsComponent } from './components/status-details/status-details.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminDetailsComponent } from './components/admin-details/admin-details.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { StatusDetailsComponent } from './components/status-details/status-detai
     HelpersComponent,
     AboutComponent,
     ControlComponent,
-    StatusDetailsComponent
+    StatusDetailsComponent,
+    AdminComponent,
+    AdminDetailsComponent
   ],
   imports: [
     BrowserModule,
