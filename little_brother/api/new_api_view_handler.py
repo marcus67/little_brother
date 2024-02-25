@@ -190,6 +190,55 @@ class NewApiViewHandler(BaseViewHandler):
 
         except Exception as e:
             return jsonify(e), 503
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN, methods=["GET"])
+    def api_admin(self):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return jsonify(result), http_status
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+                    process_infos = self.processs_handler_manager.get_process_infos()
+                    user_status_tos = self.admin_data_handler.get_user_admin_transfer_objects(
+                        p_session_context=session_context,
+                        p_process_infos=process_infos)
+
+                return jsonpickle.encode(user_status_tos), 200
+
+        except Exception as e:
+            return jsonify(e), 503
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_DETAILS, methods=["GET"])
+    def api_admin_detail(self, user_id):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return jsonify(result), http_status
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+                    process_infos = self.processs_handler_manager.get_process_infos()
+                    user_status_to = self.admin_data_handler.get_admin_status_and_details_transfer_object(
+                        p_session_context=session_context,
+                        p_process_infos=process_infos,
+                        p_user_id=user_id)
+
+                if user_status_to is None:
+                    return "user id not found", 404
+
+                return jsonpickle.encode(user_status_to), 200
+
+        except Exception as e:
+            return jsonify(e), 503
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_CONTROL, methods=["GET"])
     def api_control(self):

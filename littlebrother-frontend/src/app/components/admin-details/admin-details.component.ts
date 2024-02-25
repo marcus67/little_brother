@@ -24,13 +24,13 @@ function eventListenerHideAccordion (event:any) {
 };
 
 @Component({
-  selector: 'app-status-details',
-  templateUrl: './status-details.component.html',
-  styleUrls: ['./status-details.component.css']
+  selector: 'app-admin-details',
+  templateUrl: './admin-details.component.html',
+  styleUrls: ['./admin-details.component.css']
 })
 
 
-export class StatusDetailsComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecked {
   userStatus: UserStatus = new UserStatus();
   accordionState: Map<String, Boolean> = new Map<String, Boolean>();
 
