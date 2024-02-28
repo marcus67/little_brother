@@ -19,6 +19,13 @@ export const unpickle = (object:object, handlers:Map<string, Function>) : any =>
         }
         return array;
 
+    } else if (object instanceof Map) {
+        let map = new Map()
+        object.forEach( (key, value) => {
+            map.set(key, unpickle(value, handlers))
+        })
+        return map
+
     } else {
         let className : string | undefined = undefined;
         let newObject = {};

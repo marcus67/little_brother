@@ -1,13 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
-import { NavBarComponent } from '../nav-bar/nav-bar.component'
-import { UserStatusService } from '../../services/user-status.service'
+import { UserAdminService } from '../../services/user-admin.service'
 import { ControlService } from '../../services/control.service'
-import { UserStatus } from '../../models/user-status'
+import { UserAdmin } from '../../models/user-admin'
 import { Control } from '../../models/control'
 import { unpickle } from '../../common/unpickle'
 import { my_handlers } from '../../models/registry'
-import { MapType } from '@angular/compiler';
 
 @Component({
   selector: 'app-admin',
@@ -16,31 +13,37 @@ import { MapType } from '@angular/compiler';
 })
 
 export class AdminComponent {
-  userStatus: UserStatus[] = [];
+  userAdmin: UserAdmin[] = [];
   hasDowntime: boolean = false;
   private intervalId?: number;
 
   constructor(private controlService: ControlService,
-              private userStatusService: UserStatusService) {
+              private userAdminService: UserAdminService) {
   }
 
-  getUserStatus(): void {
-    this.userStatusService.loadUserStatus().subscribe( jsonData => {
-      this.userStatus = unpickle(jsonData, my_handlers)
-      this.userStatus.sort( (a:UserStatus, b:UserStatus) => {
-             var upper_full_name_a = a.full_name || "";
-             var upper_full_name_b = b.full_name || "";
-             return  (upper_full_name_a < upper_full_name_b) ? -1 : (upper_full_name_a > upper_full_name_b) ? 1 : 0;
-           }
-       );
+  getuserAdmin(): void {
+    this.userAdminService.loadUserAdmin().subscribe( jsonData => {
+      let unpickledData = unpickle(jsonData, my_handlers)
 
-      this.hasDowntime = false;
+      if (unpickledData) {
+        this.userAdmin = unpickledData
+        this.userAdmin.sort( (a:UserAdmin, b:UserAdmin) => {
+              var upper_full_name_a = a.user_status?.full_name || "";
+              var upper_full_name_b = b.user_status?.full_name || "";
+              return  (upper_full_name_a < upper_full_name_b) ? -1 : (upper_full_name_a > upper_full_name_b) ? 1 : 0;
+            }
+        );
 
-      this.userStatus.forEach( entry => {
-        if (entry.todays_downtime_in_seconds)
-           this.hasDowntime = true;
-        }
-      );
+        this.hasDowntime = false;
+
+        this.userAdmin.forEach( entry => {
+          if (entry.user_status?.todays_downtime_in_seconds)
+            this.hasDowntime = true;
+          }
+        );
+      } else {
+        console.error("Cannot unpickle UserAdmin entries")
+      }
     });
   }
 
@@ -49,7 +52,7 @@ export class AdminComponent {
       let control : Control = new Control(jsonEntry);
 
       this.intervalId = window.setInterval( () => {
-         this.getUserStatus();
+         this.getuserAdmin();
       }, control.refresh_interval_in_milliseconds
       )
     });
@@ -62,7 +65,7 @@ export class AdminComponent {
   }
 
   ngOnInit(): void {
-    this.getUserStatus();
+    this.getuserAdmin();
     this.activateRefresh();
   }
 

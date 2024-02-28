@@ -1,13 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
-import { NavBarComponent } from '../nav-bar/nav-bar.component'
 import { UserStatusService } from '../../services/user-status.service'
 import { ControlService } from '../../services/control.service'
 import { UserStatus } from '../../models/user-status'
 import { Control } from '../../models/control'
 import { unpickle } from '../../common/unpickle'
 import { my_handlers } from '../../models/registry'
-import { MapType } from '@angular/compiler';
 
 // https://levelup.gitconnected.com/auto-refresh-or-polling-using-rxjs-timer-operator-2141016c7a53
 
@@ -29,21 +26,27 @@ export class StatusComponent implements OnInit, OnDestroy {
 
   getUserStatus(): void {
     this.userStatusService.loadUserStatus().subscribe( jsonData => {
-      this.userStatus = unpickle(jsonData, my_handlers)
-      this.userStatus.sort( (a:UserStatus, b:UserStatus) => {
-             var upper_full_name_a = a.full_name || "";
-             var upper_full_name_b = b.full_name || "";
-             return  (upper_full_name_a < upper_full_name_b) ? -1 : (upper_full_name_a > upper_full_name_b) ? 1 : 0;
-           }
-       );
+      let unpickledData = unpickle(jsonData, my_handlers)
 
-      this.hasDowntime = false;
+      if (unpickledData) {
+        this.userStatus = unpickledData
+        this.userStatus.sort( (a:UserStatus, b:UserStatus) => {
+              var upper_full_name_a = a.full_name || "";
+              var upper_full_name_b = b.full_name || "";
+              return  (upper_full_name_a < upper_full_name_b) ? -1 : (upper_full_name_a > upper_full_name_b) ? 1 : 0;
+            }
+        );
 
-      this.userStatus.forEach( entry => {
-        if (entry.todays_downtime_in_seconds)
-           this.hasDowntime = true;
-        }
-      );
+        this.hasDowntime = false;
+
+        this.userStatus.forEach( entry => {
+          if (entry.todays_downtime_in_seconds)
+            this.hasDowntime = true;
+          }
+        );
+      } else {
+        console.error("Cannot unpickle UserStatus entries")
+      }
     });
   }
 
