@@ -383,7 +383,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
     def get_control_transfer_object(self) -> ControlTO:
         return ControlTO(p_refresh_interval_in_milliseconds=self._config.index_refresh_interval * 1000)
 
-    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> dict[str, UserStatusTO]:
+    def get_user_status_transfer_object_map(self, p_session_context, p_process_infos) -> dict[str, UserStatusTO]:
 
         user_status_tos = {}
 
@@ -412,6 +412,11 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     user_status_tos[user.username] = user_status_to
 
         return user_status_tos
+
+    def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatusTO]:
+
+        return [ to for to in self.get_user_status_transfer_object_map(
+            p_session_context=p_session_context, p_process_infos=p_process_infos).values() ]
 
     def get_user_status_and_details_transfer_object(self, p_user_id: int, p_session_context,
                                                     p_process_infos) -> UserStatusTO | None:
@@ -444,8 +449,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
         reference_time = datetime.datetime.now()
 
-        user_status_tos = self.get_user_status_transfer_objects(p_session_context=p_session_context,
-                                                                p_process_infos=p_process_infos)
+        user_status_tos = self.get_user_status_transfer_object_map(p_session_context=p_session_context,
+                                                                   p_process_infos=p_process_infos)
 
         user_infos = self.get_user_status_infos(p_session_context=p_session_context, p_include_history=False,
                                                 p_process_infos=p_process_infos)
@@ -596,8 +601,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         if user is None:
             return None
 
-        user_status_tos = self.get_user_status_transfer_objects(p_session_context=p_session_context,
-                                                                p_process_infos=p_process_infos)
+        user_status_tos = self.get_user_status_transfer_object_map(p_session_context=p_session_context,
+                                                                   p_process_infos=p_process_infos)
 
         return self.get_user_admin_transfer_object(
             p_session_context=p_session_context, p_username=user.username,

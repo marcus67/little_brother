@@ -6,15 +6,14 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-
-export class UserStatusService {
+export class UserAdminService {
 
   private BASE_URL: string = '/angular-api';
 
   constructor(private http: HttpClient, private ensureAuthenticatedService : EnsureAuthenticated) {}
 
-  loadUserStatus() : Observable<object> {
-    let url: string = `${this.BASE_URL}/status`;
+  loadUserAdmin() : Observable<object> {
+    let url: string = `${this.BASE_URL}/admin`;
     let headers: HttpHeaders | undefined = new HttpHeaders({
       'Content-Type': 'application/json'
     });
@@ -26,8 +25,8 @@ export class UserStatusService {
     return this.http.get<object>(url, {headers: headers});
   }
 
-  loadUserStatusDetails(userId: number) : Observable<object> {
-    let url: string = `${this.BASE_URL}/status-details/${userId}`;
+  loadUserAdminDetails(userId: number) : Observable<object> {
+    let url: string = `${this.BASE_URL}/admin-details/${userId}`;
     let headers: HttpHeaders | undefined = new HttpHeaders({
       'Content-Type': 'application/json'
     });
