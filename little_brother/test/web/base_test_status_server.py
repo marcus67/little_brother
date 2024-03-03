@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -36,6 +36,7 @@ from little_brother.api import master_connector
 from little_brother.api.master_connector import MasterConnector
 from little_brother.api.version_checker import VersionCheckerConfigModel, VersionChecker, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel
+from little_brother.login_mapping import LoginMapping
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
@@ -45,6 +46,7 @@ from little_brother.test import test_client_process_handler
 from little_brother.test import test_data
 from little_brother.test import test_rule_handler
 from little_brother.test.persistence import test_persistence
+from little_brother.test.persistence.test_persistence import TestPersistence
 from little_brother.user_manager import UserManager
 from little_brother.web import web_server
 from python_base_app import locale_helper
@@ -76,14 +78,14 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             self._driver.close()
             self._driver = None
 
-    @staticmethod
-    def get_dummy_process_handlers():
+    def get_dummy_process_handlers(self, p_login_mapping: LoginMapping):
 
         now = datetime.datetime.now()
         process_start_time = now + datetime.timedelta(seconds=-1)
 
         process_handler = test_client_process_handler.TestClientProcessHandler.get_dummy_process_handler(
-            p_reference_time=now, p_processes=test_data.get_active_processes(p_start_time=process_start_time))
+            p_processes=test_data.get_active_processes(p_start_time=process_start_time),
+            p_login_mapping=p_login_mapping)
 
         process_handlers = {
             process_handler.id: process_handler
@@ -91,62 +93,68 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         return process_handlers
 
-    def create_dummy_status_server(self, p_process_handlers=None):
+    def create_dummy_status_server(self, p_process_handlers=None, p_create_dummy_persistence=True,
+                                   p_login_mapping=None):
 
         # TODO: Add rule set configs as parameters again and migrate them into the datamodel
 
         if p_process_handlers is None:
             p_process_handlers = {}
 
-        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        if p_create_dummy_persistence:
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         self._persistence = dependency_injection.container[Persistence]
 
-        self._rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
-            p_persistence=self._persistence)
-        dependency_injection.container[RuleHandler] = self._rule_handler
+        with SessionContext(p_persistence=self._persistence) as session_context:
+            login_mapping = p_login_mapping if p_login_mapping else test_data.get_login_mapping(
+                p_session_context=session_context)
+            self._rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
+                p_persistence=self._persistence)
+            dependency_injection.container[RuleHandler] = self._rule_handler
 
-        master_connector_config = master_connector.MasterConnectorConfigModel()
-        self._master_connector = master_connector.MasterConnector(p_config=master_connector_config)
-        dependency_injection.container[MasterConnector] = self._master_connector
+            master_connector_config = master_connector.MasterConnectorConfigModel()
+            self._master_connector = master_connector.MasterConnector(p_config=master_connector_config)
+            dependency_injection.container[MasterConnector] = self._master_connector
 
-        dependency_injection.container[PrometheusClient] = None
+            dependency_injection.container[PrometheusClient] = None
 
-        self._user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
-        dependency_injection.container[BaseUserHandler] = self._user_handler
+            self._user_handler = test_unix_user_handler.TestUnixUserHandler.create_dummy_unix_user_handler()
+            dependency_injection.container[BaseUserHandler] = self._user_handler
 
-        app_control_config = AppControlConfigModel()
-        self._admin_data_handler = AdminDataHandler(p_config=app_control_config)
-        dependency_injection.container[AdminDataHandler] = self._admin_data_handler
+            app_control_config = AppControlConfigModel()
+            self._admin_data_handler = AdminDataHandler(p_config=app_control_config)
+            dependency_injection.container[AdminDataHandler] = self._admin_data_handler
 
-        self._app_control = AppControl(
-            p_config=app_control_config,
-            p_debug_mode=False,
-            p_process_handlers=p_process_handlers,
-            p_device_handler=None,
-            p_notification_handlers=[],
-            p_login_mapping=test_data.LOGIN_MAPPING,
-            p_locale_helper=locale_helper.LocaleHelper())
+            self._app_control = AppControl(
+                p_config=app_control_config,
+                p_debug_mode=False,
+                p_process_handlers=p_process_handlers,
+                p_device_handler=None,
+                p_notification_handlers=[],
+                p_login_mapping=login_mapping,
+                p_locale_helper=locale_helper.LocaleHelper())
 
-        dependency_injection.container[AppControl] = self._app_control
+            dependency_injection.container[AppControl] = self._app_control
 
-        status_server_config = web_server.StatusServerConfigModel()
-        status_server_config.app_secret = "123456"
+            status_server_config = web_server.StatusServerConfigModel()
+            status_server_config.app_secret = "123456"
 
-        status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
+            status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
 
-        version_checker_config = VersionCheckerConfigModel()
-        version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
-        dependency_injection.container[VersionChecker] = version_checker
+            version_checker_config = VersionCheckerConfigModel()
+            version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
+            dependency_injection.container[VersionChecker] = version_checker
 
-        self._status_server = web_server.StatusServer(
-            p_config=status_server_config,
-            p_package_name=app.PACKAGE_NAME,
-            p_app_control=self._app_control,
-            p_master_connector=self._master_connector,
-            p_is_master=True,
-            p_user_handler=self._user_handler,
-            p_locale_helper=locale_helper.LocaleHelper(),
-            p_languages=constants.LANGUAGES)
+            self._status_server = web_server.StatusServer(
+                p_config=status_server_config,
+                p_package_name=app.PACKAGE_NAME,
+                p_app_control=self._app_control,
+                p_master_connector=self._master_connector,
+                p_is_master=True,
+                p_user_handler=self._user_handler,
+                p_locale_helper=locale_helper.LocaleHelper(),
+                p_languages=constants.LANGUAGES)
 
     def create_selenium_driver(self):
 
@@ -165,19 +173,25 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs):
 
-        process_handlers = self.get_dummy_process_handlers()
+        TestPersistence.create_dummy_persistence(self._logger)
+        a_persistence = dependency_injection.container[Persistence]
 
-        self.create_dummy_status_server(p_process_handlers=process_handlers)
-        self._status_server.start_server()
+        with SessionContext(a_persistence) as session_context:
+            login_mapping = test_data.get_login_mapping(p_session_context=session_context)
+            process_handlers = self.get_dummy_process_handlers(p_login_mapping=login_mapping)
 
-        user_manager = dependency_injection.container[UserManager]
+            self.create_dummy_status_server(p_process_handlers=process_handlers, p_create_dummy_persistence=False,
+                                            p_login_mapping=login_mapping)
+            self._status_server.start_server()
 
-        user_manager.retrieve_user_mappings()
-        self._app_control.start()
-        self._app_control._process_handler_manager.scan_processes(
-            p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
-        self._app_control.check()
-        self._app_control.stop()
+            user_manager = dependency_injection.container[UserManager]
+
+            user_manager.retrieve_user_mappings(p_session_context=session_context)
+            self._app_control.start()
+            self._app_control._process_handler_manager.scan_processes(
+                p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
+            self._app_control.check()
+            self._app_control.stop()
 
     def login_users(self):
 
@@ -245,18 +259,18 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             user_id = p_user_entity_manager.add_new_user(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_locale="en")
 
-        session = session_context.get_session()
-        user = p_user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
-        # activate monitoring of user so that it will show up on the admin page
-        user.active = True
-        session.commit()
+            session = session_context.get_session()
+            user = p_user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+            # activate monitoring of user so that it will show up on the admin page
+            user.active = True
+            session.commit()
 
-        user_manager: UserManager = dependency_injection.container[UserManager]
+            user_manager: UserManager = dependency_injection.container[UserManager]
 
-        user_manager.add_monitored_user(p_username=self.get_new_user_name())
-        user_manager.retrieve_user_mappings()
+            user_manager.add_monitored_user(p_username=self.get_new_user_name())
+            user_manager.retrieve_user_mappings(p_session_context=session_context)
 
-        return user_id
+            return user_id
 
     def get_new_user_name(self):
         return test_unix_user_handler.USER_2_UID

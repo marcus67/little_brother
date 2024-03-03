@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 # Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
@@ -14,15 +15,39 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from sqlalchemy import Column, Integer, String, UniqueConstraint
+
+from little_brother.persistence.base_entity import BaseEntity
+from little_brother.persistence.persistence_base import Base
 from little_brother.persistence.session_context import SessionContext
-from python_base_app import log_handling
+
+DEFAULT_SERVER_GROUP = "default-group"
 
 
-class BaseEntity:
+def _(x):
+    return x
+
+
+class UidMapping(Base, BaseEntity):
+    __tablename__ = 'uid_mapping'
+
+    id = Column(Integer, primary_key=True)
+    uid = Column(Integer, nullable=False)
+    username = Column(String(64), nullable=False)
+    server_group = Column(String(64), nullable=False)
+
+    UniqueConstraint('uid', 'server_group', name='uid_server_group')
 
     def __init__(self):
-        self._logger = log_handling.get_logger(self.__class__.__name__)
-        #self.id: Optional[int] = None
+        super(BaseEntity).__init__()
+        self.server_group = None
+        self.uid = None
+        self.username = None
 
     def populate_test_data(self, p_session_context: SessionContext):
-        pass  # default action: none
+        self.server_group = "SOME-SERVER"
+        self.uid = 123
+        self.username = "willi"
+
+    def __str__(self):
+        return f"UID '{self.uid}' on '{self.server_group}' -> username '{self.username}'"

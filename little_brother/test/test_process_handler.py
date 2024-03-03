@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -22,16 +22,22 @@ import copy
 import datetime
 import unittest
 
-from little_brother import admin_event
+from little_brother import admin_event, dependency_injection
 from little_brother import process_handler
+from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.session_context import SessionContext
 from little_brother.test import dummy_process_handler
 from little_brother.test import test_data
+from little_brother.test.persistence import test_persistence
 from python_base_app.test import base_test
 
 DOWNTIME = 12.3
 
 
 class TestProcessHandler(base_test.BaseTestCase):
+
+    def setUp(self):
+        dependency_injection.reset()
 
     @staticmethod
     def get_process_handler():
@@ -317,12 +323,16 @@ class TestProcessHandler(base_test.BaseTestCase):
         self.assertEqual(123, process_info.downtime)
 
     def test_handle_event_kill_process(self):
-        pinfo = test_data.PINFO_1
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger, p_delete=True)
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
-        a_process_handler = TestProcessHandler.get_process_handler()
-        an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
-            p_pinfo=pinfo)
-        a_process_handler.handle_event_kill_process(p_event=an_admin_event)
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
+            pinfo = test_data.PINFO_1
+
+            a_process_handler = TestProcessHandler.get_process_handler()
+            an_admin_event = process_handler.ProcessHandler.create_admin_event_process_start_from_pinfo(
+                p_pinfo=pinfo)
+            a_process_handler.handle_event_kill_process(p_event=an_admin_event, p_session_context=session_context)
 
     def test_add_historic_process(self):
         pinfo = test_data.PINFO_1

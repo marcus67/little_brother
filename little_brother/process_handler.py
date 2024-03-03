@@ -19,6 +19,7 @@ import abc
 import datetime
 
 from little_brother import admin_event  #
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import log_handling
@@ -123,7 +124,8 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
         return pinfo
 
-    def handle_event_kill_process(self, p_event, p_server_group=None, p_login_mapping=None):
+    def handle_event_kill_process(self, p_session_context: SessionContext, p_event,
+                                  p_server_group=None, p_login_mapping=None):
 
         if self.can_kill_processes():
             raise NotImplementedError("handle_event_kill_process not implemented although handler can kill processes")

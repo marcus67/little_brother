@@ -17,21 +17,22 @@ that she can log out gracefully in time.
 
 The latest major feature changes are:
 
-| Version | Feature/Fix                                                  | (Issue) Link                                                         |
-|---------|--------------------------------------------------------------|----------------------------------------------------------------------|
-| 0.4.28  | *Bug Fix*: Remove incompatibility with Python 3.8            | [Issue 180](https://github.com/marcus67/little_brother/issues/180)   |
-| 0.4.23  | Optionally use `iptables` to restrict network access         | [Issue 169](https://github.com/marcus67/little_brother/issues/169)   |
-| 0.4.20  | *Bug Fix*: Use Python virtual environment again              | [Issue 170](https://github.com/marcus67/little_brother/issues/170)   |
-| 0.4.17  | *Bug Fix*: Remove incompatibility with new `alembic` version | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
-| 0.4.16  | *Bug Fix*: Ignore invalid hosts during ping                  | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
-| 0.4.15  | *Bug Fix*: Do not fail on Debian package upgrades            | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
-| 0.4.14  | *Bug Fix*: Correct detection of users in master-only setups  | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
-| 0.4.12  | *New*: Client process available as snap                      | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
-| 0.4.9   | *New*: Automatic check for new versions of `LittleBrother`   | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
-|         | *Improvement*: Separate LDAP search DN for groups and users  | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
-|         | *Improvement*: Cache timeout for LDAP data                   | [Issue 138](https://github.com/marcus67/little_brother/issues/138)   |
-| 0.4.8   | *New*: Full support for requesting optional time by users    | [Issue 130](https://github.com/marcus67/little_brother/issues/130)   |
-| 0.4.4   | *New*: Use user specific patterns to prohibit applications   | [Issue 129](https://github.com/marcus67/little_brother/issues/129)   |
+| Version | Feature/Fix                                                   | (Issue) Link                                                         |
+|---------|---------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.4.33  | Support partial persistence of basic user settings on clients | [Issue 190](https://github.com/marcus67/little_brother/issues/190)   |
+| 0.4.28  | *Bug Fix*: Remove incompatibility with Python 3.8             | [Issue 180](https://github.com/marcus67/little_brother/issues/180)   |
+| 0.4.23  | Optionally use `iptables` to restrict network access          | [Issue 169](https://github.com/marcus67/little_brother/issues/169)   |
+| 0.4.20  | *Bug Fix*: Use Python virtual environment again               | [Issue 170](https://github.com/marcus67/little_brother/issues/170)   |
+| 0.4.17  | *Bug Fix*: Remove incompatibility with new `alembic` version  | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
+| 0.4.16  | *Bug Fix*: Ignore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
+| 0.4.15  | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
+| 0.4.14  | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
+| 0.4.12  | *New*: Client process available as snap                       | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
+| 0.4.9   | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
+|         | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
+|         | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138)   |
+| 0.4.8   | *New*: Full support for requesting optional time by users     | [Issue 130](https://github.com/marcus67/little_brother/issues/130)   |
+| 0.4.4   | *New*: Use user specific patterns to prohibit applications    | [Issue 129](https://github.com/marcus67/little_brother/issues/129)   |
 
 ## Contact
 

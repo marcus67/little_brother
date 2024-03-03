@@ -33,6 +33,7 @@ from little_brother.persistence.persistent_process_info_entity_manager import Pr
 from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistence.persistent_uid_mapping_entity_manager import UidMappingEntityManager
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_data
@@ -58,7 +59,7 @@ class TestPersistence(base_test.BaseTestCase):
         return config
 
     @classmethod
-    def create_dummy_persistence(cls, p_logger, p_delete=False) -> None:
+    def create_dummy_persistence(cls, p_logger, p_delete=True) -> None:
 
         config = cls.create_dummy_persistence_config()
 
@@ -66,7 +67,6 @@ class TestPersistence(base_test.BaseTestCase):
             Persistence.delete_database(p_logger=p_logger, p_config=config)
 
         a_persistence = Persistence(p_config=config, p_reuse_session=False)
-        a_persistence.delete_database(p_logger=p_logger, p_config=config)
         a_persistence.check_schema(p_create_tables=False)
 
         db_mig = db_migrations.DatabaseMigrations(p_logger, p_persistence=a_persistence)
@@ -82,6 +82,7 @@ class TestPersistence(base_test.BaseTestCase):
         dependency_injection.container[RuleOverrideEntityManager] = RuleOverrideEntityManager()
         dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
         dependency_injection.container[DeviceEntityManager] = DeviceEntityManager()
+        dependency_injection.container[UidMappingEntityManager] = UidMappingEntityManager()
 
     def test_create_database(self):
 

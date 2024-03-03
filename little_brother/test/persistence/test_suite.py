@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-
 # -*- coding: utf-8 -*-
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -31,6 +30,7 @@ from little_brother.test.persistence.test_persistent_process_info_entity_manager
 from little_brother.test.persistence.test_persistent_rule_override_entity_manager import TestRuleOverrideEntityManager
 from little_brother.test.persistence.test_persistent_rule_set_entity_manager import TestRuleSetEntityManager
 from little_brother.test.persistence.test_persistent_time_extension_entity_manager import TestTimeExtensionEntityManager
+from little_brother.test.persistence.test_persistent_uid_mapping_entity_manager import TestUidMappingEntityManager
 from little_brother.test.persistence.test_persistent_user_2_device_entity_manager import TestUser2DeviceEntityManager
 from little_brother.test.persistence.test_persistent_user_entity_manager import TestUserEntityManager
 from python_base_app import log_handling
@@ -80,6 +80,10 @@ def add_test_cases(p_test_suite, p_config_filename=None):
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite, p_test_unit_class=TestDailyUserStatusEntityManager,
+        p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite, p_test_unit_class=TestUidMappingEntityManager,
         p_config_filename=p_config_filename)
 
 

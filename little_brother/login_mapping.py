@@ -15,29 +15,31 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import collections
 import re
+from typing import Optional
 
+from sqlalchemy.orm import Session
+
+from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.persistence.persistent_uid_mapping import DEFAULT_SERVER_GROUP, UidMapping
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import configuration
 from python_base_app import tools
 
-
-DEFAULT_SERVER_GROUP = "default-group"
 LOGIN_MAPPING_SECTION_PREFIX = "LoginMapping"
 
-LoginUidMappingEntry = collections.namedtuple('LoginUidMappingEntry', ['login', 'uid'])
+# LoginUidMappingEntry = collections.namedtuple('LoginUidMappingEntry', ['login', 'uid'])
 
 MAPPING_ENTRY_PATTERN = re.compile("^ *([-a-z0-9]+) *: *([0-9]+) *$")
+
 
 class LoginMappingSectionHandler(configuration.ConfigurationSectionHandler):
 
     def __init__(self):
-
         super().__init__(p_section_prefix=LOGIN_MAPPING_SECTION_PREFIX)
         self._login_mapping_sections = {}
 
     def handle_section(self, p_section_name):
-
         login_mapping_section = LoginMappingSection(p_section_name=p_section_name)
         self.scan(p_section=login_mapping_section)
 
@@ -46,99 +48,101 @@ class LoginMappingSectionHandler(configuration.ConfigurationSectionHandler):
         self._login_mapping_sections[login_mapping_section.server_group] = login_mapping_section
 
         mappings = ", ".join(login_mapping_section.mapping_entries)
-        msg = "Found login mapping for server group '{server_group}': {mappings}"
-        self._logger.info(msg.format(server_group=login_mapping_section.server_group, mappings=mappings))
-
+        msg = f"Found login mapping for server group '{login_mapping_section.server_group}': {mappings}"
+        self._logger.info(msg)
 
 
 class LoginMappingSection(configuration.ConfigModel):
 
     def __init__(self, p_section_name=None):
-
         super().__init__(p_section_name=p_section_name)
 
         self.server_group = configuration.NONE_STRING
-        self.mapping_entries = [ configuration.NONE_STRING ]
+        self.mapping_entries = [configuration.NONE_STRING]
 
-class LoginMapping(object):
+
+class LoginMapping(PersistenceDependencyInjectionMixIn):
 
     def __init__(self, p_default_server_group=DEFAULT_SERVER_GROUP):
 
+        super().__init__()
+
         self._default_server_group = p_default_server_group
-        self._login2uid_mappings = {}
-        self._uid2login_mappings = {}
 
-    def to_json(self):
+    def get_uid_to_login_mapping(self, p_session_context: SessionContext,
+                                 p_server_group: str = DEFAULT_SERVER_GROUP) -> dict[int, str]:
 
-        json = [ (server_group,
-                  [ (entry.login, entry.uid) for entry in mapping.values()])
-                 for (server_group, mapping) in self._login2uid_mappings.items() ]
+        uid_mappings = self.uid_mapping_entity_manager.get_by_server_group(p_session_context=p_session_context,
+                                                                           p_server_group=p_server_group)
+        return {entry.uid: entry.username for entry in uid_mappings}
+
+    def get_login_to_uid_mapping(self, p_session_context: SessionContext,
+                                 p_server_group: str = DEFAULT_SERVER_GROUP) -> dict[int, str]:
+
+        uid_mappings = self.uid_mapping_entity_manager.get_by_server_group(p_session_context=p_session_context,
+                                                                           p_server_group=p_server_group)
+        return {entry.username: entry.uid for entry in uid_mappings}
+
+    def to_json(self, p_session_context: SessionContext):
+
+        server_groups = self.uid_mapping_entity_manager.get_server_groups(p_session_context=p_session_context)
+        json = [(server_group,
+                 [(entry.username, entry.uid) for entry in
+                  self.uid_mapping_entity_manager.get_by_server_group(p_session_context=p_session_context,
+                                                                      p_server_group=server_group)])
+                for server_group in server_groups]
         return json
 
-    def from_json(self, p_json):
+    def from_json(self, p_session_context: SessionContext, p_json):
 
         for (server_group, mapping) in p_json:
             for (login, uid) in mapping:
-                entry = LoginUidMappingEntry(login, uid)
-                self.add_entry(p_login_uid_mapping_entry=entry, p_server_group=server_group)
+                self.add_entry(p_session_context=p_session_context, p_uid=uid, p_username=login,
+                               p_server_group=server_group)
 
-    def get_server_group_names(self):
-        return self._login2uid_mappings.keys()
+    def get_server_group_names(self, p_session_context: SessionContext):
+        return self.uid_mapping_entity_manager.get_server_groups(p_session_context=p_session_context)
 
+    def add_entry(self, p_session_context: SessionContext, p_uid: int, p_username: str,
+                  p_server_group: str = DEFAULT_SERVER_GROUP):
 
-    def add_entry(self, p_login_uid_mapping_entry:LoginUidMappingEntry, p_server_group:str=DEFAULT_SERVER_GROUP):
+        uid_mapping = UidMapping()
+        uid_mapping.uid = p_uid
+        uid_mapping.username = p_username
+        uid_mapping.server_group = p_server_group
+        self.uid_mapping_entity_manager.insert_or_update_uid_mapping(p_session_context=p_session_context,
+                                                                     p_uid_mapping=uid_mapping)
 
-        login2uid_mapping = self._login2uid_mappings.get(p_server_group)
+        session: Session = p_session_context.get_session()
+        session.add(uid_mapping)
+        session.commit()
 
-        if login2uid_mapping is None:
-            login2uid_mapping = {}
-            self._login2uid_mappings[p_server_group] = login2uid_mapping
+    def get_login_by_uid(self, p_session_context: SessionContext, p_uid: int,
+                         p_server_group: str = DEFAULT_SERVER_GROUP) -> Optional[str]:
 
-        login2uid_mapping[p_login_uid_mapping_entry.login] = p_login_uid_mapping_entry
+        uid_mapping = self.uid_mapping_entity_manager.get_by_uid_and_server_group(
+            p_session_context=p_session_context, p_uid=p_uid, p_server_group=p_server_group)
 
-        uid2login_mapping = self._uid2login_mappings.get(p_server_group)
+        if uid_mapping:
+            return uid_mapping.username
 
-        if uid2login_mapping is None:
-            uid2login_mapping = {}
-            self._uid2login_mappings[p_server_group] = uid2login_mapping
-
-        uid2login_mapping[p_login_uid_mapping_entry.uid] = p_login_uid_mapping_entry
-
-    def get_login_by_uid(self, p_uid:int, p_server_group:str=DEFAULT_SERVER_GROUP):
-
-        uid2login_mapping = self._uid2login_mappings.get(p_server_group)
-
-        if uid2login_mapping is None:
-            uid2login_mapping = self._uid2login_mappings.get(self._default_server_group)
-
-        if uid2login_mapping is None:
+        else:
             return None
 
-        entry = uid2login_mapping.get(p_uid)
+    def get_uid_by_login(self, p_session_context: SessionContext,
+                         p_login: str, p_server_group: str = DEFAULT_SERVER_GROUP) -> Optional[int]:
 
-        if entry is None:
+        uid_mapping = self.uid_mapping_entity_manager.get_by_username_and_server_group(
+            p_session_context=p_session_context, p_username=p_login, p_server_group=p_server_group)
+
+        if uid_mapping:
+            return uid_mapping.uid
+
+        else:
             return None
 
-        return entry.login
-
-    def get_uid_by_login(self, p_login, p_server_group=DEFAULT_SERVER_GROUP):
-
-        login2uid_mapping = self._login2uid_mappings.get(p_server_group)
-
-        if login2uid_mapping is None:
-            login2uid_mapping = self._login2uid_mappings.get(self._default_server_group)
-
-        if login2uid_mapping is None:
-            return None
-
-        entry = login2uid_mapping.get(p_login)
-
-        if entry is None:
-            return None
-
-        return entry.uid
-
-    def read_from_configuration(self, p_login_mapping_section_handler:LoginMappingSectionHandler):
+    def read_from_configuration(self, p_session_context: SessionContext,
+                                p_login_mapping_section_handler: LoginMappingSectionHandler):
 
         for section in p_login_mapping_section_handler._login_mapping_sections.values():
             for mapping_entry in section.mapping_entries:
@@ -148,9 +152,12 @@ class LoginMapping(object):
                     match = MAPPING_ENTRY_PATTERN.match(entry)
 
                     if match is None:
-                        msg = "Invalid logging mapping '{entry}' for host group {group}"
-                        raise configuration.ConfigurationException(msg.format(entry=entry, group=section.server_group))
+                        msg = f"Invalid logging mapping '{entry}' for host group {section.server_group}"
+                        raise configuration.ConfigurationException(msg)
 
-                    login_uid_mapping_entry = LoginUidMappingEntry(match.group(1), int(match.group(2)))
-                    self.add_entry(p_server_group=section.server_group,
-                                   p_login_uid_mapping_entry=login_uid_mapping_entry)
+                    uid_mapping = UidMapping()
+                    uid_mapping.server_group = section.server_group
+                    uid_mapping.uid = int(match.group(2))
+                    uid_mapping.username = match.group(1)
+                    self.uid_mapping_entity_manager.insert_or_update_uid_mapping(p_session_context=p_session_context,
+                                                                                 p_uid_mapping=uid_mapping)

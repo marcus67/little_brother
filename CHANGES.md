@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.34 Revision 141 (December 3rd, 2023)
+* Closes https://github.com/marcus67/little_brother/issues/190
+* Persist uid mappings on the client. This is required just in case the client
+  restarts with no server active to enable process termination.
+
 ## Version 0.4.33 Revision 140 (December 3rd, 2023)
 * Bump `urllib3` to 2.1.0 (CVE-2023-45803)
 * Bump `werkzeug` to 2.3.8 (CVE-2023-46136)

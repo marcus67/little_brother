@@ -18,14 +18,16 @@
 
 import collections
 
+from little_brother.persistence.session_context import SessionContext
+
 uids_tuple = collections.namedtuple('uids', ['real', 'effective'])
 
 
 class DummyProcess(object):
 
-    def __init__(self, p_pinfo, p_login_mapping):
+    def __init__(self, p_pinfo, p_uid):
         self._pinfo = p_pinfo
-        self._uid = p_login_mapping.get_uid_by_login(p_pinfo.username)
+        self._uid = p_uid
 
     def uids(self):
         return uids_tuple(real=self._uid, effective=self._uid)
@@ -51,10 +53,11 @@ class DummyProcess(object):
 
 class DummyProcessFactory(object):
 
-    def __init__(self, p_processes, p_login_mapping):
+    def __init__(self, p_processes, p_login_mapping, p_session_context:SessionContext):
         self._processes = p_processes
         self._login_mapping = p_login_mapping
         self._reference_time = None
+        self._session_context = p_session_context
 
     def set_reference_time(self, p_reference_time):
         self._reference_time = p_reference_time
@@ -63,6 +66,7 @@ class DummyProcessFactory(object):
         if self._reference_time is None:
             raise RuntimeError("_reference_time is None")
 
-        return [DummyProcess(p, p_login_mapping=self._login_mapping) for p in self._processes
+        return [DummyProcess(p, self._login_mapping.get_uid_by_login(p_session_context=self._session_context,
+                                                                     p_login=p.username)) for p in self._processes
                 if self._reference_time >= p.start_time and (
                         p.end_time is None or self._reference_time < p.end_time)].__iter__()
