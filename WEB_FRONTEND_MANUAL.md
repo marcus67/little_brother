@@ -508,12 +508,12 @@ router accordingly. Look out for *persistent IP addresses* in the manual.
 
     Some examples:
 
-    | Host Specification                           | Description                                                                                                                      |                                                                                                                                                                                                                                                                                                                                    
-    |:-------------------------------------------- |:-------------------------------------------------------------------------------------------------------------------------------- |
-    | `my.device.net`                              | Direct ping to device with DNS name `my.device.net`                                                                              |
-    | `192.168.5.2`                                | Direct ping to device with IP address `192.168.5.2`                                                                              |
-    | `my.proxy.somenet,my.hidden.device`          | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using default port `6666`  |
-    | `my.proxy.somenet:6665,my.hidden.device`     | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using explicit port `6665` |
+    | Host Specification                       | Description                                                                                                                      |                                                                                                                                                                                                                                                                                                                                    
+    |:-----------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------|
+    | `my.device.net`                          | Direct ping to device with DNS name `my.device.net`                                                                              |
+    | `192.168.5.2`                            | Direct ping to device with IP address `192.168.5.2`                                                                              |
+    | `my.proxy.somenet,my.hidden.device`      | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using default port `6666`  |
+    | `my.proxy.somenet:6665,my.hidden.device` | Proxy ping to device with DNS name `my.hidden.device` using `ProxyPing` located at `my.proxy.somenet` using explicit port `6665` |
 
     **Note** that `LittleBrother` will only check the validity of the proxy host 
     name, whereas the `device.host.name` will not be checked. For the time being, format errors in the specification above

@@ -4,7 +4,7 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.34 Revision 141 (December 3rd, 2023)
+## Version 0.4.34 Revision 141 (March 4th, 2024)
 * Closes https://github.com/marcus67/little_brother/issues/190
 * Persist uid mappings on the client. This is required just in case the client
   restarts with no server active to enable process termination.
@@ -40,7 +40,6 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Remove incompatibility with Python 3.8 in `python_base_app`
 * Bump python_base_app to 0.2.46
 * Closes https://github.com/marcus67/little_brother/issues/180
-
 
 ## Version 0.4.27 Revision 134 (Aug 2nd, 2023)
 
@@ -631,7 +630,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.1 Revision 36 (May 29th, 2019)
 
 *   Closes #51, see [here](https://github.com/marcus67/little_brother/issues/51)
-*   Change defaults for database driver (to match pre-loaded PIP package for mysql)
+*   Change defaults for database driver (to match preloaded PIP package for mysql)
 
 ## Version 0.1 Revision 35 (June 1st, 2019)
 
@@ -714,6 +713,6 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.1 Revision 21 (April 21st, 2019)
 
 *   Add coverage logo to README.md. 
-*   Add this CHANGES.md page.
+*   Add CHANGES.md page.
 *   Interpret predefined environment variables (e.g. CIRCLE_BRANCH).
 *   Expand environment variables before calling scripts.

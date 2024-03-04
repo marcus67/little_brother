@@ -33,9 +33,3 @@ The following aspects are obsolete since notifications should be issued by
 *   In order to be able to "speak" (that is play sound files), the process inside the container has to access the sound
 device of the host. This is made possible by mounting the file `/etc/asound.conf` and the device `/dev/snd` 
 into the container.
-
-*   In order to be able to open message boxes as X clients, the X Windows device `/tmp/.X11-unix` is mounted into the 
-container. The opening of the message boxes actually requires a second step. See [Using Popups](README.md#using-popups). 
-Also, the environment variable `DISPLAY` is exported into the container. Make sure that the variable contains the 
-X display identifier that is used by the users which are to be monitored by LittleBrother. In most cases this 
-should be `:0.0` or `localhost:0.0`.

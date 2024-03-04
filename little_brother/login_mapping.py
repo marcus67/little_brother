@@ -18,8 +18,6 @@
 import re
 from typing import Optional
 
-from sqlalchemy.orm import Session
-
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.persistent_uid_mapping import DEFAULT_SERVER_GROUP, UidMapping
 from little_brother.persistence.session_context import SessionContext
@@ -113,9 +111,6 @@ class LoginMapping(PersistenceDependencyInjectionMixIn):
         self.uid_mapping_entity_manager.insert_or_update_uid_mapping(p_session_context=p_session_context,
                                                                      p_uid_mapping=uid_mapping)
 
-        session: Session = p_session_context.get_session()
-        session.add(uid_mapping)
-        session.commit()
 
     def get_login_by_uid(self, p_session_context: SessionContext, p_uid: int,
                          p_server_group: str = DEFAULT_SERVER_GROUP) -> Optional[str]:

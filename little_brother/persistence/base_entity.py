@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+from typing import Optional
 
 from little_brother.persistence.session_context import SessionContext
 from python_base_app import log_handling
@@ -22,7 +23,7 @@ class BaseEntity:
 
     def __init__(self):
         self._logger = log_handling.get_logger(self.__class__.__name__)
-        #self.id: Optional[int] = None
+        self.id: Optional[int] = None
 
     def populate_test_data(self, p_session_context: SessionContext):
         pass  # default action: none
