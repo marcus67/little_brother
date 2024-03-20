@@ -25,4 +25,4 @@ wtforms==3.0.1
 # The package version of selenium is linked to the setup of the test environment (e.g. the version of Chrome).
 # Changing the version here will probably entail having the change versions elsewhere!
 ##############################################################################################################
-selenium==4.10.0
+selenium==4.15.1
