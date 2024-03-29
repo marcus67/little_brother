@@ -4,6 +4,9 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.35 Revision 142 (March 29th, 2024)
+* Make `pip3.sh` helper more robust
+
 ## Version 0.4.34 Revision 141 (March 4th, 2024)
 * Closes https://github.com/marcus67/little_brother/issues/190
 * Persist uid mappings on the client. This is required just in case the client
