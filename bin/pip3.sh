@@ -72,4 +72,4 @@ else
 fi
 
 echo "Using pip3 binary at ${PIP3}..."
-${PIP3} "$@" "${EXTRA_INDEX_OPTION}"
+${PIP3} "$@" ${EXTRA_INDEX_OPTION}
