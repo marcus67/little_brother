@@ -72,4 +72,5 @@ else
 fi
 
 echo "Using pip3 binary at ${PIP3}..."
+# shellcheck disable=SC2086
 ${PIP3} "$@" ${EXTRA_INDEX_OPTION}

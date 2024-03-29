@@ -4,6 +4,9 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.4.36 Revision 143 (March 29th, 2024)
+* Add missing PIP package `py3-virtualenv` to Alpine Docker image
+
 ## Version 0.4.35 Revision 142 (March 29th, 2024)
 * Make `pip3.sh` helper more robust
 
