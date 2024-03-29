@@ -31,6 +31,7 @@ RUN apk update && \
             python3-dev \
             py3-packaging \
             py3-pip \
+            py3-virtualenv \
             unzip \
             linux-headers \
             build-base \

@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from little_brother import admin_event, login_mapping
+from little_brother import admin_event
 from little_brother import dependency_injection
 from little_brother.event_handler import EventHandler
 from little_brother.login_mapping import LoginMapping
@@ -78,7 +78,7 @@ class UserManager(PersistenceDependencyInjectionMixIn):
         self.event_handler.register_event_handler(
             p_event_type=admin_event.EVENT_TYPE_UPDATE_LOGIN_MAPPING, p_handler=self.handle_event_update_login_mapping)
 
-    def reset_users(self, p_session_context):
+    def reset_users(self, p_session_context: SessionContext):
         self._usernames = []
 
         active_users = [ key for key, user in self.user_entity_manager.user_map(p_session_context=p_session_context).items() if user.active ]
@@ -89,29 +89,34 @@ class UserManager(PersistenceDependencyInjectionMixIn):
 
     def handle_event_update_login_mapping(self, p_event):
 
-        self._login_mapping.from_json(p_json=p_event.payload)
+        with SessionContext(p_persistence=self.persistence) as session_context:
+            self._login_mapping.from_json(p_session_context=session_context, p_json=p_event.payload)
+            server_group_names = ', '.join(self._login_mapping.get_server_group_names(
+                p_session_context=session_context))
+            fmt = f"Received login mapping for server group(s) {server_group_names}"
+            self._logger.info(fmt)
+            self._login_mapping_received = True
 
-        server_group_names = ', '.join(self._login_mapping.get_server_group_names())
-        fmt = "Received login mapping for server group(s) {group_names}"
-        self._logger.info(fmt.format(group_names=server_group_names))
-        self._login_mapping_received = True
-
-    def retrieve_user_mappings(self):
+    def retrieve_user_mappings(self, p_session_context: SessionContext):
 
         if len(self._usernames_not_found) > 0:
             usernames_found = []
 
             for username in self._usernames_not_found:
-                uid = self._login_mapping.get_uid_by_login(p_server_group=self._server_group,
+                uid = self._login_mapping.get_uid_by_login(p_session_context=p_session_context,
+                                                           p_server_group=self._server_group,
                                                            p_login=username)
 
-                if uid is None and self._login_mapping_received:
+#                if uid is None and self._login_mapping_received:
+                if uid is None:
                     uid = self.user_handler.get_uid(p_username=username)
 
                     if uid is not None:
-                        new_entry = login_mapping.LoginUidMappingEntry(username, uid)
-                        self._login_mapping.add_entry(p_server_group=self._server_group,
-                                                      p_login_uid_mapping_entry=new_entry)
+                        if not self._login_mapping_received:
+                            self._logger.warn(f"Setting local mapping entry for user {username}")
+                        self._login_mapping.add_entry(p_session_context=p_session_context,
+                                                      p_server_group=self._server_group,
+                                                      p_uid=uid, p_username=username)
 
                 if uid is not None:
                     usernames_found.append(username)
@@ -151,10 +156,11 @@ class UserManager(PersistenceDependencyInjectionMixIn):
             p_payload=p_login_mapping)
         self.event_handler.queue_event(p_event=event, p_is_action=True)
 
-    def send_login_mapping_to_client(self, p_hostname):
+    def send_login_mapping_to_client(self, p_session_context: SessionContext, p_hostname:str):
 
-        self.queue_event_update_login_mapping(p_hostname=p_hostname,
-                                              p_login_mapping=self._login_mapping.to_json())
+        self.queue_event_update_login_mapping(
+            p_hostname=p_hostname,
+            p_login_mapping=self._login_mapping.to_json(p_session_context=p_session_context))
 
     def get_current_user_status(self, p_session_context: SessionContext, p_username: str):
 

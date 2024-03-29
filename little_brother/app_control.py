@@ -17,11 +17,11 @@
 
 import datetime
 import socket
+import sys
+import time
 
 import distro
 import prometheus_client
-import sys
-import time
 
 from little_brother import admin_event
 from little_brother import client_stats
@@ -268,7 +268,8 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
     def check(self):
 
-        self._user_manager.retrieve_user_mappings()
+        with SessionContext(p_persistence=self.persistence) as session_context:
+            self._user_manager.retrieve_user_mappings(p_session_context=session_context)
 
         reference_time = datetime.datetime.now()
 
@@ -284,13 +285,24 @@ class AppControl(PersistenceDependencyInjectionMixIn):
             self.check_network()
             self._event_handler.process_queue()
 
+
+    # def load_offline_users(self):
+    #
+    #     self._logger.info("Loading offline users to ensure termination of active processes while network is down "
+    #                       "or server is not available.")
+    #     self._logger.info(f"Currently configured users: {self._}")
+    #
+    #     with SessionContext(p_persistence=self.persistence) as session_context:
+    #         self._user_manager.reset_users(p_session_context=session_context)
+
     def check_network(self):
 
         time_since_last_send = int((tools.get_current_time() - self._time_last_successful_send_events).total_seconds())
 
-        if self._config.warning_time_without_send_events <= time_since_last_send < self._config.maximum_time_without_send_events:
-            msg = "No successful send events for {seconds} seconds"
-            self._logger.warning(msg.format(seconds=time_since_last_send))
+        if (self._config.warning_time_without_send_events <= time_since_last_send <
+                self._config.maximum_time_without_send_events):
+            self._logger.warning(f"No successful send events for {time_since_last_send} seconds")
+            #self.load_offline_users()
 
         elif time_since_last_send >= self._config.maximum_time_without_send_events:
             self._process_handler_manager.queue_artificial_kill_events()
@@ -378,7 +390,10 @@ class AppControl(PersistenceDependencyInjectionMixIn):
                                      )
             self._client_infos[p_hostname] = client_info
             self.send_config_to_client(p_hostname)
-            self._user_manager.send_login_mapping_to_client(p_hostname)
+
+            with SessionContext(p_persistence=self.persistence) as session_context:
+                self._user_manager.send_login_mapping_to_client(p_session_context=session_context,
+                                                                p_hostname=p_hostname)
 
         client_info.last_message = tools.get_current_time()
         client_info.client_stats = p_client_stats
@@ -387,7 +402,11 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         self.update_client_info(p_event.hostname, p_suppress_send_state_update=True)
         self.send_config_to_client(p_event.hostname)
-        self._user_manager.send_login_mapping_to_client(p_event.hostname)
+
+        with SessionContext(p_persistence=self.persistence) as session_context:
+            self._user_manager.send_login_mapping_to_client(p_session_context=session_context,
+                                                            p_hostname=p_event.hostname)
+
         self._process_handler_manager.send_historic_process_infos()
 
     def handle_event_start_master(self, p_event):

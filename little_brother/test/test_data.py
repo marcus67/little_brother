@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-21  Marcus Rickert
+#    Copyright (C) 2019-24  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -21,10 +21,12 @@
 import datetime
 import re
 
-from little_brother import login_mapping
 from little_brother import process_info
 from little_brother import rule_handler
+from little_brother.login_mapping import LoginMapping
+from little_brother.persistence.persistent_uid_mapping import DEFAULT_SERVER_GROUP
 from little_brother.persistence.persistent_user import User
+from little_brother.persistence.session_context import SessionContext
 
 USER_1 = "user1"
 UID_1 = 123
@@ -40,6 +42,7 @@ def get_user_object_1():
 
 def get_process_pattern_regex():
     return get_user_object_1().regex_process_name_pattern
+
 
 def get_prohibited_process_pattern_regex():
     # todo: Write meaningful test case
@@ -86,14 +89,17 @@ MAX_TIME_OF_DAY_1 = datetime.time(hour=22)
 MIN_BREAK_1 = 1800
 FREEPLAY_1 = True
 
-LOGIN_MAPPING = login_mapping.LoginMapping(p_default_server_group=login_mapping.DEFAULT_SERVER_GROUP)
-LOGIN_UID_MAPPING_ENTRY = p_login_uid_mapping_entry = login_mapping.LoginUidMappingEntry(USER_1, UID_1)
-LOGIN_MAPPING.add_entry(p_server_group=login_mapping.DEFAULT_SERVER_GROUP,
-                        p_login_uid_mapping_entry=LOGIN_UID_MAPPING_ENTRY)
+
+def get_login_mapping(p_session_context: SessionContext) -> LoginMapping:
+    login_mapping = LoginMapping(p_default_server_group=DEFAULT_SERVER_GROUP)
+    login_mapping.add_entry(p_session_context=p_session_context, p_uid=UID_1, p_username=USER_1,
+                            p_server_group=DEFAULT_SERVER_GROUP)
+    return login_mapping
 
 
 def get_process_regex_map_1():
     return {USER_1: get_process_pattern_regex()}
+
 
 def get_prohibited_process_regex_map_1():
     return {USER_1: get_prohibited_process_pattern_regex()}

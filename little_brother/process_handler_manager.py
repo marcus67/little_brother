@@ -250,7 +250,7 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                             p_message=self._language.get_text_unlimited_session_start(p_locale=rule_result_info.locale,
                                                                                       p_variables=rule_result_info.args))
 
-    def handle_event_prohibited_process(self, p_event:AdminEvent):
+    def handle_event_prohibited_process(self, p_event: AdminEvent):
 
         process_handler = self.get_process_handler(p_id=p_event.processhandler)
 
@@ -297,12 +297,12 @@ class ProcessHandlerManager(PersistenceDependencyInjectionMixIn):
                     p_session_context=session_context, p_process_info=pinfo)
 
     def handle_event_kill_process(self, p_event):
+        with SessionContext(p_persistence=self.persistence) as session_context:
+            return self.get_process_handler(p_id=p_event.processhandler).handle_event_kill_process(
+                p_session_context=session_context, p_event=p_event,
+                p_server_group=self._config.server_group, p_login_mapping=self._login_mapping)
 
-        return self.get_process_handler(
-            p_id=p_event.processhandler).handle_event_kill_process(p_event, p_server_group=self._config.server_group,
-                                                                   p_login_mapping=self._login_mapping)
-
-    def scan_processes(self, p_process_handler:ProcessHandler, p_reference_time=None, p_queue_events=True):  # @DontTrace
+    def scan_processes(self, p_process_handler: ProcessHandler, p_reference_time=None, p_queue_events=True):  # @DontTrace
 
         if p_reference_time is None:
             p_reference_time = datetime.datetime.now()

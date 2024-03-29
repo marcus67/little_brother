@@ -24,6 +24,8 @@ import psutil
 from little_brother import admin_event
 from little_brother import process_handler
 from little_brother import process_info
+from little_brother.login_mapping import LoginMapping
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -65,7 +67,8 @@ class ClientProcessHandler(process_handler.ProcessHandler):
     def can_kill_processes():
         return True
 
-    def handle_event_kill_process(self, p_event, p_server_group=None, p_login_mapping=None):
+    def handle_event_kill_process(self, p_session_context: SessionContext, p_event,
+                                  p_server_group: str = None, p_login_mapping: LoginMapping = None):
 
         fmt = "Kill process %d of user %s on host %s with signal SIGHUP" % (
             p_event.pid, p_event.username, p_event.hostname)
@@ -80,19 +83,20 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             pinfo = admin_event.create_process_info_from_event(p_event=p_event)
             return [self.create_admin_event_process_end_from_pinfo(p_pinfo=pinfo)]
 
-        uid = p_login_mapping.get_uid_by_login(p_server_group=p_server_group, p_login=p_event.username)
+        uid = p_login_mapping.get_uid_by_login(p_session_context=p_session_context,
+                                               p_server_group=p_server_group, p_login=p_event.username)
 
         if uid is None:
-            fmt = "handle_event_kill_process: cannot find uid for username '{username}' -> ignoring event"
-            self._logger.warning(fmt.format(username=p_event.username))
+            fmt = f"handle_event_kill_process: cannot find uid for username '{p_event.username}' -> ignoring event"
+            self._logger.warning(fmt)
             return []
 
         current_uid = proc.uids().effective
 
         if uid != current_uid:
-            fmt = "handle_event_kill_process: current uid {current_uid} of process " \
-                  "does not match the one of event {event_uid} -> ignoring event"
-            self._logger.warning(fmt.format(current_uid=current_uid, event_uid=uid))
+            fmt = f"handle_event_kill_process: current uid {current_uid} of process " \
+                  f"does not match the one of event {uid} -> ignoring event"
+            self._logger.warning(fmt)
             return []
 
         params = {
@@ -170,7 +174,8 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                 # On Mac OS the process we want to kill has the real user id set to root but the effective user id
                 # set to the actual user.
                 uid = uids.effective
-                username = p_login_mapping.get_login_by_uid(p_server_group=p_server_group, p_uid=uid)
+                username = p_login_mapping.get_login_by_uid(p_session_context=p_session_context,
+                                                            p_server_group=p_server_group, p_uid=uid)
 
                 if username is not None and username in p_process_regex_map:
 

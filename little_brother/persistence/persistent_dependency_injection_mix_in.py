@@ -24,6 +24,7 @@ from little_brother.persistence.persistent_process_info_entity_manager import Pr
 from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
+from little_brother.persistence.persistent_uid_mapping_entity_manager import UidMappingEntityManager
 from little_brother.persistence.persistent_user_2_device_entity_manager import User2DeviceEntityManager
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 
@@ -46,6 +47,7 @@ class PersistenceDependencyInjectionMixIn:
         self._user_2_device_entity_manager = None
         self._time_extension_entity_manager = None
         self._user_status_entity_manager = None
+        self._uid_mapping_entity_manager = None
 
     @property
     def persistence(self):
@@ -125,3 +127,11 @@ class PersistenceDependencyInjectionMixIn:
             self._user_status_entity_manager = dependency_injection.container[DailyUserStatusEntityManager]
 
         return self._user_status_entity_manager
+
+    @property
+    def uid_mapping_entity_manager(self) -> UidMappingEntityManager:
+
+        if self._uid_mapping_entity_manager is None:
+            self._uid_mapping_entity_manager = dependency_injection.container[UidMappingEntityManager]
+
+        return self._uid_mapping_entity_manager

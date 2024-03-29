@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import json
+from typing import Optional
 
 from little_brother import constants, user_status
 from python_base_app import base_rest_api_access
@@ -114,7 +115,7 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
         return result
 
     # Note: the following method is functionally identical the method in little_brother_taskbar/status_connector.py
-    def request_time_extension(self, p_username:str, p_access_code:str, p_extension_length:int) -> int:
+    def request_time_extension(self, p_username: Optional[str], p_access_code: str, p_extension_length: int) -> int:
 
         url = self._get_api_url(constants.API_REL_URL_REQUEST_TIME_EXTENSION)
 
@@ -139,4 +140,3 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
             return constants.HTTP_STATUS_CODE_NOT_FOUND
 
         return constants.HTTP_STATUS_CODE_OK
-

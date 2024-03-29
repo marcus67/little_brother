@@ -28,6 +28,7 @@ from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.api import master_connector
 from little_brother.api.master_connector import MasterConnector
 from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.session_context import SessionContext
 from little_brother.prometheus import PrometheusClient
 from little_brother.rule_handler import RuleHandler
 from little_brother.test import test_rule_handler
@@ -88,15 +89,18 @@ class TestAppControl(base_test.BaseTestCase):
         config = app_control.AppControlConfigModel()
 
         test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        dummy_persistence: test_persistence.TestPersistence = dependency_injection.container[Persistence]
 
-        dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
-        dependency_injection.container[MasterConnector] = None
+        with SessionContext(p_persistence=dummy_persistence) as session_context:
 
-        app_control.AppControl(p_config=config, p_debug_mode=False)
+            dependency_injection.container[AdminDataHandler] = AdminDataHandler(p_config=config)
+            dependency_injection.container[MasterConnector] = None
 
-        user_manager : UserManager = dependency_injection.container[UserManager]
+            app_control.AppControl(p_config=config, p_debug_mode=False)
 
-        user_manager.retrieve_user_mappings()
+            user_manager: UserManager = dependency_injection.container[UserManager]
+
+            user_manager.retrieve_user_mappings(p_session_context=session_context)
 
     def test_is_client(self):
         mc_config = master_connector.MasterConnectorConfigModel()

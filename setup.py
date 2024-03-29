@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -63,7 +63,7 @@ setup_params = {
 extended_setup_params = {
 
     # Target version to be used to upgrade the database
-    "target_alembic_version": "ed5e0310d209",
+    "target_alembic_version": "8802c76063af",
 
     "docker_registry_user": "marcusrickert",
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded

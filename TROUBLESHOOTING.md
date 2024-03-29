@@ -26,7 +26,7 @@ may be an option for you.
 *   Check that the process name patterns actually match the processing starting on your host when the monitored users
     log in. Since there are so many flavours of Linux and window managers and X11 start up scripts this may be more 
     tricky than expected. The default pattern watches for shells (`.*sh`) for terminal login and for a typical login 
-    process (`systemd`) when X11 is used to login but this may not apply to your system. Try the following:
+    process (`systemd`) when X11 is used to log in but this may not apply to your system. Try the following:
 
     *   Since most attempts will most likely use the X11 login try to log into a shell instead by typing
   
@@ -37,7 +37,7 @@ may be an option for you.
     
     *   If this works the origin of the problem is probably the process pattern used for the X11 login. In this case
         log into X11 using a monitored user. Open a shell (preferably by switching to a virtual text terminal first and 
-        using a non-monitored login but if you are not familiar with this it's OK to start a terminal as the logged in 
+        using a non-monitored login but if you are not familiar with this it's OK to start a terminal as the logged-in 
         user) and type the following
     
         `ps uax|grep [USER]`

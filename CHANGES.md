@@ -4,7 +4,41 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
-## Version 0.4.29 Revision 135 (Sep 1st, 2023)
+## Version 0.4.36 Revision 143 (March 29th, 2024)
+* Add missing PIP package `py3-virtualenv` to Alpine Docker image
+
+## Version 0.4.35 Revision 142 (March 29th, 2024)
+* Make `pip3.sh` helper more robust
+
+## Version 0.4.34 Revision 141 (March 4th, 2024)
+* Closes https://github.com/marcus67/little_brother/issues/190
+* Persist uid mappings on the client. This is required just in case the client
+  restarts with no server active to enable process termination.
+
+## Version 0.4.33 Revision 140 (December 3rd, 2023)
+* Bump `urllib3` to 2.1.0 (CVE-2023-45803)
+* Bump `werkzeug` to 2.3.8 (CVE-2023-46136)
+* Bump `some_flask_helpers` to 0.2.5 (CVE-2023-46136)
+* Bump `python_base_app` to 0.2.50 (CVE-2023-45803, CVE-2023-46136)
+
+## Version 0.4.32 Revision 139 (October 12th, 2023)
+* Bump `some_flask_helpers` to 0.2.4
+* Bump `python_base_app` to 0.2.49
+* Downgrade `urllib3` to 1.26
+
+## Version 0.4.31 Revision 138 (October 7th, 2023)
+* Closes https://github.com/marcus67/little_brother/issues/183
+* Bump `python_base_app` to 0.2.47
+* Lock all PIP packages at revision
+* Bump minor release of some packages
+* Bump base image version of Ubuntu to 23.10
+
+## Version 0.4.30 Revision 137 (Sep 9th, 2023)
+ 
+* Remove incompatibility with Python 3.8 in `firewall_handler.py` and `persistent_device.py`
+* Closes https://github.com/marcus67/little_brother/issues/180 (again)
+
+## Version 0.4.29 Revision 136 (Sep 1st, 2023)
 
 * Fix problem version 0.4.28 in which an older version of `python_base_app` was included 
 
@@ -12,7 +46,6 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Remove incompatibility with Python 3.8 in `python_base_app`
 * Bump python_base_app to 0.2.46
 * Closes https://github.com/marcus67/little_brother/issues/180
-
 
 ## Version 0.4.27 Revision 134 (Aug 2nd, 2023)
 
@@ -603,7 +636,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.1 Revision 36 (May 29th, 2019)
 
 *   Closes #51, see [here](https://github.com/marcus67/little_brother/issues/51)
-*   Change defaults for database driver (to match pre-loaded PIP package for mysql)
+*   Change defaults for database driver (to match preloaded PIP package for mysql)
 
 ## Version 0.1 Revision 35 (June 1st, 2019)
 
@@ -686,6 +719,6 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.1 Revision 21 (April 21st, 2019)
 
 *   Add coverage logo to README.md. 
-*   Add this CHANGES.md page.
+*   Add CHANGES.md page.
 *   Interpret predefined environment variables (e.g. CIRCLE_BRANCH).
 *   Expand environment variables before calling scripts.
