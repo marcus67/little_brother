@@ -488,7 +488,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         if user is None or not user.active:
             return None
 
-        time_extension : TimeExtension = p_time_extensions.get(p_username)
+        time_extension: TimeExtension = p_time_extensions.get(p_username)
         time_extension_periods = []
 
         if time_extension is not None:
@@ -541,7 +541,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                         p_short_format=short_format,
                         p_date_in_iso_8601=tools.get_datetime_in_iso_8601(reference_date),
                         p_rule_set=RuleSetTO(
-                            p_label=rule_set.context_label,
+                            p_label=rule_set.label,
                             p_free_play=rule_set.free_play,
                             p_max_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(rule_set.max_time_of_day),
                             p_min_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(rule_set.min_time_of_day),
@@ -550,6 +550,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                             p_max_activity_duration_in_seconds=rule_set.max_activity_duration
                         ),
                         p_override=RuleSetTO(
+                            p_label=rule_set.label,
                             p_free_play=override.free_play,
                             p_max_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(override.max_time_of_day),
                             p_min_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(override.min_time_of_day),
@@ -558,9 +559,12 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                             p_max_activity_duration_in_seconds=override.max_activity_duration
                         ),
                         p_effective_rule_set=RuleSetTO(
+                            p_label=rule_set.label,
                             p_free_play=effective_rule_set.free_play,
-                            p_max_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(effective_rule_set.max_time_of_day),
-                            p_min_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(effective_rule_set.min_time_of_day),
+                            p_max_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(
+                                effective_rule_set.max_time_of_day),
+                            p_min_time_of_day_in_iso_8601=tools.get_datetime_in_iso_8601(
+                                effective_rule_set.min_time_of_day),
                             p_min_break_in_seconds=effective_rule_set.min_break,
                             p_max_time_per_day_in_seconds=effective_rule_set.max_time_per_day,
                             p_max_activity_duration_in_seconds=effective_rule_set.max_activity_duration

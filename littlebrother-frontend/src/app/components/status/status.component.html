@@ -21,7 +21,7 @@
     <DIV CLASS="col col-2 col-lg-4 localetext">Reasons</DIV>
   </DIV>
   <DIV *ngFor="let entry of userStatus" CLASS="row title-row bg-secondary-subtle" >
-    <DIV CLASS="col col-2 col-lg-1 localetext"><a [routerLink]="['/admin', entry.user_id]">{{ entry.full_name }}</a></DIV>
+    <DIV CLASS="col col-2 col-lg-1 localetext"><a [routerLink]="['/status', entry.user_id]">{{ entry.full_name }}</a></DIV>
     <DIV CLASS="col col-2 col-lg-1 localetext">{{ entry.context_label }}</DIV>
     <DIV CLASS="col col-2 col-lg-1 localetext">
       {{ entry.todays_activity_duration() }} /

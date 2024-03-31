@@ -49,6 +49,8 @@ export const unpickle = (object:object, handlers:Map<string, Function>) : any =>
 
             if (handler) {
                 return handler(newObject);
+            } else {
+                console.warn("No clue how to unpickle '" + className + "'!");
             }
         }
     }
