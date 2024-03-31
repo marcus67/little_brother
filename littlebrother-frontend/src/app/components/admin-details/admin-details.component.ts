@@ -1,8 +1,8 @@
 import { AfterViewChecked, Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserStatusService } from '../../services/user-status.service'
+import { UserAdminService } from '../../services/user-admin.service'
 import { ControlService } from '../../services/control.service'
-import { UserStatus } from '../../models/user-status'
+import { UserAdmin } from '../../models/user-admin'
 import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
@@ -31,7 +31,7 @@ function eventListenerHideAccordion (event:any) {
 
 
 export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecked {
-  userStatus: UserStatus = new UserStatus();
+  userAdmin: UserAdmin = new UserAdmin();
   accordionState: Map<String, Boolean> = new Map<String, Boolean>();
 
   private userId: number = -1;
@@ -40,7 +40,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
 
 
   constructor(private controlService: ControlService,
-              private userStatusService: UserStatusService,
+              private userAdminService: UserAdminService,
               private route: ActivatedRoute) {
     this.userId = Number(this.route.snapshot.params['user_id']);
   }
@@ -49,12 +49,12 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
     return localStorage.getItem(id) === "true";
   }
 
-  getUserStatus(): void {
+  getUserAdminDetails(): void {
 
-    this.userStatusService.loadUserStatusDetails(this.userId).subscribe( jsonData => {
+    this.userAdminService.loadUserAdminDetails(this.userId).subscribe( jsonData => {
       this.storeAccordionState();
       // extract from JSON...
-      this.userStatus = unpickle(jsonData, my_handlers);
+      this.userAdmin = unpickle(jsonData, my_handlers);
     })
   }
 
@@ -63,7 +63,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
       let control : Control = new Control(jsonEntry);
 
       this.intervalId = window.setInterval( () => {
-         this.getUserStatus();
+         this.getUserAdminDetails();
       }, control.refresh_interval_in_milliseconds
       )
     });
@@ -87,7 +87,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
   }
 
   ngOnInit(): void {
-    this.getUserStatus();
+    this.getUserAdminDetails();
     this.activateRefresh();
   }
 

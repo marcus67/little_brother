@@ -20,7 +20,7 @@
   </DIV>
 
   <DIV *ngFor="let entry of userAdmin" CLASS="row title-row bg-secondary-subtle" >
-    <DIV CLASS="col col-2 col-lg-1 localetext"><a [routerLink]="['/admin', entry.user_id]">{{ entry.user_status?.full_name }}</a></DIV>
+    <DIV CLASS="col col-2 col-lg-1 localetext"><a [routerLink]="['/admin', entry.user_status?.user_id]">{{ entry.user_status?.full_name }}</a></DIV>
     <DIV CLASS="col col-2 col-lg-1 localetext">{{ entry.user_status?.context_label }}</DIV>
     <DIV CLASS="col col-2 col-lg-2 localetext">
       {{ entry.user_status?.todays_activity_duration() }} /
