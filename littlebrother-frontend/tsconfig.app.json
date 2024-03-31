@@ -5,7 +5,7 @@
     "outDir": "./out-tsc/app",
     /* See https://stackoverflow.com/questions/31173738/typescript-getting-error-ts2304-cannot-find-name-require */
     "types": [ "node"],
-    "typeRoots": [ "../node_modules/@types" ]
+    "typeRoots": [ "./node_modules/@types", "../node_modules/@types", "../../node_modules/@types" ]
   },
   "files": [
     "src/main.ts"
