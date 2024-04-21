@@ -1,0 +1,27 @@
+<FORM>
+    <DIV CLASS="row bg-warning-subtle">
+        <DIV CLASS="col col-2">
+        </DIV>
+        <DIV CLASS="col col-2">
+        override
+        </DIV>
+        <DIV CLASS="col col-2">
+        {{ override?.min_time_of_day_as_string() }}
+        </DIV>
+        <DIV CLASS="col col-2">
+        {{ override?.max_time_of_day_as_string() }}
+        </DIV>
+        <DIV CLASS="col col-1">
+        {{ override?.max_time_per_day_as_string() }}
+        </DIV>
+        <DIV CLASS="col col-1">
+        {{ override?.min_break_as_string() }}
+        </DIV>
+        <DIV CLASS="col col-1">
+        {{ override?.max_activity_duration_as_string() }}
+        </DIV>
+        <DIV CLASS="col col-1">
+        {{ override?.free_play }}
+        </DIV>
+    </DIV>
+</FORM>

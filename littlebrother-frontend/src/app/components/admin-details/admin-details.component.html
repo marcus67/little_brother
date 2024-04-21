@@ -1,39 +1,69 @@
 <app-nav-bar></app-nav-bar>
-<div class="container rounded-2 overflow-hidden">
+<DIV class="container rounded-2 overflow-hidden">
   <DIV CLASS="row title-row bg-primary-subtle">
-    <DIV CLASS="col col-2">User</DIV>
-    <DIV CLASS="col col-2">Context</DIV>
+    <DIV CLASS="col col-1">User</DIV>
+    <DIV CLASS="col col-1">Context</DIV>
     <DIV CLASS="col col-lg-2 d-none d-lg-block">Activity permitted</DIV>
     <DIV CLASS="col col-1 col-sm-1 d-lg-none">OK?</DIV>
-    <DIV CLASS="col col-7 col-sm-7 col-md-6 col-lg-6">Comments</DIV>
+    <DIV CLASS="col col-4 col-sm-4 col-md-3 col-lg-3">Comments</DIV>
+    <DIV CLASS="col col-4 col-sm-4 col-md-4 col-lg-4">Time Extensions</DIV>
   </DIV>
   <DIV CLASS="row bg-secondary-subtle">
-    <DIV CLASS="col col-2">{{ userAdmin.user_status?.user_id }}</DIV>
-    <DIV CLASS="col col-2">{{ userAdmin.user_status?.context_label }}</DIV>
+    <DIV CLASS="col col-1">{{ userAdmin.user_status?.full_name }}</DIV>
+    <DIV CLASS="col col-1">{{ userAdmin.user_status?.context_label }}</DIV>
     <DIV CLASS="col col-1 col-md-1 col-sm-1 col-lg-2">
-      <div *ngIf="userAdmin.user_status?.activity_permitted">
+      <DIV *ngIf="userAdmin.user_status?.activity_permitted">
         <I class="fas fa-check active"></I>
-      </div>
-      <div *ngIf="! userAdmin.user_status?.activity_permitted">
+      </DIV>
+      <DIV *ngIf="! userAdmin.user_status?.activity_permitted">
         <I class="fas fa-times inactive"></I>
-      </div>
+      </DIV>
     </DIV>
-    <DIV CLASS="col col-7 col-lg-6">
+    <DIV CLASS="col col-4 col-lg-3">
       <ul>
         <li *ngFor="let reason of userAdmin.user_status?.reasons">
           {{ reason }}
         </li>
       </ul>
     </DIV>
+    <DIV CLASS="col col-4">
+      <!-- see https://angular.io/api/core/ng-container -->
+      <ng-container *ngFor="let period of userAdmin.time_extension_periods">
+        <ng-container *ngIf="period == 0">
+          <BUTTON id="time_extension_0"
+            class="btn btn-time-extension-off" type="submit" name="submit"
+            value="time_extension_0"
+            title="Deactivate time extension">
+            <I class="fas fa-power-off"></I>
+          </BUTTON>
+        </ng-container>
+        <ng-container *ngIf="period < 0">
+          <BUTTON id="time_extension_{{period}}"
+              class="btn btn-time-extension-minus" type="submit" name="submit"
+              value="time_extension_{{period}}"
+              title="Decrease time extension by {{period}} minutes">
+            <I class="far fa-minus-square"></I> {{ period }}
+          </BUTTON>
+        </ng-container>
+        <ng-container *ngIf="period > 0">
+          <BUTTON id="time_extension_{{period}}"
+            class="btn btn-time-extension-plus" type="submit" name="submit"
+            value="time_extension_{{period}}"
+            title="Increase time extension by {{period}} minutes">
+            <I class="far fa-plus-square"></I> {{ period }}
+          </BUTTON>
+        </ng-container>  
+      </ng-container>
+    </DIV>
   </DIV>
-</div>
+</DIV>
 
 <!-- seperator -->
-<div class="container p-2">
-</div>
+<DIV class="container p-2">
+</DIV>
 
-<div class="container rounded-2 overflow-hidden">
-  <div class="accordion" id="adminDetailAccordion">
+<DIV class="container rounded-2 overflow-hidden">
+  <DIV class="accordion" id="adminDetailAccordion">
       <DIV CLASS="row title-row bg-primary-subtle">
         <DIV CLASS="col col-2 ">Day</DIV>
         <DIV CLASS="col col-2 ">Context</DIV>
@@ -44,8 +74,8 @@
         <DIV CLASS="col col-1 ">Max Duration</DIV>
         <DIV CLASS="col col-1 ">Free Play</DIV>
       </DIV>
-      <div *ngFor="let detail of userAdmin.user_admin_details; index as i" class="accordion-item">
-         <div class="accordion-header">
+      <DIV *ngFor="let detail of userAdmin.user_admin_details; index as i" class="accordion-item">
+         <DIV class="accordion-header">
             <DIV CLASS="row bg-secondary-subtle">
               <DIV CLASS="col col-2">
                 <A data-bs-toggle="collapse" href="#adminDetailAccordionItem{{i}}" aria-expanded="false" 
@@ -75,8 +105,8 @@
                 {{ detail.effective_rule_set?.free_play }}
               </DIV>
             </DIV>
-          </div>
-          <div id="adminDetailAccordionItem{{i}}" class="accordion-collapse collapse"
+          </DIV>
+          <DIV id="adminDetailAccordionItem{{i}}" class="accordion-collapse collapse"
                [class.show] = "getAccordionState('adminDetailAccordionItem' + i)"
                data-bs-parent="#adminDetailAccordion">
             <DIV CLASS="row bg-warning-subtle">
@@ -104,33 +134,8 @@
                 {{ detail.rule_set?.free_play }}
               </DIV>
             </DIV>
-            <DIV CLASS="row bg-warning-subtle">
-              <DIV CLASS="col col-2">
-              </DIV>
-              <DIV CLASS="col col-2">
-                override
-              </DIV>
-              <DIV CLASS="col col-2">
-                {{ detail.override?.min_time_of_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-2">
-                {{ detail.override?.max_time_of_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1">
-                {{ detail.override?.max_time_per_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1">
-                {{ detail.override?.min_break_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1">
-                {{ detail.override?.max_activity_duration_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1">
-                {{ detail.override?.free_play }}
-              </DIV>
-            </DIV>
-
-          </div>
-      </div>
-   </div>
-</div>
+            <app-admin-details-override [override]="detail.override"></app-admin-details-override>
+          </DIV>
+        </DIV>
+   </DIV>
+</DIV>

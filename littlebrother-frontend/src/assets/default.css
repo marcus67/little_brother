@@ -37,6 +37,28 @@
   color: blue;
 }
 
+.btn-time-extension-plus {
+  background-color: lightgray; /* Blue background */
+  color: green; /* White text */
+  padding: 3px 3px 0px 3px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.btn-time-extension-minus {
+  background-color: lightgray; /* Blue background */
+  color: red; /* White text */
+  padding: 3px 3px 0px 3px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.btn-time-extension-off {
+  background-color: lightgray; /* Blue background */
+  color: red; /* White text */
+  padding: 5px 6px 5px 6px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+
 
 /* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
 
