@@ -13,7 +13,7 @@ import { HelpersComponent } from './components/helpers/helpers.component';
 import { AboutComponent } from './components/about/about.component';
 
 import { AuthService } from './services/auth.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EnsureAuthenticated } from './services/ensure-authenticated.service';
 import { LoginRedirect } from './services/login-redirect.service';
 import { StatusDetailsComponent } from './components/status-details/status-details.component';
@@ -33,13 +33,15 @@ import { AdminDetailsOverrideComponent } from './components/admin-details-overri
     StatusDetailsComponent,
     AdminComponent,
     AdminDetailsComponent,
+    // See https://stackoverflow.com/questions/39152071/cant-bind-to-formgroup-since-it-isnt-a-known-property-of-form
     AdminDetailsOverrideComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     AuthService,

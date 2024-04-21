@@ -86,7 +86,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
         return self._user_locale_handler
 
-    def get_admin_info(self, p_session_context, p_user_name, p_process_infos) -> ViewInfo:
+    def get_admin_info(self, p_session_context, p_user_name, p_process_infos) -> ViewInfo | None:
 
         admin_infos = self.get_admin_infos(
             p_session_context=p_session_context,
@@ -230,7 +230,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                           p_reference_date=p_reference_time.date())
                 override = self._rule_overrides.get(key_rule_override)
 
-                rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                a_rule_result_info = self.rule_handler.process_rule_sets_for_user(
                     p_rule_sets=p_user.rulesets,
                     p_stat_info=stat_info,
                     p_active_time_extension=active_time_extension,
@@ -274,21 +274,21 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_username=p_user.username,
                     p_full_name=stat_info.full_name,
                     p_free_play=rule_set.free_play,
-                    p_activity_permitted=rule_result_info.activity_allowed(),
+                    p_activity_permitted=a_rule_result_info.activity_allowed(),
                     p_context_label=rule_set.label,
                     p_todays_activity_duration_in_seconds=int(stat_info.todays_activity_duration)
                     if stat_info.todays_activity_duration else None,
                     p_todays_downtime_in_seconds=int(stat_info.todays_downtime) if stat_info.todays_downtime else None,
                     p_max_time_per_day_in_seconds=rule_set.max_time_per_day,
-                    p_current_activity_duration_in_seconds=
-                    int(stat_info.current_activity_duration) if stat_info.current_activity_duration else None,
+                    p_current_activity_duration_in_seconds=int(stat_info.current_activity_duration)
+                    if stat_info.current_activity_duration else None,
                     p_current_activity_start_time_in_iso_8601=stat_info.current_activity_start_time_in_iso_8601,
                     p_current_activity_downtime_in_seconds=int(stat_info.current_activity_downtime)
                     if stat_info.current_activity_downtime else None,
                     p_previous_activity_start_time_in_iso_8601=stat_info.previous_activity_start_time_in_iso_8601,
                     p_previous_activity_end_time_in_iso_8601=stat_info.previous_activity_end_time_in_iso_8601,
                     p_reasons=[template.format(**value_dict)
-                               for template, value_dict in rule_result_info.applying_rule_text_templates],
+                               for template, value_dict in a_rule_result_info.applying_rule_text_templates],
                     p_user_status_details=user_status_details
                 )
 
@@ -327,7 +327,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                           p_reference_date=p_reference_time.date())
                 override = self._rule_overrides.get(key_rule_override)
 
-                rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                a_rule_result_info = self.rule_handler.process_rule_sets_for_user(
                     p_rule_sets=p_user.rulesets,
                     p_stat_info=stat_info,
                     p_active_time_extension=active_time_extension,
@@ -335,14 +335,14 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                     p_rule_override=override,
                     p_locale=user_locale)
 
-                activity_permitted = rule_result_info.activity_allowed()
+                activity_permitted = a_rule_result_info.activity_allowed()
 
                 user_info = {
                     'username': p_user.username,
                     'full_name': p_user.full_name,
                     'active_rule_set': rule_set,
                     'active_stat_info': stat_info,
-                    'active_rule_result_info': rule_result_info,
+                    'active_rule_result_info': a_rule_result_info,
                     'max_lookback_in_days': self._config.process_lookback_in_days,
                     'activity_permitted': activity_permitted,
                     'history_labels': self.history_labels
@@ -415,8 +415,8 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
     def get_user_status_transfer_objects(self, p_session_context, p_process_infos) -> list[UserStatusTO]:
 
-        return [ to for to in self.get_user_status_transfer_object_map(
-            p_session_context=p_session_context, p_process_infos=p_process_infos).values() ]
+        return [to for to in self.get_user_status_transfer_object_map(
+            p_session_context=p_session_context, p_process_infos=p_process_infos).values()]
 
     def get_user_status_and_details_transfer_object(self, p_user_id: int, p_session_context,
                                                     p_process_infos) -> UserStatusTO | None:
@@ -445,13 +445,11 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
     def get_user_admin_transfer_objects(self, p_session_context, p_process_infos) -> list[UserAdminTO]:
 
-        user_admin_tos: list[UserAdminTO] = []
-
         reference_time = datetime.datetime.now()
 
+        user_admin_tos: list[UserAdminTO] = []
         user_status_tos = self.get_user_status_transfer_object_map(p_session_context=p_session_context,
                                                                    p_process_infos=p_process_infos)
-
         user_infos = self.get_user_status_infos(p_session_context=p_session_context, p_include_history=False,
                                                 p_process_infos=p_process_infos)
 
@@ -478,9 +476,9 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         if user_info is None:
             return None
 
-        user_status_to = p_user_status_tos.get(p_username)
+        user_status_to = p_user_status_tos.get(p_username) if p_user_status_tos is not None else None
 
-        if user_status_to is None:
+        if p_user_status_tos is not None and user_status_to is None:
             return None
 
         user: User = self.user_entity_manager.user_map(p_session_context).get(p_username)
@@ -574,12 +572,42 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
         return UserAdminTO(p_username=p_username,
                            p_user_status=user_status_to,
-                           p_time_extension_periods=time_extension_periods,
                            p_max_lookahead_in_days=self._config.admin_lookahead_in_days,
                            p_user_admin_details=user_admin_details_tos)
 
+    def get_user_admin_time_extensions(self, p_session_context, p_user_id) -> list[int] | None:
+
+        user: User = self.user_entity_manager.get_by_id(p_session_context=p_session_context, p_id=p_user_id)
+
+        if user is None:
+            return None
+
+        reference_time = datetime.datetime.now()
+
+        active_time_extensions = self.time_extension_entity_manager.get_active_time_extensions(
+            p_session_context=p_session_context, p_reference_datetime=reference_time)
+
+        time_extension: TimeExtension = active_time_extensions.get(user.username)
+        time_extension_periods = []
+
+        if time_extension is not None:
+            # add special value 0 for "off"
+            time_extension_periods.append(0)
+
+        for period in self._config.time_extension_periods_list:
+            if period > 0:
+                time_extension_periods.append(period)
+
+            else:
+                if time_extension is not None and \
+                        time_extension.end_datetime + \
+                        datetime.timedelta(minutes=period) >= time_extension.start_datetime:
+                    time_extension_periods.append(period)
+
+        return time_extension_periods
+
     def get_admin_status_and_details_transfer_object(self, p_user_id: int, p_session_context,
-                                                     p_process_infos) -> UserStatusTO | None:
+                                                     p_process_infos) -> UserAdminTO | None:
 
         reference_time = datetime.datetime.now()
 
@@ -605,13 +633,10 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         if user is None:
             return None
 
-        user_status_tos = self.get_user_status_transfer_object_map(p_session_context=p_session_context,
-                                                                   p_process_infos=p_process_infos)
-
         return self.get_user_admin_transfer_object(
             p_session_context=p_session_context, p_username=user.username,
             p_time_extensions=active_time_extensions,
-            p_user_status_tos=user_status_tos,
+            p_user_status_tos=None,
             p_user_infos=users_stat_infos,
             p_days=days)
 
@@ -640,7 +665,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
 
     def get_current_rule_result_info(self, p_reference_time, p_process_infos, p_username):
 
-        rule_result_info = None
+        a_rule_result_info = None
 
         with SessionContext(p_persistence=self.persistence) as session_context:
             users_stat_infos = process_statistics.get_process_statistics(
@@ -674,7 +699,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                                                                   p_reference_date=p_reference_time.date())
                         override = self._rule_overrides.get(key_rule_override)
 
-                        rule_result_info = self.rule_handler.process_rule_sets_for_user(
+                        a_rule_result_info = self.rule_handler.process_rule_sets_for_user(
                             p_rule_sets=user.rulesets,
                             p_stat_info=stat_info,
                             p_reference_time=p_reference_time,
@@ -682,4 +707,4 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
                             p_rule_override=override,
                             p_locale=user_locale)
 
-        return rule_result_info
+        return a_rule_result_info

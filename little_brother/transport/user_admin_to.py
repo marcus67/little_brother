@@ -23,11 +23,9 @@ class UserAdminTO:
     def __init__(self,
                  p_username: str,
                  p_user_status: UserStatusTO,
-                 p_time_extension_periods: list[int],
                  p_max_lookahead_in_days: int,
                  p_user_admin_details: list[UserAdminDetailTO] = None):
         self.username = p_username
         self.user_status = p_user_status
-        self.time_extension_periods = p_time_extension_periods
         self.max_lookahead_in_days = p_max_lookahead_in_days
         self.user_admin_details = p_user_admin_details

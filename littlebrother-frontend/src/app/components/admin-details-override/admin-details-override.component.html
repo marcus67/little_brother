@@ -1,4 +1,4 @@
-<FORM>
+<form [formGroup]="adminOverrideForm">
     <DIV CLASS="row bg-warning-subtle">
         <DIV CLASS="col col-2">
         </DIV>
@@ -6,22 +6,26 @@
         override
         </DIV>
         <DIV CLASS="col col-2">
-        {{ override?.min_time_of_day_as_string() }}
+            <input id="min_time_of_day_as_string" type="text" formControlName="min_time_of_day_as_string" size="5">
         </DIV>
         <DIV CLASS="col col-2">
-        {{ override?.max_time_of_day_as_string() }}
+            <input id="max_time_of_day_as_string" type="text" formControlName="max_time_of_day_as_string" size="5">
         </DIV>
         <DIV CLASS="col col-1">
-        {{ override?.max_time_per_day_as_string() }}
+            <input id="max_time_per_day_as_string" type="text" formControlName="max_time_per_day_as_string" size="6">
         </DIV>
         <DIV CLASS="col col-1">
-        {{ override?.min_break_as_string() }}
+            <input id="min_break_as_string" type="text" formControlName="min_break_as_string" size="6">
         </DIV>
         <DIV CLASS="col col-1">
-        {{ override?.max_activity_duration_as_string() }}
+            <input id="max_activity_duration_as_string" type="text" formControlName="max_activity_duration_as_string" size="6">
+        </DIV>
+        <DIV CLASS="col col-1">
+            <!-- https://angular.io/api/forms/CheckboxControlValueAccessor -->
+            <input id="free_play" type="checkbox" formControlName="free_play">
         </DIV>
         <DIV CLASS="col col-1">
         {{ override?.free_play }}
         </DIV>
     </DIV>
-</FORM>
+</form>

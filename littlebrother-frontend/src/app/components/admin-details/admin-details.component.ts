@@ -1,8 +1,10 @@
 import { AfterViewChecked, Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserAdminService } from '../../services/user-admin.service'
+import { UserStatusService } from '../../services/user-status.service'
 import { ControlService } from '../../services/control.service'
 import { UserAdmin } from '../../models/user-admin'
+import { UserStatus } from '../../models/user-status'
 import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
@@ -32,6 +34,8 @@ function eventListenerHideAccordion (event:any) {
 
 export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecked {
   userAdmin: UserAdmin = new UserAdmin();
+  timeExtensions: number[] = [];
+  userStatus: UserStatus = new UserStatus();
   accordionState: Map<String, Boolean> = new Map<String, Boolean>();
 
   private userId: number = -1;
@@ -41,6 +45,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
 
   constructor(private controlService: ControlService,
               private userAdminService: UserAdminService,
+              private userStatusService: UserStatusService,
               private route: ActivatedRoute) {
     this.userId = Number(this.route.snapshot.params['user_id']);
   }
@@ -58,12 +63,31 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
     })
   }
 
+  getUserStatusDetails(): void {
+
+    this.userStatusService.loadUserStatusDetails(this.userId).subscribe( jsonData => {
+      this.storeAccordionState();
+      // extract from JSON...
+      this.userStatus = unpickle(jsonData, my_handlers);
+    })
+  }
+
+  getUserAdminTimeExtensions(): void {
+
+    this.userAdminService.loadUserAdminTimeExtensions(this.userId).subscribe( jsonData => {
+      this.storeAccordionState();
+      // extract from JSON...
+      this.timeExtensions = unpickle(jsonData, my_handlers);
+    })
+  }
+
   activateRefresh(): void {
     this.controlService.loadControl().subscribe( jsonEntry => {
       let control : Control = new Control(jsonEntry);
 
       this.intervalId = window.setInterval( () => {
-         this.getUserAdminDetails();
+         this.getUserStatusDetails();
+         this.getUserAdminTimeExtensions();
       }, control.refresh_interval_in_milliseconds
       )
     });
@@ -88,6 +112,8 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
 
   ngOnInit(): void {
     this.getUserAdminDetails();
+    this.getUserStatusDetails();
+    this.getUserAdminTimeExtensions();
     this.activateRefresh();
   }
 
