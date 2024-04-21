@@ -19,6 +19,7 @@ import { LoginRedirect } from './services/login-redirect.service';
 import { StatusDetailsComponent } from './components/status-details/status-details.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminDetailsComponent } from './components/admin-details/admin-details.component';
+import { AdminDetailsOverrideComponent } from './components/admin-details-override/admin-details-override.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AdminDetailsComponent } from './components/admin-details/admin-details.
     ControlComponent,
     StatusDetailsComponent,
     AdminComponent,
-    AdminDetailsComponent
+    AdminDetailsComponent,
+    AdminDetailsOverrideComponent
   ],
   imports: [
     BrowserModule,
