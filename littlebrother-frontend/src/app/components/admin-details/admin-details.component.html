@@ -9,26 +9,26 @@
     <DIV CLASS="col col-4 col-sm-4 col-md-4 col-lg-4">Time Extensions</DIV>
   </DIV>
   <DIV CLASS="row bg-secondary-subtle">
-    <DIV CLASS="col col-1">{{ userAdmin.user_status?.full_name }}</DIV>
-    <DIV CLASS="col col-1">{{ userAdmin.user_status?.context_label }}</DIV>
+    <DIV CLASS="col col-1">{{ userStatus?.full_name }}</DIV>
+    <DIV CLASS="col col-1">{{ userStatus?.context_label }}</DIV>
     <DIV CLASS="col col-1 col-md-1 col-sm-1 col-lg-2">
-      <DIV *ngIf="userAdmin.user_status?.activity_permitted">
+      <DIV *ngIf="userStatus?.activity_permitted">
         <I class="fas fa-check active"></I>
       </DIV>
-      <DIV *ngIf="! userAdmin.user_status?.activity_permitted">
+      <DIV *ngIf="! userStatus?.activity_permitted">
         <I class="fas fa-times inactive"></I>
       </DIV>
     </DIV>
     <DIV CLASS="col col-4 col-lg-3">
       <ul>
-        <li *ngFor="let reason of userAdmin.user_status?.reasons">
+        <li *ngFor="let reason of userStatus?.reasons">
           {{ reason }}
         </li>
       </ul>
     </DIV>
     <DIV CLASS="col col-4">
       <!-- see https://angular.io/api/core/ng-container -->
-      <ng-container *ngFor="let period of userAdmin.time_extension_periods">
+      <ng-container *ngFor="let period of timeExtensions">
         <ng-container *ngIf="period == 0">
           <BUTTON id="time_extension_0"
             class="btn btn-time-extension-off" type="submit" name="submit"

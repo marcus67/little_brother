@@ -71,6 +71,9 @@ API_URL_STATUS_DETAILS = os.path.join(API_URL, API_REL_URL_STATUS_DETAILS)
 API_REL_URL_ADMIN_DETAILS = "admin-details/<user_id>"
 API_URL_ADMIN_DETAILS = os.path.join(API_URL, API_REL_URL_ADMIN_DETAILS)
 
+API_REL_URL_ADMIN_TIME_EXTENSIONS = "admin-time-extensions/<user_id>"
+API_URL_ADMIN_TIME_EXTENSIONS = os.path.join(API_URL, API_REL_URL_ADMIN_TIME_EXTENSIONS)
+
 API_REL_URL_CONTROL = "control"
 API_URL_CONTROL = os.path.join(API_URL, API_REL_URL_CONTROL)
 
@@ -143,4 +146,3 @@ CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 SOURCEFORGE_VERSION_RSS_URL = "https://sourceforge.net/projects/little-brother/rss?path=/"
 SOURCEFORGE_VERSION_XPATH = "./channel/item/title"
 SOURCEFORGE_VERSION_REGEX = "^/([a-z]+)/little-brother_([.0-9]+)_([0-9]+)\.deb$"
-

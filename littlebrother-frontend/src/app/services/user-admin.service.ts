@@ -37,4 +37,17 @@ export class UserAdminService {
 
     return this.http.get<object>(url, {headers: headers});
   }
+
+  loadUserAdminTimeExtensions(userId: number) : Observable<object> {
+    let url: string = `${this.BASE_URL}/admin-time-extensions/${userId}`;
+    let headers: HttpHeaders | undefined = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    headers = this.ensureAuthenticatedService.addAuthentication(headers);
+
+    console.log(headers.getAll('Authorization'))
+
+    return this.http.get<object>(url, {headers: headers});
+  }
 }
