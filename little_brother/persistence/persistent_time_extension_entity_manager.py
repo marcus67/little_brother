@@ -76,21 +76,6 @@ class TimeExtensionEntityManager(BaseEntityManager):
                 time_extension.end_datetime = new_end_datetime
                 session.commit()
 
-    def set_time_extension_for_admin_info_and_session(self, p_session_context, p_user_name, p_delta, p_admin_info,
-                                                      p_reference_time=None):
-
-        session_active = p_admin_info.user_info[
-                             "active_stat_info"].current_activity_start_time is not None
-
-        active_rule_result_info = p_admin_info.user_info["active_rule_result_info"]
-        session_end_datetime = active_rule_result_info.session_end_datetime
-
-        self.set_time_extension_for_session(
-            p_session_context=p_session_context, p_user_name=p_user_name,
-            p_session_active=session_active, p_delta=p_delta,
-            p_session_end_datetime=session_end_datetime,
-            p_reference_time=p_reference_time)
-
     def set_time_extension_for_session(self, p_session_context, p_user_name, p_delta, p_session_active,
                                        p_session_end_datetime, p_reference_time=None):
 

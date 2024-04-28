@@ -66,6 +66,7 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         self.history_labels[0] = (_('Today'), {"days": 0})
         self.history_labels[1] = (_('Yesterday'), {"days": 1})
 
+
     @property
     def rule_overrides(self):
         return self._rule_overrides

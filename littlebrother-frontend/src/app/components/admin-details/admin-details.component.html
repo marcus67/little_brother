@@ -5,7 +5,7 @@
     <DIV CLASS="col col-1">Context</DIV>
     <DIV CLASS="col col-lg-2 d-none d-lg-block">Activity permitted</DIV>
     <DIV CLASS="col col-1 col-sm-1 d-lg-none">OK?</DIV>
-    <DIV CLASS="col col-4 col-sm-4 col-md-3 col-lg-3">Comments</DIV>
+    <DIV CLASS="col col-4 col-sm-4 col-md-3 col-lg-4">Comments</DIV>
     <DIV CLASS="col col-4 col-sm-4 col-md-4 col-lg-4">Time Extensions</DIV>
   </DIV>
   <DIV CLASS="row bg-secondary-subtle">
@@ -19,7 +19,7 @@
         <I class="fas fa-times inactive"></I>
       </DIV>
     </DIV>
-    <DIV CLASS="col col-4 col-lg-3">
+    <DIV CLASS="col col-4 col-lg-4">
       <ul>
         <li *ngFor="let reason of userStatus?.reasons">
           {{ reason }}
@@ -31,7 +31,7 @@
       <ng-container *ngFor="let period of timeExtensions">
         <ng-container *ngIf="period == 0">
           <BUTTON id="time_extension_0"
-            class="btn btn-time-extension-off" type="submit" name="submit"
+            class="btn btn-time-extension-off" 
             value="time_extension_0"
             title="Deactivate time extension">
             <I class="fas fa-power-off"></I>
@@ -39,7 +39,8 @@
         </ng-container>
         <ng-container *ngIf="period < 0">
           <BUTTON id="time_extension_{{period}}"
-              class="btn btn-time-extension-minus" type="submit" name="submit"
+              (click)="extendTimeExtension(userId, period)"
+              class="btn btn-time-extension-minus"
               value="time_extension_{{period}}"
               title="Decrease time extension by {{period}} minutes">
             <I class="far fa-minus-square"></I> {{ period }}
@@ -47,7 +48,8 @@
         </ng-container>
         <ng-container *ngIf="period > 0">
           <BUTTON id="time_extension_{{period}}"
-            class="btn btn-time-extension-plus" type="submit" name="submit"
+            (click)="extendTimeExtension(userId, period)"
+            class="btn btn-time-extension-plus"
             value="time_extension_{{period}}"
             title="Increase time extension by {{period}} minutes">
             <I class="far fa-plus-square"></I> {{ period }}
