@@ -38,13 +38,13 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
   userStatus: UserStatus = new UserStatus();
   accordionState: Map<String, Boolean> = new Map<String, Boolean>();
 
-  private userId: number = -1;
+  public userId: number = -1;
   private intervalId?: number;
   private eventHandlersReady: boolean = false;
 
 
   constructor(private controlService: ControlService,
-              private userAdminService: UserAdminService,
+              public userAdminService: UserAdminService,
               private userStatusService: UserStatusService,
               private route: ActivatedRoute) {
     this.userId = Number(this.route.snapshot.params['user_id']);
@@ -138,4 +138,13 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
       localStorage.setItem(element.id, element.classList.contains("show"));
     })
   }
+
+  extendTimeExtension(userId: number, deltaTimeExtension: number) {
+    this.userAdminService.extendTimeExtension(userId, deltaTimeExtension).subscribe (
+      result => {
+        this.getUserStatusDetails();
+        this.getUserAdminTimeExtensions();    
+      }
+    )
+  };
 }
