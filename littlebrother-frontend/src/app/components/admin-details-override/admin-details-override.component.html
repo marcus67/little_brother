@@ -1,31 +1,28 @@
 <form [formGroup]="adminOverrideForm">
-    <DIV CLASS="row bg-warning-subtle">
+    <DIV CLASS="row bg-warning-subtle" (keyup.enter)="updateRuleOverride()">
         <DIV CLASS="col col-2">
         </DIV>
         <DIV CLASS="col col-2">
         override
         </DIV>
         <DIV CLASS="col col-2">
-            <input id="min_time_of_day_as_string" type="text" formControlName="min_time_of_day_as_string" size="5">
+            <input id="min_time_of_day" type="text" formControlName="min_time_of_day" size="5">
         </DIV>
         <DIV CLASS="col col-2">
-            <input id="max_time_of_day_as_string" type="text" formControlName="max_time_of_day_as_string" size="5">
+            <input id="max_time_of_day" type="text" formControlName="max_time_of_day" size="5">
         </DIV>
         <DIV CLASS="col col-1">
-            <input id="max_time_per_day_as_string" type="text" formControlName="max_time_per_day_as_string" size="6">
+            <input id="max_time_per_day" type="text" formControlName="max_time_per_day" size="6">
         </DIV>
         <DIV CLASS="col col-1">
-            <input id="min_break_as_string" type="text" formControlName="min_break_as_string" size="6">
+            <input id="min_break" type="text" formControlName="min_break" size="6">
         </DIV>
         <DIV CLASS="col col-1">
-            <input id="max_activity_duration_as_string" type="text" formControlName="max_activity_duration_as_string" size="6">
+            <input id="max_activity_duration" type="text" formControlName="max_activity_duration" size="6">
         </DIV>
         <DIV CLASS="col col-1">
             <!-- https://angular.io/api/forms/CheckboxControlValueAccessor -->
-            <input id="free_play" type="checkbox" formControlName="free_play">
-        </DIV>
-        <DIV CLASS="col col-1">
-        {{ override?.free_play }}
+            <input id="free_play" type="checkbox" formControlName="free_play" (ngModelChange)="updateRuleOverride()">
         </DIV>
     </DIV>
 </form>

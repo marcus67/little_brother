@@ -154,6 +154,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         if self._is_master:
             self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
+            dependency_injection.container[api_view_handler.ApiViewHandler] = self._api_view_handler
 
             if not self._config.use_csrf:
                 self._csrf.exempt(self._api_view_handler.blueprint)

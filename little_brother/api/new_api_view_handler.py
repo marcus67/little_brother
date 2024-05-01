@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 # Copyright (C) 2019-2024  Marcus Rickert
 #
@@ -17,7 +18,7 @@
 
 import flask
 import jsonpickle
-from flask import jsonify
+from flask import jsonify, Request
 
 from little_brother import constants
 from little_brother import dependency_injection
@@ -28,8 +29,12 @@ from little_brother.persistence.persistent_user import User
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler_manager import ProcessHandlerManager
+from little_brother.rule_override import RuleOverride
+from little_brother.transport.rule_set_to import RuleSetTO
 from python_base_app import tools
 from python_base_app.angular_auth_view_handler import AngularAuthViewHandler
+from python_base_app.base_user_handler import BaseUserHandler
+from python_base_app.tools import objectify_dict, get_time_from_iso_8601
 from some_flask_helpers import blueprint_adapter
 
 MIME_TYPE_APPLICATION_JSON = 'application/json'
@@ -58,6 +63,7 @@ class NewApiViewHandler(BaseViewHandler):
         self._languages = p_languages
         self._user_entity_manager: UserEntityManager | None = None
         self._process_handler_manager = None
+        self._user_handler: BaseUserHandler | None = None 
 
     @property
     def user_entity_manager(self) -> UserEntityManager:
@@ -65,6 +71,13 @@ class NewApiViewHandler(BaseViewHandler):
         if self._user_entity_manager is None:
             self._user_entity_manager = dependency_injection.container[UserEntityManager]
         return self._user_entity_manager
+
+    @property
+    def user_handler(self) -> BaseUserHandler:
+
+        if self._user_handler is None:
+            self._user_handler = dependency_injection.container[BaseUserHandler]
+        return self._user_handler
 
     @property
     def blueprint(self):
@@ -111,7 +124,13 @@ class NewApiViewHandler(BaseViewHandler):
         if isinstance(p_message, dict):
             return jsonify(p_message), p_status_code
 
-        return jsonify({constants.JSON_ERROR: p_message})
+        return jsonify({
+            constants.JSON_STATUS: "error",
+            constants.JSON_ERROR: p_message
+        })
+
+    def api_ok(self):
+        return jsonify({constants.JSON_STATUS: "OK"}), 200
 
     def missing_parameter_error(self, p_parameter_name):
         msg_format = _("parameter '{parameter_name}' not specified")
@@ -131,15 +150,14 @@ class NewApiViewHandler(BaseViewHandler):
                               p_status_code=constants.HTTP_STATUS_CODE_UNAUTHORIZED)
 
     def internal_server_error(self, p_exception: Exception):
-        return self.api_error(p_message=f"internal server error: {str(p_exception)}",
+        return self.api_error(p_message=f"internal server error: {p_exception!s}",
                               p_status_code=constants.HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR)
 
     def destroy(self):
         API_BLUEPRINT_ADAPTER.unassign_view_handler_instances()
 
-
-#  TODO: Remove copy in api_view_handler!
-    def extend_time_extension_for_session(self, p_session_context, p_user_name, p_delta,
+    #  TODO: Remove copy in api_view_handler!
+    def extend_time_extension_for_session(self, p_session_context, p_user_name, p_delta_extension,
                                           p_reference_time=None):
 
         process_infos = self.process_handler_manager.get_process_infos()
@@ -155,7 +173,7 @@ class NewApiViewHandler(BaseViewHandler):
 
         self.time_extension_entity_manager.set_time_extension_for_session(
             p_session_context=p_session_context, p_user_name=p_user_name,
-            p_session_active=session_active, p_delta=p_delta,
+            p_session_active=session_active, p_delta_extension=p_delta_extension,
             p_session_end_datetime=session_end_datetime,
             p_reference_time=p_reference_time)
 
@@ -166,10 +184,11 @@ class NewApiViewHandler(BaseViewHandler):
                                                                p_service=self.simplify_url(request.url_rule),
                                                                p_duration=duration)):
             try:
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 template_dict = {}
                 self.add_general_template_data(p_dict=template_dict, p_add_authentication_data=False)
@@ -188,10 +207,11 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
                     process_infos = self.processs_handler_manager.get_process_infos()
@@ -202,7 +222,7 @@ class NewApiViewHandler(BaseViewHandler):
                 return jsonpickle.encode(user_status_tos), 200
 
         except Exception as e:
-            return jsonify(str(e)), 503
+            return self.internal_server_error(p_exception=e)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_STATUS_DETAILS, methods=["GET"])
     def api_status_detail(self, user_id):
@@ -211,10 +231,11 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
                     user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
@@ -231,7 +252,7 @@ class NewApiViewHandler(BaseViewHandler):
                 return jsonpickle.encode(user_status_to), 200
 
         except Exception as e:
-            return jsonify(e), 503
+            return self.internal_server_error(p_exception=e)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN, methods=["GET"])
     def api_admin(self):
@@ -243,7 +264,7 @@ class NewApiViewHandler(BaseViewHandler):
                 result, http_status = self.auth_view_handler.check_authorization(p_request=request)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
                     process_infos = self.processs_handler_manager.get_process_infos()
@@ -254,7 +275,7 @@ class NewApiViewHandler(BaseViewHandler):
                 return jsonpickle.encode(user_status_tos), 200
 
         except Exception as e:
-            return jsonify(e), 503
+            return self.internal_server_error(p_exception=e)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_LIST_TIME_EXTENSIONS, methods=["GET"])
     def api_admin_time_extensions(self, user_id):
@@ -263,10 +284,11 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
                     user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
@@ -281,7 +303,7 @@ class NewApiViewHandler(BaseViewHandler):
                 return jsonpickle.encode(time_extension_periods), 200
 
         except Exception as e:
-            return jsonify(str(e)), 503
+            return self.internal_server_error(p_exception=e)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_DETAILS, methods=["GET"])
     def api_admin_detail(self, user_id):
@@ -293,7 +315,7 @@ class NewApiViewHandler(BaseViewHandler):
                 result, http_status = self.auth_view_handler.check_authorization(p_request=request)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
                     user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
@@ -310,7 +332,7 @@ class NewApiViewHandler(BaseViewHandler):
                 return jsonpickle.encode(user_status_to), 200
 
         except Exception as e:
-            return jsonify(str(e)), 503
+            return self.internal_server_error(p_exception=e)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_CONTROL, methods=["GET"])
     def api_control(self):
@@ -319,20 +341,21 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
-                    return jsonify(result), http_status
+                    return self.api_error(p_message=result, p_status_code=http_status)
 
                 control_to = self.admin_data_handler.get_control_transfer_object()
 
                 return jsonpickle.encode(control_to, unpicklable=False), 200
 
         except Exception as e:
-            return jsonify(str(e)), 503
+            return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_ADD_TIME_EXTENSION, methods=["POST"])
-    def api_add_admin_time_extension(self, user_id, extension_in_minutes):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_EXTEND_TIME_EXTENSION, methods=["POST"])
+    def api_admin_extend_time_extension(self, user_id, delta_time_extension_in_minutes):
         request = flask.request
 
         try:
@@ -350,19 +373,68 @@ class NewApiViewHandler(BaseViewHandler):
 
                     if user is None:
                         return self.user_id_not_exist_error(p_user_id=user_id)
-
+                    
                     try:
-                        extension: int = int(extension_in_minutes)
+                        delta_extension: int = int(delta_time_extension_in_minutes)
 
                     except ValueError:
                         return self.invalid_parameter_format_error(
-                            p_parameter_name="extension_in_minutes", p_value=extension_in_minutes)
+                            p_parameter_name="delta_time_extension_in_minutes", p_value=delta_time_extension_in_minutes)
 
                     self.extend_time_extension_for_session(
                         p_session_context=session_context, p_user_name=user.username,
-                        p_delta=extension)
+                        p_delta_extension=delta_extension)
 
-                return jsonify("OK"), 200
+                return self.api_ok()
 
         except Exception as e:
-            return self.api_error(p_status_code=503, p_message=str(e))
+            return self.internal_server_error(p_exception=e)
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE, methods=["POST"])
+    def api_admin_update_rule_override(self, user_id, reference_date):
+        request = flask.request
+
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return self.api_error(p_message=result, p_status_code=http_status)
+
+                try:
+                    date : datetime.date = datetime.date.fromisoformat(reference_date)
+
+                except ValueError:
+                    self.invalid_parameter_format_error(p_parameter_name="reference_date", p_value=reference_date)
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+
+                    if user is None:
+                        return self.user_id_not_exist_error(p_user_id=user_id)
+
+                    override_to: RuleSetTO = objectify_dict(request.json, RuleSetTO,
+                                              p_attribute_readers={
+                                                  "min_time_of_day": tools.get_string_as_time,
+                                                  "max_time_of_day": tools.get_string_as_time,
+                                              })
+                    override : RuleOverride = RuleOverride(
+                        p_reference_date=date,
+                        p_username=user.username,
+                        p_min_time_of_day=get_time_from_iso_8601(override_to.min_time_of_day_in_iso_8601),
+                        p_max_time_of_day=get_time_from_iso_8601(override_to.max_time_of_day_in_iso_8601),
+                        p_max_time_per_day=override_to.max_time_per_day_in_seconds,
+                        p_max_activity_duration=override_to.max_activity_duration_in_seconds,
+                        p_min_break=override_to.min_break_in_seconds,
+                        p_free_play=override_to.free_play
+                    )
+
+                    self.admin_data_handler.update_rule_override(override)
+
+                return self.api_ok()
+
+        except Exception as e:
+            return self.internal_server_error(p_exception=e)

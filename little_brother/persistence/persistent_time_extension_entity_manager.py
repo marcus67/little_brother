@@ -76,7 +76,7 @@ class TimeExtensionEntityManager(BaseEntityManager):
                 time_extension.end_datetime = new_end_datetime
                 session.commit()
 
-    def set_time_extension_for_session(self, p_session_context, p_user_name, p_delta, p_session_active,
+    def set_time_extension_for_session(self, p_session_context, p_user_name, p_delta_extension, p_session_active,
                                        p_session_end_datetime, p_reference_time=None):
 
         if p_reference_time is None:
@@ -105,5 +105,5 @@ class TimeExtensionEntityManager(BaseEntityManager):
             p_username=p_user_name,
             p_reference_datetime=p_reference_time,
             p_start_datetime=start_datetime,
-            p_time_delta=p_delta
+            p_time_delta=p_delta_extension
         )

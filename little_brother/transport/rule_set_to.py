@@ -18,12 +18,12 @@
 class RuleSetTO:
 
     def __init__(self,
-                 p_min_time_of_day_in_iso_8601: str,
-                 p_max_time_of_day_in_iso_8601: str,
-                 p_max_time_per_day_in_seconds: int,
-                 p_min_break_in_seconds: int,
-                 p_max_activity_duration_in_seconds: int,
-                 p_free_play: bool,
+                 p_min_time_of_day_in_iso_8601: str = None,
+                 p_max_time_of_day_in_iso_8601: str = None,
+                 p_max_time_per_day_in_seconds: int = None,
+                 p_min_break_in_seconds: int = None,
+                 p_max_activity_duration_in_seconds: int = None,
+                 p_free_play: bool = None,
                  p_label: str = None):
 
         self.label = p_label

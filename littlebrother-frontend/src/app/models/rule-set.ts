@@ -2,6 +2,7 @@ import { get_duration_as_string, get_date_from_iso_string, get_date_as_string } 
 
 export class RuleSet {
 
+    reference_date_in_iso_8601?: string
     label?: string
     min_time_of_day_in_iso_8601?: string
     max_time_of_day_in_iso_8601?: string

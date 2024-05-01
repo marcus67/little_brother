@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ def get_key(p_username, p_reference_date):
 
 class RuleOverride(object):
 
-    def __init__(self, p_username, p_reference_date, p_max_time_per_day=None,
+    def __init__(self, p_username=None, p_reference_date=None, p_max_time_per_day=None,
                  p_min_time_of_day=None, p_max_time_of_day=None,
                  p_min_break=None, p_free_play=False, p_max_activity_duration=None):
         self.username = p_username
@@ -39,6 +39,8 @@ class RuleOverride(object):
         self.max_activity_duration = p_max_activity_duration
 
     def get_key(self):
+        if self.username is None or self.reference_date is None:
+            raise ValueError(f"{self!s}: get_key(): username or reference_date is missing!")
         return get_key(p_username=self.username, p_reference_date=self.reference_date)
 
     def __str__(self):

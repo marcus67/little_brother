@@ -8,6 +8,7 @@ import { UserStatus } from '../../models/user-status'
 import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
+import { RuleSet } from 'src/app/models/rule-set';
 
 declare var jQuery: any; 
 
@@ -147,4 +148,5 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
       }
     )
   };
+
 }

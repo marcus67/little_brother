@@ -314,7 +314,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
         self.time_extension_entity_manager.set_time_extension_for_session(
             p_session_context=p_session_context, p_user_name=p_user_name,
-            p_session_active=session_active, p_delta=p_delta,
+            p_session_active=session_active, p_delta_extension=p_delta,
             p_session_end_datetime=session_end_datetime,
             p_reference_time=p_reference_time)
 
