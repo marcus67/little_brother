@@ -19,6 +19,7 @@ import flask
 
 from little_brother import dependency_injection, constants, settings, git
 from little_brother.admin_data_handler import AdminDataHandler
+from little_brother.api.api_view_handler import ApiViewHandler
 from little_brother.api.version_checker import VersionChecker, VersionInfo
 from little_brother.app_control import AppControl
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
@@ -58,6 +59,7 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
         self._process_handler_manager = None
         self._user_manager = None
         self._version_checker = None
+        self._api_view_handler: ApiViewHandler | None = None
 
     @property
     def app_control(self) -> AppControl:
@@ -109,6 +111,14 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
             self._version_checker = dependency_injection.container[VersionChecker]
 
         return self._version_checker
+
+    @property
+    def api_view_handler(self) -> ApiViewHandler:
+
+        if self._api_view_handler is None:
+            self._api_view_handler = dependency_injection.container[ApiViewHandler]
+
+        return self._api_view_handler
 
     @classmethod
     def validate(cls, p_forms):

@@ -74,11 +74,11 @@ API_URL_ADMIN_DETAILS = os.path.join(API_URL, API_REL_URL_ADMIN_DETAILS)
 API_REL_URL_ADMIN_LIST_TIME_EXTENSIONS = "admin-time-extensions/<user_id>"  # with GET
 API_URL_ADMIN_LIST_TIME_EXTENSIONS = os.path.join(API_URL, API_REL_URL_ADMIN_LIST_TIME_EXTENSIONS)
 
-API_REL_URL_ADMIN_ADD_TIME_EXTENSION = "admin-time-extensions/<user_id>/<extension_in_minutes>"  # with POST
-API_URL_ADMIN_ADD_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_ADMIN_ADD_TIME_EXTENSION)
+API_REL_URL_ADMIN_EXTEND_TIME_EXTENSION = "admin-time-extensions/<user_id>/<delta_time_extension_in_minutes>"  # with POST
+API_URL_ADMIN_EXTEND_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_ADMIN_EXTEND_TIME_EXTENSION)
 
-API_REL_URL_ADMIN_DELETE_TIME_EXTENSION = "admin-time-extensions/<user_id>"  # with DELETE
-API_URL_ADMIN_DELETE_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_ADMIN_DELETE_TIME_EXTENSION)
+API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE = "admin-rule-overrides/<user_id>/<reference_date>"  # with DELETE
+API_URL_ADMIN_UPDATE_RULE_OVERRIDE = os.path.join(API_URL, API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE)
 
 API_REL_URL_CONTROL = "control"
 API_URL_CONTROL = os.path.join(API_URL, API_REL_URL_CONTROL)
@@ -101,6 +101,7 @@ JSON_PROCESS_NAME_PATTERN = "process_name_pattern"
 JSON_PROHIBITED_PROCESS_NAME_PATTERN = "prohibited_process_name_pattern"
 JSON_ACTIVE = "active"
 JSON_ACCESS_TOKEN = "secret"
+JSON_STATUS = "status"
 JSON_ERROR = "error"
 JSON_USER_CONFIG = "config:user_config"
 JSON_MAXIMUM_TIME_WITHOUT_SEND = "config:maximum_time_without_send"

@@ -1,5 +1,7 @@
 import {formatDate} from '@angular/common';
 
+const durationRe = /((?<hours>[0-9]+)h)?((?<minutes>[0-9]+)m)?((?<seconds>[0-9]+)s)?/g;
+
 export const get_duration_as_string = (seconds: number | undefined, include_seconds:boolean=false) : any => {
     if (seconds) {
         let hours = Math.trunc(seconds / 3600)
@@ -16,6 +18,33 @@ export const get_duration_as_string = (seconds: number | undefined, include_seco
     }
 }
 
+export const get_duration_in_seconds_from_string = (a_string: string) : number | undefined => {
+  a_string = a_string?.trim()
+
+  if (a_string == "-" || a_string == "")
+    return undefined;
+
+  var result = [...a_string.matchAll(durationRe)];
+
+  if (result && result[0] && result[0].groups) {
+    var duration : number = 0
+
+    if (result[0].groups["hours"])
+      duration += 3600 * +result[0].groups["hours"];
+
+    if (result[0].groups["minutes"])
+      duration += 60 * +result[0].groups["minutes"];
+
+    if (result[0].groups["seconds"])
+      duration += +result[0].groups["seconds"];
+
+    return duration;
+  } else {
+    throw new TypeError("duration must have format [NNh][NNm][NNs]")
+  }
+
+}
+
 export const get_date_as_string = (a_date: Date | undefined, include_date:boolean=true) : any => {
   if (a_date)
     if (include_date)
@@ -24,6 +53,15 @@ export const get_date_as_string = (a_date: Date | undefined, include_date:boolea
       return formatDate(a_date, "HH:mm", "en_US")
   else
     return "-";
+}
+
+export const get_iso_8601_from_time_string = (a_string: string | undefined) : string | undefined => {
+  a_string = a_string?.trim()
+
+  if (a_string == "-")
+    return undefined;
+
+  return "1900-01-01T" + a_string + ":00Z";
 }
 
 export const get_date_from_iso_string = (a_string: string | undefined) : any => {

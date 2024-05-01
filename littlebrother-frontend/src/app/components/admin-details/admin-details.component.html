@@ -30,7 +30,9 @@
       <!-- see https://angular.io/api/core/ng-container -->
       <ng-container *ngFor="let period of timeExtensions">
         <ng-container *ngIf="period == 0">
+          <!-- See https://angular.io/tutorial/tour-of-heroes/toh-pt4#bind-to-the-messageservice -->
           <BUTTON id="time_extension_0"
+            (click)="extendTimeExtension(userId, 0)"
             class="btn btn-time-extension-off" 
             value="time_extension_0"
             title="Deactivate time extension">
@@ -42,8 +44,8 @@
               (click)="extendTimeExtension(userId, period)"
               class="btn btn-time-extension-minus"
               value="time_extension_{{period}}"
-              title="Decrease time extension by {{period}} minutes">
-            <I class="far fa-minus-square"></I> {{ period }}
+              title="Decrease time extension by {{-period}} minutes">
+            <I class="far fa-minus-square"></I> {{ -period }}
           </BUTTON>
         </ng-container>
         <ng-container *ngIf="period > 0">
@@ -104,8 +106,14 @@
                 {{ detail.effective_rule_set?.max_activity_duration_as_string() }}
               </DIV>
               <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.free_play }">
-                {{ detail.effective_rule_set?.free_play }}
-              </DIV>
+                <DIV CLASS="col col-1">
+                  <DIV *ngIf="detail.effective_rule_set?.free_play">
+                    <I class="fas fa-check active"></I>
+                  </DIV>
+                  <DIV *ngIf="! detail.effective_rule_set?.free_play">
+                    <I class="fas fa-times inactive"></I>
+                  </DIV>
+                </DIV>
             </DIV>
           </DIV>
           <DIV id="adminDetailAccordionItem{{i}}" class="accordion-collapse collapse"
@@ -133,10 +141,20 @@
                 {{ detail.rule_set?.max_activity_duration_as_string() }}
               </DIV>
               <DIV CLASS="col col-1">
-                {{ detail.rule_set?.free_play }}
+                <DIV *ngIf="detail.rule_set?.free_play">
+                  <I class="fas fa-check active"></I>
+                </DIV>
+                <DIV *ngIf="! detail.rule_set?.free_play">
+                  <I class="fas fa-times inactive"></I>
+                </DIV>
               </DIV>
             </DIV>
-            <app-admin-details-override [override]="detail.override"></app-admin-details-override>
+            <app-admin-details-override 
+              [adminDetails]="this"
+              [override]="detail.override" 
+              [userId]="userId" 
+              [referenceDateInIso8601]="detail.date_in_iso_8601">
+            </app-admin-details-override>
           </DIV>
         </DIV>
    </DIV>
