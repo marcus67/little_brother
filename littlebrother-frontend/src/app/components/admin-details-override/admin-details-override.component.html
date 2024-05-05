@@ -1,28 +1,60 @@
-<form [formGroup]="adminOverrideForm">
+<form [formGroup]="adminOverrideForm" (ngSubmit)="updateRuleOverride()">
     <DIV CLASS="row bg-warning-subtle" (keyup.enter)="updateRuleOverride()">
         <DIV CLASS="col col-2">
         </DIV>
-        <DIV CLASS="col col-2">
+        <DIV CLASS="col col-1">
         override
         </DIV>
         <DIV CLASS="col col-2">
-            <input id="min_time_of_day" type="text" formControlName="min_time_of_day" size="5">
+            <input id="min_time_of_day" type="text" [formControl]="min_time_of_day" size="5">
+            <div *ngIf="min_time_of_day.errors?.['pattern']">
+                <label class="error-label" for="min_time_of_day">
+                    Time must be given as HH:MM!
+                </label>
+            </div>
         </DIV>
         <DIV CLASS="col col-2">
-            <input id="max_time_of_day" type="text" formControlName="max_time_of_day" size="5">
+            <input id="max_time_of_day" type="text" [formControl]="max_time_of_day" size="5">
+            <div *ngIf="max_time_of_day.errors?.['pattern']">
+                <label class="error-label" for="max_time_of_day">
+                    Time must be given as HH:MM!
+                </label>
+            </div>
         </DIV>
         <DIV CLASS="col col-1">
-            <input id="max_time_per_day" type="text" formControlName="max_time_per_day" size="6">
+            <input id="max_time_per_day" type="text" [formControl]="max_time_per_day" size="6">
+            <div *ngIf="max_time_per_day.errors?.['pattern']">
+                <label class="error-label" for="max_time_per_day">
+                    Duration must be given as NNhNNm!
+                </label>
+            </div>
         </DIV>
         <DIV CLASS="col col-1">
-            <input id="min_break" type="text" formControlName="min_break" size="6">
+            <input id="min_break" type="text" [formControl]="min_break" size="6">
+            <div *ngIf="min_break.errors?.['pattern']">
+                <label class="error-label" for="min_break">
+                    Duration must be given as NNhNNm!
+                </label>
+            </div>
         </DIV>
         <DIV CLASS="col col-1">
-            <input id="max_activity_duration" type="text" formControlName="max_activity_duration" size="6">
+            <input id="max_activity_duration" type="text" [formControl]="max_activity_duration" size="6">
+            <div *ngIf="max_activity_duration.errors?.['pattern']">
+                <label class="error-label" for="max_activity_duration">
+                    Duration must be given as NNhNNm!
+                </label>
+            </div>
         </DIV>
         <DIV CLASS="col col-1">
             <!-- https://angular.io/api/forms/CheckboxControlValueAccessor -->
-            <input id="free_play" type="checkbox" formControlName="free_play" (ngModelChange)="updateRuleOverride()">
+            <input id="free_play" type="checkbox" formControlName="free_play">
+        </DIV>
+        <DIV CLASS="col col-1">
+            <BUTTON 
+                [disabled]="adminOverrideForm.pristine || adminOverrideForm.invalid"
+                id="save" class="btn btn-save" type="submit" name="submit" title="Save overide">
+                <I class="fas fa-save"></I>
+            </BUTTON>
         </DIV>
     </DIV>
 </form>

@@ -7,7 +7,7 @@ import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
 
-declare var jQuery: any; 
+declare var jQuery: any;
 
 // See https://stackoverflow.com/questions/65941994/how-to-save-the-collapse-state-on-reload-bootstrap-5
 
@@ -108,7 +108,7 @@ export class StatusDetailsComponent implements OnInit, OnDestroy, AfterViewCheck
     jQuery(".accordion-collapse").each( (index:number, element:any) => {
       // See https://stackoverflow.com/questions/5898656/check-if-an-element-contains-a-class-in-javascript
       //this.accordionState.set(element.id, element.classList.contains("show"))
-      console.log("Set status of " + element.id + " to " + element.classList.contains("show"));
+      // console.log("Set status of " + element.id + " to " + element.classList.contains("show"));
       localStorage.setItem(element.id, element.classList.contains("show"));
     })
   }

@@ -1,6 +1,8 @@
 import {formatDate} from '@angular/common';
 
 const durationRe = /((?<hours>[0-9]+)h)?((?<minutes>[0-9]+)m)?((?<seconds>[0-9]+)s)?/g;
+export const timeValidationPattern = "^-$|^[012]?[0-9]:[0-5][0-9]$"
+export const timeDurationPattern = "^-$|^([0-9]+h)?([0-9]+m)?$"
 
 export const get_duration_as_string = (seconds: number | undefined, include_seconds:boolean=false) : any => {
     if (seconds) {
@@ -60,6 +62,9 @@ export const get_iso_8601_from_time_string = (a_string: string | undefined) : st
 
   if (a_string == "-")
     return undefined;
+
+  if (a_string?.length == 4)
+    a_string = "0" + a_string;
 
   return "1900-01-01T" + a_string + ":00Z";
 }
