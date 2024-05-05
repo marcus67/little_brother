@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -20,6 +21,7 @@ import { StatusDetailsComponent } from './components/status-details/status-detai
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminDetailsComponent } from './components/admin-details/admin-details.component';
 import { AdminDetailsOverrideComponent } from './components/admin-details-override/admin-details-override.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { AdminDetailsOverrideComponent } from './components/admin-details-overri
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
   ],
   providers: [
     AuthService,

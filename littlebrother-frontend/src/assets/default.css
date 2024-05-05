@@ -1,5 +1,5 @@
 /*
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -29,6 +29,10 @@
   color: red;
 }
 
+input {
+  margin: 0px 0px 2px -3px;
+}
+
 /* mark rule entries overriding the defaults
 */
 
@@ -37,29 +41,35 @@
   color: blue;
 }
 
+.btn {
+  padding: 0px 3px 0px 3px; /* Some padding */
+  margin: 2px 0px 2px 0px;
+}
+
+.btn-save {
+  background-color: lightgray; /* Blue background */
+  color: green; /* Green symbol */
+}
+
 .btn-time-extension-plus {
   background-color: lightgray; /* Blue background */
-  color: green; /* White text */
-  padding: 3px 3px 0px 3px; /* Some padding */
-  margin: 2px 0px 2px 0px;
+  color: green; /* Green symbol */
 }
 
 .btn-time-extension-minus {
   background-color: lightgray; /* Blue background */
-  color: red; /* White text */
-  padding: 3px 3px 0px 3px; /* Some padding */
-  margin: 2px 0px 2px 0px;
+  color: red; /* Red symbol */
 }
 
 .btn-time-extension-off {
   background-color: lightgray; /* Blue background */
-  color: red; /* White text */
-  padding: 3px 6px 3px 6px; /* Some padding */
-  margin: 2px 0px 2px 0px;
-  font-size: small;
+  color: red; /* Red symbol */
+  /* font-size: small; */
 }
 
-
+.error-label {
+  color: #a94442;
+}
 
 /* See https://stackoverflow.com/questions/16344354/how-to-make-blinking-flashing-text-with-css-3 */
 

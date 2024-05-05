@@ -8,9 +8,8 @@ import { UserStatus } from '../../models/user-status'
 import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
-import { RuleSet } from 'src/app/models/rule-set';
 
-declare var jQuery: any; 
+declare var jQuery: any;
 
 // See https://stackoverflow.com/questions/65941994/how-to-save-the-collapse-state-on-reload-bootstrap-5
 
@@ -135,7 +134,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
     jQuery(".accordion-collapse").each( (index:number, element:any) => {
       // See https://stackoverflow.com/questions/5898656/check-if-an-element-contains-a-class-in-javascript
       //this.accordionState.set(element.id, element.classList.contains("show"))
-      console.log("Set status of " + element.id + " to " + element.classList.contains("show"));
+      // console.log("Set status of " + element.id + " to " + element.classList.contains("show"));
       localStorage.setItem(element.id, element.classList.contains("show"));
     })
   }
@@ -144,7 +143,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
     this.userAdminService.extendTimeExtension(userId, deltaTimeExtension).subscribe (
       result => {
         this.getUserStatusDetails();
-        this.getUserAdminTimeExtensions();    
+        this.getUserAdminTimeExtensions();
       }
     )
   };

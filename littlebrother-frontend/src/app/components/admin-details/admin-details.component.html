@@ -70,14 +70,15 @@
   <DIV class="accordion" id="adminDetailAccordion">
       <DIV CLASS="row title-row bg-primary-subtle">
         <DIV CLASS="col col-2 ">Day</DIV>
-        <DIV CLASS="col col-2 ">Context</DIV>
+        <DIV CLASS="col col-1 ">Context</DIV>
         <DIV CLASS="col col-2 ">Min Time of Day</DIV>
         <DIV CLASS="col col-2 ">Max Time of Day</DIV>
         <DIV CLASS="col col-1 ">Time per Day</DIV>
         <DIV CLASS="col col-1 ">Minimum Break</DIV>
         <DIV CLASS="col col-1 ">Max Duration</DIV>
         <DIV CLASS="col col-1 ">Free Play</DIV>
-      </DIV>
+        <DIV CLASS="col col-1"></DIV>
+</DIV>
       <DIV *ngFor="let detail of userAdmin.user_admin_details; index as i" class="accordion-item">
          <DIV class="accordion-header">
             <DIV CLASS="row bg-secondary-subtle">
@@ -87,7 +88,7 @@
                   {{ detail.date_in_long_format() }}
                 </A>
               </DIV>
-              <DIV CLASS="col col-2">
+              <DIV CLASS="col col-1">
                 {{ detail.effective_rule_set?.label }}
               </DIV>
               <DIV CLASS="col col-2" [ngClass]="{'rule-override': detail.override?.min_time_of_day_in_iso_8601 }">
@@ -106,14 +107,15 @@
                 {{ detail.effective_rule_set?.max_activity_duration_as_string() }}
               </DIV>
               <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.free_play }">
-                <DIV CLASS="col col-1">
-                  <DIV *ngIf="detail.effective_rule_set?.free_play">
-                    <I class="fas fa-check active"></I>
-                  </DIV>
-                  <DIV *ngIf="! detail.effective_rule_set?.free_play">
-                    <I class="fas fa-times inactive"></I>
-                  </DIV>
+                <DIV *ngIf="detail.effective_rule_set?.free_play">
+                  <I class="fas fa-check active"></I>
                 </DIV>
+                <DIV *ngIf="! detail.effective_rule_set?.free_play">
+                  <I class="fas fa-times inactive"></I>
+                </DIV>
+              </DIV>
+              <DIV CLASS="col col-1">
+              </DIV>
             </DIV>
           </DIV>
           <DIV id="adminDetailAccordionItem{{i}}" class="accordion-collapse collapse"
@@ -122,7 +124,7 @@
             <DIV CLASS="row bg-warning-subtle">
               <DIV CLASS="col col-2">
               </DIV>
-              <DIV CLASS="col col-2">
+              <DIV CLASS="col col-1">
                 {{ detail.rule_set?.label }}
               </DIV>
               <DIV CLASS="col col-2">
@@ -147,6 +149,8 @@
                 <DIV *ngIf="! detail.rule_set?.free_play">
                   <I class="fas fa-times inactive"></I>
                 </DIV>
+              </DIV>
+              <DIV CLASS="col col-1">
               </DIV>
             </DIV>
             <app-admin-details-override 
