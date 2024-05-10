@@ -29,7 +29,10 @@ export class AdminDetailsOverrideComponent {
       this._override = override;
       this.min_time_of_day = new FormControl(
         this._override?.min_time_of_day_as_string(),
-        Validators.pattern(timeValidationPattern)
+        [
+          Validators.pattern(timeValidationPattern),
+          Validators.required
+        ]
       )
       this.max_time_of_day = new FormControl(
         this._override?.max_time_of_day_as_string(),

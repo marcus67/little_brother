@@ -124,25 +124,25 @@
             <DIV CLASS="row bg-warning-subtle">
               <DIV CLASS="col col-2">
               </DIV>
-              <DIV CLASS="col col-1">
+              <DIV CLASS="col col-1 align-self-center">
                 {{ detail.rule_set?.label }}
               </DIV>
-              <DIV CLASS="col col-2">
+              <DIV CLASS="col col-2 align-self-center">
                 {{ detail.rule_set?.min_time_of_day_as_string() }}
               </DIV>
-              <DIV CLASS="col col-2">
+              <DIV CLASS="col col-2 align-self-center">
                 {{ detail.rule_set?.max_time_of_day_as_string() }}
               </DIV>
-              <DIV CLASS="col col-1">
+              <DIV CLASS="col col-1 align-self-center">
                 {{ detail.rule_set?.max_time_per_day_as_string() }}
               </DIV>
-              <DIV CLASS="col col-1">
+              <DIV CLASS="col col-1 align-self-center">
                 {{ detail.rule_set?.min_break_as_string() }}
               </DIV>
-              <DIV CLASS="col col-1">
+              <DIV CLASS="col col-1 align-self-center">
                 {{ detail.rule_set?.max_activity_duration_as_string() }}
               </DIV>
-              <DIV CLASS="col col-1">
+              <DIV CLASS="col col-1 align-self-center">
                 <DIV *ngIf="detail.rule_set?.free_play">
                   <I class="fas fa-check active"></I>
                 </DIV>
@@ -150,7 +150,7 @@
                   <I class="fas fa-times inactive"></I>
                 </DIV>
               </DIV>
-              <DIV CLASS="col col-1">
+              <DIV CLASS="col col-1 align-self-center">
               </DIV>
             </DIV>
             <app-admin-details-override 
