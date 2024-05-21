@@ -11,7 +11,7 @@ mockito==1.4.0
 packaging==23.2
 prometheus_client==0.17.1
 psutil==5.9.5
-pymysql==1.1.0
+pymysql==1.1.1
 pytest==7.4.2
 python-dateutil==2.8.2
 requests==2.31.0
