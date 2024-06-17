@@ -31,15 +31,17 @@
               "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/helpers.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -47,7 +49,15 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": false,
+                "styles": {
+                  "minify": false,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              }
             },
             "development": {
               "buildOptimizer": false,

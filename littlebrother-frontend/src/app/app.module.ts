@@ -1,7 +1,23 @@
-import { NgModule } from '@angular/core';
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { HttpRefreshRequestInterceptor } from './common/auth.interceptor'
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -22,6 +38,11 @@ import { AdminComponent } from './components/admin/admin.component';
 import { AdminDetailsComponent } from './components/admin-details/admin-details.component';
 import { AdminDetailsOverrideComponent } from './components/admin-details-override/admin-details-override.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfigService } from './services/config.service';
+
+export function initializeApp(configService: ConfigService) {
+  return () => configService.loadConfig();
+}
 
 @NgModule({
   declarations: [
@@ -50,7 +71,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   providers: [
     AuthService,
     EnsureAuthenticated,
-    LoginRedirect
+    LoginRedirect,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRefreshRequestInterceptor,
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [ConfigService],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

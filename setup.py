@@ -110,6 +110,7 @@ extended_setup_params = {
     "analyze": False,
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
+    "angular_app_dir": "littlebrother-frontend",
 }
 
 setup_params.update(little_brother.settings.settings)

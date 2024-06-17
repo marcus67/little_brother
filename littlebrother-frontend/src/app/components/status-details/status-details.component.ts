@@ -26,7 +26,6 @@ function eventListenerHideAccordion (event:any) {
 @Component({
   selector: 'app-status-details',
   templateUrl: './status-details.component.html',
-  styleUrls: ['./status-details.component.css']
 })
 
 

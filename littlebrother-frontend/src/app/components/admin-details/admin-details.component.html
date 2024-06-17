@@ -1,3 +1,20 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
 <app-nav-bar></app-nav-bar>
 <DIV class="container rounded-2 overflow-hidden">
   <DIV CLASS="row title-row bg-primary-subtle">
@@ -9,8 +26,8 @@
     <DIV CLASS="col col-4 col-sm-4 col-md-4 col-lg-4">Time Extensions</DIV>
   </DIV>
   <DIV CLASS="row bg-secondary-subtle">
-    <DIV CLASS="col col-1">{{ userStatus?.full_name }}</DIV>
-    <DIV CLASS="col col-1">{{ userStatus?.context_label }}</DIV>
+    <DIV CLASS="col col-1">{{ userStatus.full_name }}</DIV>
+    <DIV CLASS="col col-1">{{ userStatus.context_label }}</DIV>
     <DIV CLASS="col col-1 col-md-1 col-sm-1 col-lg-2">
       <DIV *ngIf="userStatus?.activity_permitted">
         <I class="fas fa-check active"></I>
@@ -32,31 +49,33 @@
         <ng-container *ngIf="period == 0">
           <!-- See https://angular.io/tutorial/tour-of-heroes/toh-pt4#bind-to-the-messageservice -->
           <BUTTON id="time_extension_0"
-            (click)="extendTimeExtension(userId, 0)"
-            class="btn btn-time-extension-off" 
-            value="time_extension_0"
-            title="Deactivate time extension">
+                  (click)="extendTimeExtension(userId, 0)"
+                  class="btn btn-time-extension-off"
+                  value="time_extension_0"
+                  title="Deactivate time extension">
             <I class="fas fa-power-off"></I>
           </BUTTON>
         </ng-container>
         <ng-container *ngIf="period < 0">
+          <!--suppress XmlDuplicatedId -->
           <BUTTON id="time_extension_{{period}}"
-              (click)="extendTimeExtension(userId, period)"
-              class="btn btn-time-extension-minus"
-              value="time_extension_{{period}}"
-              title="Decrease time extension by {{-period}} minutes">
+                  (click)="extendTimeExtension(userId, period)"
+                  class="btn btn-time-extension-minus"
+                  value="time_extension_{{period}}"
+                  title="Decrease time extension by {{-period}} minutes">
             <I class="far fa-minus-square"></I> {{ -period }}
           </BUTTON>
         </ng-container>
         <ng-container *ngIf="period > 0">
+          <!--suppress XmlDuplicatedId -->
           <BUTTON id="time_extension_{{period}}"
-            (click)="extendTimeExtension(userId, period)"
-            class="btn btn-time-extension-plus"
-            value="time_extension_{{period}}"
-            title="Increase time extension by {{period}} minutes">
+                  (click)="extendTimeExtension(userId, period)"
+                  class="btn btn-time-extension-plus"
+                  value="time_extension_{{period}}"
+                  title="Increase time extension by {{period}} minutes">
             <I class="far fa-plus-square"></I> {{ period }}
           </BUTTON>
-        </ng-container>  
+        </ng-container>
       </ng-container>
     </DIV>
   </DIV>
@@ -68,98 +87,97 @@
 
 <DIV class="container rounded-2 overflow-hidden">
   <DIV class="accordion" id="adminDetailAccordion">
-      <DIV CLASS="row title-row bg-primary-subtle">
-        <DIV CLASS="col col-2 ">Day</DIV>
-        <DIV CLASS="col col-1 ">Context</DIV>
-        <DIV CLASS="col col-2 ">Min Time of Day</DIV>
-        <DIV CLASS="col col-2 ">Max Time of Day</DIV>
-        <DIV CLASS="col col-1 ">Time per Day</DIV>
-        <DIV CLASS="col col-1 ">Minimum Break</DIV>
-        <DIV CLASS="col col-1 ">Max Duration</DIV>
-        <DIV CLASS="col col-1 ">Free Play</DIV>
-        <DIV CLASS="col col-1"></DIV>
-</DIV>
-      <DIV *ngFor="let detail of userAdmin.user_admin_details; index as i" class="accordion-item">
-         <DIV class="accordion-header">
-            <DIV CLASS="row bg-secondary-subtle">
-              <DIV CLASS="col col-2">
-                <A data-bs-toggle="collapse" href="#adminDetailAccordionItem{{i}}" aria-expanded="false" 
-                  attr.aria-controls="adminDetailAccordionItem{{i}}" role="button" title="Open details">
-                  {{ detail.date_in_long_format() }}
-                </A>
-              </DIV>
-              <DIV CLASS="col col-1">
-                {{ detail.effective_rule_set?.label }}
-              </DIV>
-              <DIV CLASS="col col-2" [ngClass]="{'rule-override': detail.override?.min_time_of_day_in_iso_8601 }">
-                {{ detail.effective_rule_set?.min_time_of_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-2" [ngClass]="{'rule-override': detail.override?.max_time_of_day_in_iso_8601 }">
-                {{ detail.effective_rule_set?.max_time_of_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.max_time_per_day_in_seconds }">
-                {{ detail.effective_rule_set?.max_time_per_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.min_break_in_seconds }">
-                {{ detail.effective_rule_set?.min_break_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.max_activity_duration_in_seconds }">
-                {{ detail.effective_rule_set?.max_activity_duration_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.free_play }">
-                <DIV *ngIf="detail.effective_rule_set?.free_play">
-                  <I class="fas fa-check active"></I>
-                </DIV>
-                <DIV *ngIf="! detail.effective_rule_set?.free_play">
-                  <I class="fas fa-times inactive"></I>
-                </DIV>
-              </DIV>
-              <DIV CLASS="col col-1">
-              </DIV>
+    <DIV CLASS="row title-row bg-primary-subtle">
+      <DIV CLASS="col col-2 ">Day</DIV>
+      <DIV CLASS="col col-1 ">Context</DIV>
+      <DIV CLASS="col col-2 ">Min Time of Day</DIV>
+      <DIV CLASS="col col-2 ">Max Time of Day</DIV>
+      <DIV CLASS="col col-1 ">Time per Day</DIV>
+      <DIV CLASS="col col-1 ">Minimum Break</DIV>
+      <DIV CLASS="col col-1 ">Max Duration</DIV>
+      <DIV CLASS="col col-1 ">Free Play</DIV>
+      <DIV CLASS="col col-1"></DIV>
+    </DIV>
+    <DIV *ngFor="let detail of userAdmin.user_admin_details; index as i" class="accordion-item">
+      <DIV class="accordion-header">
+        <DIV CLASS="row bg-secondary-subtle">
+          <DIV CLASS="col col-2">
+            <A data-bs-toggle="collapse" href="#adminDetailAccordionItem{{i}}" aria-expanded="false"
+               attr.aria-controls="adminDetailAccordionItem{{i}}" role="button" title="Open details">
+              {{ detail.date_in_long_format() }}
+            </A>
+          </DIV>
+          <DIV CLASS="col col-1">
+            {{ detail.effective_rule_set?.label }}
+          </DIV>
+          <DIV CLASS="col col-2" [ngClass]="{'rule-override': detail.override?.min_time_of_day_in_iso_8601 }">
+            {{ detail.effective_rule_set?.min_time_of_day_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-2" [ngClass]="{'rule-override': detail.override?.max_time_of_day_in_iso_8601 }">
+            {{ detail.effective_rule_set?.max_time_of_day_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.max_time_per_day_in_seconds }">
+            {{ detail.effective_rule_set?.max_time_per_day_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.min_break_in_seconds }">
+            {{ detail.effective_rule_set?.min_break_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.max_activity_duration_in_seconds }">
+            {{ detail.effective_rule_set?.max_activity_duration_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1" [ngClass]="{'rule-override': detail.override?.free_play }">
+            <DIV *ngIf="detail.effective_rule_set?.free_play">
+              <I class="fas fa-check active"></I>
+            </DIV>
+            <DIV *ngIf="! detail.effective_rule_set?.free_play">
+              <I class="fas fa-times inactive"></I>
             </DIV>
           </DIV>
-          <DIV id="adminDetailAccordionItem{{i}}" class="accordion-collapse collapse"
-               [class.show] = "getAccordionState('adminDetailAccordionItem' + i)"
-               data-bs-parent="#adminDetailAccordion">
-            <DIV CLASS="row bg-warning-subtle">
-              <DIV CLASS="col col-2">
-              </DIV>
-              <DIV CLASS="col col-1 align-self-center">
-                {{ detail.rule_set?.label }}
-              </DIV>
-              <DIV CLASS="col col-2 align-self-center">
-                {{ detail.rule_set?.min_time_of_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-2 align-self-center">
-                {{ detail.rule_set?.max_time_of_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1 align-self-center">
-                {{ detail.rule_set?.max_time_per_day_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1 align-self-center">
-                {{ detail.rule_set?.min_break_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1 align-self-center">
-                {{ detail.rule_set?.max_activity_duration_as_string() }}
-              </DIV>
-              <DIV CLASS="col col-1 align-self-center">
-                <DIV *ngIf="detail.rule_set?.free_play">
-                  <I class="fas fa-check active"></I>
-                </DIV>
-                <DIV *ngIf="! detail.rule_set?.free_play">
-                  <I class="fas fa-times inactive"></I>
-                </DIV>
-              </DIV>
-              <DIV CLASS="col col-1 align-self-center">
-              </DIV>
-            </DIV>
-            <app-admin-details-override 
-              [adminDetails]="this"
-              [override]="detail.override" 
-              [userId]="userId" 
-              [referenceDateInIso8601]="detail.date_in_iso_8601">
-            </app-admin-details-override>
+          <DIV CLASS="col col-1">
           </DIV>
         </DIV>
-   </DIV>
+      </DIV>
+      <DIV id="adminDetailAccordionItem{{i}}" class="accordion-collapse collapse"
+           [class.show]="getAccordionState('adminDetailAccordionItem' + i)"
+           data-bs-parent="#adminDetailAccordion">
+        <DIV CLASS="row bg-success-subtle">
+          <DIV CLASS="col col-2">
+          </DIV>
+          <DIV CLASS="col col-1 align-self-center">
+            {{ detail.rule_set?.label }}
+          </DIV>
+          <DIV CLASS="col col-2 align-self-center">
+            {{ detail.rule_set?.min_time_of_day_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-2 align-self-center">
+            {{ detail.rule_set?.max_time_of_day_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1 align-self-center">
+            {{ detail.rule_set?.max_time_per_day_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1 align-self-center">
+            {{ detail.rule_set?.min_break_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1 align-self-center">
+            {{ detail.rule_set?.max_activity_duration_as_string() }}
+          </DIV>
+          <DIV CLASS="col col-1 align-self-center">
+            <DIV *ngIf="detail.rule_set?.free_play">
+              <I class="fas fa-check active"></I>
+            </DIV>
+            <DIV *ngIf="! detail.rule_set?.free_play">
+              <I class="fas fa-times inactive"></I>
+            </DIV>
+          </DIV>
+          <DIV CLASS="col col-1 align-self-center">
+          </DIV>
+        </DIV>
+        <app-admin-details-override
+          [override]="detail.override"
+          [userId]="userId"
+          [referenceDateInIso8601]="detail.date_in_iso_8601">
+        </app-admin-details-override>
+      </DIV>
+    </DIV>
+  </DIV>
 </DIV>

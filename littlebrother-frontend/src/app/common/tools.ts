@@ -1,10 +1,26 @@
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 import {formatDate} from '@angular/common';
 
 const durationRe = /((?<hours>[0-9]+)h)?((?<minutes>[0-9]+)m)?((?<seconds>[0-9]+)s)?/g;
 export const timeValidationPattern = "^-$|^[012]?[0-9]:[0-5][0-9]$"
 export const timeDurationPattern = "^-$|^([0-9]+h)?([0-9]+m)?$"
 
-export const get_duration_as_string = (seconds: number | undefined, include_seconds:boolean=false) : any => {
+export const get_duration_as_string = (seconds: number | undefined, dash_on_missing=true,
+                                       include_seconds:boolean=false) : any => {
     if (seconds) {
         let hours = Math.trunc(seconds / 3600)
         let minutes = Math.trunc((seconds - hours * 3600) / 60)
@@ -16,7 +32,10 @@ export const get_duration_as_string = (seconds: number | undefined, include_seco
             return hours + "h" + zeroPad(minutes,2) + "m"
         }
     } else {
-        return "-"
+        if (dash_on_missing)
+          return "-"
+        else
+          return undefined
     }
 }
 
@@ -72,7 +91,6 @@ export const get_iso_8601_from_time_string = (a_string: string | undefined) : st
 export const get_date_from_iso_string = (a_string: string | undefined) : any => {
   if (a_string) {
     var b = a_string.split(/\D+/);
-//    return new Date(Date.UTC(+b[0], +b[1], +b[2], +b[3], +b[4], +b[5]));
     return new Date(a_string);
   } else {
     return undefined;

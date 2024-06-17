@@ -13,19 +13,10 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import { TestBed } from '@angular/core/testing';
+import { EventData } from './event-data';
 
-import { ControlService } from './control.service';
-
-describe('ControlService', () => {
-  let service: ControlService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ControlService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+describe('EventData', () => {
+  it('should create an instance', () => {
+    expect(new EventData()).toBeTruthy();
   });
 });

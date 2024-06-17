@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-21  Marcus Rickert
+# Copyright (C) 2019-24  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -17,40 +17,54 @@
 
 import datetime
 import gettext
+import io
 import os
+import re
 from typing import List, Optional
 
 import babel.dates
 import flask
 import flask_babel
 import humanize
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 import little_brother
+import little_brother as little_brother_package
 from little_brother import app_control, dependency_injection
 from little_brother import constants
 from little_brother import entity_forms
 from little_brother.api import api_view_handler
 from little_brother.api.new_api_view_handler import NewApiViewHandler
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.settings import extended_settings
 from little_brother.token_handler import TokenHandler, SECTION_NAME as TOKEN_HANDLER_SECTION_NAME
 from little_brother.web.about_view_handler import AboutViewHandler
 from little_brother.web.admin_view_handler import AdminViewHandler
+from little_brother.web.angular_view_handler import AngularViewHandler
 from little_brother.web.devices_view_handler import DevicesViewHandler
 from little_brother.web.login_view_handler import LoginViewHandler
 from little_brother.web.status_view_handler import StatusViewHandler
 from little_brother.web.topology_view_handler import TopologyViewHandler
 from little_brother.web.users_view_handler import UsersViewHandler
+from python_base_app import angular_auth_view_handler
 from python_base_app import base_web_server
 from python_base_app import locale_helper
 from python_base_app import tools
-from python_base_app import angular_auth_view_handler
 from python_base_app.angular_auth_view_handler import ANGULAR_BASE_URL
 from python_base_app.base_app import RecurringTask
 from python_base_app.configuration import ConfigurationException
 
 SECTION_NAME = "StatusServer"
 
-_ = lambda x: x
+ANGULAR_CONFIG_TEMPLATE_FILE = "angular-config.template.json"
+ANGULAR_CONFIG_FILE = "assets/angular-config.json"
+ANGULAR_HTML_INDEX_FILE = "index.html"
+
+SETTING_ANGULAR_DEPLOYMENT_DIRECTORY = "angular_deployment_dest_directory"
+
+
+def _(x):
+    return x
 
 
 class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
@@ -67,6 +81,10 @@ class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
         self.simple_date_format = "%d.%m.%Y"
         self.classic_gui_active = True
         self.angular_gui_active = False
+
+        self.angular_api_base_url = ANGULAR_BASE_URL
+        self.angular_gui_base_url = ""
+        self.angular_gui_rel_static_folder = "angular"
 
 
 class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebServer):
@@ -85,12 +103,11 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._api_view_handler = None
         self._login_view_handler = None
         self._new_api_view_handler = None
-        self._token_handler : Optional[TokenHandler] = None
+        self._token_handler: Optional[TokenHandler] = None
 
-        my_config = p_configs[SECTION_NAME]
+        my_config: StatusServerConfigModel = p_configs[SECTION_NAME]
 
-        if my_config.angular_gui_active:
-            login_view = None
+        login_view = None
 
         if my_config.classic_gui_active:
             self._login_view_handler = LoginViewHandler(p_package=little_brother, p_languages=p_languages)
@@ -115,7 +132,8 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         if self._config.angular_gui_active:
             self._logger.info("Activating Angular GUI support...")
-            self._token_handler = TokenHandler(p_config=p_configs[TOKEN_HANDLER_SECTION_NAME], p_secret_key=self._app.config.get('SECRET_KEY'))
+            self._token_handler = TokenHandler(p_config=p_configs[TOKEN_HANDLER_SECTION_NAME],
+                                               p_secret_key=self._app.config.get('SECRET_KEY'))
 
         if self._config.classic_gui_active:
             self._logger.info("Activating classic GUI support...")
@@ -162,16 +180,25 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             if self._config.angular_gui_active:
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
                     p_app=self._app, p_user_handler=p_user_handler,
-                    p_url_prefix=self._config.base_url + ANGULAR_BASE_URL,
+                    p_url_prefix=self._config.angular_api_base_url,
                     p_token_handler=self._token_handler)
                 dependency_injection.container[angular_auth_view_handler.AngularAuthViewHandler] = \
                     self._angular_auth_view_handler
                 self._new_api_view_handler = NewApiViewHandler(p_package=little_brother, p_languages=p_languages)
-                self._new_api_view_handler.register(p_app=self._app,
-                                                    p_url_prefix=self._config.base_url + ANGULAR_BASE_URL)
+                self._new_api_view_handler.register(p_app=self._app, p_url_prefix=self._config.angular_api_base_url)
+
+                self._new_api_angular_view_handler = AngularViewHandler(
+                    p_package=little_brother, p_rel_static_folder=self._config.angular_gui_rel_static_folder)
+                self._new_api_angular_view_handler.register(
+                    p_app=self._app, p_url_prefix=self._config.angular_gui_base_url)
+
+                self.patch_angular_index_html()
+                self.create_angular_config_file()
+
                 if not self._config.use_csrf:
                     self._csrf.exempt(self._angular_auth_view_handler.blueprint)
                     self._csrf.exempt(self._new_api_view_handler.blueprint)
+                    self._csrf.exempt(self._new_api_angular_view_handler.blueprint)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time
@@ -187,7 +214,6 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         self._app.jinja_env.filters['_base'] = self._base_gettext
 
         self._babel = flask_babel.Babel()
-        #self._babel.localeselector(self._locale_helper.locale_selector)
         self._babel.init_app(app=self._app, locale_selector=self._locale_helper.locale_selector)
         gettext.bindtextdomain("messages", "little_brother/translations")
 
@@ -301,3 +327,59 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             tasks.append(self._token_handler.get_recurring_task())
 
         return tasks
+
+    def patch_angular_index_html(self):
+
+        my_dir = os.path.dirname(little_brother_package.__file__)
+        index_filename = os.path.join(my_dir, extended_settings[SETTING_ANGULAR_DEPLOYMENT_DIRECTORY],
+                                      ANGULAR_HTML_INDEX_FILE)
+
+        if not os.path.exists(index_filename):
+            raise ConfigurationException(f"Cannot find Angular index.html at {index_filename}!")
+
+        with open(index_filename) as f:
+            content = f.read()
+
+        regex = re.compile(r'^(.*<base href=")([^"]*)(".+)$', re.DOTALL)
+        match = regex.match(content)
+
+        if match is None:
+            raise ConfigurationException(f"Cannot find baseUrl in index.html at {index_filename}!")
+
+        new_content = f"{match.group(1)}{self._config.angular_gui_base_url}/{match.group(3)}"
+
+        with open(index_filename, "w") as f:
+            f.write(new_content)
+
+        self._logger.info(f"Wrote updated Angular index.html to {index_filename}.")
+
+    def create_angular_config_file(self):
+
+        if SETTING_ANGULAR_DEPLOYMENT_DIRECTORY not in extended_settings:
+            raise ConfigurationException(
+                f"key '{SETTING_ANGULAR_DEPLOYMENT_DIRECTORY}' not found in settings.extended_settings!")
+
+        env = Environment(
+            loader=PackageLoader("little_brother"),
+            autoescape=select_autoescape()
+        )
+
+        template = env.get_template(ANGULAR_CONFIG_TEMPLATE_FILE)
+
+        settings = {
+            "base_url": self._config.angular_api_base_url
+        }
+
+        content = template.render(settings=settings)
+
+        my_dir = os.path.dirname(little_brother_package.__file__)
+        config_filename = os.path.join(my_dir, extended_settings[SETTING_ANGULAR_DEPLOYMENT_DIRECTORY],
+                                       ANGULAR_CONFIG_FILE)
+
+        try:
+            with io.open(config_filename, "w") as f:
+                f.write(content)
+            self._logger.info(f"Wrote Angular configuration file to {config_filename}.")
+
+        except IOError as e:
+            raise ConfigurationException(f"Cannot write Angular configuration to file {config_filename}!")

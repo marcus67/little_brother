@@ -1,29 +1,47 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
 <app-helpers></app-helpers>
-  <div class="d-flex min-vh-100 justify-content-center align-items-center">
+<DIV class="d-flex min-vh-100 justify-content-center align-items-center">
+  <!-- Note: the tag "form" must be lowercase! -->
   <form class="form-signin col-12" (ngSubmit)="onLogin()" novalidate>
     <IMG CLASS="mx-auto d-block" SRC="assets/icons/icon-baby-panda-128x128.png">
-    <div class="h2 fw-normal text-center">
+    <DIV class="h2 fw-normal text-center">
       Little Brother
-    </div>
-    <div class="form-group">
-      <div *ngIf="message">
-        <div class="alert alert-warning">
-        {{ message }}
-        </div>
-      </div>
-
-      <div class="form-floating">
+    </DIV>
+    <DIV class="form-group">
+      <DIV *ngIf="message">
+        <DIV class="alert alert-warning">
+          {{ message }}
+        </DIV>
+      </DIV>
+      <DIV class="form-floating">
+        <!-- Note: the tag "input" must be lowercase! -->
         <input type="text" class="form-control" placeholder="Username" [(ngModel)]="user.username"
                name="username" autofocus="" required="" id="username">
-        <label for="username">Username</label>
-      </div>
-      <div class="form-floating">
+        <LABEL for="username">Username</LABEL>
+      </DIV>
+      <DIV class="form-floating">
+        <!-- Note: the tag "input" must be lowercase! -->
         <input type="password" class="form-control" placeholder="Password" [(ngModel)]="user.password"
                name="password" required="" id="password">
-        <label for="password">Password</label>
-      </div>
-
-    </div>
-    <button type="submit" class="btn btn-default btn-lg btn-primary btn-block w-100 py-2">Login</button>
+        <LABEL for="password">Password</LABEL>
+      </DIV>
+    </DIV>
+    <BUTTON type="submit" class="btn btn-default btn-lg btn-primary btn-block w-100 py-2">Login</BUTTON>
   </form>
-</div>
+</DIV>

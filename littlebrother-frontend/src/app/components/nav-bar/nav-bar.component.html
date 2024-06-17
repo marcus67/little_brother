@@ -1,32 +1,51 @@
-<nav class="navbar navbar-expand-md bg-body-tertiary rounded">
-  <div class="container-fluid">
-    <a class="navbar-brand col-lg-2 me-0" href="#">
-      <img alt="Brand" src="assets/icons/icon-baby-panda-128x128.png" WIDTH="24">&nbsp;Little&nbsp;Brother NG
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<NAV class="navbar navbar-expand-md bg-body-tertiary rounded">
+  <DIV class="container-fluid">
+    <A class="navbar-brand col-lg-2 me-0" href="#">
+      <IMG alt="Brand" src="assets/icons/icon-baby-panda-128x128.png" WIDTH="24">&nbsp;Little&nbsp;Brother NG
+    </A>
+    <BUTTON class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-    </button>
+    </BUTTON>
 
-    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+    <DIV class="collapse navbar-collapse" id="navbar-collapse-1">
 
-      <ul class="nav navbar-nav  d-lg-flex col-lg-8">
-        <li class="nav-item"><a class="nav-link active" routerLink="/status">Status</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/admin">Admin</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/users">Users</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/devices">Devices</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/topology">Topology</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/about">About</a></li>
-      </ul>
-      <div class="d-lg-flex col-lg-3 justify-content-lg-end">
+      <UL class="nav navbar-nav  d-lg-flex col-lg-8">
+        <LI class="nav-item"><a class="nav-link active" routerLink="/status">Status</a></LI>
+        <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/admin">Admin</a></LI>
+        <!--
+        <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/users">Users</a></LI>
+        <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/devices">Devices</a></LI>
+        <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/topology">Topology</a></LI>
+        -->
+        <LI class="nav-item"><a class="nav-link" routerLink="/about">About</a></LI>
+      </UL>
+      <DIV class="d-lg-flex col-lg-3 justify-content-lg-end">
       <span class="navbar-text">
         Signed in as <CODE>{{ activeUser }}</CODE>
       </span>
-      </div>
-      <div class="d-lg-flex col-lg-1 justify-content-lg-end">
-        <div (click)="onLogout()" class="btn btn-default" title="Logout">
+      </DIV>
+      <DIV class="d-lg-flex col-lg-1 justify-content-lg-end">
+        <DIV (click)="onLogout()" class="btn btn-default" title="Logout">
           <I class="fas fa-sign-out-alt"></I>
-        </div>
-      </div>
-    </div><!-- /.navbar-collapse -->
-  </div>
-</nav>
+        </DIV>
+      </DIV>
+    </DIV><!-- /.navbar-collapse -->
+  </DIV>
+</NAV>

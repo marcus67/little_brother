@@ -120,6 +120,10 @@ class BaseViewHandler(PersistenceDependencyInjectionMixIn):
 
         return self._api_view_handler
 
+    @property
+    def blueprint(self):
+        return self._blueprint
+
     @classmethod
     def validate(cls, p_forms):
 
