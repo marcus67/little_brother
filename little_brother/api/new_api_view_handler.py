@@ -80,10 +80,6 @@ class NewApiViewHandler(BaseViewHandler):
         return self._user_handler
 
     @property
-    def blueprint(self):
-        return self._blueprint
-
-    @property
     def master_connector(self) -> MasterConnector:
 
         if self._master_connector is None:
@@ -213,6 +209,7 @@ class NewApiViewHandler(BaseViewHandler):
                 if http_status != 200:
                     return self.api_error(p_message=result, p_status_code=http_status)
 
+                # TODO: restrict access to status of logged in user if non-admin!
                 with SessionContext(p_persistence=self.persistence) as session_context:
                     process_infos = self.processs_handler_manager.get_process_infos()
                     user_status_tos = self.admin_data_handler.get_user_status_transfer_objects(

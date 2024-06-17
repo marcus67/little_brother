@@ -7,3 +7,4 @@ build-docker-images.sh
 test-app.sh
 sonarqube.sh
 analyze-app.sh
+build_angular_app.sh

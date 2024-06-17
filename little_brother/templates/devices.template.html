@@ -1,4 +1,5 @@
-{#<!--
+<!DOCTYPE html>
+<!--
 #    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,8 +17,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->#}
-
+-->
 <HTML>
 {% import 'bootstrap_accordion.macros.html' as accordion %}
 {% import 'helper.macros.html' as helper %}
@@ -25,133 +25,140 @@
 {{ helper.locale_font(rel_font_size) }}
 
 <HEAD>
-	<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <META http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
-    <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css"
+          HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap-theme.min.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css"
+          HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/main.css') }}">
+    <LINK REL="stylesheet" TYPE="text/css"
+          HREF="{{ url_for('little_brother.static', filename='contrib/initializr/css/bootstrap.min.css') }}">
     <LINK REL="stylesheet" TYPE="text/css" HREF="{{ url_for('little_brother.static', filename='default.css') }}">
 
     <LINK REL="shortcut icon" TYPE="image/x-icon"
           HREF="{{ url_for('little_brother.static', filename='icons/baby-panda-32x32.ico') }}">
-	
+
     <META name="viewport" content="width=device-width, initial-scale=1">
 
     <TITLE>LittleBrother-{{_('Device Configuration')}}</TITLE>
-    
-  </HEAD>
 
+</HEAD>
+<BODY>
+{{ helper.fontawesome_script() }}
 
-  <BODY>
-    {{ helper.fontawesome_script() }}
+<DIV class="container-fluid">
+    {% include 'navbar.include.html' %}
+    {% include 'version_check.include.html' %}
 
-	<DIV class="container-fluid">
-		{% include 'navbar.include.html' %}
-		{% include 'version_check.include.html' %}
+    <FORM ACTION="{{ url_for('devices.main_view') }}" METHOD="POST" CLASS="form-horizontal">
+        <BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <DIV CLASS="container STANDARD_TABLE">
+            <DIV CLASS="row ALTERNATE2_ROWLEVEL_1 TITLE_ROW">
+                <DIV CLASS="col-xs-2 locale-text">{{_('Device')}}</DIV>
+                <DIV CLASS="col-xs-9 hidden-xs"></DIV>
+                <DIV CLASS="col-xs-1 hidden-xs text-right">
+                    <BUTTON id="add_device" type="submit" name="submit" class="btn" title="{{_('Add device')}}"
+                            value="{{ new_device_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
+                </DIV>
+            </DIV>
+            {% for device in devices %}
+            {% call accordion.begin() %}{{device.html_key}}{% endcall %}
 
-		<FORM ACTION="{{ url_for('devices.main_view') }}" METHOD="POST" CLASS="form-horizontal">
-			<BUTTON type="submit" name="submit" style="visibility: hidden;"></BUTTON>
-			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-			<DIV CLASS="container STANDARD_TABLE">
-				<DIV CLASS="row ALTERNATE2_ROWLEVEL_1 TITLE_ROW">
-					<DIV CLASS="col-xs-2 localetext">{{_('Device')}}</DIV>
-					<DIV CLASS="col-xs-9 hidden-xs"></DIV>
-					<DIV CLASS="col-xs-1 hidden-xs text-right">
-							<BUTTON id="add_device" type="submit" name="submit" class="btn" title="{{_('Add device')}}"
-									value="{{ new_device_submit_value }}"><I class="fas fa-plus"></I></BUTTON>
-					</DIV>
-				</DIV>
-				{% for device in devices %}
-					{% call accordion.begin() %}{{device.html_key}}{% endcall %}
+            <DIV CLASS="row ALTERNATE2_ROWLEVEL_2">
+                <DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-2">
+                    <!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
+                    <!-- {{ _('Edit device details') }} -->
+                    {% call accordion.toggle_begin(tooltip="Edit device details") %}{{device.html_key}}{% endcall %}
+                    {{ device.device_name }}
+                    {{ accordion.toggle_end() }}
+                </DIV>
+                <DIV CLASS="col-xs-6  col-sm-6  col-md-8  col-lg-8 locale-text">
+                    {{ device.summary|format_text_array|safe }}
+                </DIV>
+                <DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right locale-text">
+                    <BUTTON id="{{ device.delete_html_key }}" class="btn"
+                            title="{{_('Remove device from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>
+                    <BUTTON id="save" type="submit" name="submit" class="btn" title="{{_('Save')}}"><I
+                            class="fas fa-save"></I></BUTTON>
+                </DIV>
+            </DIV>
+            {% call accordion.details() %}{{device.html_key}}{% endcall %}
+            <DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+                <DIV CLASS="col-xs-1 "></DIV>
+                <DIV CLASS="col-xs-4  col-md-2  col-lg-2 locale-text">{{_('Name')}}</DIV>
+                <DIV CLASS="col-xs-7  col-md-3  col-lg-3 locale-text">{{_('Host Name')}}</DIV>
+                <!-- line break for xs -->
+                <DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+                <DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+                <DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+                <!-- line break for xs -->
+                <DIV CLASS="col-xs-1  hidden-md hidden-lg  "></DIV>
+                <DIV CLASS="col-xs-4  col-md-2  col-lg-1 locale-text">{{_('Min Activity Duration [s]')}}</DIV>
+                <DIV CLASS="col-xs-3  col-md-2  col-lg-1 locale-text">{{_('Sample Size')}}</DIV>
+                <DIV CLASS="col-xs-4  col-md-2  col-lg-1 locale-text">{{_('Max Active Response Delay [ms]')}}</DIV>
 
-						<DIV CLASS="row ALTERNATE2_ROWLEVEL_2">
-							<DIV CLASS="col-xs-3  col-sm-3  col-md-2  col-lg-2">
-								<!-- The following line will trigger the extraction of the tooltip for Babel. DO NOT REMOVE! -->
-								<!-- {{ _('Edit device details') }} -->
-								{% call accordion.toggle_begin(tooltip="Edit device details") %}{{device.html_key}}{% endcall %}
-								{{ device.device_name }}
-								{{ accordion.toggle_end() }}
-							</DIV>
-							<DIV CLASS="col-xs-6  col-sm-6  col-md-8  col-lg-8 localetext">
-								{{ device.summary|format_text_array|safe }}
-							</DIV>
-							<DIV class="col-xs-3  col-sm-3  col-md-2  col-lg-2 text-right localetext">
-								<BUTTON id="{{ device.delete_html_key }}" class="btn" title="{{_('Remove device from monitoring')}}"><I class="fas fa-trash"></I></BUTTON>
-								<BUTTON id="save" type="submit" name="submit" class="btn" title="{{_('Save')}}"><I class="fas fa-save"></I></BUTTON>
-							</DIV>
-						</DIV>
-					{% call accordion.details() %}{{device.html_key}}{% endcall %}
-				<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-					<DIV CLASS="col-xs-1 "></DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-2 localetext">{{_('Name')}}</DIV>
-					<DIV CLASS="col-xs-7  col-md-3  col-lg-3 localetext">{{_('Host Name')}}</DIV>
-					<!-- line break for xs -->
-					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
-					<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-					<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-					<!-- line break for xs -->
-					<DIV CLASS="col-xs-1  hidden-md hidden-lg  "></DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Min Activity Duration [s]')}}</DIV>
-					<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{_('Sample Size')}}</DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{_('Max Active Response Delay [ms]')}}</DIV>
+                <!-- line break for xs START -->
+                <DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+                <DIV CLASS="col-xs-1                                    hidden-lg SEPERATOR_ROW"></DIV>
+                <DIV CLASS="col-xs-11                                   hidden-lg SEPERATOR_ROW_LINE"></DIV>
+                <!-- line break for xs END -->
 
-					<!-- line break for xs START -->
-					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
-					<DIV CLASS="col-xs-1                                    hidden-lg SEPERATOR_ROW"></DIV>
-					<DIV CLASS="col-xs-11                                   hidden-lg SEPERATOR_ROW_LINE"></DIV>
-					<!-- line break for xs END -->
+                <DIV CLASS="col-xs-1            hidden-lg  "></DIV>
+                <DIV CLASS="col-xs-11           col-lg-3 locale-text">{{_('Blocked URLs')}}</DIV>
+            </DIV>
+            <DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
+                <DIV CLASS="col-xs-1 "></DIV>
+                <DIV CLASS="col-xs-4  col-md-2  col-lg-2 locale-text">{{
+                    helper.render_field(forms[device.device_name].device_name) }}
+                </DIV>
+                <DIV CLASS="col-xs-7  col-md-3  col-lg-3 locale-text">{{
+                    helper.render_field(forms[device.device_name].hostname) }}
+                </DIV>
+                <!-- line break for xs START -->
+                <DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+                <DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
+                <DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
+                <!-- line break for xs END -->
+                <DIV CLASS="col-xs-1 hidden-md hidden-lg  "></DIV>
+                <DIV CLASS="col-xs-4  col-md-2  col-lg-1 locale-text">{{
+                    helper.render_field(forms[device.device_name].min_activity_duration) }}
+                </DIV>
+                <DIV CLASS="col-xs-3  col-md-2  col-lg-1 locale-text">{{
+                    helper.render_field(forms[device.device_name].sample_size) }}
+                </DIV>
+                <DIV CLASS="col-xs-4  col-md-2  col-lg-1 locale-text">{{
+                    helper.render_field(forms[device.device_name].max_active_ping_delay) }}
+                </DIV>
+                <!-- line break for xs START -->
+                <DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
+                <DIV CLASS="col-xs-1                                    hidden-lg SEPERATOR_ROW"></DIV>
+                <DIV CLASS="col-xs-11                                   hidden-lg SEPERATOR_ROW_LINE"></DIV>
+                <!-- line break for xs END -->
+                <DIV CLASS="col-xs-1            hidden-lg  "></DIV>
+                <DIV CLASS="col-xs-11            col-lg-3 locale-text">{{
+                    helper.render_field(forms[device.device_name].blocked_urls, rows=5) }}
+                </DIV>
+            </DIV>
+            {{ accordion.end() }}
+            {% endfor %}
+        </DIV>
 
-					<DIV CLASS="col-xs-1            hidden-lg  "></DIV>
-					<DIV CLASS="col-xs-11           col-lg-3 localetext">{{_('Blocked URLs')}}</DIV>
-				</DIV>
-				<DIV CLASS="row ALTERNATE2_ROWLEVEL_3 TITLE_ROW">
-					<DIV CLASS="col-xs-1 "></DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-2 localetext">{{
-						helper.render_field(forms[device.device_name].device_name) }}
-					</DIV>
-					<DIV CLASS="col-xs-7  col-md-3  col-lg-3 localetext">{{
-						helper.render_field(forms[device.device_name].hostname) }}
-					</DIV>
-					<!-- line break for xs START -->
-					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
-					<DIV CLASS="col-xs-1  hidden-md hidden-lg SEPERATOR_ROW"></DIV>
-					<DIV CLASS="col-xs-11 hidden-md hidden-lg SEPERATOR_ROW_LINE"></DIV>
-					<!-- line break for xs END -->
-					<DIV CLASS="col-xs-1 hidden-md hidden-lg  "></DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
-						helper.render_field(forms[device.device_name].min_activity_duration) }}
-					</DIV>
-					<DIV CLASS="col-xs-3  col-md-2  col-lg-1 localetext">{{
-						helper.render_field(forms[device.device_name].sample_size) }}
-					</DIV>
-					<DIV CLASS="col-xs-4  col-md-2  col-lg-1 localetext">{{
-						helper.render_field(forms[device.device_name].max_active_ping_delay) }}
-					</DIV>
-					<!-- line break for xs START -->
-					<DIV CLASS="clearfix  visible-xs-block visible-sm-block"></DIV>
-					<DIV CLASS="col-xs-1                                    hidden-lg SEPERATOR_ROW"></DIV>
-					<DIV CLASS="col-xs-11                                   hidden-lg SEPERATOR_ROW_LINE"></DIV>
-					<!-- line break for xs END -->
-					<DIV CLASS="col-xs-1            hidden-lg  "></DIV>
-					<DIV CLASS="col-xs-11            col-lg-3 localetext">{{
-						helper.render_field(forms[device.device_name].blocked_urls, rows=5) }}
-					</DIV>
-				</DIV>
-					{{ accordion.end() }}
-				{% endfor %}
-			</DIV>
+        <SCRIPT type="text/javascript"
+                SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
+        <SCRIPT type="text/javascript"
+                SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
+        <SCRIPT type="text/javascript"
+                SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
+        <SCRIPT type="text/javascript"
+                SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
 
-			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/jquery-1.11.2.min.js') }}"></SCRIPT>
-			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/bootstrap.min.js') }}"></SCRIPT>
-			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/initializr/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></SCRIPT>
-			<SCRIPT type="text/javascript" SRC="{{ url_for('little_brother.static', filename='contrib/js-cookie/js-cookie.js') }}"></SCRIPT>
-
-			{% for device in devices %}
-				{{ helper.modal_confirm(device.delete_html_key, _("Do you really want to permanently remove the device from monitoring?"), _("Remove from Monitoring"), _("Cancel")) }}
-				{% call accordion.script() %}{{device.html_key}}{% endcall %}
-			{% endfor %}
-		</FORM>
-	</DIV>
-
-  </BODY>
+        {% for device in devices %}
+        {{ helper.modal_confirm(device.delete_html_key, _("Do you really want to permanently remove the device from
+        monitoring?"), _("Remove from Monitoring"), _("Cancel")) }}
+        {% call accordion.script() %}{{device.html_key}}{% endcall %}
+        {% endfor %}
+    </FORM>
+</DIV>
+</BODY>
 </HTML>

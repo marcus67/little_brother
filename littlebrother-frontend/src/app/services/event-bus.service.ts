@@ -13,19 +13,28 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { EventData } from '../models/event-data';
 
-import { ControlService } from './control.service';
+// See https://www.bezkoder.com/angular-16-refresh-token/
 
-describe('ControlService', () => {
-  let service: ControlService;
+@Injectable({
+  providedIn: 'root'
+})
+export class EventBusService {
+  private subject$ = new Subject<EventData>();
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ControlService);
-  });
+  constructor() { }
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+  emit(event: EventData) {
+    this.subject$.next(event);
+  }
+
+  on(eventName: string, action: any): Subscription {
+    return this.subject$.pipe(
+      filter((e: EventData) => e.name === eventName),
+      map((e: EventData) => e["value"])).subscribe(action);
+  }
+}

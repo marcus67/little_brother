@@ -13,19 +13,14 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import { TestBed } from '@angular/core/testing';
+// See https://www.bezkoder.com/angular-16-refresh-token/
 
-import { ControlService } from './control.service';
+export class EventData {
+  name: string;
+  value: any;
 
-describe('ControlService', () => {
-  let service: ControlService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ControlService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+  constructor(name: string, value: any = undefined) {
+    this.name = name;
+    this.value = value;
+  }
+}

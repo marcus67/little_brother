@@ -1,3 +1,18 @@
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 import { AfterViewChecked, Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserAdminService } from '../../services/user-admin.service'
@@ -8,6 +23,8 @@ import { UserStatus } from '../../models/user-status'
 import { unpickle } from '../../common/unpickle'
 import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
+import { EventBusService } from 'src/app/services/event-bus.service';
+import { EVENT_UPDATE_USER_ADMIN_DETAILS, EVENT_UPDATE_USER_STATUS_DETAILS } from '../../common/events';
 
 declare var jQuery: any;
 
@@ -28,7 +45,6 @@ function eventListenerHideAccordion (event:any) {
 @Component({
   selector: 'app-admin-details',
   templateUrl: './admin-details.component.html',
-  styleUrls: ['./admin-details.component.css'],
 })
 
 
@@ -46,6 +62,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
   constructor(private controlService: ControlService,
               public userAdminService: UserAdminService,
               private userStatusService: UserStatusService,
+              private eventBusServices: EventBusService,
               private route: ActivatedRoute) {
     this.userId = Number(this.route.snapshot.params['user_id']);
   }
@@ -105,7 +122,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
         this.eventHandlersReady = true;
         element.addEventListener("show.bs.collapse", eventListenerShowAccordion);
         element.addEventListener("hide.bs.collapse", eventListenerHideAccordion);
-        console.log("Adding event listeners to " + element.id);
+        // console.log("Adding event listeners to " + element.id);
       });
     }
   }
@@ -115,6 +132,12 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
     this.getUserStatusDetails();
     this.getUserAdminTimeExtensions();
     this.activateRefresh();
+    this.eventBusServices.on(EVENT_UPDATE_USER_ADMIN_DETAILS, (value: any) => {
+      this.getUserAdminDetails();
+    });
+    this.eventBusServices.on(EVENT_UPDATE_USER_STATUS_DETAILS, (value: any) => {
+      this.getUserStatusDetails();
+    })
   }
 
   ngOnDestroy(): void {
@@ -125,7 +148,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
         this.eventHandlersReady = false;
         element.removeEventListener("show.bs.collapse", eventListenerShowAccordion);
         element.removeEventListener("hide.bs.collapse", eventListenerHideAccordion);
-        console.log("Removing event listeners from " + element.id);
+        // console.log("Removing event listeners from " + element.id);
       });
     }
   }
@@ -147,5 +170,4 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
       }
     )
   };
-
 }

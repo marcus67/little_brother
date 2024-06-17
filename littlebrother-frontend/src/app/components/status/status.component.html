@@ -1,58 +1,78 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
 <app-nav-bar></app-nav-bar>
-<div class="container rounded-2 overflow-hidden">
+<DIV class="container rounded-2 overflow-hidden">
   <DIV CLASS="row title-row bg-primary-subtle">
-    <DIV CLASS="col col-2 col-lg-1 localetext">User</DIV>
-    <DIV CLASS="col col-2 col-lg-1 localetext">Context</DIV>
-    <DIV CLASS="col col-2 col-lg-1 localetext">
+    <DIV CLASS="col col-2 col-lg-1 locale-text">User</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">Context</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
       Today's Activity
-      <div *ngIf="hasDowntime; then todayHasDowntime"></div>
-        <ng-template #todayHasDowntime><DIV CLASS="downtime">Downtime</DIV></ng-template>
+      <DIV CLASS="downtime" *ngIf="hasDowntime">Downtime</DIV>
     </DIV>
 
-    <DIV CLASS="col col-2 col-lg-1  localetext">Previous Activity Start Time</DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">Previous Activity End Time</DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">Current Activity Start Time</DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">
+    <DIV CLASS="col col-2 col-lg-1  locale-text">Previous Activity Start Time</DIV>
+    <DIV CLASS="col col-2 col-lg-1  locale-text">Previous Activity End Time</DIV>
+    <DIV CLASS="col col-2 col-lg-1  locale-text">Current Activity Start Time</DIV>
+    <DIV CLASS="col col-2 col-lg-1  locale-text">
       Current Activity Duration
-      <div *ngIf="hasDowntime; then currentActivityHasDowntime"></div>
-        <ng-template #currentActivityHasDowntime><DIV CLASS="downtime">Downtime</DIV></ng-template>
+      <DIV *ngIf="hasDowntime; then currentActivityHasDowntime"></DIV>
+      <ng-template #currentActivityHasDowntime>
+        <DIV CLASS="downtime">Downtime</DIV>
+      </ng-template>
     </DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">Activity permitted</DIV>
-    <DIV CLASS="col col-2 col-lg-4 localetext">Reasons</DIV>
+    <DIV CLASS="col col-2 col-lg-1  locale-text">Activity permitted</DIV>
+    <DIV CLASS="col col-2 col-lg-4 locale-text">Reasons</DIV>
   </DIV>
-  <DIV *ngFor="let entry of userStatus" CLASS="row title-row bg-secondary-subtle" >
-    <DIV CLASS="col col-2 col-lg-1 localetext"><a [routerLink]="['/status', entry.user_id]">{{ entry.full_name }}</a></DIV>
-    <DIV CLASS="col col-2 col-lg-1 localetext">{{ entry.context_label }}</DIV>
-    <DIV CLASS="col col-2 col-lg-1 localetext">
+  <DIV *ngFor="let entry of userStatus" CLASS="row title-row bg-secondary-subtle">
+    <DIV CLASS="col col-2 col-lg-1 locale-text"><a [routerLink]="['/status', entry.user_id]">{{ entry.full_name }}</a>
+    </DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.context_label }}</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
       {{ entry.todays_activity_duration() }} /
-      <div *ngIf="entry.free_play; then freePlay else noFreePlay"></div>
-        <ng-template #freePlay>unlimited</ng-template>
-        <ng-template #noFreePlay>{{ entry.max_time_per_day() }}</ng-template>
-      <div *ngIf="entry.todays_downtime_in_seconds; then downtime"></div>
-        <ng-template #downtime><DIV CLASS="downtime"> {{ entry.todays_downtime() }}</DIV></ng-template>
+      <DIV *ngIf="entry.free_play; then freePlay else noFreePlay"></DIV>
+      <ng-template #freePlay>unlimited</ng-template>
+      <ng-template #noFreePlay>{{ entry.max_time_per_day() }}</ng-template>
+      <DIV CLASS="downtime" *ngIf="entry.todays_downtime_in_seconds"> {{ entry.todays_downtime() }}</DIV>
     </DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">{{ entry.previous_activity_start_time_as_string() }}</DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">{{ entry.previous_activity_end_time_as_string() }}</DIV>
-    <DIV CLASS="col col-2 col-lg-1  localetext">{{ entry.current_activity_start_time_as_string() }}</DIV>
-    <DIV CLASS="col col-2 col-lg-1 localetext">
-      <div [ngClass] = "{'blink': entry.current_activity_duration_in_seconds }">{{ entry.current_activity_duration() }}</div>
-      <div *ngIf="entry.current_activity_downtime_in_seconds; then currentDowntime"></div>
-          <ng-template #currentDowntime><DIV CLASS="downtime"> {{ entry.current_activity_downtime() }}</DIV></ng-template>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.previous_activity_start_time_as_string() }}</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.previous_activity_end_time_as_string() }}</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.current_activity_start_time_as_string() }}</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
+      <DIV [ngClass]="{'blink': entry.current_activity_duration_in_seconds }">{{ entry.current_activity_duration() }}
+      </DIV>
+      <DIV CLASS="downtime" *ngIf="entry.current_activity_downtime_in_seconds"> {{ entry.current_activity_downtime()
+        }}
+      </DIV>
     </DIV>
-    <DIV CLASS="col col-2 col-lg-1 localetext">
-      <div *ngIf="entry.activity_permitted">
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
+      <DIV *ngIf="entry.activity_permitted">
         <I class="fas fa-check active"></I>
-      </div>
-      <div *ngIf="! entry.activity_permitted">
+      </DIV>
+      <DIV *ngIf="! entry.activity_permitted">
         <I class="fas fa-times inactive"></I>
-      </div>
+      </DIV>
     </DIV>
-    <DIV CLASS="col col-2 col-lg-4 localetext">
-      <ul>
-        <li *ngFor="let reason of entry.reasons">
+    <DIV CLASS="col col-2 col-lg-4 locale-text">
+      <UL>
+        <LI *ngFor="let reason of entry.reasons">
           {{ reason }}
-        </li>
-      </ul>
+        </LI>
+      </UL>
     </DIV>
   </DIV>
-</div>
+</DIV>

@@ -1,60 +1,83 @@
-<form [formGroup]="adminOverrideForm" (ngSubmit)="updateRuleOverride()">
-    <DIV CLASS="row bg-warning-subtle" (keyup.enter)="updateRuleOverride()">
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<FORM [formGroup]="adminOverrideForm" (ngSubmit)="updateRuleOverride()">
+    <DIV CLASS="row bg-success-subtle" (keyup.enter)="updateRuleOverride()">
         <DIV CLASS="col col-2">
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
         override
         </DIV>
         <DIV CLASS="col col-2 align-self-center">
+            <!-- Note: the tag "input" must be all lowercase! -->
             <input id="min_time_of_day" type="text" [formControl]="min_time_of_day" size="5">
-            <div *ngIf="min_time_of_day.errors?.['pattern']">
-                <div class="alert alert-danger" role="alert">
+            <DIV *ngIf="min_time_of_day.errors?.['pattern']">
+                <DIV class="alert alert-danger" role="alert">
                     Time must be given as HH:MM!
-                </div>
-            </div>
+                </DIV>
+            </DIV>
         </DIV>
         <DIV CLASS="col col-2 align-self-center">
+            <!-- Note: the tag "input" must be all lowercase! -->
             <input id="max_time_of_day" type="text" [formControl]="max_time_of_day" size="5">
-            <div *ngIf="max_time_of_day.errors?.['pattern']">
-                <div class="alert alert-danger" role="alert">
+            <DIV *ngIf="max_time_of_day.errors?.['pattern']">
+                <DIV class="alert alert-danger" role="alert">
                     Time must be given as HH:MM!
-                </div>
-            </div>
+                </DIV>
+            </DIV>
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
+            <!-- Note: the tag "input" must be all lowercase! -->
             <input id="max_time_per_day" type="text" [formControl]="max_time_per_day" size="6">
-            <div *ngIf="max_time_per_day.errors?.['pattern']">
-                <div class="alert alert-danger" role="alert">
+            <DIV *ngIf="max_time_per_day.errors?.['pattern']">
+                <DIV class="alert alert-danger" role="alert">
                     Duration must be given as NNhNNm!
-                </div>
-            </div>
+                </DIV>
+            </DIV>
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
+            <!-- Note: the tag "input" must be all lowercase! -->
             <input id="min_break" type="text" [formControl]="min_break" size="6">
-            <div *ngIf="min_break.errors?.['pattern']">
-                <div class="alert alert-danger" role="alert">
+            <DIV *ngIf="min_break.errors?.['pattern']">
+                <DIV class="alert alert-danger" role="alert">
                     Duration must be given as NNhNNm!
-                </div>
-            </div>
+                </DIV>
+            </DIV>
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
+            <!-- Note: the tag "input" must be all lowercase! -->
             <input id="max_activity_duration" type="text" [formControl]="max_activity_duration" size="6">
-            <div *ngIf="max_activity_duration.errors?.['pattern']">
-                <div class="alert alert-danger" role="alert">
+            <DIV *ngIf="max_activity_duration.errors?.['pattern']">
+                <DIV class="alert alert-danger" role="alert">
                     Duration must be given as NNhNNm!
-                </div>
-            </div>
+                </DIV>
+            </DIV>
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
+            <!-- Note: the tag "input" must be all lowercase! -->
             <!-- https://angular.io/api/forms/CheckboxControlValueAccessor -->
             <input id="free_play" type="checkbox" formControlName="free_play">
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
-            <BUTTON 
+            <BUTTON
                 [disabled]="adminOverrideForm.pristine || adminOverrideForm.invalid"
-                id="save" class="btn btn-save" type="submit" name="submit" title="Save overide">
+                id="save" class="btn btn-save" type="submit" name="submit" title="Save override">
                 <I class="fas fa-save"></I>
             </BUTTON>
         </DIV>
     </DIV>
-</form>
+</FORM>

@@ -1,16 +1,32 @@
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { RuleSet } from '../../models/rule-set'
 import { UserAdminService } from 'src/app/services/user-admin.service';
 import { get_duration_in_seconds_from_string, get_iso_8601_from_time_string } from 'src/app/common/tools';
-import { AdminDetailsComponent } from '../admin-details/admin-details.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { timeValidationPattern, timeDurationPattern } from 'src/app/common/tools';
+import { EventBusService } from 'src/app/services/event-bus.service';
+import { EventData } from 'src/app/models/event-data';
+import { EVENT_UPDATE_USER_ADMIN_DETAILS, EVENT_UPDATE_USER_STATUS_DETAILS } from '../../common/events';
 
 @Component({
   selector: 'app-admin-details-override',
   templateUrl: './admin-details-override.component.html',
-  styleUrls: ['./admin-details-override.component.css'],
 })
 export class AdminDetailsOverrideComponent {
   _override?: RuleSet = undefined;
@@ -21,7 +37,6 @@ export class AdminDetailsOverrideComponent {
   max_activity_duration: FormControl = new FormControl()
   @Input() userId?: number = undefined;
   @Input() referenceDateInIso8601?: string = undefined;
-  @Input() adminDetails?: AdminDetailsComponent = undefined;
 
   // See https://stackoverflow.com/questions/38571812/how-to-detect-when-an-input-value-changes-in-angular
   @Input() set override(override: RuleSet | undefined) {
@@ -57,7 +72,7 @@ export class AdminDetailsOverrideComponent {
         min_break: this.min_break,
         max_activity_duration: this.max_activity_duration,
         free_play: this._override?.free_play
-      });  
+      });
     }
   }
 
@@ -71,7 +86,8 @@ export class AdminDetailsOverrideComponent {
   constructor(
     private formBuilder: FormBuilder,
     private userAdminService: UserAdminService,
-    private saveMessageSnackBar: MatSnackBar
+    private saveMessageSnackBar: MatSnackBar,
+    private eventBusService: EventBusService
   ) {
   }
 
@@ -79,7 +95,7 @@ export class AdminDetailsOverrideComponent {
     if (this.adminOverrideForm.invalid || this.adminOverrideForm.pristine) {
       console.log("Skipping rule override update since form is pristine or invalid!");
       return;
-    } 
+    }
 
     console.log("Updating rule override for user " + this.userId + " and date " + this.referenceDateInIso8601 + "...");
 
@@ -96,8 +112,9 @@ export class AdminDetailsOverrideComponent {
           if ("error" in result)
             console.log(result.error);
           else {
-            this.adminDetails?.getUserAdminDetails();
-            this.adminDetails?.getUserStatusDetails();
+            this.eventBusService.emit(new EventData(EVENT_UPDATE_USER_ADMIN_DETAILS));
+            this.eventBusService.emit(new EventData(EVENT_UPDATE_USER_STATUS_DETAILS));
+
             // See https://v16.material.angular.io/components/snack-bar/overview
             // See https://www.geeksforgeeks.org/matsnackbar-in-angular-material/
             this.saveMessageSnackBar.open('Override saved', 'OK', {

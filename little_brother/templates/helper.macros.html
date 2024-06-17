@@ -1,4 +1,4 @@
-{#<!--
+<!--
 #    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--->#}
+-->
 
 {% macro render_field(field, read_only=False, rows=None) %}
 {% if field.errors %}
@@ -51,7 +51,7 @@
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for message in messages %}
-<div class="alert alert-warning fade in localetext">
+<div class="alert alert-warning fade in locale-text">
     {{ message|_base }}
         </div>
         {% endfor %}
@@ -61,8 +61,8 @@
 
 {% macro locale_font( rel_font_size ) %}
 <style>
-   .localetext { font-size: {{ rel_font_size }}%; }
-   .nonlocaletext { font-size: {{ rel_font_size|invert }}%; }
+   .locale-text { font-size: {{ rel_font_size }}%; }
+   .non-locale-text { font-size: {{ rel_font_size|invert }}%; }
 </style>
 {% endmacro %}
 

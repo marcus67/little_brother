@@ -15,14 +15,14 @@
 
 import { TestBed } from '@angular/core/testing';
 
-import { ControlService } from './control.service';
+import { EventBusService } from './event-bus.service';
 
-describe('ControlService', () => {
-  let service: ControlService;
+describe('EventBusService', () => {
+  let service: EventBusService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ControlService);
+    service = TestBed.inject(EventBusService);
   });
 
   it('should be created', () => {
