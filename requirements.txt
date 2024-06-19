@@ -17,7 +17,7 @@ python-dateutil==2.8.2
 requests==2.31.0
 secure==0.3.0
 sqlalchemy==2.0.21
-urllib3==2.1.0
+urllib3==2.2.2
 werkzeug==2.3.8
 wtforms==3.0.1
 
