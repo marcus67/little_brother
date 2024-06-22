@@ -38,13 +38,14 @@ setup_params = {
                  'little_brother.api',
                  'little_brother.devices',
                  'little_brother.persistence',
-                 'little_brother.web',
                  'little_brother.test',
                  'little_brother.test.persistence',
                  'little_brother.test.pytests.devices',
                  'little_brother.test.pytests',
                  'little_brother.test.web',
                  'little_brother.test.api',
+                 'little_brother.transport',
+                 'little_brother.web',
                  ],
 
     "include_package_data": True,
@@ -110,7 +111,7 @@ extended_setup_params = {
     "analyze": False,
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
-    "angular_app_dir": "littlebrother-frontend",
+    " ": "littlebrother-frontend",
 }
 
 setup_params.update(little_brother.settings.settings)
