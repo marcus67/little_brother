@@ -19,6 +19,7 @@
 include requirements.txt
 
 include little_brother/templates/*.html
+include little_brother/templates/*.json
 include little_brother/static/icons/*.ico
 include little_brother/static/icons/*.png
 include little_brother/static/*.css
@@ -39,10 +40,15 @@ include little_brother/static/contrib/fontawesome/webfonts/*.svg
 
 # Angular App
 
-include little_brother/static/angular/assets/*.ico
-include little_brother/static/angular/assets/*.js
+include little_brother/static/angular/*.ico
+include little_brother/static/angular/*.js
+include little_brother/static/angular/*.css
+include little_brother/static/angular/index.html
+
+include little_brother/static/angular/assets/*.json
 include little_brother/static/angular/assets/*.css
-include little_brother/static/angular/assets/index.html
+include little_brother/static/angular/assets/*.js
+include little_brother/static/angular/assets/icons/*.png
 
 include little_brother/static/angular/assets/contrib/initializr/css/*.css
 include little_brother/static/angular/assets/contrib/initializr/js/vendor/*.js

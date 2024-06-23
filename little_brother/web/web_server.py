@@ -174,8 +174,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
             dependency_injection.container[api_view_handler.ApiViewHandler] = self._api_view_handler
 
-            if not self._config.use_csrf:
-                self._csrf.exempt(self._api_view_handler.blueprint)
+            self._csrf.exempt(self._api_view_handler.blueprint)
 
             if self._config.angular_gui_active:
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
@@ -195,10 +194,9 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 self.patch_angular_index_html()
                 self.create_angular_config_file()
 
-                if not self._config.use_csrf:
-                    self._csrf.exempt(self._angular_auth_view_handler.blueprint)
-                    self._csrf.exempt(self._new_api_view_handler.blueprint)
-                    self._csrf.exempt(self._new_api_angular_view_handler.blueprint)
+                self._csrf.exempt(self._angular_auth_view_handler.blueprint)
+                self._csrf.exempt(self._new_api_view_handler.blueprint)
+                self._csrf.exempt(self._new_api_angular_view_handler.blueprint)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time
