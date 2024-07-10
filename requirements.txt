@@ -26,3 +26,4 @@ wtforms==3.0.1
 # Changing the version here will probably entail having the change versions elsewhere!
 ##############################################################################################################
 selenium==4.10.0
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
