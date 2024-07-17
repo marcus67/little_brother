@@ -17,3 +17,4 @@ debian
 *.mo
 .scannerwork
 .dev-env-settings.sh
+/scratch/

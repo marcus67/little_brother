@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2020-2021  Marcus Rickert
+# Copyright (C) 2020-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,9 @@ import prometheus_client
 BUILT_IN_METRIC_RESIDENT_MEMORY_BYTES = 'process_resident_memory_bytes'
 BUILT_IN_METRIC_PROCESS_START_TIME_SECONDS = 'process_start_time_seconds'
 BUILT_IN_METRIC_PROCESS_CPU_SECONDS = 'process_cpu_seconds'
+
+# For a description of the attributes of this class and of how the eventing system works
+# see https://github.com/marcus67/little_brother/blob/master/API.md
 
 class ClientStats(object):
     def __init__(self, p_version=None, p_revision=None, p_python_version=None,

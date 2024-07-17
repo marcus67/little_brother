@@ -33,8 +33,9 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_handler import RuleHandler
 from little_brother.user_manager import UserManager
-from python_base_app import log_handling
+from python_base_app import log_handling, configuration
 from python_base_app import tools
+from python_base_app.tools import RepetitiveObjectWriter
 from some_flask_helpers import blueprint_adapter
 
 MIME_TYPE_APPLICATION_JSON = 'application/json'
@@ -45,14 +46,27 @@ API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 # Dummy function to trigger extraction by pybabel...
 _ = lambda x: x
 
+SECTION_NAME = "ApiViewHandler"
+
+class ApiViewHandlerConfigModel(configuration.ConfigModel):
+
+    def __init__(self):
+        super().__init__(p_section_name=SECTION_NAME)
+
+        self.dump_client2server_api = False
+        self.dump_client2server_api_base_filename_pattern = "/tmp/objects/client2server.{index:04d}.{type}.json"
+        self.dump_server2client_api = False
+        self.dump_server2client_api_base_filename_pattern = "/tmp/objects/server2client.{index:04d}.{type}.json"
+
 
 # ToDo: Derive ApiViewHandler from BaseViewHandler!
 class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
-    def __init__(self, p_app):
+    def __init__(self, p_app, p_config: ApiViewHandlerConfigModel):
 
         super().__init__()
 
+        self._config = p_config
         self._appcontrol = None
         self._master_connector = None
         self._event_handler = None
@@ -67,6 +81,17 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                                                            p_view_handler_instance=self)
         API_BLUEPRINT_ADAPTER.check_view_methods()
         p_app.register_blueprint(self._blueprint)
+
+        self._client2server_object_writer = None
+        self._server2client_object_writer = None
+
+        if self._config.dump_client2server_api:
+            self._client2server_object_writer = RepetitiveObjectWriter(
+                p_base_filename_pattern=self._config.dump_client2server_api_base_filename_pattern)
+
+        if self._config.dump_server2client_api:
+            self._server2client_object_writer = RepetitiveObjectWriter(
+                p_base_filename_pattern=self._config.dump_server2client_api_base_filename_pattern)
 
     @property
     def blueprint(self):
@@ -174,11 +199,17 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
             if len(event_info) > 2:
                 # new format: 3 entries including client statistics
+                if self._client2server_object_writer:
+                    self._client2server_object_writer.write_object(p_object=data, p_object_type="events_new")
+
                 (hostname, json_events, json_client_stats) = event_info
                 client_stats = self.app_control.receive_client_stats(p_json_data=json_client_stats)
 
             else:
                 # old format: 2 entries without client statistics
+                if self._client2server_object_writer:
+                    self._client2server_object_writer.write_object(p_object=data, p_object_type="events_old")
+
                 (hostname, json_events) = event_info
 
             msg = "Received {count} events from host '{hostname}'"
@@ -192,7 +223,12 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
             msg = "Sending {count} events back to host '{hostname}'"
             self._logger.debug(msg.format(count=len(return_events), hostname=hostname))
 
-            return flask.Response(json.dumps(return_events, cls=tools.ObjectEncoder),
+            response = json.dumps(return_events, cls=tools.ObjectEncoder)
+
+            if self._server2client_object_writer:
+                self._server2client_object_writer.write_object(p_object=response, p_object_type="events_response")
+
+            return flask.Response(response,
                                   status=constants.HTTP_STATUS_CODE_OK,
                                   mimetype=MIME_TYPE_APPLICATION_JSON)
 

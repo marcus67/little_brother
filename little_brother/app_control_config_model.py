@@ -60,7 +60,6 @@ class AppControlConfigModel(configuration.ConfigModel):
         self.kill_process_delay = DEFAULT_KILL_PROCESS_DELAY
         self.time_extension_periods = DEFAULT_TIME_EXTENSION_PERIODS
         self.update_channel = DEFAULT_UPDATE_CHANNEL
-
         self._time_extension_periods_list = None
 
     @property

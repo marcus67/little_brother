@@ -21,6 +21,7 @@ from little_brother import constants, user_status
 from python_base_app import base_rest_api_access
 from python_base_app import exceptions
 from python_base_app import tools
+from python_base_app.tools import RepetitiveObjectWriter
 
 SECTION_NAME = "MasterConnector"
 
@@ -39,6 +40,7 @@ class MasterConnector(base_rest_api_access.BaseRestAPIAccess):
             p_config=p_config,
             p_base_api_url=constants.API_URL,
             p_section_name=SECTION_NAME)
+
 
     def receive_events(self, p_json_data):
 

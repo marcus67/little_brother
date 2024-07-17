@@ -4,6 +4,11 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.1 Revision 200
+* Add Angular frontend
+* Add debug dump for `ApiViewHandler`
+* Add documentation for API calls
+
 ## Version 0.4.32 Revision 139 (October 12th, 2023)
 * Bump `some_flask_helpers` to 0.2.4
 * Bump `python_base_app` to 0.2.49

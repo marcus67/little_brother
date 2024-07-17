@@ -31,6 +31,7 @@ from little_brother import login_mapping
 from little_brother import rule_handler
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
+from little_brother.api.api_view_handler import ApiViewHandlerConfigModel
 from little_brother.api.master_connector import MasterConnector, MasterConnectorConfigModel, \
     SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
 from little_brother.api.version_checker import VersionChecker
@@ -162,6 +163,9 @@ class App(base_app.BaseApp):
 
         prometheus_client_section = PrometheusClientConfigModel()
         p_configuration.add_section(prometheus_client_section)
+
+        api_view_handler_section = ApiViewHandlerConfigModel()
+        p_configuration.add_section(api_view_handler_section)
 
         self.app_config = AppConfigModel()
         p_configuration.add_section(self.app_config)

@@ -171,7 +171,8 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             self._base_gettext = lambda text: text
 
         if self._is_master:
-            self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app)
+            self._api_view_handler = api_view_handler.ApiViewHandler(p_app=self._app,
+                                                                     p_config=p_configs[api_view_handler.SECTION_NAME])
             dependency_injection.container[api_view_handler.ApiViewHandler] = self._api_view_handler
 
             self._csrf.exempt(self._api_view_handler.blueprint)
