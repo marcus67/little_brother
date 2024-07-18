@@ -15,6 +15,9 @@ server using the REST API of the server.
 Each message from the client to the server has the attributes `secret`, `hostname`, an array of administration events
 (class [`AdminEvent`](#administration-event)), and one instance of the class [`ClientStats`](#client-statistics). 
 
+The server answers by sending 0 to n admin events back. 
+See [Server to Client Communication](#server-to-client-responses).
+
 ### Standard Client to Server Message Without Events
 
 The array of admin events can be empty, so the simplest message is as follows.
@@ -103,20 +106,22 @@ a variety of purposes and hence comprises a union of attributes only some of whi
 ### Event Types
 
 The following table shows all available event types. The types are specific for the direction of the communication.
-See column *Minimum* for the combination of events which need to be implemented on the client side to provide a minimal
+See column *Minimal* for the combination of events which need to be implemented on the client side to provide a minimal
 client functionality.
 
 | Type                                                       | Direction     | Minimal | Description                                                                                                                               |
 |------------------------------------------------------------|---------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| `PROCESS_START`                                            | both          | *       | Announce that a new/historic process matching the pattern `Login Process Name Pattern` (in the user configuration dialog) has been found. |
-| `PROHIBITED_PROCESS`                                       | client2server |         | Announce that a new process matching the pattern `Prohibited Process Name Pattern` (in the user configuration dialog) has been found.     |
-| `PROCESS_END`                                              | client2server | *       | Announce that a process (which had been announced previously using `PROCESS_START` or `PROHIBITED_PROCESS` has terminated.                |
-| `PROCESS_DOWNTIME`                                         | client2server |         | Announce that the client has had some downtime (e.g. it had been put into hibernation mode and as just recovered from it).                |
-| `START_CLIENT`                                             | client2server |         | Announce to the server that a client is (re-)starting.                                                                                    |
-| `START_MASTER`                                             | server2client |         | This event is sent to all new clients exactly once after sending their first message to the server.                                       |
-| `KILL_PROCESS`                                             | server2client | *       | Prompt the client to kill a specific process given by its PID.                                                                            |
-| `UPDATE_CONFIG`                                            | server2client | *       | Communicate to the client that the configuration has changed.                                                                             |
-| [`UPDATE_LOGIN_MAPPING`](#event-type-update-login-mapping) | server2client | *       | Communicate to the client that login mapping has changed.                                                                                 |
+| [`PROCESS_START`](#event-type-process_start)               | both          | *       | Announce that a new/historic process matching the pattern `Login Process Name Pattern` (in the user configuration dialog) has been found. |
+| [`PROHIBITED_PROCESS`](#event-type-prohibited_process)     | client2server |         | Announce that a new process matching the pattern `Prohibited Process Name Pattern` (in the user configuration dialog) has been found.     |
+| [`PROCESS_END`](#event-type-process_end)                   | client2server | *       | Announce that a process (which had been announced previously using `PROCESS_START` or `PROHIBITED_PROCESS` has terminated.                |
+| [`PROCESS_DOWNTIME`](#event-type-process_downtime)         | client2server |         | Announce that the client has had some downtime (e.g. it had been put into hibernation mode and as just recovered from it).                |
+| [`START_CLIENT`](#event-type-start_client)                 | client2server |         | Announce to the server that a client is (re-)starting.                                                                                    |
+| [`START_MASTER`](#event-type-start_master)                 | server2client |         | This event is sent to all new clients exactly once after sending their first message to the server.                                       |
+| [`KILL_PROCESS`](#event-type-kill_process)                 | server2client | *       | Prompt the client to kill a specific process given by its PID.                                                                            |
+| [`UPDATE_CONFIG`](#event-type-update_config)               | server2client | *       | Communicate to the client that the configuration has changed.                                                                             |
+| [`UPDATE_LOGIN_MAPPING`](#event-type-update_login_mapping) | server2client | *       | Communicate to the client that login mapping has changed.                                                                                 |
+
+[UPDATE_LOGIN_MAPPING](#event-type-update_login_mapping)
 
 #### Event Type `PROCESS_START`
 
@@ -143,6 +148,18 @@ When the process is terminated at a later point of time, the client will issue a
       "text": null,
       "username": "amelie"
     }
+
+##### Server to Client Variant
+
+When the client is shutdown cleanly it does not have a chance to inform the server about the status of the user 
+processes, so the server might end up with entries of active user processes on the client which do not exist anymore.
+Since the client does not have any entries it will never send `PROCESS_END` events for them. To correct this, the 
+server will send `PROCESS_START` events to the client of all user processes that were active when the client died. The
+client will receive them and check the existence of the user processes. If the processes are still active nothing will
+happen and status on server and client are synchronized again. If the user processes are not active anymore, the client
+will send regular `PROCESS_END` events also synchronizing the status.
+
+The typical content of the event is the same as in the opposite direction. See above for an example.
 
 #### Event Type `PROHIBITED_PROCESS`
 
@@ -252,7 +269,9 @@ configuration and login mappings. See `UPDATE_CONFIG` and `UPDATE_LOGIN_MAPPING`
 
 #### Event Type `START_MASTER`
 
-This event is sent to all new clients exactly once after sending their first message to the server.  
+This event is sent to all clients exactly when the server is (re-)started. This will trigger all clients to send
+their active processes using `PROCESS_START` events. This ensures that after the master has come up it will have a 
+comprehensive view of all active user processes on the clients.
 
     {
         "delay": 0,
@@ -274,7 +293,11 @@ This event is sent to all new clients exactly once after sending their first mes
 
 #### Event Type `KILL_PROCESS`
 
-This event prompts the client to kill a specific process given by its PID and its start time.
+This event prompts the client to kill a specific process given by its PID and its start time. The client will usually
+react by killing exactly the process given by its `pid` and `process_start_time` but the active process handler may
+have other strategies. On the Mac, for example, it will try to log out the user using a completely different binary.
+The event has a `delay` time which the client is supposed to wait before it actually kills the process. This ensures 
+that audio messages can still be output to the user using the LittleBrother desktop utility.
 
     {
         "delay": 0,
@@ -297,7 +320,15 @@ This event prompts the client to kill a specific process given by its PID and it
 
 #### Event Type `UPDATE_CONFIG`
 
-Communicate to the client that the configuration has changed.
+This event communicates to the client that the configuration has changed. It uses the attribute `payload` to transfer
+the updated configuration as a dictionary. Currently, there are two keys:
+
+* `config:user_config`: Contains a dictionary of user settings for each monitored user with the user login as the key 
+    of the dictionary.
+* `config:config:maximum_time_without_send`: Contains the maximum number of seconds that clients will tolerate
+    a missing connection to the server. 
+    See [Network Tempering Detection](ADVANCED_TOPICS.md#network-tempering-detection).
+
 
     {
         "delay": 0,
@@ -339,7 +370,9 @@ Communicate to the client that the configuration has changed.
 
 #### Event Type `UPDATE_LOGIN_MAPPING`
 
-Communicate to the client that login mapping has changed.  
+This event communicates to the client that the login mapping has changed. It uses the attribute `payload` to transfer
+the mapping consisting of an array of server group entries.  Each server group, again, contains an array of
+`LoginUidMappingEntry` tuples.
 
     {
         "delay": 0,
@@ -387,14 +420,14 @@ statistics for each client and uses them to show the
 | `version`               | Version of the LittleBrother application.                                                          |
 | `revision`              | Debian package revision of the LittleBrother package.                                              |
 | `python_version`        | Version of the Python interpreter running LittleBrother.                                           |
-| `running_in_docker`     | `true´, if the application is running inside a Docker container, `false` otherwise.                |
-| `running_in_snap`       | `true´, if the application is running inside a Snap container, `false` otherwise.                  |
+| `running_in_docker`     | `true`, if the application is running inside a Docker container, `false` otherwise.                |
+| `running_in_snap`       | `true`, if the application is running inside a Snap container, `false` otherwise.                  |
 | `linux_distribution`    | Version of the distribution of Linux (or other operating System) that LittleBrother is running on. |
 | `resident_memory_bytes` | Number of bytes that LittleBrother is currently allocating (as e.g. reported by ``on Linux).       |
 | `start_time_seconds`    | Start time of LittleBrother on the client in seconds since EPOCH.                                  |
 | `cpu_seconds_total`     | Number of CPU seconds used since the start of the client.                                          |
 
-## Server to Client Messages
+## Server to Client Responses
 
 Messages which are returned to the calling client consist of an array of administration events which will (as a rule)
 be empty. So, the most common response will be:
@@ -464,6 +497,16 @@ configuration for the event type `UPDATE_CONFIG`:
         "username": null
       }
     ]
+
+## Providing Support for Other Operating Systems
+
+The main process detection functionality resides in 
+class [ClientProcesshandler](little_brother/client_process_handler.py) which was mainly written with Linux in mind. It
+has one specific adaption to macOS when it comes to terminating a user session: it uses `/bin/launchctl bootout` 
+instead of `/bin/kill` to terminate a user session.
+
+Additional support for other operating systems will probably have to make specific changes in that class or define 
+a base class which can be implemented for each operating system.
 
 ## Communication Between Server and Desktop App
 

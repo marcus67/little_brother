@@ -109,7 +109,7 @@ options are configured in the master configuration file. See section `[LdapUserH
 `[UnixUserHandler]`. If at least one mandatory setting is missing `[UnixUserHandler]` will be used as a fallback. 
 
 All users/accounts in the administration group (setting `ldap_admin_group_name`) 
-will be able to login and have access to the restricted pages. The logged-in user will be displayed in the 
+will be able to log in and have access to the restricted pages. The logged-in user will be displayed in the 
 menu bar as shown below (`mr` in this case).
 
 ![MenubarLdapLogin](doc/menubar-ldap-login.png)
@@ -132,12 +132,12 @@ directory as follows:
 
     /var/lib/little-brother/virtualenv/bin/pip install python-base-app-ldap-extension
 
-Note that this step will require Python to compile the LDAP package so it will take considerably longer than installing
+Note that this step will require Python to compile the LDAP package, so it will take considerably longer than installing
 a source-only Python package. This was also the rationale behind excluding the LDAP extension from the 
 `python-base-app` since all other dependencies of that package are source-only.
 
 After the package has been successfully installed make sure you have your master configuration setup correctly for LDAP
-and restart the LittleBrothe process:
+and restart the LittleBrother process:
 
     systemctl restart little-brother
 
@@ -235,11 +235,11 @@ the settings starting with `database_`.
 Replace the `SET_ME` entries by the appropriate values. The driver and port (verify your installation!) 
 must be set as follows:
 
-| Database    | Driver Name          | Typical Port Number |
-| ----------- | -------------------- | ------------------- |
-| MySQL       | `mysql+pymysql`      | 3306                |
-| MariaDB     | `mysql+pymysql`      | 3306                |
-| PostgreSQL  | `postgresql`         | 5432                |
+| Database   | Driver Name     | Typical Port Number |
+|------------|-----------------|---------------------|
+| MySQL      | `mysql+pymysql` | 3306                |
+| MariaDB    | `mysql+pymysql` | 3306                |
+| PostgreSQL | `postgresql`    | 5432                |
 
 Note that in revision 64 and above there is no default value for `database_user` anymore. It was `little_brother`.
 The name has to be set explicitly now!
