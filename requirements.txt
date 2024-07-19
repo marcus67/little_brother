@@ -2,7 +2,7 @@ alembic==1.12.0
 babel~=2.13.0
 distro==1.8.0
 flask-babel==3.1.0
-flask-login==0.6.2
+flask-login==0.6.3
 flask-migrate==4.0.5
 flask-wtf==1.2.1
 flask==2.3.3
