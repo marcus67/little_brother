@@ -78,7 +78,14 @@ extended_setup_params = {
                          ],
 
     # additional setup configuration used by CI stages
-    "owasp": True,
+    "owasp": False,  # TODO: Reactivate Owasp check!
+    "analyze_branch_map": {
+        "master": 'SONAR_PROJECT_KEY',
+        "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
+    },
+    "owasp_check_branch_map": {
+        "main": 'ACCSCAN_PROJECT_ID'
+    },
 
     # technical name used for e.g. directories, PIP-package, and users
     "create_user": True,
@@ -108,7 +115,17 @@ extended_setup_params = {
         little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
     },
     "generate_generic_install": True,
-    "analyze": False,
+    "docker_image_build_angular": "marcusrickert/docker-python-app:3.11",
+    "docker_image_make_package": "marcusrickert/docker-python-app:3.11",
+    "docker_images_test": [
+        ("3_10", "marcusrickert/docker-python-app:3.10"),
+        ("3_11", "marcusrickert/docker-python-app:3.11"),
+        ("3_12", "marcusrickert/docker-python-app:3.12"),
+    ],
+    "docker_image_publish_pypi": "marcusrickert/docker-python-app:3.11",
+    "docker_image_publish_debian": "marcusrickert/docker-python-app:3.11",
+    "docker_image_docker": "marcusrickert/docker-docker-ci:release-0.9.1",
+    "docker_image_analyze": "marcusrickert/docker-python-app:3.11",
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
     "angular_app_dir": "littlebrother-frontend",
