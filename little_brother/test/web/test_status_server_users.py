@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import time
 #    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -133,6 +133,8 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
         save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
+
+        time.sleep(1)
 
         with SessionContext(self._persistence) as session_context:
             user: User = user_entity_manager.get_by_username(
