@@ -25,24 +25,11 @@ variables:
   PIP3: "./bin/pip3.sh"
 
 stages:
-  - build_angular
   - build
   - install_and_check
   - publish
   - deploy
   
-build_angular_app:
-  image: marcusrickert/docker-python-app:3.11
-  stage: build_angular
-  script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_ANGULAR_APP --use-dev-dir=.
-  artifacts:
-    paths:
-      - littlebrother-frontend/dist/littlebrother-frontend/**
-  variables:
-    # Activate automatic checkout for all sub modules
-    GIT_SUBMODULE_STRATEGY: recursive
-
 build_debian:
   image: marcusrickert/docker-python-app:3.11
   stage: build
