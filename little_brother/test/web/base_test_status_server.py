@@ -32,7 +32,7 @@ from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother.admin_data_handler import AdminDataHandler
-from little_brother.api import master_connector
+from little_brother.api import master_connector, api_view_handler
 from little_brother.api.master_connector import MasterConnector
 from little_brother.api.version_checker import VersionCheckerConfigModel, VersionChecker, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel
@@ -137,7 +137,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         version_checker_config = VersionCheckerConfigModel()
         version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
         dependency_injection.container[VersionChecker] = version_checker
-        configs = { web_server.SECTION_NAME: status_server_config }
+        configs = { web_server.SECTION_NAME: status_server_config,
+                    api_view_handler.SECTION_NAME : api_view_handler.ApiViewHandlerConfigModel() }
 
         self._status_server = web_server.StatusServer(
             p_configs=configs,
