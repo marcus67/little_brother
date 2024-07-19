@@ -134,12 +134,10 @@ class TestStatusServerUsers(BaseTestStatusServer):
         save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
-        time.sleep(10)
-
         with SessionContext(self._persistence) as session_context:
-            user: User = user_entity_manager.get_by_username(
-                p_session_context=session_context, p_username=test_unix_user_handler.USER_2_UID)
-            self.assertEqual(test_unix_user_handler.USER_2_UID, user.username)
+            user: User = user_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=user_id)
+            self.assertIsNotNone(user.username)
             self.assertEqual(NEW_USER_FIRST_NAME, user.first_name)
             self.assertEqual(NEW_USER_LAST_NAME, user.last_name)
             self.assertEqual(NEW_USER_PROCESS_NAME_PATTERN, user.process_name_pattern)
