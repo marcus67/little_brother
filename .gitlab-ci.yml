@@ -30,7 +30,8 @@ stages:
   - install_and_check
   - publish
   - deploy
-  build_angular_app:
+  
+build_angular_app:
   image: marcusrickert/docker-python-app:3.11
   stage: build_angular
   script:
@@ -41,7 +42,7 @@ stages:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-  
+
 build_debian:
   image: marcusrickert/docker-python-app:3.11
   stage: build
@@ -66,7 +67,7 @@ test_debian_3_10:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-  
+
 test_debian_3_11:
   image: "marcusrickert/docker-python-app:3.11"
   stage: install_and_check
@@ -78,7 +79,7 @@ test_debian_3_11:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-  
+
 test_debian_3_12:
   image: "marcusrickert/docker-python-app:3.12"
   stage: install_and_check
@@ -95,8 +96,8 @@ test_debian_3_12:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-  
-  
+
+
 build_pypi:
   image: marcusrickert/docker-python-app:3.11
   stage: build
