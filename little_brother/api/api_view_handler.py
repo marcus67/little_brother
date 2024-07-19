@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -43,10 +43,14 @@ MIME_TYPE_APPLICATION_JSON = 'application/json'
 API_BLUEPRINT_NAME = "API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
+
 
 SECTION_NAME = "ApiViewHandler"
+
 
 class ApiViewHandlerConfigModel(configuration.ConfigModel):
 
@@ -295,7 +299,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 try:
                     extension_length = int(extension_length_string)
 
-                except:
+                except Exception:
                     return self.wrong_parameter_format_error(p_parameter_name=constants.API_URL_PARAM_EXTENSION_LENGTH,
                                                              p_value=extension_length_string)
 
@@ -363,7 +367,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
         if p_time_extension_length <= optional_time_available:
 
-            self.admin_data_handler.extend_time_extension_for_session(
+            self.extend_time_extension_for_session(
                 p_session_context=p_session_context, p_user_name=p_user.username, p_delta=p_time_extension_length)
 
             session = p_session_context.get_session()

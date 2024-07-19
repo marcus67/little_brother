@@ -34,6 +34,7 @@ class TestPrometheus(base_test.BaseTestCase):
         prometheus_client.registry.REGISTRY = prometheus_client.CollectorRegistry(auto_describe=True)
 
         config = prometheus.PrometheusClientConfigModel()
+        config.port = int(os.getenv(" ", "8889"))
         client = prometheus.PrometheusClient(p_logger=self._logger, p_config=config)
 
         self.assertIsNotNone(client)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -151,7 +151,7 @@ class ProcessHandler(object, metaclass=abc.ABCMeta):
 
 
     @staticmethod
-    def create_admin_event_process_end_from_pinfo(p_pinfo, p_reference_time=None):
+    def create_admin_event_process_end_from_pinfo(p_pinfo, p_reference_time=None) -> admin_event.AdminEvent:
         if p_reference_time is None:
             p_reference_time = datetime.datetime.now()
 

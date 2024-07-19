@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import os
 #    Copyright (C) 2019-2021  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -127,6 +127,7 @@ class TestAppControl(base_test.BaseTestCase):
 
     def test_set_metrics(self):
         pc_config = prometheus.PrometheusClientConfigModel()
+        pc_config.port = int(os.getenv("PROMETHEUS_SERVER_PORT", "8889"))
 
         config = app_control.AppControlConfigModel()
 

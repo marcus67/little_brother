@@ -301,6 +301,7 @@ class App(base_app.BaseApp):
         config = self._config[PROMETHEUS_SECTION_NAME]
 
         if config.is_active():
+            config.port = int(os.getenv("PROMETHEUS_SERVER_PORT", "8889"))
             self._prometheus_client = PrometheusClient(
                 p_logger=self._logger, p_config=config)
 

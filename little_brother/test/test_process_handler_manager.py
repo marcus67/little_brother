@@ -92,14 +92,15 @@ class TestProcessHandlerManager(base_test.BaseTestCase):
         self.assertIsNotNone(handler)
         self.assertIsInstance(handler, ClientDeviceHandler)
 
-    def create_handlers(self):
+    def create_handlers(self, p_create_complex_rule_handlers=True):
         app_control_config = AppControlConfigModel()
         admin_data_handler = AdminDataHandler(p_config=app_control_config)
         dependency_injection.container[AdminDataHandler] = admin_data_handler
 
         persistence: Persistence = dependency_injection.container[Persistence]
 
-        rule_handler = TestRuleHandler.create_dummy_rule_handler(p_persistence=persistence)
+        rule_handler = TestRuleHandler.create_dummy_rule_handler(
+            p_persistence=persistence, p_create_complex_handlers=p_create_complex_rule_handlers)
         dependency_injection.container[RuleHandler] = rule_handler
 
         login_mapping = LoginMapping()
@@ -109,7 +110,8 @@ class TestProcessHandlerManager(base_test.BaseTestCase):
         dependency_injection.container[UserManager] = user_manager
 
         migrator = db_migrations.DatabaseMigrations(p_logger=self._logger, p_persistence=persistence)
-        migrator.migrate_ruleset_configs(TestRuleHandler.create_dummy_ruleset_configs())
+        migrator.migrate_ruleset_configs(TestRuleHandler.create_dummy_ruleset_configs(
+            p_create_complex_configs=p_create_complex_rule_handlers))
 
     def test_handle_event_process_start(self):
         self.create_default_process_handler_manager()
@@ -121,7 +123,7 @@ class TestProcessHandlerManager(base_test.BaseTestCase):
 
         persistence: Persistence = dependency_injection.container[Persistence]
 
-        self.create_handlers()
+        self.create_handlers(p_create_complex_rule_handlers=False)
 
         event = AdminEvent(p_hostname=HOSTNAME, p_locale="en_US", p_username=TEST_USER,
                            p_process_start_time=datetime.datetime.now(), p_processname="test",
@@ -141,7 +143,7 @@ class TestProcessHandlerManager(base_test.BaseTestCase):
 
         persistence: Persistence = dependency_injection.container[Persistence]
 
-        self.create_handlers()
+        self.create_handlers(p_create_complex_rule_handlers=False)
 
         event = AdminEvent(p_hostname=HOSTNAME, p_locale="en_US", p_username=TEST_USER,
                            p_process_start_time=datetime.datetime.now(), p_processname="test",
@@ -167,7 +169,7 @@ class TestProcessHandlerManager(base_test.BaseTestCase):
 
         persistence: Persistence = dependency_injection.container[Persistence]
 
-        self.create_handlers()
+        self.create_handlers(p_create_complex_rule_handlers=False)
 
         event = AdminEvent(p_hostname=HOSTNAME, p_locale="en_US", p_username=TEST_USER,
                            p_process_start_time=datetime.datetime.now(), p_processname="test",
