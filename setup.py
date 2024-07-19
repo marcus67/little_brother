@@ -79,6 +79,7 @@ extended_setup_params = {
 
     # additional setup configuration used by CI stages
     "owasp": False,  # TODO: Reactivate Owasp check!
+    "analyze": True,
     "analyze_branch_map": {
         "master": 'SONAR_PROJECT_KEY',
         "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'

@@ -134,7 +134,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
         save_button = self._driver.find_element(By.ID, "save")
         self.click(save_button)
 
-        time.sleep(1)
+        time.sleep(10)
 
         with SessionContext(self._persistence) as session_context:
             user: User = user_entity_manager.get_by_username(

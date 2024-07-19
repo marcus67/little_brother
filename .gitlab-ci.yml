@@ -27,6 +27,7 @@ variables:
 stages:
   - build
   - install_and_check
+  - analyze
   - publish
   - deploy
   
@@ -146,6 +147,17 @@ install_pypi_3_12:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
+
+analyze:
+  image: marcusrickert/docker-python-app:3.11
+  stage: analyze
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  variables:
+    # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
 
 
 
