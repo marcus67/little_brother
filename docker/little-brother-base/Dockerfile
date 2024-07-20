@@ -5,7 +5,7 @@ COPY assets/*.deb /tmp
 # See https://superuser.com/questions/1456989/how-to-configure-apt-in-debian-buster-after-release
 RUN DEBIAN_FRONTEND=noninteractive \
         apt-get update --allow-releaseinfo-change && \
-        apt-get install -y --no-install-recommends
+        apt-get install -y --no-install-recommends virtualenv
 RUN (dpkg -i /tmp/*.deb || true) && \
     DEBIAN_FRONTEND=noninteractive \
         apt-get install -f -y --no-install-recommends

@@ -30,6 +30,7 @@ RUN apk update && \
             python3 \
             python3-dev \
             py3-packaging \
+            py3-virtualenv \
             py3-pip \
             unzip \
             linux-headers \
