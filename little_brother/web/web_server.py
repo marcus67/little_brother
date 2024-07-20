@@ -52,12 +52,12 @@ from python_base_app import locale_helper
 from python_base_app import tools
 from python_base_app.angular_auth_view_handler import ANGULAR_BASE_URL
 from python_base_app.base_app import RecurringTask
-from python_base_app.configuration import ConfigurationException
+from python_base_app.configuration import ConfigurationException, NONE_STRING
 
 SECTION_NAME = "StatusServer"
 
 ANGULAR_CONFIG_TEMPLATE_FILE = "angular-config.template.json"
-ANGULAR_CONFIG_FILE = "assets/angular-config.json"
+ANGULAR_CONFIG_FILE = "assets/config.json"
 ANGULAR_HTML_INDEX_FILE = "index.html"
 
 SETTING_ANGULAR_DEPLOYMENT_DIRECTORY = "angular_deployment_dest_directory"
@@ -85,6 +85,10 @@ class StatusServerConfigModel(base_web_server.BaseWebServerConfigModel):
         self.angular_api_base_url = ANGULAR_BASE_URL
         self.angular_gui_base_url = ""
         self.angular_gui_rel_static_folder = "angular"
+        self.angular_deployment_directory = NONE_STRING
+
+        self.patch_angular_index_html = True
+        self.create_angular_config_file = True
 
 
 class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebServer):
@@ -192,8 +196,12 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 self._new_api_angular_view_handler.register(
                     p_app=self._app, p_url_prefix=self._config.angular_gui_base_url)
 
-                self.patch_angular_index_html()
-                self.create_angular_config_file()
+
+                if self._config.patch_angular_index_html:
+                    self.patch_angular_index_html()
+
+                if self._config.create_angular_config_file:
+                    self.create_angular_config_file()
 
                 self._csrf.exempt(self._angular_auth_view_handler.blueprint)
                 self._csrf.exempt(self._new_api_view_handler.blueprint)
@@ -327,10 +335,23 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         return tasks
 
-    def patch_angular_index_html(self):
+    def get_angular_deployment_directory(self) -> str:
 
         my_dir = os.path.dirname(little_brother_package.__file__)
-        index_filename = os.path.join(my_dir, extended_settings[SETTING_ANGULAR_DEPLOYMENT_DIRECTORY],
+
+        if self._config.angular_deployment_directory is not None:
+            return os.path.realpath(os.path.join(my_dir, "..", self._config.angular_deployment_directory))
+
+        elif SETTING_ANGULAR_DEPLOYMENT_DIRECTORY in extended_settings:
+            return os.path.join(my_dir, extended_settings[SETTING_ANGULAR_DEPLOYMENT_DIRECTORY])
+
+        raise ConfigurationException(
+            f"key '{SETTING_ANGULAR_DEPLOYMENT_DIRECTORY}' not found in settings.extended_settings or "
+            "in [StatusServer].angular_deployment_directory!")
+
+    def patch_angular_index_html(self):
+
+        index_filename = os.path.join(self.get_angular_deployment_directory(),
                                       ANGULAR_HTML_INDEX_FILE)
 
         if not os.path.exists(index_filename):
@@ -354,10 +375,6 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
     def create_angular_config_file(self):
 
-        if SETTING_ANGULAR_DEPLOYMENT_DIRECTORY not in extended_settings:
-            raise ConfigurationException(
-                f"key '{SETTING_ANGULAR_DEPLOYMENT_DIRECTORY}' not found in settings.extended_settings!")
-
         env = Environment(
             loader=PackageLoader("little_brother"),
             autoescape=select_autoescape()
@@ -371,9 +388,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         content = template.render(settings=settings)
 
-        my_dir = os.path.dirname(little_brother_package.__file__)
-        config_filename = os.path.join(my_dir, extended_settings[SETTING_ANGULAR_DEPLOYMENT_DIRECTORY],
-                                       ANGULAR_CONFIG_FILE)
+        config_filename = os.path.join(self.get_angular_deployment_directory(), ANGULAR_CONFIG_FILE)
 
         try:
             with io.open(config_filename, "w") as f:
