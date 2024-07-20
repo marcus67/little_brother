@@ -125,7 +125,7 @@ extended_setup_params = {
     ],
     "docker_image_publish_pypi": "marcusrickert/docker-python-app:3.11",
     "docker_image_publish_debian": "marcusrickert/docker-python-app:3.11",
-    "docker_image_docker": "marcusrickert/docker-docker-ci:release-0.9.1",
+    "docker_image_docker": "marcusrickert/docker-docker-ci:3.11",
     "docker_image_analyze": "marcusrickert/docker-python-app:3.11",
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,

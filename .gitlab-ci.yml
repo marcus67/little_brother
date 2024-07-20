@@ -170,7 +170,7 @@ publish_pypi:
     - release
     - master
 docker:
-  image: marcusrickert/docker-docker-ci:release-0.9.1
+  image: marcusrickert/docker-docker-ci:3.11
   stage: deploy
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.
