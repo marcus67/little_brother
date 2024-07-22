@@ -13,20 +13,6 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-$(document).ready(function () {
-    $('ul.navbar-nav li')
-            .click(function (e) {
-        $('ul.navbar-nav li')
-            .removeClass('active');
-        $(e).addClass('active');
-    });
-});
-
 /*
-$(document).ready(function () {
-    $('ul.navbar-nav > li').click(function (e) {
-        $('ul.navbar-nav > li').css('background-color', 'transparent');
-        $(e).css('background-color', '#c0c0c0');
-    });
-});
+This file contains custom JavaScript
 */
