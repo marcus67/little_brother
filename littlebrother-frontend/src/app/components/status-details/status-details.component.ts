@@ -32,7 +32,7 @@ function eventListenerHideAccordion (event:any) {
 export class StatusDetailsComponent implements OnInit, OnDestroy, AfterViewChecked {
   userStatus: UserStatus = new UserStatus();
   accordionState: Map<String, Boolean> = new Map<String, Boolean>();
-
+  isLoading: boolean = true;
   private userId: number = -1;
   private intervalId?: number;
   private eventHandlersReady: boolean = false;
@@ -54,6 +54,7 @@ export class StatusDetailsComponent implements OnInit, OnDestroy, AfterViewCheck
       this.storeAccordionState();
       // extract from JSON...
       this.userStatus = unpickle(jsonData, my_handlers);
+      this.isLoading = false;
     })
   }
 
@@ -80,7 +81,6 @@ export class StatusDetailsComponent implements OnInit, OnDestroy, AfterViewCheck
         this.eventHandlersReady = true;
         element.addEventListener("show.bs.collapse", eventListenerShowAccordion);
         element.addEventListener("hide.bs.collapse", eventListenerHideAccordion);
-        console.log("Adding event listeners to " + element.id);
       });
     }
   }
@@ -98,7 +98,6 @@ export class StatusDetailsComponent implements OnInit, OnDestroy, AfterViewCheck
         this.eventHandlersReady = false;
         element.removeEventListener("show.bs.collapse", eventListenerShowAccordion);
         element.removeEventListener("hide.bs.collapse", eventListenerHideAccordion);
-        console.log("Removing event listeners from " + element.id);
       });
     }
   }

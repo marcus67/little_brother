@@ -7,7 +7,8 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 ## Version 0.5.1 Revision 200
 * Add Angular frontend
 * Add debug dump for `ApiViewHandler`
-* Add documentation for API calls
+* Add documentation for API calls in API.md
+* Add configuration options for database pool and pool overflow sizes
 
 ## Version 0.4.32 Revision 139 (October 12th, 2023)
 * Bump `some_flask_helpers` to 0.2.4

@@ -35,9 +35,6 @@ export class ControlService {
 
   loadControl() : Observable<Control> {
     let url: string = `${this.configService.baseUrl}${this.REL_URL_CONTROL}`;
-    let headers: HttpHeaders | undefined = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
 
     return this.http.get<Control>(url, {});
   }

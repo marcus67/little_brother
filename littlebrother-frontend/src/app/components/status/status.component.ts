@@ -32,6 +32,7 @@ import { my_handlers } from '../../models/registry'
 export class StatusComponent implements OnInit, OnDestroy {
   userStatus: UserStatus[] = [];
   hasDowntime: boolean = false;
+  isLoading: boolean = true;
   private intervalId?: number;
 
   constructor(private controlService: ControlService,
@@ -58,6 +59,7 @@ export class StatusComponent implements OnInit, OnDestroy {
             this.hasDowntime = true;
           }
         );
+        this.isLoading = false;
       } else {
         console.error("Cannot unpickle UserStatus entries")
       }

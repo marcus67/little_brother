@@ -13,30 +13,24 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import { Component } from '@angular/core';
-import { MetadataService } from '../../services/metadata.service'
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-@Component({
-  selector: 'app-about',
-  templateUrl: './about.component.html',
-})
+import { SpinnerComponent } from './spinner.component';
 
-export class AboutComponent {
+describe('SpinnerComponent', () => {
+  let component: SpinnerComponent;
+  let fixture: ComponentFixture<SpinnerComponent>;
 
-  metadata : any = null;
-  isLoading : boolean = true;
-
-  constructor(private metadataService: MetadataService) {
-  }
-
-  getMetadata(): void {
-    this.metadataService.loadMetadata().subscribe( jsonEntry => {
-      this.metadata = jsonEntry;
-      this.isLoading = false;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [SpinnerComponent]
     });
-  }
+    fixture = TestBed.createComponent(SpinnerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-  ngOnInit(): void {
-    this.getMetadata();
-  }
-}
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

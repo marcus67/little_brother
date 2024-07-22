@@ -14,29 +14,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import { Component } from '@angular/core';
-import { MetadataService } from '../../services/metadata.service'
 
 @Component({
-  selector: 'app-about',
-  templateUrl: './about.component.html',
+  selector: 'app-spinner',
+  templateUrl: './spinner.component.html',
+  styleUrls: ['./spinner.component.css']
 })
 
-export class AboutComponent {
-
-  metadata : any = null;
-  isLoading : boolean = true;
-
-  constructor(private metadataService: MetadataService) {
-  }
-
-  getMetadata(): void {
-    this.metadataService.loadMetadata().subscribe( jsonEntry => {
-      this.metadata = jsonEntry;
-      this.isLoading = false;
-    });
-  }
-
-  ngOnInit(): void {
-    this.getMetadata();
-  }
+export class SpinnerComponent {
 }

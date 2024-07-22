@@ -62,7 +62,6 @@ export class NavBarComponent implements OnInit {
   }
 
   currentNavBarTab(): string {
-    console.log("currentNavBarTab=" + this.currentUrl.split("/")[1] )
     return this.currentUrl.split("/")[1];
   }
 

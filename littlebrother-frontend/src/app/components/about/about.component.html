@@ -17,7 +17,8 @@
 
 <!--suppress HtmlUnknownTag -->
 <app-nav-bar></app-nav-bar>
-<span class="border">
+<app-spinner *ngIf="isLoading"></app-spinner>
+<span *ngIf="!isLoading" class="border">
   <div class="container-lg">
     <table CLASS="table table-primary table-striped rounded-4 overflow-hidden table-borderless">
       <thead class="">

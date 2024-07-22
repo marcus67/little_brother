@@ -16,7 +16,8 @@
 -->
 
 <app-nav-bar></app-nav-bar>
-<DIV class="container rounded-2 overflow-hidden">
+<app-spinner *ngIf="isLoading"></app-spinner>
+<DIV *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
   <DIV CLASS="row title-row bg-primary-subtle">
     <DIV CLASS="col col-2">User</DIV>
     <DIV CLASS="col col-2">Context</DIV>
