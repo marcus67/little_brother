@@ -48,7 +48,7 @@ test_debian_3_10:
   image: "marcusrickert/docker-python-app:3.10"
   stage: install_and_check
   script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
@@ -60,7 +60,7 @@ test_debian_3_11:
   image: "marcusrickert/docker-python-app:3.11"
   stage: install_and_check
   script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
@@ -72,7 +72,7 @@ test_debian_3_12:
   image: "marcusrickert/docker-python-app:3.12"
   stage: install_and_check
   script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
@@ -84,7 +84,6 @@ test_debian_3_12:
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-
 
 build_pypi:
   image: marcusrickert/docker-python-app:3.11
@@ -146,7 +145,6 @@ install_pypi_3_12:
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
-
 
 analyze:
   image: marcusrickert/docker-python-app:3.11

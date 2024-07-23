@@ -8,3 +8,4 @@ test-app.sh
 sonarqube.sh
 analyze-app.sh
 build_angular_app.sh
+/deploy_angular_app.sh

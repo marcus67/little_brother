@@ -1,0 +1,62 @@
+# -*- coding: utf-8 -*-
+#    Copyright (C) 2019-2024  Marcus Rickert
+#
+#    See https://github.com/marcus67/little_brother
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import unittest
+
+from selenium.webdriver.common.by import By
+
+from little_brother import constants
+from little_brother import settings
+from little_brother.test.web_angular.base_test_status_server_angular import BaseTestStatusServerAngular
+from python_base_app.test import base_test
+
+
+class TestStatusServerAngularAbout(BaseTestStatusServerAngular):
+
+    @base_test.skip_if_env("NO_SELENIUM_TESTS_ANGULAR")
+    def test_page_about(self):
+        self.create_dummy_status_server()
+        self._status_server.start_server()
+
+        self.create_selenium_driver()
+
+        self.select_angular_page()
+
+        self.login()
+
+        self.wait_until_page_ready()
+
+        assert constants.APPLICATION_NAME in self._driver.title
+
+        self.switch_to_angular_page(p_button_id="button-about")
+
+        self.wait_until_page_ready()
+
+        xpath = f"//tr[td[1] = 'Version' and td[2] = '{settings.settings['version']}']"
+        self._logger.info(f"Checking for XPATH {xpath}")
+        self._driver.find_element(By.XPATH, xpath)
+
+        xpath = f"//tr[td[1] = 'Debian Package Revision' and " \
+                f"td[2] = '{settings.extended_settings['debian_package_revision']}']"
+        self._logger.info(f"Checking for XPATH {xpath}")
+        self._driver.find_element(By.XPATH, xpath)
+
+
+if __name__ == "__main__":
+    unittest.main()

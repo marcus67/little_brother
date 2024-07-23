@@ -20,6 +20,8 @@ import gettext
 import io
 import os
 import re
+import urllib
+from os.path import join
 from typing import List, Optional
 
 import babel.dates
@@ -226,6 +228,17 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         entity_forms.set_get_text(self.gettext)
 
+    def get_angular_url(self, p_rel_url=''):
+
+        return urllib.parse.urlunsplit(
+            (
+                self._config.scheme,
+                "%s:%d" % (self._config.host, self._config.port),
+                join(self._config.angular_gui_base_url, p_rel_url),
+                None,
+                None
+            ))
+
     def invert(self, rel_font_size):
         return str(int(1.0 / float(rel_font_size) * 10000.0))
 
@@ -397,3 +410,14 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         except IOError as e:
             raise ConfigurationException(f"Cannot write Angular configuration to file {config_filename}!")
+
+    def run(self):
+        if self._config.angular_gui_active:
+            msg = f"Starting Angular web server '{self._name}' on "\
+                  f"{self._config.host}:{self._config.port}{self._config.angular_gui_base_url}"
+            self._logger.info(msg)
+
+        super().run()
+
+
+

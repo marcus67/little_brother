@@ -240,10 +240,6 @@ class App(base_app.BaseApp):
 
             session.close()
 
-    def register_rule_context_handlers(self, p_rule_handler):
-        p_rule_handler.register_context_rule_handler(DefaultContextRuleHandler(), p_default=True)
-        p_rule_handler.register_context_rule_handler(WeekplanContextRuleHandler())
-        p_rule_handler.register_context_rule_handler(GermanVacationContextRuleHandler())
 
     def prepare_services(self, p_full_startup=True):
 
@@ -268,8 +264,7 @@ class App(base_app.BaseApp):
                 p_persistence=self._persistence)
 
             dependency_injection.container[RuleHandler] = self._rule_handler
-
-            self.register_rule_context_handlers(p_rule_handler=self._rule_handler)
+            self._rule_handler.register_rule_context_handlers()
 
         self._master_connector = MasterConnector(p_config=self._config[MASTER_CONNECTOR_SECTION_NAME])
 
