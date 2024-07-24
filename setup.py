@@ -129,7 +129,7 @@ extended_setup_params = {
     "docker_image_analyze": "marcusrickert/docker-python-app:3.11",
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
-    #"angular_app_dir": "littlebrother-frontend",
+    "angular_app_dir": "littlebrother-frontend",
 }
 
 setup_params.update(little_brother.settings.settings)

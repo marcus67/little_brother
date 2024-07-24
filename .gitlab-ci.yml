@@ -25,16 +25,29 @@ variables:
   PIP3: "./bin/pip3.sh"
 
 stages:
+  - build_angular
   - build
   - install_and_check
   - analyze
   - publish
   - deploy
   
+build_angular_app:
+  image: marcusrickert/docker-python-app:3.11
+  stage: build_angular
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_ANGULAR_APP --use-dev-dir=.
+  artifacts:
+    paths:
+      - littlebrother-frontend/dist/littlebrother-frontend/**
+  variables:
+    # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
 build_debian:
   image: marcusrickert/docker-python-app:3.11
   stage: build
   script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
   artifacts:
     paths:
@@ -49,6 +62,7 @@ test_debian_3_10:
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
@@ -61,6 +75,7 @@ test_debian_3_11:
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
@@ -73,6 +88,7 @@ test_debian_3_12:
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
@@ -89,6 +105,7 @@ build_pypi:
   image: marcusrickert/docker-python-app:3.11
   stage: build
   script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
@@ -150,6 +167,7 @@ analyze:
   image: marcusrickert/docker-python-app:3.11
   stage: analyze
   script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
