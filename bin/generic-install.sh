@@ -226,6 +226,8 @@ echo "Creating symbolic link /usr/local/bin/run_little_brother.py --> ${VIRTUAL_
 ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother.py /usr/local/bin/run_little_brother.py
 echo "Creating symbolic link /usr/local/bin/run_little_brother_test_suite.py --> ${VIRTUAL_ENV_DIR}/bin/run_little_brother_test_suite.py..."
 ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother_test_suite.py /usr/local/bin/run_little_brother_test_suite.py
+echo "Creating symbolic link /usr/local/bin/run_little_brother_test_suite_no_venv.py --> ${VIRTUAL_ENV_DIR}/bin/run_little_brother_test_suite_no_venv.py..."
+ln -fs ${VIRTUAL_ENV_DIR}/bin/run_little_brother_test_suite_no_venv.py /usr/local/bin/run_little_brother_test_suite_no_venv.py
 
 echo "Creating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
 

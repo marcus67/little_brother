@@ -113,6 +113,8 @@ build_pypi:
       when: always
       paths:
         - dist/little-brother-0.5.1.tar.gz
+        - dist/python-base-app-0.3.0.tar.gz
+        - dist/some-flask-helpers-0.2.5.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
