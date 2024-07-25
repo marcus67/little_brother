@@ -54,6 +54,7 @@ setup_params = {
     "scripts": [
         "run_little_brother.py",
         "run_little_brother_test_suite.py",
+        "run_little_brother_test_suite_no_venv.py",
     ],
     "long_description": "Tool to monitor login time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded. Note that this package is not meant as a simple install with PIP since it "

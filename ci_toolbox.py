@@ -4,4 +4,4 @@ import sys
 
 from python_base_app import base_ci_toolbox
 
-sys.exit(base_ci_toolbox.main(p_main_module_dir=".", p_argv=sys.argv))
+sys.exit(base_ci_toolbox.main(p_main_module_dir="."))
