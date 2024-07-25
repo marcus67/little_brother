@@ -16,7 +16,7 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-FROM marcusrickert/docker-minipython:release-3.10.9
+FROM marcusrickert/docker-minipython:3.11.9
 LABEL maintainer="marcus.rickert@web.de"
 ENV RUNNING_IN_DOCKER=1
 COPY assets/*.deb /tmp
