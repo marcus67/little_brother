@@ -44,6 +44,7 @@ setup_params = {
                  'little_brother.test.pytests.devices',
                  'little_brother.test.pytests',
                  'little_brother.test.web',
+                 'little_brother.test.web_angular',
                  'little_brother.test.api',
                  'little_brother.transport',
                  'little_brother.web',
