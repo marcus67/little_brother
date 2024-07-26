@@ -107,9 +107,11 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                  p_user_handler=None):
 
         self._api_view_handler = None
-        self._login_view_handler = None
         self._new_api_view_handler = None
+        self._new_api_angular_view_handler = None
+        self._login_view_handler = None
         self._token_handler: Optional[TokenHandler] = None
+        self._angular_auth_view_handler = None
 
         my_config: StatusServerConfigModel = p_configs[SECTION_NAME]
 
@@ -228,13 +230,15 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
         entity_forms.set_get_text(self.gettext)
 
-    def get_angular_url(self, p_rel_url=''):
+    def get_angular_url(self, p_rel_url=None):
 
+        effectiveUrl = join(self._config.angular_gui_base_url, p_rel_url)\
+            if p_rel_url is not None else self._config.angular_gui_base_url
         return urllib.parse.urlunsplit(
             (
                 self._config.scheme,
                 "%s:%d" % (self._config.host, self._config.port),
-                join(self._config.angular_gui_base_url, p_rel_url),
+                effectiveUrl,
                 None,
                 None
             ))
@@ -330,13 +334,24 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         if self._api_view_handler is not None:
             self._api_view_handler.destroy()
 
-        self._about_view_handler.destroy()
-        self._admin_view_handler.destroy()
-        self._devices_view_handler.destroy()
-        self._login_view_handler.destroy()
-        self._status_view_handler.destroy()
-        self._topology_view_handler.destroy()
-        self._users_view_handler.destroy()
+        if self._new_api_view_handler is not None:
+            self._new_api_view_handler.destroy()
+
+        if self._new_api_angular_view_handler is not None:
+            self._new_api_angular_view_handler.destroy()
+
+        if self._angular_auth_view_handler is not None:
+            self._angular_auth_view_handler.destroy()
+
+        if self._config.classic_gui_active:
+            self._about_view_handler.destroy()
+            self._admin_view_handler.destroy()
+            self._devices_view_handler.destroy()
+            self._login_view_handler.destroy()
+            self._status_view_handler.destroy()
+            self._topology_view_handler.destroy()
+            self._users_view_handler.destroy()
+
         super().destroy()
 
     def get_recurring_tasks(self) -> List[RecurringTask]:

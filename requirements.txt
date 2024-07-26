@@ -17,7 +17,7 @@ pyjwt==2.8.0
 pymysql==1.1.0
 pytest==7.4.2
 python-dateutil==2.8.2
-requests==2.31.0
+requests==2.32.3
 secure==0.3.0
 semver==3.0.2
 setuptools~=70.1.1

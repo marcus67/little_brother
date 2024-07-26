@@ -79,6 +79,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
         if self._driver is not None:
             self._driver.close()
+            self._driver.quit()
             self._driver = None
 
     @staticmethod
@@ -165,6 +166,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         if os.getenv("SELENIUM_CHROME_DRIVER") is not None:
             options = selenium.webdriver.ChromeOptions()
             options.add_argument('headless')
+            options.add_argument("--incognito")
 
             # See https://stackoverflow.com/questions/50642308
             options.add_argument('no-sandbox')
@@ -175,11 +177,12 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         else:
             raise ConfigurationException("No valid Selenium driver selected! Use SELENIUM_CHROME_DRIVER=1.")
 
-    def create_status_server_using_ruleset_configs(self, p_ruleset_configs):
+    def create_status_server_using_ruleset_configs(self, p_ruleset_configs, p_create_complex_handlers=False):
 
         process_handlers = self.get_dummy_process_handlers()
 
-        self.create_dummy_status_server(p_process_handlers=process_handlers)
+        self.create_dummy_status_server(p_process_handlers=process_handlers,
+                                        p_create_complex_handlers=p_create_complex_handlers)
         self._status_server.start_server()
 
         user_manager = dependency_injection.container[UserManager]
@@ -265,7 +268,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         # See https://stackoverflow.com/questions/22528456/how-to-replace-default-values-in-the-text-field-using-selenium-python/33361371
         self._driver.execute_script("arguments[0].value = '{value}'".format(value=p_value), p_elem)
 
-    def select_angular_page(self, p_rel_url:str = "") -> None:
+    def select_angular_page(self, p_rel_url: str | None = None) -> None:
         url = self._status_server.get_angular_url(p_rel_url=p_rel_url)
 
         self._logger.info(f"Downloading Angular page at {url}...")

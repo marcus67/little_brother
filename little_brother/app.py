@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2022  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,6 @@ from little_brother.devices.firewall_device_activation_handler import FirewallDe
 from little_brother.devices.firewall_handler import FirewallHandler
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, \
     SECTION_NAME as FIREWALL_HANDLER_SECTION_NAME
-from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_blacklisted_token_entity_manager import BlacklistedTokenEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
@@ -54,8 +53,6 @@ from little_brother.persistence.persistent_user import User
 from little_brother.prometheus import PrometheusClient, PrometheusClientConfigModel, \
     SECTION_NAME as PROMETHEUS_SECTION_NAME
 from little_brother.rule_handler import RuleHandler
-from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
-from little_brother.token_handler import TokenHandler
 from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
@@ -126,6 +123,11 @@ class App(base_app.BaseApp):
         self._pinger = None
         self._firewall_handler: Optional[FirewallHandler] = None
         self._device_activation_manager: Optional[DeviceActivationManager] = None
+        self.app_config = None
+        self._login_mapping_section_handler = None
+        self._login_mapping = None
+        self._admin_data_handler = None
+        self._version_checker = None
 
     def prepare_configuration(self, p_configuration: configuration.Configuration):
 
@@ -220,7 +222,7 @@ class App(base_app.BaseApp):
             rows = session.query(User).count()
 
             if rows == 0:
-                # if there are no users in the database yet we assume that the migration has never run yet
+                # if there are no users in the database yet, we assume that the migration has never run yet
                 db_mig.migrate_ruleset_configs(
                     p_ruleset_configs=self._rule_set_section_handler.rule_set_configs)
 
@@ -239,7 +241,6 @@ class App(base_app.BaseApp):
                         msg.format(count=len(self._client_device_section_handler.client_device_configs)))
 
             session.close()
-
 
     def prepare_services(self, p_full_startup=True):
 
@@ -367,10 +368,11 @@ class App(base_app.BaseApp):
         dependency_injection.container[AppControl] = self._app_control
 
         if self._config[APP_CONTROL_SECTION_NAME].scan_active:
-            task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
-                                          p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
-                                              p_process_handler=process_handler),
-                                          p_interval=process_handler.check_interval)
+            task = base_app.RecurringTask(
+                p_name="app_control.scan_processes(ProcessHandler)",
+                p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
+                    p_process_handler=process_handler),
+                p_interval=process_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
         else:
