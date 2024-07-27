@@ -17,6 +17,7 @@
 <app-nav-bar></app-nav-bar>
 <app-spinner *ngIf="isLoading"></app-spinner>
 <DIV *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
+  <SPAN id="page-ready"></SPAN>
   <DIV CLASS="row title-row bg-primary-subtle">
     <DIV CLASS="col col-2 col-lg-1 locale-text">User</DIV>
     <DIV CLASS="col col-2 col-lg-1 locale-text">Context</DIV>
@@ -34,8 +35,10 @@
     <DIV CLASS="col col-2 col-lg-3 locale-text">Reasons</DIV>
   </DIV>
 
-  <DIV *ngFor="let entry of userAdmin" CLASS="row title-row bg-secondary-subtle" >
-    <DIV CLASS="col col-2 col-lg-1 locale-text"><a [routerLink]="['/admin', entry.user_status?.user_id]">{{ entry.user_status?.full_name }}</a></DIV>
+  <DIV *ngFor="let entry of userAdmin" CLASS="row title-row bg-secondary-subtle user-row" >
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
+      <a [id]="'button-detail-' + (entry.user_status?.user_id || '')" [routerLink]="['/admin', entry.user_status?.user_id]">{{ entry.user_status?.full_name }}</a>
+    </DIV>
     <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.user_status?.context_label }}</DIV>
     <DIV CLASS="col col-2 col-lg-2 locale-text">
       {{ entry.user_status?.todays_activity_duration() }} /
@@ -44,7 +47,7 @@
         <ng-template #noFreePlay>{{ entry.user_status?.max_time_per_day() }}</ng-template>
         <DIV CLASS="downtime" *ngIf="entry.user_status?.todays_downtime_in_seconds">{{ entry.user_status?.todays_downtime() }}</DIV>
     </DIV>
-    <DIV CLASS="col col-2 col-lg-2  locale-text">{{ entry.user_status?.current_activity_start_time_as_string() }}</DIV>
+    <DIV CLASS="col col-2 col-lg-2 locale-text">{{ entry.user_status?.current_activity_start_time_as_string() }}</DIV>
     <DIV CLASS="col col-2 col-lg-2 locale-text">
       <div [ngClass] = "{'blink': entry.user_status?.current_activity_duration_in_seconds }">{{ entry.user_status?.current_activity_duration() }}</div>
       <DIV CLASS="downtime" *ngIf="entry.user_status?.current_activity_downtime_in_seconds"> {{ entry.user_status?.current_activity_downtime() }}</DIV>

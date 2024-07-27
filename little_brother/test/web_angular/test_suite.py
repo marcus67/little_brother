@@ -23,6 +23,7 @@ import unittest
 from little_brother.test.persistence import test_suite as persistence_test_suite
 from little_brother.test.web.test_status_server import TestStatusServer
 from little_brother.test.web_angular.test_status_server_angular_about import TestStatusServerAngularAbout
+from little_brother.test.web_angular.test_status_server_angular_admin import TestStatusServerAngularAdmin
 from little_brother.test.web_angular.test_status_server_angular_status import TestStatusServerAngularStatus
 from python_base_app import log_handling
 from python_base_app.test import base_test
@@ -36,6 +37,10 @@ def add_test_cases(p_test_suite, p_config_filename=None):
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=TestStatusServerAngularStatus, p_config_filename=p_config_filename)
+
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=TestStatusServerAngularAdmin, p_config_filename=p_config_filename)
 
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,

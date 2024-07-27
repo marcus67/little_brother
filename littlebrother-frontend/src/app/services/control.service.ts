@@ -15,7 +15,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
-import { EnsureAuthenticated } from '../services/ensure-authenticated.service'
+//import { EnsureAuthenticated } from '../services/ensure-authenticated.service'
 import { Control } from '../models/control'
 import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -30,7 +30,7 @@ export class ControlService {
 
   constructor(
     private http: HttpClient, 
-    private ensureAuthenticatedService : EnsureAuthenticated,
+//    private ensureAuthenticatedService : EnsureAuthenticated,
     private configService: ConfigService) {}
 
   loadControl() : Observable<Control> {

@@ -20,14 +20,16 @@
 
 import datetime
 import os
+import time
 import unittest
 
 import selenium
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from little_brother import app, token_handler
 from little_brother import client_process_handler
@@ -67,8 +69,8 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
     def setUp(self):
 
         dependency_injection.reset()
-        self._status_server : StatusServer = None
-        self._driver = None
+        self._status_server: StatusServer | None = None
+        self._driver: WebDriver | None = None
 
     def tearDown(self) -> None:
 
@@ -147,7 +149,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         dependency_injection.container[VersionChecker] = version_checker
         configs = {
             web_server.SECTION_NAME: status_server_config,
-            api_view_handler.SECTION_NAME : api_view_handler.ApiViewHandlerConfigModel(),
+            api_view_handler.SECTION_NAME: api_view_handler.ApiViewHandlerConfigModel(),
             token_handler.SECTION_NAME: token_handler.BaseTokenHandlerConfigModel()
         }
 
@@ -202,51 +204,11 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
             )
         )
 
-
-    def login_users(self):
-
-        # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.USERS_REL_URL))
-        assert constants.APPLICATION_NAME in self._driver.title
-
-        # ...we end up on the login page.
-        self.login()
-        # After logging in we are on the users page
-        assert "User Configuration" in self._driver.title
-        self.check_empty_user_list()
-
-    def login_devices(self):
-
-        # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.DEVICES_REL_URL))
-        assert constants.APPLICATION_NAME in self._driver.title
-
-        # ...we end up on the login page.
-        self.login()
-        # After logging in we are on the devices page
-        assert "Device Configuration" in self._driver.title
-        self.check_empty_device_list()
-
-    def login_admin(self):
-
-        # When we load the admin page the first time...
-        self._driver.get(self._status_server.get_url(p_internal=False, p_rel_url=constants.ADMIN_REL_URL))
-        assert constants.APPLICATION_NAME in self._driver.title
-
-        # ...we end up on the login page.
-        self.login()
-        # After logging in we are on the devices page
-        assert "Administration" in self._driver.title
-
-    def check_empty_user_list(self):
-        self._driver.find_element(By.XPATH, XPATH_EMPTY_USER_LIST)
-
     def check_empty_device_list(self):
         self._driver.find_element(By.XPATH, XPATH_EMPTY_DEVICE_LIST)
 
     def login(self):
-
-        login_title = self._driver.find_element(By.ID, "login-title")
+        login_title = self.retrieve_element_by_id_with_timeout(p_id="login-title")
         assert "Little Brother Login" == login_title.text
 
         elem = self._driver.find_element(By.NAME, "username")
@@ -257,6 +219,12 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         elem.clear()
         elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
         elem.send_keys(Keys.RETURN)
+
+    def initial_login(self):
+        self.select_angular_page()
+        self.login()
+        self.wait_until_page_ready()
+        assert constants.APPLICATION_NAME in self._driver.title
 
     def click(self, p_elem):
         # See https://stackoverflow.com/questions/56194094/how-to-fix-this-issue-element-not-interactable-selenium-python
@@ -276,16 +244,34 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
     def retrieve_element_by_id_with_timeout(self, p_id):
         return WebDriverWait(self._driver, DEFAULT_ANGULAR_RENDERING_TIMEOUT).until(
-            EC.presence_of_element_located((By.ID, p_id))
+            ec.presence_of_element_located((By.ID, p_id))
         )
 
     def wait_until_page_ready(self):
         self.retrieve_element_by_id_with_timeout(p_id="page-ready")
 
-    def switch_to_angular_page(self, p_button_id:str):
+    def switch_to_angular_page(self, p_button_id: str):
 
         button = self.retrieve_element_by_id_with_timeout(p_id=p_button_id)
         self.click(p_elem=button)
+        self.wait_until_page_ready()
+
+    def add_class_to_element(self, p_elem, p_class):
+        self._driver.execute_script("arguments[0].classList.add(arguments[1]);", p_elem, p_class)
+
+    def check_validation_error(self, p_validation_message):
+        elem = self._driver.find_element(By.CLASS_NAME, "alert-danger")
+        assert p_validation_message in elem.text
+
+    def open_accordion(self, p_accordion_id):
+        elem = self._driver.find_element(By.ID, p_accordion_id)
+        # TODO: Hack: Open the accordion, better: check it is open and click on it if not...
+        self.add_class_to_element(p_elem=elem, p_class="show")
+
+    @staticmethod
+    def wait_for_data_to_be_saved():
+        # TODO: Hack!
+        time.sleep(1)
 
     def add_new_user(self, p_user_entity_manager: UserEntityManager) -> int:
         with SessionContext(self._persistence) as session_context:
@@ -305,8 +291,12 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
         return user_id
 
-    def get_new_user_name(self):
+    @staticmethod
+    def get_new_user_name():
         return test_unix_user_handler.USER_2_UID
+
+    def count_user_rows(self):
+        return len(self._driver.find_elements(By.CLASS_NAME, 'user-row'))
 
 
 if __name__ == "__main__":

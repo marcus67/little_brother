@@ -18,7 +18,7 @@
 <app-nav-bar></app-nav-bar>
 <app-spinner *ngIf="isLoading"></app-spinner>
 <DIV *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
-  <span id="page-ready"></span>
+  <SPAN id="page-ready"></SPAN>
   <DIV CLASS="row title-row bg-primary-subtle">
     <DIV CLASS="col col-2 col-lg-1 locale-text">User</DIV>
     <DIV CLASS="col col-2 col-lg-1 locale-text">Context</DIV>
@@ -41,7 +41,8 @@
     <DIV CLASS="col col-2 col-lg-4 locale-text">Reasons</DIV>
   </DIV>
   <DIV *ngFor="let entry of userStatus" CLASS="row title-row bg-secondary-subtle">
-    <DIV CLASS="col col-2 col-lg-1 locale-text"><a [routerLink]="['/status', entry.user_id]">{{ entry.full_name }}</a>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
+      <a [id]="'button-detail-' + (entry.user_id || '')"  [routerLink]="['/status', entry.user_id]">{{ entry.full_name }}</a>
     </DIV>
     <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.context_label }}</DIV>
     <DIV CLASS="col col-2 col-lg-1 locale-text">

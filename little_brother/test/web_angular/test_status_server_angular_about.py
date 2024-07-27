@@ -21,7 +21,6 @@ import unittest
 
 from selenium.webdriver.common.by import By
 
-from little_brother import constants
 from little_brother import settings
 from little_brother.test.web_angular.base_test_status_server_angular import BaseTestStatusServerAngular
 from python_base_app.test import base_test
@@ -36,17 +35,9 @@ class TestStatusServerAngularAbout(BaseTestStatusServerAngular):
 
         self.create_selenium_driver()
 
-        self.select_angular_page()
-
-        self.login()
-
-        self.wait_until_page_ready()
-
-        assert constants.APPLICATION_NAME in self._driver.title
+        self.initial_login()
 
         self.switch_to_angular_page(p_button_id="button-about")
-
-        self.wait_until_page_ready()
 
         xpath = f"//tr[td[1] = 'Version' and td[2] = '{settings.settings['version']}']"
         self._logger.info(f"Checking for XPATH {xpath}")

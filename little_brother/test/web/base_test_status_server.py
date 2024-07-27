@@ -93,7 +93,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
     def create_dummy_status_server(self, p_process_handlers=None):
 
-        # TODO: Add rule set configs as parameters again and migrate them into the datamodel
+        # TODO: Add rule set configs as parameters again and migrate them into the data model
 
         if p_process_handlers is None:
             p_process_handlers = {}
@@ -137,8 +137,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         version_checker_config = VersionCheckerConfigModel()
         version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
         dependency_injection.container[VersionChecker] = version_checker
-        configs = { web_server.SECTION_NAME: status_server_config,
-                    api_view_handler.SECTION_NAME : api_view_handler.ApiViewHandlerConfigModel() }
+        configs = {web_server.SECTION_NAME: status_server_config,
+                   api_view_handler.SECTION_NAME: api_view_handler.ApiViewHandlerConfigModel()}
 
         self._status_server = web_server.StatusServer(
             p_configs=configs,
@@ -260,7 +260,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         return user_id
 
-    def get_new_user_name(self):
+    @staticmethod
+    def get_new_user_name():
         return test_unix_user_handler.USER_2_UID
 
 

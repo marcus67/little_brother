@@ -18,6 +18,7 @@
 <app-nav-bar></app-nav-bar>
 <app-spinner *ngIf="isLoadingAdminDetails || isLoadingStatusDetails"></app-spinner>
 <DIV *ngIf="!(isLoadingAdminDetails || isLoadingStatusDetails)" class="container rounded-2 overflow-hidden">
+  <SPAN id="page-ready"></SPAN>
   <DIV CLASS="row title-row bg-primary-subtle">
     <DIV CLASS="col col-1">User</DIV>
     <DIV CLASS="col col-1">Context</DIV>

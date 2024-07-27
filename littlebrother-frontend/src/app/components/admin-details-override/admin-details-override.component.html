@@ -24,7 +24,7 @@
         </DIV>
         <DIV CLASS="col col-2 align-self-center">
             <!-- Note: the tag "input" must be all lowercase! -->
-            <input id="min_time_of_day" type="text" [formControl]="min_time_of_day" size="5">
+            <input id="min_time_of_day" type="text" [formControl]="min_time_of_day" size="5" [class]="'input-' + (referenceDateInIso8601 || '') + '-min-time-of-day'">
             <DIV *ngIf="min_time_of_day.errors?.['pattern']">
                 <DIV class="alert alert-danger" role="alert">
                     Time must be given as HH:MM!
@@ -33,7 +33,7 @@
         </DIV>
         <DIV CLASS="col col-2 align-self-center">
             <!-- Note: the tag "input" must be all lowercase! -->
-            <input id="max_time_of_day" type="text" [formControl]="max_time_of_day" size="5">
+            <input id="max_time_of_day" type="text" [formControl]="max_time_of_day" size="5" [class]="'input-' + (referenceDateInIso8601 || '') + '-max-time-of-day'">
             <DIV *ngIf="max_time_of_day.errors?.['pattern']">
                 <DIV class="alert alert-danger" role="alert">
                     Time must be given as HH:MM!
@@ -42,7 +42,7 @@
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
             <!-- Note: the tag "input" must be all lowercase! -->
-            <input id="max_time_per_day" type="text" [formControl]="max_time_per_day" size="6">
+            <input id="max_time_per_day" type="text" [formControl]="max_time_per_day" size="6" [class]="'input-' + (referenceDateInIso8601 || '') + '-max-time-per-day'">
             <DIV *ngIf="max_time_per_day.errors?.['pattern']">
                 <DIV class="alert alert-danger" role="alert">
                     Duration must be given as NNhNNm!
@@ -51,7 +51,7 @@
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
             <!-- Note: the tag "input" must be all lowercase! -->
-            <input id="min_break" type="text" [formControl]="min_break" size="6">
+            <input id="min_break" type="text" [formControl]="min_break" size="6" [class]="'input-' + (referenceDateInIso8601 || '') + '-min-break'">
             <DIV *ngIf="min_break.errors?.['pattern']">
                 <DIV class="alert alert-danger" role="alert">
                     Duration must be given as NNhNNm!
@@ -60,7 +60,7 @@
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
             <!-- Note: the tag "input" must be all lowercase! -->
-            <input id="max_activity_duration" type="text" [formControl]="max_activity_duration" size="6">
+            <input id="max_activity_duration" type="text" [formControl]="max_activity_duration" size="6" [class]="'input-' + (referenceDateInIso8601 || '') + '-max-activity-duration'">
             <DIV *ngIf="max_activity_duration.errors?.['pattern']">
                 <DIV class="alert alert-danger" role="alert">
                     Duration must be given as NNhNNm!
@@ -70,12 +70,12 @@
         <DIV CLASS="col col-1 align-self-center">
             <!-- Note: the tag "input" must be all lowercase! -->
             <!-- https://angular.io/api/forms/CheckboxControlValueAccessor -->
-            <input id="free_play" type="checkbox" formControlName="free_play">
+            <input id="free_play" type="checkbox" formControlName="free_play" [class]="'input-' + (referenceDateInIso8601 || '') + '-free-play'">
         </DIV>
         <DIV CLASS="col col-1 align-self-center">
             <BUTTON
                 [disabled]="adminOverrideForm.pristine || adminOverrideForm.invalid"
-                id="save" class="btn btn-save" type="submit" name="submit" title="Save override">
+                id="save" [class]="'input-' + (referenceDateInIso8601 || '') + '-save btn btn-save'" type="submit" name="submit" title="Save override">
                 <I class="fas fa-save"></I>
             </BUTTON>
         </DIV>
