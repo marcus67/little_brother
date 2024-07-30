@@ -16,6 +16,7 @@ from little_brother.test import test_data
 from little_brother.test.web_angular.base_test_status_server_angular import BaseTestStatusServerAngular
 from python_base_app import tools
 from python_base_app.test import base_test
+from python_base_app.tools import wrap_retry_until_expected_result
 
 #    Copyright (C) 2019-2024  Marcus Rickert
 #
@@ -139,12 +140,13 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         save_button = self._driver.find_element(By.CLASS_NAME, elem_name_prefix + "save")
         self.click(save_button)
 
-        self.wait_for_data_to_be_saved()
+        wrapped_get_rule_override_by_username_and_date = wrap_retry_until_expected_result(
+            rule_override_entity_manager.get_rule_override_by_username_and_date, p_logger=self._logger)
 
         with SessionContext(self._persistence) as session_context:
-            rule_override: RuleOverride = rule_override_entity_manager.get_rule_override_by_username_and_date(
+            rule_override = wrapped_get_rule_override_by_username_and_date(
                 p_session_context=session_context, p_username=self.get_new_user_name(), p_date=reference_date)
-            self.assertIsNotNone(rule_override)
+
             self.assertEqual(rule_override.reference_date, reference_date)
             self.assertEqual(rule_override.username, self.get_new_user_name())
 
@@ -190,11 +192,15 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
 
         self.wait_for_data_to_be_saved()
 
+        get_active_time_extensions = wrap_retry_until_expected_result(
+            time_extension_entity_manager.get_active_time_extensions, p_logger=self._logger,
+            p_check_expected_result=lambda x: x is not None and len(x) == 1
+        )
+
         with SessionContext(self._persistence) as session_context:
-            time_extensions: List[TimeExtension] = time_extension_entity_manager.get_active_time_extensions(
+            time_extensions: List[TimeExtension] = get_active_time_extensions(
                 p_session_context=session_context, p_reference_datetime=tools.get_current_time())
-            self.assertIsNotNone(time_extensions)
-            self.assertEqual(1, len(time_extensions))
+
             self.assertIn(self.get_new_user_name(), time_extensions)
 
             time_extension: TimeExtension = time_extensions[self.get_new_user_name()]
@@ -238,13 +244,14 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         button = self._driver.find_element(By.ID, button_name)
         self.click(button)
 
-        self.wait_for_data_to_be_saved()
+        get_active_time_extensions = wrap_retry_until_expected_result(
+            time_extension_entity_manager.get_active_time_extensions, p_logger=self._logger,
+            p_check_expected_result=lambda x: x is not None and len(x) == 0
+        )
 
         with SessionContext(self._persistence) as session_context:
-            time_extensions: List[TimeExtension] = time_extension_entity_manager.get_active_time_extensions(
+            get_active_time_extensions(
                 p_session_context=session_context, p_reference_datetime=tools.get_current_time())
-            self.assertIsNotNone(time_extensions)
-            self.assertEqual(0, len(time_extensions))
 
     @base_test.skip_if_env("NO_SELENIUM_TESTS_ANGULAR")
     def test_page_extend_time_extension(self):
@@ -284,17 +291,19 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         button = self._driver.find_element(By.ID, button_name)
         self.click(button)
 
-        self.wait_for_data_to_be_saved()
+        get_active_time_extensions = wrap_retry_until_expected_result(
+            time_extension_entity_manager.get_active_time_extensions, p_logger=self._logger,
+            p_check_expected_result=lambda time_extensions: (
+                    time_extensions is not None and
+                    len(time_extensions) == 1 and
+                    self.get_new_user_name() in time_extensions and
+                    EXTENSION_IN_MINUTES + SECOND_EXTENSION_IN_MINUTES ==
+                    time_extensions[self.get_new_user_name()].get_length_in_minutes())
+        )
 
         with SessionContext(self._persistence) as session_context:
-            time_extensions: List[TimeExtension] = time_extension_entity_manager.get_active_time_extensions(
+            time_extensions: List[TimeExtension] = get_active_time_extensions(
                 p_session_context=session_context, p_reference_datetime=tools.get_current_time())
-            self.assertIsNotNone(time_extensions)
-            self.assertEqual(1, len(time_extensions))
-            self.assertIn(self.get_new_user_name(), time_extensions)
-
-            time_extension: TimeExtension = time_extensions[self.get_new_user_name()]
-            self.assertEqual(EXTENSION_IN_MINUTES + SECOND_EXTENSION_IN_MINUTES, time_extension.get_length_in_minutes())
 
     def _test_page_admin_edit_invalid_data(self, p_elem_name: str, p_invalid_data: str, p_validation_message: str):
         self.create_dummy_status_server()
