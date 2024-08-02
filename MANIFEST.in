@@ -37,6 +37,10 @@ include little_brother/static/contrib/fontawesome/LICENSE.txt
 include little_brother/static/contrib/fontawesome/css/all.min.css
 include little_brother/static/contrib/fontawesome/js/all.min.js
 include little_brother/static/contrib/fontawesome/webfonts/*.svg
+include little_brother/static/contrib/fontawesome/webfonts/*.ttf
+include little_brother/static/contrib/fontawesome/webfonts/*.eot
+include little_brother/static/contrib/fontawesome/webfonts/*.woff
+include little_brother/static/contrib/fontawesome/webfonts/*.woff2
 
 # Angular App
 
@@ -57,3 +61,7 @@ include little_brother/static/angular/assets/contrib/fontawesome/LICENSE.txt
 include little_brother/static/angular/assets/contrib/fontawesome/css/all.min.css
 include little_brother/static/angular/assets/contrib/fontawesome/js/all.min.js
 include little_brother/static/angular/assets/contrib/fontawesome/webfonts/*.svg
+include little_brother/static/angular/assets/contrib/fontawesome/webfonts/*.ttf
+include little_brother/static/angular/assets/contrib/fontawesome/webfonts/*.eot
+include little_brother/static/angular/assets/contrib/fontawesome/webfonts/*.woff
+include little_brother/static/angular/assets/contrib/fontawesome/webfonts/*.woff2
