@@ -244,6 +244,8 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         button = self._driver.find_element(By.ID, button_name)
         self.click(button)
 
+        self.wait_for_data_to_be_saved()
+
         get_active_time_extensions = wrap_retry_until_expected_result(
             time_extension_entity_manager.get_active_time_extensions, p_logger=self._logger,
             p_check_expected_result=lambda x: x is not None and len(x) == 0
@@ -290,6 +292,8 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
 
         button = self._driver.find_element(By.ID, button_name)
         self.click(button)
+
+        self.wait_for_data_to_be_saved()
 
         get_active_time_extensions = wrap_retry_until_expected_result(
             time_extension_entity_manager.get_active_time_extensions, p_logger=self._logger,
