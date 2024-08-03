@@ -20,9 +20,9 @@ import gettext
 import io
 import os
 import re
-import urllib
 from os.path import join
 from typing import List, Optional
+from urllib.parse import urlunsplit
 
 import babel.dates
 import flask
@@ -200,7 +200,6 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 self._new_api_angular_view_handler.register(
                     p_app=self._app, p_url_prefix=self._config.angular_gui_base_url)
 
-
                 if self._config.patch_angular_index_html:
                     self.patch_angular_index_html()
 
@@ -232,18 +231,19 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
 
     def get_angular_url(self, p_rel_url=None):
 
-        effectiveUrl = join(self._config.angular_gui_base_url, p_rel_url)\
+        effective_url = join(self._config.angular_gui_base_url, p_rel_url) \
             if p_rel_url is not None else self._config.angular_gui_base_url
-        return urllib.parse.urlunsplit(
+        return urlunsplit(
             (
                 self._config.scheme,
                 "%s:%d" % (self._config.host, self._config.port),
-                effectiveUrl,
+                effective_url,
                 None,
                 None
             ))
 
-    def invert(self, rel_font_size):
+    @staticmethod
+    def invert(rel_font_size):
         return str(int(1.0 / float(rel_font_size) * 10000.0))
 
     def format_datetime(self, value):
@@ -424,15 +424,12 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
             self._logger.info(f"Wrote Angular configuration file to {config_filename}.")
 
         except IOError as e:
-            raise ConfigurationException(f"Cannot write Angular configuration to file {config_filename}!")
+            raise ConfigurationException(f"Cannot write Angular configuration to file {config_filename}: {e!s}!")
 
     def run(self):
         if self._config.angular_gui_active:
-            msg = f"Starting Angular web server '{self._name}' on "\
+            msg = f"Starting Angular web server '{self._name}' on " \
                   f"{self._config.host}:{self._config.port}{self._config.angular_gui_base_url}"
             self._logger.info(msg)
 
         super().run()
-
-
-

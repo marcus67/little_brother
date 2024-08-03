@@ -54,11 +54,10 @@ from little_brother.web import web_server
 from little_brother.web.web_server import StatusServer
 from python_base_app import locale_helper
 from python_base_app.base_user_handler import BaseUserHandler
-from python_base_app.configuration import ConfigurationException
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
-DEFAULT_ANGULAR_RENDERING_TIMEOUT = 60  # seconds
+DEFAULT_ANGULAR_RENDERING_TIMEOUT = 5  # seconds
 
 XPATH_EMPTY_USER_LIST = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
 XPATH_EMPTY_DEVICE_LIST = "//FORM/DIV/DIV[DIV[1] = 'Device' and DIV[2] = '']"
@@ -165,19 +164,15 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
     def create_selenium_driver(self):
 
-        if os.getenv("SELENIUM_CHROME_DRIVER") is not None:
-            options = selenium.webdriver.ChromeOptions()
-            options.add_argument('headless')
-            options.add_argument("--incognito")
+        options = selenium.webdriver.ChromeOptions()
+        options.add_argument('headless')
+        options.add_argument("--incognito")
 
-            # See https://stackoverflow.com/questions/50642308
-            options.add_argument('no-sandbox')
-            options.add_argument('disable-dev-shm-usage')
+        # See https://stackoverflow.com/questions/50642308
+        options.add_argument('no-sandbox')
+        options.add_argument('disable-dev-shm-usage')
 
-            self._driver = selenium.webdriver.Chrome(options=options)
-
-        else:
-            raise ConfigurationException("No valid Selenium driver selected! Use SELENIUM_CHROME_DRIVER=1.")
+        self._driver = selenium.webdriver.Chrome(options=options)
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs, p_create_complex_handlers=False):
 
@@ -221,7 +216,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         elem.send_keys(Keys.RETURN)
 
     def initial_login(self):
-        self.select_angular_page()
+        self.select_angular_page("")
         self.login()
         self.wait_until_page_ready()
         assert constants.APPLICATION_NAME in self._driver.title
