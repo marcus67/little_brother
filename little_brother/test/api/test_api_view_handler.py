@@ -96,7 +96,7 @@ class TestApiViewHandler(BaseTestStatusServer):
         port = self.get_status_server_port()
 
         master_connector_config = MasterConnectorConfigModel()
-        master_connector_config.host_url = "http://localhost:" + port
+        master_connector_config.host_url = "http://localhost:" + str(port)
 
         master_connector = MasterConnector(p_config=master_connector_config)
 
@@ -111,7 +111,7 @@ class TestApiViewHandler(BaseTestStatusServer):
         port = self.get_status_server_port()
 
         master_connector_config = MasterConnectorConfigModel()
-        master_connector_config.host_url = "http://localhost:" + port
+        master_connector_config.host_url = "http://localhost:" + str(port)
 
         master_connector = MasterConnector(p_config=master_connector_config)
 
@@ -157,7 +157,7 @@ class TestApiViewHandler(BaseTestStatusServer):
         session_context.get_session().commit()
 
         master_connector_config = MasterConnectorConfigModel()
-        master_connector_config.host_url = "http://localhost:" + port
+        master_connector_config.host_url = "http://localhost:" + str(port)
 
         master_connector = MasterConnector(p_config=master_connector_config)
 

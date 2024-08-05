@@ -140,6 +140,8 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         save_button = self._driver.find_element(By.CLASS_NAME, elem_name_prefix + "save")
         self.click(save_button)
 
+        self.wait_for_data_to_be_saved()
+
         wrapped_get_rule_override_by_username_and_date = wrap_retry_until_expected_result(
             rule_override_entity_manager.get_rule_override_by_username_and_date, p_logger=self._logger)
 

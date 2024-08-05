@@ -80,11 +80,10 @@ class TestApp(base_test.BaseTestCase):
         self.assertEqual(17, len(configuration._sections))
         self.assertEqual(1, len(configuration._optional_section_handler_definitions))
 
-    @classmethod
-    def create_dummy_app(cls, p_logger):
+    def create_dummy_app(self, p_logger):
 
         parser = get_argument_parser(p_app_name=APP_NAME)
-        arguments = parser.parse_args(cls.get_default_sys_args())
+        arguments = parser.parse_args(self.get_default_sys_args())
 
         app = App(p_pid_file="TMP_PID", p_app_name=APP_NAME, p_arguments=arguments)
 
