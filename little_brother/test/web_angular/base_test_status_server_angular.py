@@ -172,6 +172,12 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         options.add_argument('no-sandbox')
         options.add_argument('disable-dev-shm-usage')
 
+        chrome_binary = os.getenv("CHROME_BINARY")
+
+        if chrome_binary:
+            self._logger.info(f"Using Chrome binary at {chrome_binary}.")
+            options.binary_location = os.getenv(chrome_binary)
+
         self._driver = selenium.webdriver.Chrome(options=options)
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs, p_create_complex_handlers=False):
