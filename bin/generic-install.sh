@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -237,18 +237,18 @@ echo "Activating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
 fi
 
 echo "Setting ownership..."
-echo "    * little-brother.little-brother ${ETC_DIR}"
-chown -R little-brother.little-brother ${ETC_DIR}
-echo "    * little-brother.little-brother ${LOG_DIR}"
-chown -R little-brother.little-brother ${LOG_DIR}
-echo "    * little-brother.little-brother ${SPOOL_DIR}"
-chown -R little-brother.little-brother ${SPOOL_DIR}
-echo "    * little-brother.little-brother ${LIB_DIR}"
-chown -R little-brother.little-brother ${LIB_DIR}
+echo "    * little-brother:little-brother ${ETC_DIR}"
+chown -R little-brother:little-brother ${ETC_DIR}
+echo "    * little-brother:little-brother ${LOG_DIR}"
+chown -R little-brother:little-brother ${LOG_DIR}
+echo "    * little-brother:little-brother ${SPOOL_DIR}"
+chown -R little-brother:little-brother ${SPOOL_DIR}
+echo "    * little-brother:little-brother ${LIB_DIR}"
+chown -R little-brother:little-brother ${LIB_DIR}
 
 
-echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
-chown little-brother.little-brother /etc/little-brother/little-brother.config
+echo "    * little-brother:little-brother /etc/little-brother/little-brother.config"
+chown little-brother:little-brother /etc/little-brother/little-brother.config
   if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   echo "    * ${SYSTEMD_DIR}/little-brother.service"
   chown root.root ${SYSTEMD_DIR}/little-brother.service
@@ -271,10 +271,11 @@ echo "    * ${SPOOL_DIR}"
 chmod -R og-rwx ${SPOOL_DIR}
 
 
-echo "    * little-brother.little-brother /etc/little-brother/little-brother.config"
+echo "    * little-brother:little-brother /etc/little-brother/little-brother.config"
 chmod og-rwx /etc/little-brother/little-brother.config
 
-${PIP3} install wheel # setuptools
+echo "Upgrading packages 'wheel' and 'setuptools'..."
+${PIP3} install wheel setuptools
 echo "Installing PIP packages..."
 echo "  * little-brother-0.5.1.tar.gz"
 echo "  * python-base-app-0.3.0.tar.gz"
@@ -284,6 +285,12 @@ ${PIP3} install --upgrade --ignore-installed \
      ${LIB_DIR}/little-brother-0.5.1.tar.gz\
      ${LIB_DIR}/python-base-app-0.3.0.tar.gz\
      ${LIB_DIR}/some-flask-helpers-0.2.6.tar.gz
+
+if [ "${VIRTUAL_ENV_DIR}" != "" ] ; then
+  echo "Changing ownership of virtual environment ${VIRTUAL_ENV_DIR} to little-brother:little-brother..."
+  chown -R little-brother:little-brother ${VIRTUAL_ENV_DIR}
+fi
+
 
 
 echo "Removing installation file ${LIB_DIR}/little-brother-0.5.1.tar.gz..."

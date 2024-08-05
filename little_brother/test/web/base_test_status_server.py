@@ -91,6 +91,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         return process_handlers
 
+
     def create_dummy_status_server(self, p_process_handlers=None):
 
         # TODO: Add rule set configs as parameters again and migrate them into the data model
@@ -132,7 +133,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         status_server_config = web_server.StatusServerConfigModel()
         status_server_config.app_secret = "123456"
 
-        status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
+        status_server_config.port = self.get_status_server_port()
 
         version_checker_config = VersionCheckerConfigModel()
         version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)

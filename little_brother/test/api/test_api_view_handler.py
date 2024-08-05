@@ -58,10 +58,10 @@ class TestApiViewHandler(BaseTestStatusServer):
         event_handler = dependency_injection.container[EventHandler]
         event_handler.register_event_handler(p_event_type=admin_event.EVENT_TYPE_DUMMY_1, p_handler=self.handle_event)
 
-        port = os.getenv("STATUS_SERVER_PORT", "5555")
+        port = self.get_status_server_port()
 
         master_connector_config = MasterConnectorConfigModel()
-        master_connector_config.host_url = "http://localhost:" + port
+        master_connector_config.host_url = "http://localhost:" + str(port)
 
         master_connector = MasterConnector(p_config=master_connector_config)
 
@@ -93,7 +93,7 @@ class TestApiViewHandler(BaseTestStatusServer):
         event_handler = dependency_injection.container[EventHandler]
         event_handler.register_event_handler(p_event_type=admin_event.EVENT_TYPE_DUMMY_1, p_handler=self.handle_event)
 
-        port = os.getenv("STATUS_SERVER_PORT", "5555")
+        port = self.get_status_server_port()
 
         master_connector_config = MasterConnectorConfigModel()
         master_connector_config.host_url = "http://localhost:" + port
@@ -108,7 +108,7 @@ class TestApiViewHandler(BaseTestStatusServer):
         self.create_dummy_status_server()
         self._status_server.start_server()
 
-        port = os.getenv("STATUS_SERVER_PORT", "5555")
+        port = self.get_status_server_port()
 
         master_connector_config = MasterConnectorConfigModel()
         master_connector_config.host_url = "http://localhost:" + port
@@ -142,7 +142,7 @@ class TestApiViewHandler(BaseTestStatusServer):
         self.create_dummy_status_server()
         self._status_server.start_server()
 
-        port = os.getenv("STATUS_SERVER_PORT", "5555")
+        port = self.get_status_server_port()
 
         persistence = dependency_injection.container[Persistence]
 

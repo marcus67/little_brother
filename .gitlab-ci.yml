@@ -63,7 +63,7 @@ test_debian_3_10:
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - DELTA_PORT=0 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
   variables:
@@ -76,7 +76,7 @@ test_debian_3_11:
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - DELTA_PORT=1 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
   variables:
@@ -89,7 +89,7 @@ test_debian_3_12:
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - DELTA_PORT=2 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
   
   artifacts:
@@ -125,7 +125,7 @@ install_pypi_3_10:
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+    - DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
   
@@ -138,7 +138,7 @@ install_pypi_3_11:
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+    - DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
   
@@ -151,7 +151,7 @@ install_pypi_3_12:
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+    - DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
   

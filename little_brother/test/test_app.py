@@ -96,7 +96,7 @@ class TestApp(base_test.BaseTestCase):
 
         web_server_config = app._config[web_server.SECTION_NAME]
 
-        web_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
+        web_server_config.port = self.get_status_server_port()
 
         return app
 

@@ -137,7 +137,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         status_server_config = web_server.StatusServerConfigModel()
         status_server_config.app_secret = "123456"
 
-        status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
+        status_server_config.port = self.get_status_server_port()
 
         status_server_config.angular_gui_base_url = "/AngularLittleBrother"
         status_server_config.angular_api_base_url = "/AngularLittleBrother/angular-api"
