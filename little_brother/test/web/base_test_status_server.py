@@ -153,18 +153,28 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
     def create_selenium_driver(self):
 
-        if os.getenv("SELENIUM_CHROME_DRIVER") is not None:
-            options = selenium.webdriver.ChromeOptions()
-            options.add_argument('headless')
+        options = selenium.webdriver.ChromeOptions()
 
-            # See https://stackoverflow.com/questions/50642308
-            options.add_argument('no-sandbox')
-            options.add_argument('disable-dev-shm-usage')
-
-            self._driver = selenium.webdriver.Chrome(options=options)
+        if os.getenv("NEW_CHROME"):
+            options.add_argument(f"--explicitly-allowed-ports={self._status_server.get_port()}")
+            # https://stackoverflow.com/questions/77585943/selenium-headless-chrome-empty-page-source-not-ua-issue
+            options.add_argument('--headless=new')
 
         else:
-            raise ConfigurationException("No valid Selenium driver selected! Use SELENIUM_CHROME_DRIVER=1.")
+            options.add_argument('--headless')
+
+        # See https://stackoverflow.com/questions/50642308
+        options.add_argument('no-sandbox')
+        options.add_argument('disable-dev-shm-usage')
+        options.add_argument("--incognito")
+
+        chrome_binary = os.getenv("CHROME_BINARY")
+
+        if chrome_binary:
+            self._logger.info(f"Using Chrome binary at {chrome_binary}.")
+            options.binary_location = os.getenv(chrome_binary)
+
+        self._driver = selenium.webdriver.Chrome(options=options)
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs):
 

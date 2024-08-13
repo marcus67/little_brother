@@ -165,12 +165,19 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
     def create_selenium_driver(self):
 
         options = selenium.webdriver.ChromeOptions()
-        options.add_argument('headless')
-        options.add_argument("--incognito")
+
+        if os.getenv("NEW_CHROME"):
+            options.add_argument(f"--explicitly-allowed-ports={self._status_server.get_port()}")
+            # https://stackoverflow.com/questions/77585943/selenium-headless-chrome-empty-page-source-not-ua-issue
+            options.add_argument('--headless=new')
+
+        else:
+            options.add_argument('--headless')
 
         # See https://stackoverflow.com/questions/50642308
         options.add_argument('no-sandbox')
         options.add_argument('disable-dev-shm-usage')
+        options.add_argument("--incognito")
 
         chrome_binary = os.getenv("CHROME_BINARY")
 
