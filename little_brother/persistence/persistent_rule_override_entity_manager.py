@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,8 @@ class RuleOverrideEntityManager(base_entity_manager.BaseEntityManager):
     def __init__(self):
         super().__init__(p_entity_class=RuleOverride)
 
-    def update_rule_override(self, p_session_context: SessionContext, p_rule_override):
+    @staticmethod
+    def update_rule_override(p_session_context: SessionContext, p_rule_override):
 
         session = p_session_context.get_session()
         query = session.query(RuleOverride).filter(RuleOverride.key == p_rule_override.get_key())
@@ -51,7 +52,8 @@ class RuleOverrideEntityManager(base_entity_manager.BaseEntityManager):
 
         session.commit()
 
-    def load_rule_overrides(self, p_session_context: SessionContext, p_lookback_in_days):
+    @staticmethod
+    def load_rule_overrides(p_session_context: SessionContext, p_lookback_in_days):
 
         session = p_session_context.get_session()
         reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_lookback_in_days)
@@ -59,21 +61,18 @@ class RuleOverrideEntityManager(base_entity_manager.BaseEntityManager):
 
         return result
 
-    def get_rule_override_by_username_and_date(self, p_session_context: SessionContext,
+    @staticmethod
+    def get_rule_override_by_username_and_date(p_session_context: SessionContext,
                                                p_username: str, p_date: datetime.date):
 
         session = p_session_context.get_session()
         result = session.query(RuleOverride).filter(
-         and_(RuleOverride.username == p_username, RuleOverride.reference_date == p_date))
-
-        for item in result:
-            print(str(item))
+            and_(RuleOverride.username == p_username, RuleOverride.reference_date == p_date))
 
         if result.count() == 1:
             return result.one()
 
-        else:
-            return None
+        return None
 
     def delete_historic_entries(self, p_session_context: SessionContext, p_history_length_in_days: int):
 
