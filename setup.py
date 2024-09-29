@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -81,14 +81,16 @@ extended_setup_params = {
                          ],
 
     # additional setup configuration used by CI stages
-    "owasp": False,  # TODO: Reactivate Owasp check!
+    "scan_id": "little-brother-fb-angular", # TODO: remove when owasp_check_branch_map gets activated!
+    "owasp": True,
     "analyze": True,
     "analyze_branch_map": {
         "master": 'SONAR_PROJECT_KEY',
         "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
     },
     "owasp_check_branch_map": {
-        "main": 'ACCSCAN_PROJECT_ID'
+        "main": 'SECURECHECKPLUS_PROJECT_ID',
+        "fb-angular": 'SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR'
     },
 
     # technical name used for e.g. directories, PIP-package, and users
