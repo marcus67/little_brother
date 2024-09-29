@@ -89,8 +89,8 @@ extended_setup_params = {
         "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
     },
     "owasp_check_branch_map": {
-        "main": 'SECURECHECKPLUS_PROJECT_ID',
-        "fb-angular": 'SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR'
+        "main": ('SECURECHECKPLUS_PROJECT_ID', 'SECURECHECKPLUS_API_KEY'),
+        "fb-angular": ('SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR', 'SECURECHECKPLUS_API_KEY_FB_ANGULAR')
     },
 
     # technical name used for e.g. directories, PIP-package, and users
