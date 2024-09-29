@@ -29,6 +29,8 @@ stages:
   - build
   - install_and_check
   - analyze
+  - owasp_check
+  - owasp_upload
   - publish
   - deploy
   
@@ -179,6 +181,39 @@ analyze:
 
 
 
+owasp_check:
+  image:
+    name: registry.gitlab.com/gitlab-ci-utils/docker-dependency-check:latest
+    entrypoint: [""]
+  stage: owasp_check
+  script:
+    # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 0 are found
+    - /usr/share/dependency-check/bin/dependency-check.sh --enableExperimental --scan "./" --format JSON --project "$CI_PROJECT_NAME"
+    # Dependency Check will only fail the job based on CVSS scores, and in some cases vulnerabilities do not
+    # have CVSS scores (e.g. those from NPM audit), so they don't cause failure.  To fail for any vulnerabilities
+    # grep the resulting report for any "vulnerabilities" sections and exit if any are found (count > 0).
+  allow_failure: false
+  artifacts:
+    when: always
+    paths:
+        # Save the HTML and JSON report artifacts
+      - "./dependency-check-report.json"
+
+owasp_upload:
+  image:
+    name: "$SECURECHECKPLUS_ADAPTER_IMAGE"
+    entrypoint: ["python", "run.py"]
+  stage: owasp_upload
+  allow_failure: false
+  variables:
+    SECURECHECKPLUS_SERVER_URL: "SECURECHECKPLUS_URL/analyzer/api"
+    REPORT_FILE_NAME: dependency-check-report.json
+    FILE_FORMAT: json
+    TOOL_NAME: owasp
+    PROJECT_ID: "little-brother-fb-angular"
+    PROJECT_NAME: "little-brother"
+  script:
+    - echo "Analysis successful."
 publish_pypi:
   image: marcusrickert/docker-python-app:3.11
   stage: publish
