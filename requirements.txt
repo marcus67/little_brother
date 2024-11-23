@@ -24,12 +24,12 @@ setuptools~=70.1.1
 sqlalchemy==2.0.21
 typing_extensions~=4.8.0
 urllib3==2.2.2
-werkzeug==2.3.8
+werkzeug==3.1.3
 wtforms==3.0.1
 
 ##############################################################################################################
 # The package version of selenium is linked to the setup of the test environment (e.g. the version of Chrome).
-# Changing the version here will probably entail having the change versions elsewhere!
+# Changing the version here will probably entail having to change versions elsewhere!
 ##############################################################################################################
 selenium==4.10.0
 
