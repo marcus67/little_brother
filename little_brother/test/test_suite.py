@@ -37,6 +37,7 @@ from little_brother.test import test_user_status
 from little_brother.test.api import test_suite as api_test_suite
 from little_brother.test.persistence import test_suite as persistence_test_suite
 from little_brother.test.web import test_suite as web_test_suite
+from little_brother.test.web_angular import test_suite as web_angular_test_suite
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
@@ -133,6 +134,7 @@ def main():
 
     persistence_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     web_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+    web_angular_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     api_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
 
     base_test.run_test_suite(p_test_suite=test_suite)

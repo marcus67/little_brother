@@ -27,14 +27,14 @@
     <DIV class="collapse navbar-collapse" id="navbar-collapse-1">
 
       <UL class="nav navbar-nav  d-lg-flex col-lg-8">
-        <LI class="nav-item"><a class="nav-link active" routerLink="/status">Status</a></LI>
-        <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/admin">Admin</a></LI>
+        <LI class="nav-item"><a id="button-status" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'status'}" routerLink="/status">Status</a></LI>
+        <LI class="nav-item" *ngIf="isAdmin"><a id="button-admin" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'admin'}" routerLink="/admin">Admin</a></LI>
         <!--
         <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/users">Users</a></LI>
         <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/devices">Devices</a></LI>
         <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/topology">Topology</a></LI>
         -->
-        <LI class="nav-item"><a class="nav-link" routerLink="/about">About</a></LI>
+        <LI class="nav-item"><a  id="button-about" class="nav-link rounded-2"  [ngClass]="{'active': currentNavBarTab() == 'about'}" routerLink="/about">About</a></LI>
       </UL>
       <DIV class="d-lg-flex col-lg-3 justify-content-lg-end">
       <span class="navbar-text">

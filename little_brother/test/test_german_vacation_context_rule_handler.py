@@ -1,4 +1,4 @@
-#    Copyright (C) 2019  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -47,6 +47,7 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
         with self.assertRaises(configuration.ConfigurationException):
             rule_handler.is_active(p_reference_date=datetime.datetime.now().date(), p_details=INVALID_STATE_NAME)
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_is_not_active_last_day_before_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
@@ -67,6 +68,7 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
 
         self.assertTrue(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("24.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_is_not_active_first_day_after_vacation(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
@@ -74,6 +76,7 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
         self.assertFalse(rule_handler.is_active(p_reference_date=datetime.datetime.strptime("25.10.2020", "%d.%m.%Y").date(), p_details=VALID_STATE_NAME))
 
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_exception_when_invalid_federal_state_url(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()
@@ -86,6 +89,7 @@ class TestGermanVacationContextRuleHandler(base_test.BaseTestCase):
         with self.assertRaises(Exception):
             rule_handler.check_data()
 
+    @base_test.skip_if_env("NO_GERMAN_VACATION_CALENDAR")
     def test_exception_when_invalid_vacation_data_url(self):
 
         rule_handler = german_vacation_context_rule_handler.GermanVacationContextRuleHandler()

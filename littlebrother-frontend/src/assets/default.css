@@ -247,3 +247,8 @@ input {
   padding-left: 1px;
   padding-right: 1px;
 }
+
+.nav-link.active {
+    background-color: var(--bs-secondary-bg-subtle) !important;;
+    color: white;
+}

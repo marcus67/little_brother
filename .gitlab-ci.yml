@@ -1,4 +1,4 @@
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -25,17 +25,31 @@ variables:
   PIP3: "./bin/pip3.sh"
 
 stages:
+  - build_angular
   - build
   - install_and_check
+  - analyze
   - owasp_check
   - owasp_upload
   - publish
   - deploy
   
+build_angular_app:
+  image: marcusrickert/docker-python-app:3.11
+  stage: build_angular
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_ANGULAR_APP --use-dev-dir=.
+  artifacts:
+    paths:
+      - littlebrother-frontend/dist/littlebrother-frontend/**
+  variables:
+    # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
 build_debian:
-  image: marcusrickert/docker-python-app:latest
+  image: marcusrickert/docker-python-app:3.11
   stage: build
   script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
   artifacts:
     paths:
@@ -44,49 +58,123 @@ build_debian:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
-test_debian:
-  image: marcusrickert/docker-python-app:latest
+
+test_debian_3_10:
+  image: "marcusrickert/docker-python-app:3.10"
   stage: install_and_check
   script:
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+    - DELTA_PORT=0 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
     - codecov
+  
+  variables:
+    # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+test_debian_3_11:
+  image: "marcusrickert/docker-python-app:3.11"
+  stage: install_and_check
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+    - DELTA_PORT=1 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - codecov
+  
+  variables:
+    # Activate automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+test_debian_3_12:
+  image: "marcusrickert/docker-python-app:3.12"
+  stage: install_and_check
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+    - DELTA_PORT=2 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - codecov
+  
   artifacts:
     paths:
       - htmlcov
       - coverage.xml
+  
   variables:
     # Activate automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
 build_pypi:
-  image: marcusrickert/docker-python-app:latest
+  image: marcusrickert/docker-python-app:3.11
   stage: build
   script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
   artifacts:
       when: always
       paths:
-        - dist/little-brother-0.4.36.tar.gz
+        - ./dist/little-brother-0.5.1.tar.gz
+        - ./contrib/python_base_app/dist/python-base-app-0.3.0.tar.gz
+        - ./contrib/some_flask_helpers/dist/some-flask-helpers-0.2.6.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
 
-install_pypi:
-  image: marcusrickert/docker-python-app:latest
+
+install_pypi_3_10:
+  image: "marcusrickert/docker-python-app:3.10"
   stage: install_and_check
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+    - DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
   after_script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  
+  variables:
+    # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+install_pypi_3_11:
+  image: "marcusrickert/docker-python-app:3.11"
+  stage: install_and_check
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+    - DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  
+  variables:
+    # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+install_pypi_3_12:
+  image: "marcusrickert/docker-python-app:3.12"
+  stage: install_and_check
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+    - DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
+  
   artifacts:
       when: always
       paths:
         - htmlcov
         - coverage.xml
+  
+  variables:
+    # Suppress automatic checkout for all sub modules
+    GIT_SUBMODULE_STRATEGY: recursive
+
+analyze:
+  image: marcusrickert/docker-python-app:3.11
+  stage: analyze
+  script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage ANALYZE --use-dev-dir=.
+  after_script:
+    - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEARDOWN
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
@@ -100,7 +188,7 @@ owasp_check:
   stage: owasp_check
   script:
     # Job will scan the project root folder and fail if any vulnerabilities with CVSS > 0 are found
-    - /usr/share/dependency-check/bin/dependency-check.sh --enableExperimental --scan "./" --format XML --project "$CI_PROJECT_NAME"
+    - /usr/share/dependency-check/bin/dependency-check.sh --enableExperimental --scan "./" --format JSON --project "$CI_PROJECT_NAME"
     # Dependency Check will only fail the job based on CVSS scores, and in some cases vulnerabilities do not
     # have CVSS scores (e.g. those from NPM audit), so they don't cause failure.  To fail for any vulnerabilities
     # grep the resulting report for any "vulnerabilities" sections and exit if any are found (count > 0).
@@ -109,31 +197,44 @@ owasp_check:
     when: always
     paths:
         # Save the HTML and JSON report artifacts
-      - "./dependency-check-report.xml"
+      - "./dependency-check-report.json"
 
 owasp_upload:
   image:
-    name: "$VULSCAN_ADAPTER_IMAGE"
+    name: "$SECURECHECKPLUS_ADAPTER_IMAGE"
     entrypoint: ["python", "run.py"]
   stage: owasp_upload
   allow_failure: false
   variables:
-    VULSCAN_SERVER_URL: "$VULSCAN_URL/analyzer/api"
-    REPORT_FILE_NAME: dependency-check-report.xml
-    FILE_FORMAT: xml
+    SERVER_URL: "$SECURECHECKPLUS_SERVER_URL"
+    SKIP: "$SECURECHECKPLUS_SKIP"
+    REPORT_FILE_NAME: dependency-check-report.json
+    FILE_FORMAT: json
     TOOL_NAME: owasp
-    PROJECT_ID: "little-brother"
+    PROJECT_ID: "little-brother-fb-angular"
     PROJECT_NAME: "little-brother"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      variables:
+        PROJECT_ID: "$SECURECHECKPLUS_PROJECT_ID"
+        API_KEY: "$SECURECHECKPLUS_API_KEY"
+    - if: '$CI_COMMIT_REF_NAME == "fb-angular"'
+      variables:
+        PROJECT_ID: "$SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR"
+        API_KEY: "$SECURECHECKPLUS_API_KEY_FB_ANGULAR"
+  
   script:
     - echo "Analysis successful."
-
 publish_pypi:
-  image: marcusrickert/docker-python-app:latest
+  image: marcusrickert/docker-python-app:3.11
   stage: publish
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
+  only:
+    - release
+    - master
 docker:
-  image: marcusrickert/docker-docker-ci:release-0.9.1
+  image: marcusrickert/docker-docker-ci:3.11
   stage: deploy
   script:
     - PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES --use-dev-dir=.

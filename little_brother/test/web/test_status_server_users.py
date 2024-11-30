@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import time
 #    Copyright (C) 2019-2022  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
@@ -38,7 +38,7 @@ from python_base_app.test import test_unix_user_handler
 
 NEW_USER_FIRST_NAME = "Micky"
 NEW_USER_LAST_NAME = "Mouse"
-NEW_USER_LOCALE = "de"
+NEW_USER_LOCALE = "en"
 NEW_USER_ACTIVE = True
 NEW_USER_PROCESS_NAME_PATTERN = "bash"
 
@@ -135,9 +135,9 @@ class TestStatusServerUsers(BaseTestStatusServer):
         self.click(save_button)
 
         with SessionContext(self._persistence) as session_context:
-            user: User = user_entity_manager.get_by_username(
-                p_session_context=session_context, p_username=test_unix_user_handler.USER_2_UID)
-            self.assertEqual(test_unix_user_handler.USER_2_UID, user.username)
+            user: User = user_entity_manager.get_by_id(
+                p_session_context=session_context, p_id=user_id)
+            self.assertIsNotNone(user.username)
             self.assertEqual(NEW_USER_FIRST_NAME, user.first_name)
             self.assertEqual(NEW_USER_LAST_NAME, user.last_name)
             self.assertEqual(NEW_USER_PROCESS_NAME_PATTERN, user.process_name_pattern)

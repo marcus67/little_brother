@@ -31,6 +31,7 @@ with open(path.join(this_directory, 'requirements.txt')) as f:
 
 setup_params = {
     # standard setup configuration
+    "python_requires": '>=3.10, <3.13',
 
     "install_requires": install_requires,
 
@@ -43,6 +44,7 @@ setup_params = {
                  'little_brother.test.pytests.devices',
                  'little_brother.test.pytests',
                  'little_brother.test.web',
+                 'little_brother.test.web_angular',
                  'little_brother.test.api',
                  'little_brother.transport',
                  'little_brother.web',
@@ -53,6 +55,7 @@ setup_params = {
     "scripts": [
         "run_little_brother.py",
         "run_little_brother_test_suite.py",
+        "run_little_brother_test_suite_no_venv.py",
     ],
     "long_description": "Tool to monitor login time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded. Note that this package is not meant as a simple install with PIP since it "
@@ -78,7 +81,17 @@ extended_setup_params = {
                          ],
 
     # additional setup configuration used by CI stages
+    "scan_id": "little-brother-fb-angular", # TODO: remove when owasp_check_branch_map gets activated!
     "owasp": True,
+    "analyze": True,
+    "analyze_branch_map": {
+        "master": 'SONAR_PROJECT_KEY',
+        "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
+    },
+    "owasp_check_branch_map": {
+        "main": ('SECURECHECKPLUS_PROJECT_ID', 'SECURECHECKPLUS_API_KEY'),
+        "fb-angular": ('SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR', 'SECURECHECKPLUS_API_KEY_FB_ANGULAR')
+    },
 
     # technical name used for e.g. directories, PIP-package, and users
     "create_user": True,
@@ -108,10 +121,21 @@ extended_setup_params = {
         little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
     },
     "generate_generic_install": True,
-    "analyze": False,
+    "docker_image_build_angular": "marcusrickert/docker-python-app:3.11",
+    "docker_image_make_package": "marcusrickert/docker-python-app:3.11",
+    "docker_images_test": [
+        ("3_10", "marcusrickert/docker-python-app:3.10"),
+        ("3_11", "marcusrickert/docker-python-app:3.11"),
+        ("3_12", "marcusrickert/docker-python-app:3.12"),
+    ],
+    "docker_image_publish_pypi": "marcusrickert/docker-python-app:3.11",
+    "docker_image_publish_debian": "marcusrickert/docker-python-app:3.11",
+    "docker_image_docker": "marcusrickert/docker-docker-ci:3.11",
+    "docker_image_analyze": "marcusrickert/docker-python-app:3.11",
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
-    " ": "littlebrother-frontend",
+    "angular_app_dir": "littlebrother-frontend",
+    "analyze": True,
 }
 
 setup_params.update(little_brother.settings.settings)

@@ -52,6 +52,8 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
   userAdmin: UserAdmin = new UserAdmin();
   timeExtensions: number[] = [];
   userStatus: UserStatus = new UserStatus();
+  isLoadingAdminDetails: boolean = true;
+  isLoadingStatusDetails: boolean = true;
   accordionState: Map<String, Boolean> = new Map<String, Boolean>();
 
   public userId: number = -1;
@@ -77,6 +79,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
       this.storeAccordionState();
       // extract from JSON...
       this.userAdmin = unpickle(jsonData, my_handlers);
+      this.isLoadingAdminDetails = false;
     })
   }
 
@@ -86,6 +89,7 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
       this.storeAccordionState();
       // extract from JSON...
       this.userStatus = unpickle(jsonData, my_handlers);
+      this.isLoadingStatusDetails = false;
     })
   }
 

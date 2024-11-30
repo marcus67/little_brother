@@ -14,40 +14,27 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { EnsureAuthenticated } from '../services/ensure-authenticated.service'
+import { HttpClient } from '@angular/common/http';
+//import { EnsureAuthenticated } from '../services/ensure-authenticated.service'
 import { ConfigService } from './config.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MetadataService {
 
-  private metaData : any = null;
   private REL_URL_ABOUT: string = "/about";
 
   constructor(
-    private http: HttpClient, 
-    private ensureAuthenticatedService : EnsureAuthenticated,
+    private http: HttpClient,
+//    private ensureAuthenticatedService : EnsureAuthenticated,
     private configService: ConfigService) {}
 
-  loadMetadata() : Promise<any> {
-    if (this.metaData)
-      return new Promise((resolve, reject) => { resolve (this.metaData) });
+  loadMetadata() : Observable<any> {
+      let url: string = `${this.configService.baseUrl}${this.REL_URL_ABOUT}`;
 
-    let url: string = `${this.configService.baseUrl}${this.REL_URL_ABOUT}`;
-    let headers: HttpHeaders | undefined = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return new Promise((resolve, reject) => {
-      this.http.get(url, {headers: headers}).toPromise().then(
-      (result) => {
-        this.metaData = result;
-        resolve(result);
-      }).catch( (error) => {
-        reject(error)
-      })
-    })
+      return this.http.get<any>(url, {});
   }
 }
+

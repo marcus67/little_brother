@@ -4,6 +4,12 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.1 Revision 200
+* Add Angular frontend
+* Add debug dump for `ApiViewHandler`
+* Add documentation for API calls in API.md
+* Add configuration options for database pool and pool overflow sizes
+
 ## Version 0.4.36 Revision 143 (March 29th, 2024)
 * Add missing PIP package `py3-virtualenv` to Alpine Docker image
 

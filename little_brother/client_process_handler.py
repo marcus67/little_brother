@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@ import psutil
 from little_brother import admin_event
 from little_brother import process_handler
 from little_brother import process_info
+from little_brother.admin_event import AdminEvent
 from little_brother.login_mapping import LoginMapping
 from little_brother.persistence.session_context import SessionContext
 from python_base_app import configuration
@@ -46,9 +47,11 @@ class ClientProcessHandlerConfigModel(process_handler.ProcessHandlerConfigModel)
         self.sudo_command = "/usr/bin/sudo"
 
         if tools.is_mac_os():
-            self.kill_command_pattern = "/bin/launchctl bootout gui/{uid}"
+            self.terminate_session_command_pattern = "/bin/launchctl bootout gui/{uid}"
         else:
-            self.kill_command_pattern = "/bin/kill -{signal} {pid}"
+            self.terminate_session_command_pattern = "/bin/kill -{signal} {pid}"
+
+        self.kill_command_pattern = "/bin/kill -{signal} {pid}"
 
         self.kill_delay = 5  # seconds
         self.scan_command_line_options = DEFAULT_SCAN_COMMAND_LINE_OPTIONS
@@ -67,8 +70,14 @@ class ClientProcessHandler(process_handler.ProcessHandler):
     def can_kill_processes():
         return True
 
-    def handle_event_kill_process(self, p_session_context: SessionContext, p_event,
-                                  p_server_group: str = None, p_login_mapping: LoginMapping = None):
+    def handle_event_kill_process(self, p_session_context: SessionContext, p_event, p_server_group=None,
+                                  p_login_mapping: LoginMapping=None) -> list[AdminEvent]:
+        return self.kill_process_or_session(p_event=p_event, p_server_group=p_server_group,
+                                            p_login_mapping=p_login_mapping,
+                                            p_command_pattern=self._config.kill_command_pattern)
+
+    def kill_process_or_session(self, p_session_context: SessionContext, p_event, p_command_pattern,
+                                p_server_group=None, p_login_mapping=None) -> list[AdminEvent]:
 
         fmt = "Kill process %d of user %s on host %s with signal SIGHUP" % (
             p_event.pid, p_event.username, p_event.hostname)
@@ -109,20 +118,20 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
         fmt = "Killing process {pid} of user '{username}' on host '{host}'"
 
-        if "{signal}" in self._config.kill_command_pattern:
+        if "{signal}" in p_command_pattern:
             fmt = fmt + " with signal {signal}"
 
         self._logger.info(fmt.format(**params))
 
         try:
-            kill_command = self._config.sudo_command + " " + self._config.kill_command_pattern.format(**params)
+            kill_command = self._config.sudo_command + " " + p_command_pattern.format(**params)
 
         except Exception as e:
-            fmt = "Exception '{estr}' while generating kill command"
-            raise configuration.ConfigurationException(fmt.format(estr=str(e)))
+            msg = "Exception '{e!s}' while generating kill command"
+            raise configuration.ConfigurationException(msg)
 
-        fmt = "Executing sudo command '{cmd}'..."
-        self._logger.debug(fmt.format(cmd=kill_command))
+        msg = f"Executing sudo command '{kill_command}'..."
+        self._logger.debug(msg)
 
         cmd_array = shlex.split(kill_command)
         completed_process = subprocess.run(cmd_array)
@@ -138,12 +147,12 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
             fmt = "Second attempt: killing process {pid} of user '{username}' on host '{host}'"
 
-            if "{signal}" in self._config.kill_command_pattern:
+            if "{signal}" in p_command_pattern:
                 fmt = fmt + " with signal {signal}"
 
             self._logger.info(fmt.format(**params))
 
-            kill_command = self._config.sudo_command + " " + self._config.kill_command_pattern.format(**params)
+            kill_command = self._config.sudo_command + " " + p_command_pattern.format(**params)
 
             fmt = "Executing sudo command '{cmd}'..."
             self._logger.debug(fmt.format(cmd=kill_command))
@@ -171,7 +180,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             try:
                 uids = proc.uids()
 
-                # On Mac OS the process we want to kill has the real user id set to root but the effective user id
+                # On macOS the process we want to kill has the real user id set to root but the effective user id
                 # set to the actual user.
                 uid = uids.effective
                 username = p_login_mapping.get_login_by_uid(p_session_context=p_session_context,
@@ -227,11 +236,9 @@ class ClientProcessHandler(process_handler.ProcessHandler):
                             p_pid=proc.pid)
                         events.append(event)
 
-
-
             except psutil.NoSuchProcess as e:
-                fmt = "Ignoring exception '{estr}' because process has disappeared"
-                self._logger.debug(fmt.format(estr=str(e)))
+                msg = f"Ignoring exception '{e!s}' because process has disappeared"
+                self._logger.debug(msg)
 
         for (key, pinfo) in self._process_infos.items():
             # If the end time of a current entry is None AND the process was started on the local host AND

@@ -39,6 +39,7 @@ import { AdminDetailsComponent } from './components/admin-details/admin-details.
 import { AdminDetailsOverrideComponent } from './components/admin-details-override/admin-details-override.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfigService } from './services/config.service';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -57,7 +58,8 @@ export function initializeApp(configService: ConfigService) {
     AdminComponent,
     AdminDetailsComponent,
     // See https://stackoverflow.com/questions/39152071/cant-bind-to-formgroup-since-it-isnt-a-known-property-of-form
-    AdminDetailsOverrideComponent
+    AdminDetailsOverrideComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

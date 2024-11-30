@@ -208,7 +208,7 @@ See [Docker](DOCKER.md) for details.
 The default backend for `LittleBrother` is a Sqlite file oriented database. It works out of the box. If you prefer
 a more mature backend you can switch to a full-fledged database such as MySQL or MariaDB. This is possible, since 
 the persistence uses the abstraction layer [SQLAlchemy](https://www.sqlalchemy.org/) which can be used with many 
-database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and Postgres.
+database systems. Currently, `LittleBrother` should work with MySQL, MariaDB and PostgreSQL.
 
 **IMPORTANT NOTE**: The steps shown below only refer to the MASTER host. The client(s) should ALWAYS use the simple
 sqlite backend no matter which kind of backend the master will use! This is due to the fact that the clients never have
@@ -235,11 +235,11 @@ the settings starting with `database_`.
 Replace the `SET_ME` entries by the appropriate values. The driver and port (verify your installation!) 
 must be set as follows:
 
-| Database | Driver Name     | Typical Port Number |
-|----------|-----------------|---------------------|
-| MySQL    | `mysql+pymysql` | 3306                |
-| MariaDB  | `mysql+pymysql` | 3306                |
-| Postgres | `postgresql`    | 5432                |
+| Database   | Driver Name     | Typical Port Number |
+|------------|-----------------|---------------------|
+| MySQL      | `mysql+pymysql` | 3306                |
+| MariaDB    | `mysql+pymysql` | 3306                |
+| PostgreSQL | `postgresql`    | 5432                |
 
 Note that in revision 64 and above there is no default value for `database_user` anymore. It was `little_brother`.
 The name has to be set explicitly now!
@@ -311,14 +311,6 @@ affected clients. The default timeout is 10 times the default scan interval of 5
 The second setting `warning_time_without_send_events` will be used in the tool 
 [LittleBrotherTaskbar](https://github.com/marcus67/little_brother_taskbar) (as of version 0.1.17) to inform the user of 
 the impending logout due to connectivity issues.
-
-The approach of the client acting by itself without access to the server has its caveats. Since up to version
-0.4.33 the client did not persist any configuration at all, the decisions made by it were sometimes false. In
-particular. [issue 190](https://github.com/marcus67/little_brother/issues/190) resulted in "free play" for the 
-users on the clients. This has mostly been fixed in version 0.4.34 by persisting at least the uid mappings and
-the users on the clients using the default Sqlite database. However, the persisted state is not complete yet.
-This will result in ALL processes of all monitored users to be terminated ignoring more specific process name
-patterns (if configured).
 
 ## Determining Process Patterns for Prohibited Processes
 In case you decide to prohibit a process for a specific user you will have to provide a specific process pattern
@@ -408,7 +400,7 @@ The diagram below shows the routing which is assumed for the master-client setup
 clients A and B. Both have the IP address of the master node as their default route. The master has its default
 route set to the IP address of the DSL modem.
 
-Client A is assigned to user A and the flags "is monitored" and "blockable" are activated for client A.
+Client A is assigned to user A and the flags "is monitored" and "blockable" are  activated for client A.
 
 Normally, all traffic from the client A is routed through the master and ends up in the DSL modem. When the client has
 to be restricted because user A has exceeded his time budget, `LittleBrother` will insert a `FORWARD` saying that all 

@@ -24,10 +24,19 @@ import { MetadataService } from '../../services/metadata.service'
 export class AboutComponent {
 
   metadata : any = null;
+  isLoading : boolean = true;
 
   constructor(private metadataService: MetadataService) {
-    this.metadataService.loadMetadata().then((result) => {
-      this.metadata = result;
+  }
+
+  getMetadata(): void {
+    this.metadataService.loadMetadata().subscribe( jsonEntry => {
+      this.metadata = jsonEntry;
+      this.isLoading = false;
     });
+  }
+
+  ngOnInit(): void {
+    this.getMetadata();
   }
 }

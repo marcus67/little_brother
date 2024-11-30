@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 export class NavBarComponent implements OnInit {
   isLoggedIn: boolean = false;
   activeUser: string = "unknown";
+  public currentUrl: string = "/status";
   public isAdmin: boolean = false;
 
   constructor(
@@ -32,6 +33,16 @@ export class NavBarComponent implements OnInit {
    ) {}
 
   ngOnInit(): void {
+    this.currentUrl = this.router.url;
+    /* this does not seem to be necessary since the URL of the navbar does not change after it has been loaded
+    this.router.events.subscribe(event => {
+      if (event.constructor.name === "NavigationEnd") {
+        this.currentUrl = this.router.url;
+        console.log("currentUrl=" + this.currentUrl)
+      }
+    });
+  */
+
     if (this.auth.isLoggedIn()) {
       this.auth.ensureAuthenticated()
       .then((result) => {
@@ -48,6 +59,10 @@ export class NavBarComponent implements OnInit {
         console.log(err);
       });
     }
+  }
+
+  currentNavBarTab(): string {
+    return this.currentUrl.split("/")[1];
   }
 
   onLogout(): void {

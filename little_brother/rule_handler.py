@@ -21,9 +21,11 @@ import re
 from little_brother import constants
 from little_brother import process_statistics
 from little_brother import rule_result_info
+from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
 from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.rule_result_info import RuleResultInfo
+from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
 from python_base_app import configuration
 from python_base_app import log_handling
 from python_base_app import tools
@@ -46,6 +48,7 @@ class RuleHandlerConfigModel(configuration.ConfigModel):
         super(RuleHandlerConfigModel, self).__init__(p_section_name=SECTION_NAME)
 
         self.warning_before_logout = 5  # minutes
+        self.support_german_vacation_context_rule_handler = True
 
 
 class RuleSetConfigModel(configuration.ConfigModel):
@@ -189,6 +192,13 @@ class RuleHandler(object):
         self._default_context_rule_handler_name = None
 
         self._logger = log_handling.get_logger(self.__class__.__name__)
+
+    def register_rule_context_handlers(self):
+        self.register_context_rule_handler(DefaultContextRuleHandler(), p_default=True)
+        self.register_context_rule_handler(WeekplanContextRuleHandler())
+
+        if self._config.support_german_vacation_context_rule_handler:
+            self.register_context_rule_handler(GermanVacationContextRuleHandler())
 
     def register_context_rule_handler(self, p_context_rule_handler, p_default=False):
         self._context_rule_handlers[p_context_rule_handler.context_name] = p_context_rule_handler

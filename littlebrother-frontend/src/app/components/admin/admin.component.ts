@@ -29,6 +29,8 @@ import { my_handlers } from '../../models/registry'
 export class AdminComponent {
   userAdmin: UserAdmin[] = [];
   hasDowntime: boolean = false;
+  isLoading: boolean = true;
+
   private intervalId?: number;
 
   constructor(private controlService: ControlService,
@@ -55,6 +57,7 @@ export class AdminComponent {
             this.hasDowntime = true;
           }
         );
+        this.isLoading = false;
       } else {
         console.error("Cannot unpickle UserAdmin entries")
       }

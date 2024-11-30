@@ -1,6 +1,6 @@
 {
   "/AngularLittleBrother/": {
-    "target": "http://127.0.0.1:5560/",
+    "target": "http://127.0.0.1:5562/",
     "secure": false
   },
   "logLevel": "debug"
