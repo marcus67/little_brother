@@ -179,7 +179,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
         if chrome_binary:
             self._logger.info(f"Using Chrome binary at {chrome_binary}.")
-            options.binary_location = os.getenv(chrome_binary)
+            options.binary_location = chrome_binary
 
         self._driver = selenium.webdriver.Chrome(options=options)
 

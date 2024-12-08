@@ -123,14 +123,15 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         self._admin_data_handler = AdminDataHandler(p_config=app_control_config)
         dependency_injection.container[AdminDataHandler] = self._admin_data_handler
 
-        self._app_control = AppControl(
-            p_config=app_control_config,
-            p_debug_mode=False,
-            p_process_handlers=p_process_handlers,
-            p_device_handler=None,
-            p_notification_handlers=[],
-            p_login_mapping=test_data.LOGIN_MAPPING,
-            p_locale_helper=locale_helper.LocaleHelper())
+        with SessionContext(self._persistence) as session_context:
+            self._app_control = AppControl(
+                p_config=app_control_config,
+                p_debug_mode=False,
+                p_process_handlers=p_process_handlers,
+                p_device_handler=None,
+                p_notification_handlers=[],
+                p_login_mapping=test_data.get_login_mapping(p_session_context=session_context),
+                p_locale_helper=locale_helper.LocaleHelper())
 
         dependency_injection.container[AppControl] = self._app_control
 

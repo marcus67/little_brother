@@ -77,7 +77,7 @@ class TestApp(base_test.BaseTestCase):
 
         self.assertIsNotNone(config)
 
-        self.assertEqual(18, len(configuration._sections))
+        self.assertEqual(17, len(configuration._sections))
         self.assertEqual(1, len(configuration._optional_section_handler_definitions))
 
     def create_dummy_app(self, p_logger):
