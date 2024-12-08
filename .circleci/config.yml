@@ -24,6 +24,20 @@
 version: 2.0
 
 jobs:
+  build_angular_app:
+    docker:
+      - image: "marcusrickert/docker-python-app:3.11"
+     steps:
+       - checkout
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_ANGULAR_APP --use-dev-dir=.
+      - persist_to_workspace:
+          root: littlebrother-frontend/dist/littlebrother-frontend
+          paths:
+            - "**"
   
   build_3_10:
     #working_directory: ~
@@ -36,6 +50,7 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: DELTA_PORT=0 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
@@ -53,6 +68,7 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: DELTA_PORT=1 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
@@ -70,6 +86,7 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
       - run: DELTA_PORT=2 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
@@ -78,11 +95,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.5.1_200.deb
+          path: debian/little-brother_0.5.1_201.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.5.1_200.deb
+            - little-brother_0.5.1_201.deb
       
   
   
@@ -97,6 +114,7 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       
   
@@ -111,6 +129,7 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       
   
@@ -125,6 +144,7 @@ jobs:
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       
       - store_artifacts:
@@ -234,12 +254,14 @@ workflows:
     version: 2
     build_and_deploy:
       jobs:
+  - build_angular_app
   
-        - build
   
-        - build
+        - build_3_10
   
-        - build
+        - build_3_11
+  
+        - build_3_12
   
         - deploy:
             requires:

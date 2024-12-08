@@ -50,6 +50,7 @@ from little_brother.persistence.persistent_blacklisted_token_entity_manager impo
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
+from little_brother.persistence.session_context import SessionContext
 from little_brother.prometheus import PrometheusClient, PrometheusClientConfigModel, \
     SECTION_NAME as PROMETHEUS_SECTION_NAME
 from little_brother.rule_handler import RuleHandler
@@ -350,7 +351,10 @@ class App(base_app.BaseApp):
         dependency_injection.container[BaseUserHandler] = self._user_handler
 
         self._login_mapping = login_mapping.LoginMapping()
-        self._login_mapping.read_from_configuration(p_login_mapping_section_handler=self._login_mapping_section_handler)
+
+        with SessionContext(p_persistence=self._persistence) as session_context:
+            self._login_mapping.read_from_configuration(p_session_context=session_context,
+                                                        p_login_mapping_section_handler=self._login_mapping_section_handler)
 
         self._admin_data_handler = AdminDataHandler(p_config=self._config[APP_CONTROL_SECTION_NAME])
 
