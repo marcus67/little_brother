@@ -59,7 +59,7 @@ from python_base_app.configuration import ConfigurationException, NONE_STRING
 SECTION_NAME = "StatusServer"
 
 ANGULAR_CONFIG_TEMPLATE_FILE = "angular-config.template.json"
-ANGULAR_CONFIG_FILE = "assets/angular-config.json"
+ANGULAR_CONFIG_FILE = "assets/config.json"
 ANGULAR_HTML_INDEX_FILE = "index.html"
 
 SETTING_ANGULAR_DEPLOYMENT_DIRECTORY = "angular_deployment_dest_directory"
@@ -183,8 +183,7 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                                                                      p_config=p_configs[api_view_handler.SECTION_NAME])
             dependency_injection.container[api_view_handler.ApiViewHandler] = self._api_view_handler
 
-            if not self._config.use_csrf:
-                self._csrf.exempt(self._api_view_handler.blueprint)
+            self._csrf.exempt(self._api_view_handler.blueprint)
 
             if self._config.angular_gui_active:
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(

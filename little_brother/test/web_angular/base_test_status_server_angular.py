@@ -40,6 +40,7 @@ from little_brother.api import master_connector, api_view_handler
 from little_brother.api.master_connector import MasterConnector
 from little_brother.api.version_checker import VersionCheckerConfigModel, VersionChecker, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel
+from little_brother.login_mapping import LoginMapping
 from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_user_entity_manager import UserEntityManager
 from little_brother.persistence.session_context import SessionContext
@@ -88,8 +89,10 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
         now = datetime.datetime.now()
         process_start_time = now + datetime.timedelta(seconds=-1)
+        login_mapping = LoginMapping() # DUMMY!
 
         process_handler = test_client_process_handler.TestClientProcessHandler.get_dummy_process_handler(
+            p_login_mapping=login_mapping,
             p_reference_time=now, p_processes=test_data.get_active_processes(p_start_time=process_start_time))
 
         process_handlers = {
@@ -98,12 +101,15 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
         return process_handlers
 
-    def create_dummy_status_server(self, p_process_handlers=None, p_create_complex_handlers=False):
+    def create_dummy_status_server(self, p_process_handlers=None, p_create_complex_handlers=False,
+                                   p_create_dummy_persistence=True):
 
         if p_process_handlers is None:
             p_process_handlers = {}
 
-        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+        if p_create_dummy_persistence:
+            test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         self._persistence = dependency_injection.container[Persistence]
 
         self._rule_handler = test_rule_handler.TestRuleHandler.create_dummy_rule_handler(
@@ -143,6 +149,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         status_server_config.angular_gui_base_url = "/AngularLittleBrother"
         status_server_config.angular_api_base_url = "/AngularLittleBrother/angular-api"
         status_server_config.angular_gui_active = True
+        status_server_config.use_csrf = False
 
         version_checker_config = VersionCheckerConfigModel()
         version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
@@ -190,20 +197,24 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs, p_create_complex_handlers=False):
 
+        test_persistence.TestPersistence.create_dummy_persistence(self._logger)
+
         process_handlers = self.get_dummy_process_handlers()
 
         self.create_dummy_status_server(p_process_handlers=process_handlers,
-                                        p_create_complex_handlers=p_create_complex_handlers)
+                                        p_create_complex_handlers=p_create_complex_handlers,
+                                        p_create_dummy_persistence=False)
         self._status_server.start_server()
 
         user_manager = dependency_injection.container[UserManager]
 
-        user_manager.retrieve_user_mappings()
-        self._app_control.start()
-        self._app_control._process_handler_manager.scan_processes(
-            p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
-        self._app_control.check()
-        self._app_control.stop()
+        with SessionContext(self._persistence) as session_context:
+            user_manager.retrieve_user_mappings(p_session_context=session_context)
+            self._app_control.start()
+            self._app_control._process_handler_manager.scan_processes(
+                p_process_handler=process_handlers[client_process_handler.ClientProcessHandler.__name__])
+            self._app_control.check()
+            self._app_control.stop()
 
     # Wait for Angular to finish rendering
     def wait_for_angular(self):
@@ -296,7 +307,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         user_manager: UserManager = dependency_injection.container[UserManager]
 
         user_manager.add_monitored_user(p_username=self.get_new_user_name())
-        user_manager.retrieve_user_mappings()
+        user_manager.retrieve_user_mappings(p_session_context=session_context)
 
         return user_id
 

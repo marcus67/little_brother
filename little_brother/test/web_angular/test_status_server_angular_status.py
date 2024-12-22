@@ -37,6 +37,7 @@ class TestStatusServerAngularStatus(BaseTestStatusServerAngular):
     def test_page_index_with_process_no_restrictions(self):
         ruleset_configs = test_data.get_dummy_ruleset_configs(
             p_ruleset_config=test_data.RULESET_CONFIGS_USER1_NO_RESTRICTIONS)
+
         self.create_status_server_using_ruleset_configs(ruleset_configs)
 
         self.create_selenium_driver()

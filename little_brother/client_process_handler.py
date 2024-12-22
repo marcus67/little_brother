@@ -72,7 +72,8 @@ class ClientProcessHandler(process_handler.ProcessHandler):
 
     def handle_event_kill_process(self, p_session_context: SessionContext, p_event, p_server_group=None,
                                   p_login_mapping: LoginMapping=None) -> list[AdminEvent]:
-        return self.kill_process_or_session(p_event=p_event, p_server_group=p_server_group,
+        return self.kill_process_or_session(p_session_context=p_session_context, p_event=p_event,
+                                            p_server_group=p_server_group,
                                             p_login_mapping=p_login_mapping,
                                             p_command_pattern=self._config.kill_command_pattern)
 
@@ -127,7 +128,7 @@ class ClientProcessHandler(process_handler.ProcessHandler):
             kill_command = self._config.sudo_command + " " + p_command_pattern.format(**params)
 
         except Exception as e:
-            msg = "Exception '{e!s}' while generating kill command"
+            msg = f"Exception '{e!s}' while generating kill command"
             raise configuration.ConfigurationException(msg)
 
         msg = f"Executing sudo command '{kill_command}'..."
