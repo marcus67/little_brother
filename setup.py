@@ -89,7 +89,7 @@ extended_setup_params = {
         "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
     },
     "owasp_check_branch_map": {
-        "main": ('SECURECHECKPLUS_PROJECT_ID', 'SECURECHECKPLUS_API_KEY'),
+        "master": ('SECURECHECKPLUS_PROJECT_ID', 'SECURECHECKPLUS_API_KEY'),
         "fb-angular": ('SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR', 'SECURECHECKPLUS_API_KEY_FB_ANGULAR')
     },
 
@@ -135,7 +135,6 @@ extended_setup_params = {
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
     "angular_app_dir": "littlebrother-frontend",
-    "analyze": True,
 }
 
 setup_params.update(little_brother.settings.settings)
