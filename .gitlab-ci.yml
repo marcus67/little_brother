@@ -214,7 +214,7 @@ owasp_upload:
     PROJECT_ID: "little-brother-fb-angular"
     PROJECT_NAME: "little-brother"
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_COMMIT_REF_NAME == "master"'
       variables:
         PROJECT_ID: "$SECURECHECKPLUS_PROJECT_ID"
         API_KEY: "$SECURECHECKPLUS_API_KEY"
