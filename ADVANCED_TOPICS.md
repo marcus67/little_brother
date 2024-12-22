@@ -20,17 +20,34 @@ After changes in the configuration file the application has to be restarted by i
 
     systemctl restart little-brother
 
-## Configuring the Web Frontend
+## Configuring the Classic Web Frontend
 
-The default URL of the web frontend is [http://localhost:5555/](http://localhost:5555/). Both the port and/or 
+The default URL of the classic web frontend is [http://localhost:5555/](http://localhost:5555/). Both the port and/or 
 the relative path can be changed. Edit the appropriate settings in the configuration file:
 
     [StatusServer]
     port=PORT
     base_url=PREFIX
 
-After restarting the server (see above) the web frontend can be reached at 
+After restarting the server (see above) the classic web frontend can be reached at 
 http://localhost:PORT/PREFIX.
+
+## Configuring the New Angular Web Frontend
+
+In case you want to use the new Angular web frontend, add/activate the following lines in the configuration file:
+
+    angular_gui_active=true
+    angular_gui_base_url=ANGULAR_PREFIX
+    angular_api_base_url=ANGULAR_PREFIX/angular-api
+
+After restarting the server (see above) the Angular web frontend can be reached at 
+http://localhost:PORT/ANGULAR_PREFIX.
+
+**NOTES**:
+* Both the classic and the new frontends can be active at the same time. In this case they need to have different
+  prefixes.
+* Both frontends share the same port!
+
 
 ## Users and UIDs
 
