@@ -274,11 +274,19 @@ workflows:
         - build_angular_app
   
   
-        - build_3_10
   
-        - build_3_11
+        - build_3_10:
+            requires:
+              - build_angular_app
   
-        - build_3_12
+        - build_3_11:
+            requires:
+              - build_angular_app
+  
+        - build_3_12:
+            requires:
+              - build_angular_app
+  
   
         - deploy:
             requires:
@@ -305,17 +313,29 @@ workflows:
               - build_3_12
   
   
-        - build_pypi_3_10
+  
+        - build_pypi_3_10:
+            requires:
+              - build_angular_app
+  
+        - build_pypi_3_11:
+            requires:
+              - build_angular_app
+  
+        - build_pypi_3_12:
+            requires:
+              - build_angular_app
+  
+  
+  
         - install_pypi_3_10:
             requires:
               - build_pypi_3_10
   
-        - build_pypi_3_11
         - install_pypi_3_11:
             requires:
               - build_pypi_3_11
   
-        - build_pypi_3_12
         - install_pypi_3_12:
             requires:
               - build_pypi_3_12
