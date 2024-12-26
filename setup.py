@@ -96,7 +96,9 @@ extended_setup_params = {
     # technical name used for e.g. directories, PIP-package, and users
     "create_user": True,
     "create_group": True,
-    "user_group_mappings": [("little-brother", "audio")],
+    "user_group_mappings": [
+        ("little-brother", "audio")
+    ],
     "deploy_systemd_service": True,
     # "deploy_tmpfile_conf": True,
     "deploy_sudoers_file": True,

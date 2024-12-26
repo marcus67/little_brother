@@ -63,7 +63,7 @@ function add_group() {
     fi
   else
     if [ "${group_id}" == "" ] ; then
-      groupadd little_brother
+      groupadd little-brother
     else
       groupadd --gid ${group_id} ${group_name}
     fi
@@ -103,12 +103,12 @@ function add_user_to_group() {
   fi
 }
 
-export VIRTUAL_ENV_DIR=/var/lib/little_brother/virtualenv
+export VIRTUAL_ENV_DIR=/var/lib/little-brother/virtualenv
 
-ETC_DIR=/etc/little_brother
-LOG_DIR=/var/log/little_brother
-SPOOL_DIR=/var/spool/little_brother
-LIB_DIR=/var/lib/little_brother
+ETC_DIR=/etc/little-brother
+LOG_DIR=/var/log/little-brother
+SPOOL_DIR=/var/spool/little-brother
+LIB_DIR=/var/lib/little-brother
 SYSTEMD_DIR=/lib/systemd/system
 TMPFILE_DIR=/usr/lib/tmpfiles.d
 SUDOERS_DIR=/etc/sudoers.d
@@ -188,16 +188,16 @@ cp -f $INSTALL_BASE_DIR/etc/master.config ${ROOT_DIR}/etc/little-brother/master.
 
 
 
-if grep -q 'little_brother:' /etc/group ; then
-    echo "Group 'little_brother' already exists. Skipping group creation."
+if grep -q 'little-brother:' /etc/group ; then
+    echo "Group 'little-brother' already exists. Skipping group creation."
 else
-    #echo "Adding group 'little_brother'..."
-    add_group little_brother ${APP_GID}
+    #echo "Adding group 'little-brother'..."
+    add_group little-brother ${APP_GID}
 fi
-if grep -q 'little_brother:' /etc/passwd ; then
-    echo "User 'little_brother' already exists. Skipping user creation."
+if grep -q 'little-brother:' /etc/passwd ; then
+    echo "User 'little-brother' already exists. Skipping user creation."
 else
-    add_user little_brother little_brother ${APP_UID}
+    add_user little-brother little-brother ${APP_UID}
 fi
 
 set -e
@@ -237,18 +237,18 @@ echo "Activating virtual Python environment in ${VIRTUAL_ENV_DIR}..."
 fi
 
 echo "Setting ownership..."
-echo "    * little_brother:little_brother ${ETC_DIR}"
-chown -R little_brother:little_brother ${ETC_DIR}
-echo "    * little_brother:little_brother ${LOG_DIR}"
-chown -R little_brother:little_brother ${LOG_DIR}
-echo "    * little_brother:little_brother ${SPOOL_DIR}"
-chown -R little_brother:little_brother ${SPOOL_DIR}
-echo "    * little_brother:little_brother ${LIB_DIR}"
-chown -R little_brother:little_brother ${LIB_DIR}
+echo "    * little-brother:little-brother ${ETC_DIR}"
+chown -R little-brother:little-brother ${ETC_DIR}
+echo "    * little-brother:little-brother ${LOG_DIR}"
+chown -R little-brother:little-brother ${LOG_DIR}
+echo "    * little-brother:little-brother ${SPOOL_DIR}"
+chown -R little-brother:little-brother ${SPOOL_DIR}
+echo "    * little-brother:little-brother ${LIB_DIR}"
+chown -R little-brother:little-brother ${LIB_DIR}
 
 
-echo "    * little_brother:little_brother /etc/little-brother/little-brother.config"
-chown little_brother:little_brother /etc/little-brother/little-brother.config
+echo "    * little-brother:little-brother /etc/little-brother/little-brother.config"
+chown little-brother:little-brother /etc/little-brother/little-brother.config
   if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   echo "    * ${SYSTEMD_DIR}/little-brother.service"
   chown root.root ${SYSTEMD_DIR}/little-brother.service
@@ -271,7 +271,7 @@ echo "    * ${SPOOL_DIR}"
 chmod -R og-rwx ${SPOOL_DIR}
 
 
-echo "    * little_brother:little_brother /etc/little-brother/little-brother.config"
+echo "    * little-brother:little-brother /etc/little-brother/little-brother.config"
 chmod og-rwx /etc/little-brother/little-brother.config
 
 echo "Upgrading packages 'wheel' and 'setuptools'..."
@@ -287,8 +287,8 @@ ${PIP3} install --upgrade --ignore-installed \
      ${LIB_DIR}/some_flask_helpers-0.2.8.tar.gz
 
 if [ "${VIRTUAL_ENV_DIR}" != "" ] ; then
-  echo "Changing ownership of virtual environment ${VIRTUAL_ENV_DIR} to little_brother:little_brother..."
-  chown -R little_brother:little_brother ${VIRTUAL_ENV_DIR}
+  echo "Changing ownership of virtual environment ${VIRTUAL_ENV_DIR} to little-brother:little-brother..."
+  chown -R little-brother:little-brother ${VIRTUAL_ENV_DIR}
 fi
 
 

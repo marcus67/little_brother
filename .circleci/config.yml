@@ -236,7 +236,7 @@ jobs:
       - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-      - run: DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
       
   
@@ -258,7 +258,7 @@ jobs:
       - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-      - run: DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
       
   
@@ -280,7 +280,7 @@ jobs:
       - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-      - run: DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
       
       - store_artifacts:
