@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.2 Revision 203
+* Upgrade to version 0.3.1 of `python_base_app` (fixes #205)
+* Bump `jinja2` to 3.1.5
+
 ## Version 0.5.1 Revision 200
 * Add Angular frontend
 * Add debug dump for `ApiViewHandler`

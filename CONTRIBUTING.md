@@ -68,11 +68,11 @@ Follow these steps:
 * `npm install`
 * `ng serve`
 
-If all goes well, you will see this output ending in these lines:
+If all goes well, you will see some output ending in these lines:
 
 ![Angular_serve_successfully.png](doc/Angular_serve_successfully.png)
 
-The Angular development server will forward requests to the backend configured in 
+The Angular development server will forward requests to the backend configured 
 in the `target` attribute of file [proxy.conf.json](littlebrother-frontend/src/proxy.conf.json). Make sure you
 start the LittleBrother on the same port. This is configured in the attribute `[StatusServer].port` of the
 LittleBrother configuration file.

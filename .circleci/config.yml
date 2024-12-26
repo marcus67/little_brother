@@ -27,8 +27,8 @@ jobs:
   build_angular_app:
     docker:
       - image: "marcusrickert/docker-python-app:3.11"
-     steps:
-       - checkout
+    steps:
+      - checkout
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
@@ -45,7 +45,6 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.10"
     steps:
       - checkout
-
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
@@ -63,7 +62,6 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.11"
     steps:
       - checkout
-
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
@@ -81,7 +79,6 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.12"
     steps:
       - checkout
-
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
@@ -95,11 +92,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.5.1_202.deb
+          path: debian/little-brother_0.5.2_203.deb
       - persist_to_workspace:
           root: debian
           paths:
-            - little-brother_0.5.1_202.deb
+            - little-brother_0.5.2_203.deb
       
   
   
@@ -109,14 +106,21 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.10"
     steps:
       - checkout
-
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
-      
+      - store_artifacts:
+          path: "dist/little-brother-0.5.2.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv dist/little-brother-0.5.2.tar.gz dist/little-brother-0.5.2.tar.gz_3_10
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - "little-brother-0.5.2.tar.gz_3_10"
   
   build_pypi_3_11:
     #working_directory: ~
@@ -124,14 +128,21 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.11"
     steps:
       - checkout
-
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
-      
+      - store_artifacts:
+          path: "dist/little-brother-0.5.2.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv dist/little-brother-0.5.2.tar.gz dist/little-brother-0.5.2.tar.gz_3_11
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - "little-brother-0.5.2.tar.gz_3_11"
   
   build_pypi_3_12:
     #working_directory: ~
@@ -139,21 +150,21 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.12"
     steps:
       - checkout
-
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
-      
       - store_artifacts:
-          path: "dist/little-brother-0.5.1.tar.gz"
+          path: "dist/little-brother-0.5.2.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv dist/little-brother-0.5.2.tar.gz dist/little-brother-0.5.2.tar.gz_3_12
       - persist_to_workspace:
           root: dist
           paths:
-            - "little-brother-0.5.1.tar.gz"
-      
+            - "little-brother-0.5.2.tar.gz_3_12"
   
   
   install_pypi_3_10:
@@ -164,6 +175,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: "dist"
+      - run: mv dist/little-brother-0.5.2.tar.gz_3_10 dist/little-brother-0.5.2.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
@@ -182,6 +194,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: "dist"
+      - run: mv dist/little-brother-0.5.2.tar.gz_3_11 dist/little-brother-0.5.2.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
@@ -200,6 +213,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: "dist"
+      - run: mv dist/little-brother-0.5.2.tar.gz_3_12 dist/little-brother-0.5.2.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
@@ -216,11 +230,13 @@ jobs:
   publish_pypi:
     #working_directory: ~
     docker:
-      - image: 
+      - image: marcusrickert/docker-python-app:3.11
     steps:
       - checkout
       - attach_workspace:
           at: "dist"
+      # Choose the artifact of the last Python image (having the most up-to-date Python version)...
+      - run: mv dist/little-brother-0.5.2.tar.gz_3_12 dist/little-brother-0.5.2.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
@@ -254,7 +270,8 @@ workflows:
     version: 2
     build_and_deploy:
       jobs:
-  - build_angular_app
+  
+        - build_angular_app
   
   
         - build_3_10
@@ -279,15 +296,13 @@ workflows:
                   - release
         - docker:
             requires:
+              - publish_pypi
   
               - build_3_10
-              - publish_pypi_3_10
   
               - build_3_11
-              - publish_pypi_3_11
   
               - build_3_12
-              - publish_pypi_3_12
   
   
         - build_pypi_3_10

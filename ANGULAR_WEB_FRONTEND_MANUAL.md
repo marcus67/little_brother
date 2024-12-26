@@ -1,5 +1,5 @@
 ![LittleBrother-Logo](little_brother/static/icons/icon-baby-panda-128x128.png)
-![logo_under_construction_sign_wide.png](doc/logo_under_construction_sign_wide.png)
+<IMG SRC="doc/logo_under_construction_sign_wide.png" HEIGHT="128">
 
 # Angular Web Frontend Manual
 As of version 0.5.1 of LittleBrother a new Angular web frontend is being developed. It has not reached maturity
@@ -23,5 +23,5 @@ implemented, the following table shows the availability of the all aspects:
 | About   | Available | Missing           | Missing               |
 
 **NOTE**: Currently, both frontends of LittleBrother only support English as language. This was due to a simplified
-merge of the two source code branches both using the Python Flask package to serve web pages. Hopefully, this
-functionality will soon be restored for the classic web frontend!
+merge of the two source code branches both using the Python Flask package to serve web pages. Hopefully, international 
+support will soon be restored for the classic web frontend!
