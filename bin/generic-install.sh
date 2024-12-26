@@ -139,7 +139,7 @@ ${PIP3} download -d $LIB_DIR --no-deps little_brother==0.5.2
 
 ${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.3.1
 
-${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.7
+${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.8
 
 
 echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
@@ -159,22 +159,22 @@ else
   echo "Package python_base_app-0.3.1.tar.gz was found."
 fi
 
-if [ ! -f $LIB_DIR/some-flask-helpers-0.2.7.tar.gz ] ; then
-  echo "ERROR: package some-flask-helpers-0.2.7.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/some_flask_helpers-0.2.8.tar.gz ] ; then
+  echo "ERROR: package some_flask_helpers-0.2.8.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package some-flask-helpers-0.2.7.tar.gz was found."
+  echo "Package some_flask_helpers-0.2.8.tar.gz was found."
 fi
 
 if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   mkdir -p ${SYSTEMD_DIR}
-  cp ${INSTALL_BASE_DIR}/etc/little_brother.service ${SYSTEMD_DIR}/little_brother.service
+  cp ${INSTALL_BASE_DIR}/etc/little-brother.service ${SYSTEMD_DIR}/little-brother.service
 fi
 mkdir -p ${SUDOERS_DIR}
-cp ${INSTALL_BASE_DIR}/etc/little_brother.sudo ${SUDOERS_DIR}/little_brother
+cp ${INSTALL_BASE_DIR}/etc/little-brother.sudo ${SUDOERS_DIR}/little-brother
 mkdir -p ${APPARMOR_DIR}
-cp ${INSTALL_BASE_DIR}/etc/little_brother.apparmor ${APPARMOR_DIR}/little_brother.conf
+cp ${INSTALL_BASE_DIR}/etc/little-brother.apparmor ${APPARMOR_DIR}/little-brother.conf
 TARGET_DIRECTORY=${ROOT_DIR}/$(dirname etc/little-brother/client.config )
 mkdir -p ${TARGET_DIRECTORY}
 echo "Deploying extra file '$INSTALL_BASE_DIR/etc/client.config' to '${ROOT_DIR}/etc/little-brother/client.config'..."
@@ -250,16 +250,16 @@ chown -R little_brother:little_brother ${LIB_DIR}
 echo "    * little_brother:little_brother /etc/little-brother/little-brother.config"
 chown little_brother:little_brother /etc/little-brother/little-brother.config
   if [ "$RUNNING_IN_DOCKER" == "" ] ; then
-  echo "    * ${SYSTEMD_DIR}/little_brother.service"
-  chown root.root ${SYSTEMD_DIR}/little_brother.service
+  echo "    * ${SYSTEMD_DIR}/little-brother.service"
+  chown root.root ${SYSTEMD_DIR}/little-brother.service
   fi
 echo "    * ${SUDOERS_DIR}"
 chown root.root ${SUDOERS_DIR}
-echo "    * ${SUDOERS_DIR}/little_brother"
-chown root.root ${SUDOERS_DIR}/little_brother
+echo "    * ${SUDOERS_DIR}/little-brother"
+chown root.root ${SUDOERS_DIR}/little-brother
 
-echo "    * ${APPARMOR_DIR}/little_brother.conf"
-chown root.root ${APPARMOR_DIR}/little_brother.conf
+echo "    * ${APPARMOR_DIR}/little-brother.conf"
+chown root.root ${APPARMOR_DIR}/little-brother.conf
 
 
 echo "Setting permissions..."
@@ -279,12 +279,12 @@ ${PIP3} install wheel setuptools
 echo "Installing PIP packages..."
 echo "  * little_brother-0.5.2.tar.gz"
 echo "  * python_base_app-0.3.1.tar.gz"
-echo "  * some-flask-helpers-0.2.7.tar.gz"
+echo "  * some_flask_helpers-0.2.8.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --ignore-installed \
      ${LIB_DIR}/little_brother-0.5.2.tar.gz\
      ${LIB_DIR}/python_base_app-0.3.1.tar.gz\
-     ${LIB_DIR}/some-flask-helpers-0.2.7.tar.gz
+     ${LIB_DIR}/some_flask_helpers-0.2.8.tar.gz
 
 if [ "${VIRTUAL_ENV_DIR}" != "" ] ; then
   echo "Changing ownership of virtual environment ${VIRTUAL_ENV_DIR} to little_brother:little_brother..."
@@ -297,8 +297,8 @@ echo "Removing installation file ${LIB_DIR}/little_brother-0.5.2.tar.gz..."
 rm ${LIB_DIR}/little_brother-0.5.2.tar.gz
 echo "Removing installation file ${LIB_DIR}/python_base_app-0.3.1.tar.gz..."
 rm ${LIB_DIR}/python_base_app-0.3.1.tar.gz
-echo "Removing installation file ${LIB_DIR}/some-flask-helpers-0.2.7.tar.gz..."
-rm ${LIB_DIR}/some-flask-helpers-0.2.7.tar.gz
+echo "Removing installation file ${LIB_DIR}/some_flask_helpers-0.2.8.tar.gz..."
+rm ${LIB_DIR}/some_flask_helpers-0.2.8.tar.gz
 if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   echo "Execute systemctl daemon-reload..."
   set +e

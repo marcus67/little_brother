@@ -116,7 +116,7 @@ build_pypi:
       paths:
         - ./dist/little_brother-0.5.2.tar.gz
         - ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz
-        - ./contrib/some_flask_helpers/dist/some-flask-helpers-0.2.7.tar.gz
+        - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules
     GIT_SUBMODULE_STRATEGY: recursive
@@ -211,7 +211,7 @@ owasp_upload:
     REPORT_FILE_NAME: dependency-check-report.json
     FILE_FORMAT: json
     TOOL_NAME: owasp
-    PROJECT_ID: "little-brother-fb-angular"
+    PROJECT_ID: "little-brother"
     PROJECT_NAME: "little_brother"
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'

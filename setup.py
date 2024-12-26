@@ -81,7 +81,7 @@ extended_setup_params = {
                          ],
 
     # additional setup configuration used by CI stages
-    "scan_id": "little-brother-fb-angular", # TODO: remove when owasp_check_branch_map gets activated!
+    "scan_id": "little-brother",
     "owasp": True,
     "analyze": True,
     "analyze_branch_map": {
