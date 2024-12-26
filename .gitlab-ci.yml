@@ -115,7 +115,7 @@ build_pypi:
       when: always
       paths:
         - ./dist/little_brother-0.5.2.tar.gz
-        - ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz
+        - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
         - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
   variables:
     # Suppress automatic checkout for all sub modules

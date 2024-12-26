@@ -134,11 +134,11 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.2.tar.gz_3_10
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_10
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_10
+            - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10
       - persist_to_workspace:
           root: "."
@@ -170,11 +170,11 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.2.tar.gz_3_11
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_11
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_11
+            - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11
       - persist_to_workspace:
           root: "."
@@ -206,11 +206,11 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.2.tar.gz_3_12
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_12
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_12
+            - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12
       - persist_to_workspace:
           root: "."
@@ -227,7 +227,7 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.2.tar.gz_3_10 ./dist/little_brother-0.5.2.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
 
       # Check out all sub modules
@@ -248,7 +248,7 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.2.tar.gz_3_11 ./dist/little_brother-0.5.2.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
 
       # Check out all sub modules
@@ -269,7 +269,7 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.2.tar.gz_3_12 ./dist/little_brother-0.5.2.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.1.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
 
       # Check out all sub modules
