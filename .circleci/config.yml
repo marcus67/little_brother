@@ -294,7 +294,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: "dist"
+          at: "."
       # Choose the artifact of the last Python image (having the most up-to-date Python version)...
       - run: mv dist/little_brother-0.5.2.tar.gz_3_12 dist/little_brother-0.5.2.tar.gz
 
