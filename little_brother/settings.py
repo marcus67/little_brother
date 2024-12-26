@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 settings = {
-    "name": "little-brother",
+    "name": "little_brother",
     "url": "https://github.com/marcus67/little_brother",
     "version": "0.5.2",
     "description": "Simple parental control application monitoring specific processes on Linux hosts "
