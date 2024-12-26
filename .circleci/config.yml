@@ -224,16 +224,17 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.10"
     steps:
       - checkout
-      - attach_workspace:
-          at: "."
-      - run: mv ./dist/little_brother-0.5.2.tar.gz_3_10 ./dist/little_brother-0.5.2.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.2.tar.gz_3_10 ./dist/little_brother-0.5.2.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
       - run: codecov
@@ -245,16 +246,17 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.11"
     steps:
       - checkout
-      - attach_workspace:
-          at: "."
-      - run: mv ./dist/little_brother-0.5.2.tar.gz_3_11 ./dist/little_brother-0.5.2.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.2.tar.gz_3_11 ./dist/little_brother-0.5.2.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
       - run: codecov
@@ -266,16 +268,17 @@ jobs:
       - image: "marcusrickert/docker-python-app:3.12"
     steps:
       - checkout
-      - attach_workspace:
-          at: "."
-      - run: mv ./dist/little_brother-0.5.2.tar.gz_3_12 ./dist/little_brother-0.5.2.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.2.tar.gz_3_12 ./dist/little_brother-0.5.2.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
       - run: codecov
