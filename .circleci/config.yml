@@ -103,9 +103,9 @@ jobs:
       - store_artifacts:
           path: debian/little-brother_0.5.2_203.deb
       - persist_to_workspace:
-          root: debian
+          root: "."
           paths:
-            - little-brother_0.5.2_203.deb
+            - debian/little-brother_0.5.2_203.deb
       
   
   
@@ -309,7 +309,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: debian
+          at: "."
       - run: git submodule sync
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
@@ -318,10 +318,10 @@ jobs:
       - image: marcusrickert/docker-docker-ci:3.11
     steps:
       - checkout
-      - attach_workspace:
-          at: debian
       - run: git submodule sync
       - run: git submodule update --init
+      - attach_workspace:
+          at: "."
       - setup_remote_docker:
           docker_layer_caching: false
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES
