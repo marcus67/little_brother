@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -60,7 +60,7 @@ class TestRuleOverrideEntityManager(BaseTestCasePersistentEntityManager):
             dependency_injection.container[RuleOverrideEntityManager]
 
         with SessionContext(p_persistence=a_persistence) as session_context:
-            reference_date = datetime.datetime.now(datetime.UTC).date() + datetime.timedelta(days=-2)
+            reference_date = datetime.datetime.now(datetime.timezone.utc).date() + datetime.timedelta(days=-2)
 
             a_rule_override = RuleOverride(
                 p_username=test_data.USER_1,
@@ -113,7 +113,7 @@ class TestRuleOverrideEntityManager(BaseTestCasePersistentEntityManager):
 
         age = 30  # days
 
-        timestamp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=-age)
+        timestamp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=-age)
 
         with SessionContext(p_persistence=a_persistence) as session_context:
 

@@ -47,7 +47,7 @@ class TestTimeExtensionEntityManager(BaseTestCasePersistentEntityManager):
         a_persistence = dependency_injection.container[Persistence]
         self.assertIsNotNone(a_persistence)
 
-        reference_time = datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+        reference_time = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
 
         time_extension = TimeExtension()
         time_extension.username = "USER"
@@ -101,7 +101,7 @@ class TestTimeExtensionEntityManager(BaseTestCasePersistentEntityManager):
 
         age = 30  # days
 
-        reference_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=-age)
+        reference_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=-age)
 
         with SessionContext(p_persistence=a_persistence) as session_context:
             time_extension = TimeExtension()

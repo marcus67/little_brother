@@ -75,7 +75,7 @@ class TestAdminEventEntityManager(BaseTestCasePersistentEntityManager):
 
         age = 30  # days
 
-        timestamp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=-age)
+        timestamp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=-age)
 
         an_admin_event = AdminEvent(
             p_hostname=test_data.HOSTNAME_1,
