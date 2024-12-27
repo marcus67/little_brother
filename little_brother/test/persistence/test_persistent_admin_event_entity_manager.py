@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -18,10 +17,13 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
+
 from little_brother import dependency_injection
 from little_brother.admin_event import AdminEvent
 from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.persistent_admin_event import AdminEvent as PersistentAdminEvent
 from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test import test_data
@@ -62,3 +64,35 @@ class TestAdminEventEntityManager(BaseTestCasePersistentEntityManager):
         with SessionContext(p_persistence=a_persistence) as session_context:
             admin_event_entity_manager.log_admin_event(
                 p_session_context=session_context, p_admin_event=an_admin_event)
+
+    def test_delete_history(self):
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
+        self.assertIsNotNone(a_persistence)
+
+        admin_event_entity_manager: AdminEventEntityManager = dependency_injection.container[AdminEventEntityManager]
+
+        age = 30  # days
+
+        timestamp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=-age)
+
+        an_admin_event = AdminEvent(
+            p_hostname=test_data.HOSTNAME_1,
+            p_username=test_data.USER_1,
+            p_pid=test_data.PID_1,
+            p_processhandler=None,
+            p_processname=None,
+            p_event_type=None,
+            p_event_time=timestamp,
+            p_process_start_time=timestamp,
+            p_text=None,
+            p_payload=None)
+
+        with SessionContext(p_persistence=a_persistence) as session_context:
+            admin_event_entity_manager.log_admin_event(
+                p_session_context=session_context, p_admin_event=an_admin_event)
+
+        self.shorten_and_check_history(p_persistence=a_persistence,
+                                       p_reference_time_column=PersistentAdminEvent.event_time,
+                                       p_age_in_days=age)

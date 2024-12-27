@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@ from sqlalchemy.sql.expression import and_
 
 from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.persistent_time_extension import TimeExtension
+from little_brother.persistence.session_context import SessionContext
 from python_base_app import tools
 
 
@@ -30,7 +31,8 @@ class TimeExtensionEntityManager(BaseEntityManager):
         super().__init__(p_entity_class=TimeExtension)
 
     @classmethod
-    def get_active_time_extensions(cls, p_session_context, p_reference_datetime):
+    def get_active_time_extensions(cls, p_session_context: SessionContext,
+                                   p_reference_datetime) -> dict[str, TimeExtension]:
 
         session = p_session_context.get_session()
 
@@ -44,7 +46,8 @@ class TimeExtensionEntityManager(BaseEntityManager):
         return {play_time.username: play_time for play_time in result}
 
     @classmethod
-    def set_time_extension(cls, p_session_context, p_username, p_reference_datetime, p_start_datetime, p_time_delta):
+    def set_time_extension(cls, p_session_context: SessionContext, p_username, p_reference_datetime,
+                           p_start_datetime, p_time_delta):
 
         session = p_session_context.get_session()
         result = session.query(TimeExtension).filter(
@@ -76,8 +79,8 @@ class TimeExtensionEntityManager(BaseEntityManager):
                 time_extension.end_datetime = new_end_datetime
                 session.commit()
 
-    def set_time_extension_for_session(self, p_session_context, p_user_name, p_delta_extension, p_session_active,
-                                       p_session_end_datetime, p_reference_time=None):
+    def set_time_extension_for_session(self, p_session_context: SessionContext, p_user_name, p_delta_extension,
+                                       p_session_active, p_session_end_datetime, p_reference_time=None):
 
         if p_reference_time is None:
             p_reference_time = tools.get_current_time()
@@ -107,3 +110,9 @@ class TimeExtensionEntityManager(BaseEntityManager):
             p_start_datetime=start_datetime,
             p_time_delta=p_delta_extension
         )
+
+    def delete_historic_entries(self, p_session_context: SessionContext, p_history_length_in_days: int):
+
+        self.delete_generic_historic_entries(p_session_context=p_session_context,
+                                             p_history_length_in_days=p_history_length_in_days,
+                                             p_reference_time_column=TimeExtension.reference_datetime)

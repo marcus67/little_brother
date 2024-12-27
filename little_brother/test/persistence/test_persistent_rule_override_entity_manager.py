@@ -26,6 +26,7 @@ from little_brother.persistence.persistence import Persistence
 from little_brother.persistence.persistent_rule_override_entity_manager import RuleOverrideEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.rule_override import RuleOverride
+from little_brother.persistence.persistent_rule_override import RuleOverride as PersistentRuleOverride
 from little_brother.test import test_data
 from little_brother.test.persistence.base_test_case_persistent_entity_manager import BaseTestCasePersistentEntityManager
 from little_brother.test.persistence.test_persistence import TestPersistence
@@ -59,7 +60,7 @@ class TestRuleOverrideEntityManager(BaseTestCasePersistentEntityManager):
             dependency_injection.container[RuleOverrideEntityManager]
 
         with SessionContext(p_persistence=a_persistence) as session_context:
-            reference_date = datetime.datetime.utcnow().date() + datetime.timedelta(days=-2)
+            reference_date = datetime.datetime.now(datetime.UTC).date() + datetime.timedelta(days=-2)
 
             a_rule_override = RuleOverride(
                 p_username=test_data.USER_1,
@@ -100,3 +101,35 @@ class TestRuleOverrideEntityManager(BaseTestCasePersistentEntityManager):
             loaded_rule_override = rule_overrides[0]
 
             self.compare_rule_overrides(p_rule_override=a_rule_override, p_loaded_rule_override=loaded_rule_override)
+
+    def test_delete_history(self):
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
+        self.assertIsNotNone(a_persistence)
+
+        rule_override_entity_manager: RuleOverrideEntityManager = \
+            dependency_injection.container[RuleOverrideEntityManager]
+
+        age = 30  # days
+
+        timestamp = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=-age)
+
+        with SessionContext(p_persistence=a_persistence) as session_context:
+
+            a_rule_override = RuleOverride(
+                p_username=test_data.USER_1,
+                p_reference_date=timestamp,
+                p_max_time_per_day=test_data.MAX_TIME_PER_DAY_1,
+                p_min_time_of_day=test_data.MIN_TIME_OF_DAY_1,
+                p_max_time_of_day=test_data.MAX_TIME_OF_DAY_1,
+                p_min_break=test_data.MIN_BREAK_1,
+                p_free_play=test_data.FREEPLAY_1)
+
+            rule_override_entity_manager.update_rule_override(
+                p_session_context=session_context, p_rule_override=a_rule_override)
+
+
+        self.shorten_and_check_history(p_persistence=a_persistence,
+                                       p_reference_time_column=PersistentRuleOverride.reference_date,
+                                       p_age_in_days=age)

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -18,6 +17,8 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+from sqlalchemy import Column, func
+
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity import BaseEntity
 from little_brother.persistence.base_entity_manager import BaseEntityManager
@@ -32,7 +33,7 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._entity_manager: BaseEntityManager = None
+        cls._entity_manager: BaseEntityManager | None = None
 
     def setUp(self):
         dependency_injection.reset()
@@ -62,3 +63,35 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
             result = tools.objects_are_equal(an_entity, saved_entity, p_logger=self._logger)
 
             self.assertTrue(result)
+
+    def shorten_and_check_history(self, p_persistence: Persistence, p_age_in_days: int,
+                                  p_reference_time_column: Column):
+        # Check that there is one entry in the table
+        with SessionContext(p_persistence=p_persistence) as session_context:
+            session = session_context.get_session()
+            count = session.query(func.count(p_reference_time_column)).scalar()
+            self.assertEqual(1, count)
+
+        # Clean out the history with a maximum history length one day LONGER than the age of the entry...
+        with SessionContext(p_persistence=p_persistence) as session_context:
+            self._entity_manager.delete_generic_historic_entries(
+                p_session_context=session_context, p_history_length_in_days=p_age_in_days+1,
+                p_reference_time_column=p_reference_time_column)
+
+        # The entry should still be there!
+        with SessionContext(p_persistence=p_persistence) as session_context:
+            session = session_context.get_session()
+            count = session.query(func.count(p_reference_time_column)).scalar()
+            self.assertEqual(1, count)
+
+        # Now, Clean out the history with a maximum history length one day SHORTER than the age of the entry...
+        with SessionContext(p_persistence=p_persistence) as session_context:
+            self._entity_manager.delete_generic_historic_entries(
+                p_session_context=session_context, p_history_length_in_days=p_age_in_days-1,
+                p_reference_time_column=p_reference_time_column)
+
+        # The entry should be gone!
+        with SessionContext(p_persistence=p_persistence) as session_context:
+            session = session_context.get_session()
+            count = session.query(func.count(p_reference_time_column)).scalar()
+            self.assertEqual(0, count)

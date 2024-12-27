@@ -206,10 +206,9 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 if self._config.create_angular_config_file:
                     self.create_angular_config_file()
 
-                if not self._config.use_csrf:
-                    self._csrf.exempt(self._angular_auth_view_handler.blueprint)
-                    self._csrf.exempt(self._new_api_view_handler.blueprint)
-                    self._csrf.exempt(self._new_api_angular_view_handler.blueprint)
+                self._csrf.exempt(self._angular_auth_view_handler.blueprint)
+                self._csrf.exempt(self._new_api_view_handler.blueprint)
+                self._csrf.exempt(self._new_api_angular_view_handler.blueprint)
 
         self._app.jinja_env.filters['datetime_to_string'] = self.format_datetime
         self._app.jinja_env.filters['time_to_string'] = self.format_time

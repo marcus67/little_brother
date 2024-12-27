@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.4 Revision 205 (December 27th, 2024)
+* Always deactivate CSRF for the REST APIs
+* Closes #203
+
 ## Version 0.5.3 Revision 204 (December 26th, 2024)
 * Finalize new build pipeline
 

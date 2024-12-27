@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2021  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -23,6 +23,7 @@ import datetime
 from little_brother import dependency_injection
 from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.persistence import Persistence
+from little_brother.persistence.persistent_process_info import ProcessInfo
 from little_brother.persistence.persistent_process_info_entity_manager import ProcessInfoEntityManager
 from little_brother.persistence.session_context import SessionContext
 from little_brother.test.persistence.base_test_case_persistent_entity_manager import BaseTestCasePersistentEntityManager
@@ -94,3 +95,22 @@ class TestProcessInfoEntityManager(BaseTestCasePersistentEntityManager):
             self.compare_pinfos(p_p_info=p_info, p_loaded_p_info=loaded_p_info)
 
             self.assertEqual(an_id, loaded_p_info.id)
+
+    def test_delete_history(self):
+        TestPersistence.create_dummy_persistence(self._logger)
+
+        a_persistence = dependency_injection.container[Persistence]
+        self.assertIsNotNone(a_persistence)
+
+        process_info_entity_manager: ProcessInfoEntityManager = dependency_injection.container[ProcessInfoEntityManager]
+
+        age = 30  # days
+
+        with SessionContext(p_persistence=a_persistence) as session_context:
+
+            p_info = TestPersistence.create_pinfo(p_age_in_days=age)
+            process_info_entity_manager.write_process_info(p_session_context=session_context, p_process_info=p_info)
+
+            self.shorten_and_check_history(p_persistence=a_persistence,
+                                           p_reference_time_column=ProcessInfo.start_time,
+                                           p_age_in_days=age)

@@ -76,14 +76,6 @@ class RuleOverrideEntityManager(base_entity_manager.BaseEntityManager):
 
     def delete_historic_entries(self, p_session_context: SessionContext, p_history_length_in_days: int):
 
-        session = p_session_context.get_session()
-        reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_history_length_in_days)
-        reference_date = reference_time.date()
-
-        result = session.query(RuleOverride).filter(RuleOverride.reference_date < reference_date).all()
-
-        msg = "Deleting {count} rule override entries..."
-        self._logger.info(msg.format(count=len(result)))
-
-        for override in result:
-            session.delete(override)
+        self.delete_generic_historic_entries(p_session_context=p_session_context,
+                                             p_history_length_in_days=p_history_length_in_days,
+                                             p_reference_time_column=RuleOverride.reference_date)
