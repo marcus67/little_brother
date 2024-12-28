@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2022  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-def key(p_source, p_destination):
+def key(p_source: str, p_destination: str) -> str:
     return p_source + "|" + p_destination
 
 
 class FirewallEntry:
 
-    def key(self):
+    def key(self) -> str:
         return key(p_source=self.source, p_destination=self.destination)
 
     def __init__(self):

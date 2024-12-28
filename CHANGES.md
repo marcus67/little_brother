@@ -4,6 +4,9 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.5 Revision 206 (December 28th, 2024)
+* Handle deplicate entries in iptables table, closes #204
+
 ## Version 0.5.4 Revision 205 (December 27th, 2024)
 * Always deactivate CSRF for the REST APIs
 * Closes #203

@@ -135,7 +135,7 @@ fi
 PIP3=${SCRIPT_DIR}/pip3.sh
 chmod +x ${PIP3}
 echo "Downloading Pip packages to $LIB_DIR..."
-${PIP3} download -d $LIB_DIR --no-deps little_brother==0.5.4
+${PIP3} download -d $LIB_DIR --no-deps little_brother==0.5.5
 
 ${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.3.2
 
@@ -143,12 +143,12 @@ ${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.8
 
 
 echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
-if [ ! -f $LIB_DIR/little_brother-0.5.4.tar.gz ] ; then
-  echo "ERROR: package little_brother-0.5.4.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/little_brother-0.5.5.tar.gz ] ; then
+  echo "ERROR: package little_brother-0.5.5.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package little_brother-0.5.4.tar.gz was found."
+  echo "Package little_brother-0.5.5.tar.gz was found."
 fi
 
 if [ ! -f $LIB_DIR/python_base_app-0.3.2.tar.gz ] ; then
@@ -277,12 +277,12 @@ chmod og-rwx /etc/little-brother/little-brother.config
 echo "Upgrading packages 'wheel' and 'setuptools'..."
 ${PIP3} install wheel setuptools
 echo "Installing PIP packages..."
-echo "  * little_brother-0.5.4.tar.gz"
+echo "  * little_brother-0.5.5.tar.gz"
 echo "  * python_base_app-0.3.2.tar.gz"
 echo "  * some_flask_helpers-0.2.8.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --ignore-installed \
-     ${LIB_DIR}/little_brother-0.5.4.tar.gz\
+     ${LIB_DIR}/little_brother-0.5.5.tar.gz\
      ${LIB_DIR}/python_base_app-0.3.2.tar.gz\
      ${LIB_DIR}/some_flask_helpers-0.2.8.tar.gz
 
@@ -293,8 +293,8 @@ fi
 
 
 
-echo "Removing installation file ${LIB_DIR}/little_brother-0.5.4.tar.gz..."
-rm ${LIB_DIR}/little_brother-0.5.4.tar.gz
+echo "Removing installation file ${LIB_DIR}/little_brother-0.5.5.tar.gz..."
+rm ${LIB_DIR}/little_brother-0.5.5.tar.gz
 echo "Removing installation file ${LIB_DIR}/python_base_app-0.3.2.tar.gz..."
 rm ${LIB_DIR}/python_base_app-0.3.2.tar.gz
 echo "Removing installation file ${LIB_DIR}/some_flask_helpers-0.2.8.tar.gz..."
