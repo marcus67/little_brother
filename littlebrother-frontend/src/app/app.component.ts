@@ -14,6 +14,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import { Component, OnInit } from '@angular/core';
+import { EventBusService } from './services/event-bus.service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,9 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'littlebrother-frontend';
   baseURL: string = '';
+
+  constructor(eventBusService: EventBusService){    
+  }
 
   ngOnInit() {
     this.baseURL = window.location.href;

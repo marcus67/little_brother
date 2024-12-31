@@ -62,11 +62,11 @@ API_URL_EVENTS = os.path.join(API_URL, API_REL_URL_EVENTS)
 API_REL_URL_STATUS = "status"
 API_URL_STATUS = os.path.join(API_URL, API_REL_URL_STATUS)
 
-API_REL_URL_ADMIN = "admin"
-API_URL_ADMIN = os.path.join(API_URL, API_REL_URL_ADMIN)
-
 API_REL_URL_STATUS_DETAILS = "status-details/<user_id>"
 API_URL_STATUS_DETAILS = os.path.join(API_URL, API_REL_URL_STATUS_DETAILS)
+
+API_REL_URL_ADMIN = "admin"
+API_URL_ADMIN = os.path.join(API_URL, API_REL_URL_ADMIN)
 
 API_REL_URL_ADMIN_DETAILS = "admin-details/<user_id>"
 API_URL_ADMIN_DETAILS = os.path.join(API_URL, API_REL_URL_ADMIN_DETAILS)
@@ -79,6 +79,9 @@ API_URL_ADMIN_EXTEND_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_ADMIN_EX
 
 API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE = "admin-rule-overrides/<user_id>/<reference_date>"  # with DELETE
 API_URL_ADMIN_UPDATE_RULE_OVERRIDE = os.path.join(API_URL, API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE)
+
+API_REL_URL_USERS = "users"
+API_URL_USERS = os.path.join(API_URL, API_REL_URL_USERS)
 
 API_REL_URL_CONTROL = "control"
 API_URL_CONTROL = os.path.join(API_URL, API_REL_URL_CONTROL)
@@ -152,4 +155,4 @@ CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
 SOURCEFORGE_VERSION_RSS_URL = "https://sourceforge.net/projects/little-brother/rss?path=/"
 SOURCEFORGE_VERSION_XPATH = "./channel/item/title"
-SOURCEFORGE_VERSION_REGEX = "^/([a-z]+)/little-brother_([.0-9]+)_([0-9]+)\.deb$"
+SOURCEFORGE_VERSION_REGEX = "^/([a-z]+)/little-brother_([.0-9]+)_([0-9]+)\\.deb$"

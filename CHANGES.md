@@ -5,7 +5,8 @@
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
 ## Version 0.5.5 Revision 206 (December 28th, 2024)
-* Handle deplicate entries in iptables table, closes #204
+* Handle duplicate entries in iptables table, closes #204
+* Provide initial version of user configuration in Angular
 
 ## Version 0.5.4 Revision 205 (December 27th, 2024)
 * Always deactivate CSRF for the REST APIs

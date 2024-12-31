@@ -13,34 +13,13 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import { titleCaseWord } from '../common/tools'
+export class Login {
 
-export class User {
-  user_id?: number;
   username?: string;
-  active?: boolean;
-  configured?: boolean;
-  locale?: string;
-  process_name_pattern?: string;
-  prohibited_process_name_pattern?: string;
-  first_name?: string;
-  last_name?: string;
-  access_code?: string;
+  password?: string;
 
-	constructor(otherObject?: object) {
-	  if (otherObject)
-	    Object.assign(this, otherObject)
-	}
-
-  full_name(): string | undefined {
-    if (this.first_name) 
-        if (this.last_name) 
-            return this.first_name + " " + this.last_name
-
-        else
-            return this.first_name
-
-    else
-        return titleCaseWord(this.username)
+  constructor(username?: string, password?: string) {
+    this.username = username;
+    this.password = password;
   }
 }

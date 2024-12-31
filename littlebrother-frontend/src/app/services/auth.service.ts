@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { map } from 'rxjs'
-import { User } from '../models/user';
+import { Login } from '../models/login';
 import { ConfigService } from './config.service';
 
 interface ILoginResult {
@@ -47,7 +47,7 @@ export class AuthService {
               private configService: ConfigService
   ) {}
 
-  login(user : User): Promise<ILoginResult | undefined> {
+  login(user : Login): Promise<ILoginResult | undefined> {
     let url: string = `${this.configService.baseUrl}${this.REL_URL_LOGIN}`;
 
     return this.http.post<ILoginResult>(url, user, {headers: this.HEADERS}).pipe(

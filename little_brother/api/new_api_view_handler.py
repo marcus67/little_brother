@@ -31,6 +31,7 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_override import RuleOverride
 from little_brother.transport.rule_set_to import RuleSetTO
+from little_brother.transport.user_transport_manager import UserTransportManager
 from python_base_app import tools
 from python_base_app.angular_auth_view_handler import AngularAuthViewHandler
 from python_base_app.base_user_handler import BaseUserHandler
@@ -435,3 +436,30 @@ class NewApiViewHandler(BaseViewHandler):
 
         except Exception as e:
             return self.internal_server_error(p_exception=e)
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_USERS, methods=["GET"])
+    def api_users(self):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return self.api_error(p_message=result, p_status_code=http_status)
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    users = self.user_entity_manager.get_sorted_users(session_context)
+                    unmonitored_users = self.app_control.get_unmonitored_users(session_context)
+
+                    user_tos = UserTransportManager.get_user_tos(
+                        p_users=users, p_unmonitored_users=unmonitored_users
+                    )
+
+                return jsonpickle.encode(user_tos), 200
+
+        except Exception as e:
+            return self.internal_server_error(p_exception=e)
+

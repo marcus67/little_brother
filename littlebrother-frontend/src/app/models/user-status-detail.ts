@@ -16,7 +16,7 @@
 import { get_duration_as_string, get_date_from_iso_string, get_date_as_string } from '../common/tools'
 
 export class UserStatusDetail {
-  history_label?: String;
+  history_label?: string;
   duration_in_seconds?: number;
   downtime_in_seconds?: number;
   min_time_in_iso_8601?: string;

@@ -18,6 +18,7 @@ import { UserStatusDetail } from '../models/user-status-detail'
 import { UserAdmin } from '../models/user-admin'
 import { UserAdminDetail } from '../models/user-admin-detail'
 import { RuleSet } from '../models/rule-set'
+import { User } from './user'
 
 export const my_handlers: Map<string, Function> = new Map();
 my_handlers.set("little_brother.transport.user_status_to.UserStatusTO",
@@ -34,4 +35,7 @@ my_handlers.set("little_brother.transport.user_admin_detail_to.UserAdminDetailTO
 )
 my_handlers.set("little_brother.transport.rule_set_to.RuleSetTO",
     (obj:any) => new RuleSet(obj)
+)
+my_handlers.set("little_brother.transport.user_configuration_to.RuleSetTO",
+    (obj:any) => new User(obj)
 )

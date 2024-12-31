@@ -13,14 +13,14 @@ The usage of the new frontend will be very similar to the classic one, so we cur
 the documentation just with updated screenshots. However, since the functionality is currently only partially 
 implemented, the following table shows the availability of the all aspects:
 
-| Module  | Status    | Adaptive Behavior | International Support |
-|---------|-----------|-------------------|-----------------------|
-| Login   | Available | Missing           | Missing               |
-| Status  | Available | Missing           | Missing               | 
-| Admin   | Available | Missing           | Missing               |
-| Users   | Missing   | Missing           | Missing               |
-| Devices | Missing   | Missing           | Missing               |
-| About   | Available | Missing           | Missing               |
+| Module  | Status              | Adaptive Behavior | International Support |
+|---------|---------------------|-------------------|-----------------------|
+| Login   | Available           | Missing           | Missing               |
+| Status  | Available           | Missing           | Missing               | 
+| Admin   | Available           | Missing           | Missing               |
+| Users   | Partially available | Missing           | Missing               |
+| Devices | Missing             | Missing           | Missing               |
+| About   | Available           | Missing           | Missing               |
 
 **NOTE**: Currently, both frontends of LittleBrother only support English as language. This was due to a simplified
 merge of the two source code branches both using the Python Flask package to serve web pages. Hopefully, international 

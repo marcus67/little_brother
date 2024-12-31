@@ -16,7 +16,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user';
+import { Login } from '../../models/login';
 
 @Component({
   selector: 'login',
@@ -24,7 +24,7 @@ import { User } from '../../models/user';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  user: User = new User();
+  user: Login = new Login();
   message: string = "";
 
   constructor(private router: Router, private auth: AuthService) {}
