@@ -18,7 +18,7 @@ import datetime
 
 import flask
 import jsonpickle
-from flask import jsonify, Request
+from flask import jsonify
 
 from little_brother import constants
 from little_brother import dependency_injection
@@ -31,6 +31,7 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_override import RuleOverride
 from little_brother.transport.rule_set_to import RuleSetTO
+from little_brother.transport.user_to import UserTO
 from little_brother.transport.user_transport_manager import UserTransportManager
 from python_base_app import tools
 from python_base_app.angular_auth_view_handler import AngularAuthViewHandler
@@ -463,3 +464,39 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_USER, methods=["POST"])
+    def api_user(self, user_id):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return self.api_error(p_message=result, p_status_code=http_status)
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+
+                    if user is None:
+                        return self.user_id_not_exist_error(p_user_id=user_id)
+
+                    user_to: UserTO = objectify_dict(request.json, UserTO)
+
+                    session = session_context.get_session()
+                    user.active = user_to.active
+                    session.commit()
+                    self.actions_after_user_change(p_session_context=session_context)
+
+                return self.api_ok()
+
+        except Exception as e:
+            return self.internal_server_error(p_exception=e)
+
+    def actions_after_user_change(self, p_session_context: SessionContext):
+        self._persistence.clear_cache()
+        self.app_control.send_config_to_all_clients()
+        self.user_manager.reset_users(p_session_context=p_session_context)
+        self.app_control.reset_process_patterns()

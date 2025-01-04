@@ -23,6 +23,7 @@ import { AdminDetailsComponent } from './components/admin-details/admin-details.
 import { AboutComponent } from './components/about/about.component';
 import { EnsureAuthenticated } from './services/ensure-authenticated.service';
 import { LoginRedirect } from './services/login-redirect.service';
+import { UsersComponent } from './components/users/users.component';
 
 
 const routes: Routes = [
@@ -44,6 +45,10 @@ const routes: Routes = [
   },
   { path: 'admin',
     component: AdminComponent,
+    canActivate: [EnsureAuthenticated]
+  },
+  { path: 'users',
+    component: UsersComponent,
     canActivate: [EnsureAuthenticated]
   },
   { path: 'admin/:user_id',

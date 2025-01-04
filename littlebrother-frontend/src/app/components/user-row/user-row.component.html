@@ -1,0 +1,37 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<FORM [formGroup]="userRowForm" (ngSubmit)="updateUser()">
+    <DIV CLASS="row bg-secondary-subtle">
+        <DIV CLASS="col col-3 col-lg-3 locale-text">
+            <a [id]="'button-detail-' + (user?.id || '')"  [routerLink]="['/user', user?.id]">{{ user?.full_name() }}</a>
+        </DIV>
+        <DIV CLASS="col col-6 col-lg-6 locale-text">
+            <div [innerHTML]="getUserSummary(user)"></div>
+        </DIV>
+        <DIV CLASS="col col-2 col-lg-2 locale-text">
+            <input id="active" type="checkbox" formControlName="active" [class]="'input-active'"
+            (change)="updateUser()">
+        </DIV>
+        <DIV CLASS="col col-1 col-lg-1 locale-text">
+            <BUTTON (click)="removeUserFromMonitoring()" class="btn btn-time-extension-minus">
+            <I class="fas fa-trash"></I>
+            </BUTTON>
+        </DIV>
+    </DIV>
+</FORM>
+

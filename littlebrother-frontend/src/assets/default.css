@@ -252,3 +252,17 @@ input {
     background-color: var(--bs-secondary-bg-subtle) !important;;
     color: white;
 }
+
+/*
+  Make sure that several text elements are displayed in one row of a container (and not stacked!)
+*/
+.inline-field {
+  display: inline;
+  width: auto;
+}
+
+
+.form-control {
+  padding-left: 1px;
+  padding-right: 1px;
+}

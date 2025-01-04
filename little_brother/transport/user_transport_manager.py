@@ -25,6 +25,7 @@ class UserTransportManager:
     def get_user_tos(p_users: List[User],
                      p_unmonitored_users: List[str]) -> List[UserTO]:
         tos = [ UserTO(
+            p_id=user.id,
             p_username=user.username,
             p_configured=True,
             p_first_name=user.first_name,

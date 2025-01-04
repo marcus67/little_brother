@@ -21,6 +21,7 @@ from little_brother import dependency_injection
 from little_brother import process_statistics
 from little_brother import rule_override
 from little_brother import rule_result_info
+from little_brother.constants import LANGUAGES
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
 from little_brother.persistence.persistent_rule_set import RuleSet
 from little_brother.persistence.persistent_time_extension import TimeExtension
@@ -382,7 +383,9 @@ class AdminDataHandler(PersistenceDependencyInjectionMixIn):
         return user_infos
 
     def get_control_transfer_object(self) -> ControlTO:
-        return ControlTO(p_refresh_interval_in_milliseconds=self._config.index_refresh_interval * 1000)
+        return ControlTO(
+            p_refresh_interval_in_milliseconds=self._config.index_refresh_interval * 1000,
+            p_languages=LANGUAGES)
 
     def get_user_status_transfer_object_map(self, p_session_context, p_process_infos) -> dict[str, UserStatusTO]:
 

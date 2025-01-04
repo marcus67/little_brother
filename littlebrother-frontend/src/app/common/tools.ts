@@ -14,10 +14,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import {formatDate} from '@angular/common';
+import { constants } from 'buffer';
 
 const durationRe = /((?<hours>[0-9]+)h)?((?<minutes>[0-9]+)m)?((?<seconds>[0-9]+)s)?/g;
 export const timeValidationPattern = "^-$|^[012]?[0-9]:[0-5][0-9]$"
 export const timeDurationPattern = "^-$|^([0-9]+h)?([0-9]+m)?$"
+export const textSeperator = ' <i style="font-size: 0.5rem; vertical-align: +25%" class="fas fa-circle fa-sm"></i> '
 
 export const get_duration_as_string = (seconds: number | undefined, dash_on_missing=true,
                                        include_seconds:boolean=false) : any => {
@@ -113,4 +115,21 @@ export const titleCaseWord = (word: string | undefined) : string | undefined => 
   if (!word) 
     return word;
   return word[0].toUpperCase() + word.substring(1).toLowerCase();
+}
+
+
+export const format_text_array = (elements: (string | undefined)[]) : string => {
+
+  var text = ""
+
+  for (const element of elements) {
+      if (element == textSeperator) {
+          if (text != "")
+              text += textSeperator
+      } else {
+        text += element
+      }
+    }
+
+  return text
 }

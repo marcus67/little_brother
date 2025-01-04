@@ -13,10 +13,10 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import { titleCaseWord } from '../common/tools'
+import { textSeperator, titleCaseWord } from '../common/tools'
 
 export class User {
-  user_id?: number;
+  id?: number;
   username?: string;
   active?: boolean;
   configured?: boolean;
@@ -42,5 +42,21 @@ export class User {
 
     else
         return titleCaseWord(this.username)
+  }
+
+  summary(languages: Record<string, string> | undefined): (string | undefined)[] {
+
+    var texts: (string| undefined)[] = []
+
+    if (this.username?.toUpperCase != this.full_name()?.toUpperCase())
+      texts.push("Username", ": ", this.username)
+
+    if (languages && this.locale && this.locale in languages) {
+      var lang = languages[this.locale] ?? "Unknown";
+
+      texts.push(textSeperator, "Locale", ": ", lang)
+    }
+
+    return texts;
   }
 }

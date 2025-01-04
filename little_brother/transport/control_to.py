@@ -17,6 +17,9 @@
 
 class ControlTO:
 
-    def __init__(self, p_refresh_interval_in_milliseconds: int):
+    def __init__(self,
+                 p_refresh_interval_in_milliseconds: int,
+                 p_languages: dict[str, str]):
 
         self.refresh_interval_in_milliseconds = p_refresh_interval_in_milliseconds
+        self.languages = p_languages

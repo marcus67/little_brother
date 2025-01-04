@@ -17,6 +17,7 @@
 
 import flask
 import flask_login
+from typing_extensions import deprecated
 
 from little_brother import constants
 from little_brother import entity_forms
@@ -255,10 +256,13 @@ class UsersViewHandler(BaseViewHandler):
 
             if changed:
                 session.commit()
-                self._persistence.clear_cache()
-                self.app_control.send_config_to_all_clients()
-                self.user_manager.reset_users(p_session_context=session_context)
-                self.app_control.reset_process_patterns()
+                self.actions_after_user_change(p_session_contect=session_context)
+
+    def actions_after_user_change(self, p_session_context: SessionContext):
+        self._persistence.clear_cache()
+        self.app_control.send_config_to_all_clients()
+        self.user_manager.reset_users(p_session_context=p_session_context)
+        self.app_control.reset_process_patterns()
 
     def save_for_user(self, p_forms, p_session_context, p_user):
 

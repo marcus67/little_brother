@@ -15,6 +15,7 @@
 
 export class Control {
   refresh_interval_in_milliseconds? : number;
+  languages? : Record<string, string>;
 
 	constructor(otherObject: Control) {
 	  Object.assign(this, otherObject)

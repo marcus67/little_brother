@@ -1,0 +1,58 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<app-nav-bar></app-nav-bar>
+<app-spinner *ngIf="isLoading"></app-spinner>
+<DIV *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
+  <SPAN id="page-ready"></SPAN>
+  <DIV CLASS="row title-row bg-primary-subtle align-items-center">
+    <DIV CLASS="col col-6 col-lg-6 locale-text"></DIV>
+    <DIV CLASS="col col-5 col-lg-5 locale-text">
+      <div *ngIf="isLoading" class="loading-indicator">Loading...</div>
+      <div *ngIf="!isLoading">
+        <span>
+        <label for="dropdown">Add to monitoring: </label>&nbsp;
+        <select id="dropdown" [disabled]="!getUnconfiguredUsers().length" [(ngModel)]="selectedUnconfiguredUser" class="form-control inline-field" style="width: 16ch;">
+          <option value="" disabled selected>Select user</option>
+          <option *ngFor="let value of getUnconfiguredUsers()" [value]="value">{{ value }}</option>
+        </select>
+      </span>
+      </div>
+    </DIV>
+    <DIV CLASS="col col-1 col-lg-1 locale-text">
+      <button [disabled]="!getUnconfiguredUsers().length || selectedUnconfiguredUser === ''" (click)="addUnconfiguredUser()" class="btn btn-time-extension-plus">
+        <I class="fas fa-plus"></I>
+      </button>
+    </DIV>
+  </DIV>
+  <DIV CLASS="row title-row bg-primary-subtle align-items-center">
+    <DIV CLASS="col col-3 col-lg-3 locale-text">User</DIV>
+    <DIV CLASS="col col-6 col-lg-6 locale-text">Details</DIV>
+    <DIV CLASS="col col-2 col-lg-2 locale-text">Monitored?</DIV>
+    <DIV CLASS="col col-1 col-lg-1 locale-text"></DIV>
+  </DIV>
+  <DIV *ngFor="let user of users" CLASS="row title-row bg-secondary-subtle">
+    <DIV CLASS="row bg-secondary-subtle">
+      <ng-container *ngIf="user.configured">
+        <app-user-row
+        [user]="user"
+        [languages]="languages"
+        ></app-user-row>
+        </ng-container>
+    </DIV>
+  </DIV>
+</DIV>

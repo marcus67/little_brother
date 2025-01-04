@@ -36,6 +36,6 @@ my_handlers.set("little_brother.transport.user_admin_detail_to.UserAdminDetailTO
 my_handlers.set("little_brother.transport.rule_set_to.RuleSetTO",
     (obj:any) => new RuleSet(obj)
 )
-my_handlers.set("little_brother.transport.user_configuration_to.RuleSetTO",
+my_handlers.set("little_brother.transport.user_to.UserTO",
     (obj:any) => new User(obj)
 )

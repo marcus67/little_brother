@@ -18,14 +18,16 @@
 class UserTO:
 
     def __init__(self,
-                 p_username: str,
-                 p_configured: bool,
+                 p_username: str | None = None,
+                 p_configured: bool | None = None,
+                 p_id: int | None = None,
                  p_first_name: str | None = None,
                  p_last_name: str | None = None,
                  p_locale: str | None = None,
                  p_process_name_pattern: str | None = None,
                  p_prohibited_process_name_pattern: str | None = None,
                  p_active: bool | None = None):
+        self.id = p_id
         self.username = p_username
         self.configured = p_configured
         self.first_name = p_first_name
