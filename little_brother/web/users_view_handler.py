@@ -256,7 +256,7 @@ class UsersViewHandler(BaseViewHandler):
 
             if changed:
                 session.commit()
-                self.actions_after_user_change(p_session_contect=session_context)
+                self.actions_after_user_change(p_session_context=session_context)
 
     def actions_after_user_change(self, p_session_context: SessionContext):
         self._persistence.clear_cache()
