@@ -652,10 +652,15 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
             self._event_handler.queue_events(p_events=events, p_to_master=True)
 
-    def add_new_user(self, p_session_context, p_username, p_locale=None):
+    def add_new_user(self, p_session_context, p_username, p_locale=None) -> int | None:
 
-        self.user_entity_manager.add_new_user(p_session_context=p_session_context, p_username=p_username,
-                                              p_locale=p_locale)
+        user_id = self.user_entity_manager.add_new_user(
+            p_session_context=p_session_context, p_username=p_username, p_locale=p_locale)
+
+        if user_id is None:
+            return None
+
         self._user_manager.add_monitored_user(p_username=p_username)
         self._user_manager.reset_users(p_session_context=p_session_context)
         self.send_config_to_all_clients()
+        return user_id

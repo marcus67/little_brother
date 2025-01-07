@@ -125,9 +125,9 @@ class NewApiViewHandler(BaseViewHandler):
         return jsonify({
             constants.JSON_STATUS: "error",
             constants.JSON_ERROR: p_message
-        })
+        }), p_status_code
 
-    def api_ok(self):
+    def api_ok(self) -> tuple[any, int]:
         return jsonify({constants.JSON_STATUS: "OK"}), 200
 
     def missing_parameter_error(self, p_parameter_name):
@@ -464,8 +464,29 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_USER, methods=["POST"])
-    def api_user(self, user_id):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_USER, methods=["GET"])
+    def api_get_user(self, user_id):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return self.api_error(p_message=result, p_status_code=http_status)
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+                    user = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
+                    user_to = UserTransportManager.get_user_to(p_user=user)
+
+                return jsonpickle.encode(user_to), 200
+
+        except Exception as e:
+            return self.internal_server_error(p_exception=e)
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_USER, methods=["PUT"])
+    def api_put_user(self, user_id):
         request = flask.request
         try:
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
@@ -487,10 +508,42 @@ class NewApiViewHandler(BaseViewHandler):
 
                     session = session_context.get_session()
                     user.active = user_to.active
+                    user.first_name = user_to.first_name
+                    user.last_name = user_to.last_name
+                    user.locale = user_to.locale
+                    
                     session.commit()
                     self.actions_after_user_change(p_session_context=session_context)
 
                 return self.api_ok()
+
+        except Exception as e:
+            return self.internal_server_error(p_exception=e)
+
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_PUT_USER, methods=["POST"])
+    def api_post_user(self, username):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return self.api_error(p_message=result, p_status_code=http_status)
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    user_id = self.app_control.add_new_user(
+                        p_session_context=session_context,
+                        p_username=username, p_locale=self.locale_helper.locale)
+
+                    if user_id is None:
+                        return self.api_error(p_message=f"Cannot create user for username '{username}'",
+                                              p_status_code=constants.HTTP_STATUS_CODE_CONFLICT)
+
+                    return jsonpickle.encode({'user_id': user_id}), 200
+
 
         except Exception as e:
             return self.internal_server_error(p_exception=e)

@@ -18,6 +18,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
 import { User } from '../models/user';
+import { UserId } from '../models/user-id';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class UserService {
 
   private REL_URL_USERS: string = '/users';
   private HEADERS: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
-  private REL_URL_USER_UPDATE(userId?:number): string { return `/user/${userId}` };
+  private REL_URL_USER(userId?:number): string { return `/user/${userId}` };
+  private REL_URL_POST_USER(username:string): string { return `/user/${username}` };
     
 
   constructor(
@@ -40,9 +42,21 @@ export class UserService {
     return this.http.get<object>(url, { headers: this.HEADERS });
   }
 
-  updateUser(user?: User) : Observable<object> {
-    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER_UPDATE(user?.id)}`;
+  loadUser(userId: number) : Observable<object> {
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER(userId)}`;
 
-    return this.http.post<object>(url, JSON.stringify(user), { headers: this.HEADERS });
+    return this.http.get<object>(url, { headers: this.HEADERS });
+  }
+
+  updateUser(user?: User) : Observable<object> {
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER(user?.id)}`;
+
+    return this.http.put<object>(url, JSON.stringify(user), { headers: this.HEADERS });
+  };
+
+  addUser(username: string) : Observable<UserId> {
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_POST_USER(username)}`;
+
+    return this.http.post<object>(url, JSON.stringify(username), { headers: this.HEADERS });
   };
 }

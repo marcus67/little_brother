@@ -17,7 +17,6 @@
 
 import flask
 import flask_login
-from typing_extensions import deprecated
 
 from little_brother import constants
 from little_brother import entity_forms

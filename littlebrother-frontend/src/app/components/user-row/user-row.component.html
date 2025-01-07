@@ -28,7 +28,8 @@
             (change)="updateUser()">
         </DIV>
         <DIV CLASS="col col-1 col-lg-1 locale-text">
-            <BUTTON (click)="removeUserFromMonitoring()" class="btn btn-time-extension-minus">
+            <BUTTON (click)="removeUserFromMonitoring()" class="btn btn-time-extension-minus"
+            title="Remove user '{{ user?.full_name() }}' from monitoring.">
             <I class="fas fa-trash"></I>
             </BUTTON>
         </DIV>

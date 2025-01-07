@@ -24,6 +24,7 @@ import { AboutComponent } from './components/about/about.component';
 import { EnsureAuthenticated } from './services/ensure-authenticated.service';
 import { LoginRedirect } from './services/login-redirect.service';
 import { UsersComponent } from './components/users/users.component';
+import { UserDetailsComponent } from './components/user-details/user-details.component';
 
 
 const routes: Routes = [
@@ -49,6 +50,10 @@ const routes: Routes = [
   },
   { path: 'users',
     component: UsersComponent,
+    canActivate: [EnsureAuthenticated]
+  },
+  { path: 'user/:user_id',
+    component: UserDetailsComponent,
     canActivate: [EnsureAuthenticated]
   },
   { path: 'admin/:user_id',

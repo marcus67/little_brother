@@ -22,19 +22,22 @@ from little_brother.transport.user_to import UserTO
 class UserTransportManager:
 
     @staticmethod
+    def get_user_to(p_user: User) -> UserTO:
+        return UserTO(
+            p_id=p_user.id,
+            p_username=p_user.username,
+            p_configured=True,
+            p_first_name=p_user.first_name,
+            p_last_name=p_user.last_name,
+            p_process_name_pattern=p_user.process_name_pattern,
+            p_prohibited_process_name_pattern=p_user.prohibited_process_name_pattern,
+            p_locale=p_user.locale,
+            p_active=p_user.active)
+
+    @staticmethod
     def get_user_tos(p_users: List[User],
                      p_unmonitored_users: List[str]) -> List[UserTO]:
-        tos = [ UserTO(
-            p_id=user.id,
-            p_username=user.username,
-            p_configured=True,
-            p_first_name=user.first_name,
-            p_last_name=user.last_name,
-            p_process_name_pattern=user.process_name_pattern,
-            p_prohibited_process_name_pattern=user.prohibited_process_name_pattern,
-            p_locale=user.locale,
-            p_active=user.active)
-            for user in p_users
+        tos = [ UserTransportManager.get_user_to(user) for user in p_users
         ]
         tos.extend(
             [ UserTO(

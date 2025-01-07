@@ -6,6 +6,7 @@ import { unpickle } from '../../common/unpickle'
 import { my_handlers } from '../../models/registry'
 import { Control } from 'src/app/models/control';
 import { format_text_array } from 'src/app/common/tools'; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -19,7 +20,8 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private controlService: ControlService
+    private controlService: ControlService,
+    private router: Router
   ) {
   }
 
@@ -43,11 +45,6 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  getUserSummary(user: User): string | undefined {
-    return format_text_array(user.summary(this.languages));
-  }
-
-
   getControl(): void {
     this.controlService.loadControl().subscribe( jsonEntry => {
       let control : Control = new Control(jsonEntry);
@@ -60,7 +57,11 @@ export class UsersComponent implements OnInit {
     return Array.from(this.users.filter( user => ! user.configured), (user, i) => user.username).sort();
   }
 
-  addUnconfiguredUser() {
+  addUnconfiguredUser(username: string) {
+    this.userService.addUser(username).subscribe( jsonData => {
+      var user_id = jsonData.user_id;
+      this.router.navigate(['/user', user_id])
+    });
   }
 
   ngOnInit(): void {

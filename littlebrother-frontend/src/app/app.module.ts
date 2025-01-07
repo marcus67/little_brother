@@ -42,6 +42,7 @@ import { ConfigService } from './services/config.service';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { UsersComponent } from './components/users/users.component';
 import { UserRowComponent } from './components/user-row/user-row.component';
+import { UserDetailsComponent } from './components/user-details/user-details.component';
 
 export function initializeApp(configService: ConfigService) {
   return () => configService.loadConfig();
@@ -63,7 +64,8 @@ export function initializeApp(configService: ConfigService) {
     AdminDetailsOverrideComponent,
     SpinnerComponent,
     UsersComponent,
-    UserRowComponent
+    UserRowComponent,
+    UserDetailsComponent
   ],
   imports: [
     BrowserModule,
