@@ -27,8 +27,8 @@ export class UserService {
 
   private REL_URL_USERS: string = '/users';
   private HEADERS: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
-  private REL_URL_USER(userId?:number): string { return `/user/${userId}` };
-  private REL_URL_POST_USER(username:string): string { return `/user/${username}` };
+  private REL_URL_USER_ID(userId?:number): string { return `/user/${userId}` };
+  private REL_URL_USERNAME(username:string): string { return `/user/${username}` };
     
 
   constructor(
@@ -43,19 +43,25 @@ export class UserService {
   }
 
   loadUser(userId: number) : Observable<object> {
-    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER(userId)}`;
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER_ID(userId)}`;
 
     return this.http.get<object>(url, { headers: this.HEADERS });
   }
 
+  removeUserFromMonitoring(username: string) : Observable<object> {
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_USERNAME(username)}`;
+
+    return this.http.delete<object>(url, { headers: this.HEADERS });
+  }
+
   updateUser(user?: User) : Observable<object> {
-    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER(user?.id)}`;
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_USER_ID(user?.id)}`;
 
     return this.http.put<object>(url, JSON.stringify(user), { headers: this.HEADERS });
   };
 
-  addUser(username: string) : Observable<UserId> {
-    let url: string = `${this.configService.baseUrl}${this.REL_URL_POST_USER(username)}`;
+  addUserToMonitoring(username: string) : Observable<UserId> {
+    let url: string = `${this.configService.baseUrl}${this.REL_URL_USERNAME(username)}`;
 
     return this.http.post<object>(url, JSON.stringify(username), { headers: this.HEADERS });
   };

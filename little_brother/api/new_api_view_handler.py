@@ -548,6 +548,30 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_DELETE_USER, methods=["DELETE"])
+    def api_delete_user(self, username):
+        request = flask.request
+        try:
+            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                   p_service=self.simplify_url(request.url_rule),
+                                                                   p_duration=duration)):
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+
+                if http_status != 200:
+                    return self.api_error(p_message=result, p_status_code=http_status)
+
+                with SessionContext(p_persistence=self.persistence) as session_context:
+
+                    self.user_entity_manager.delete_user(
+                        p_session_context=session_context, p_username=username)
+                    self.actions_after_user_change(p_session_context=session_context)
+
+                    return self.api_ok()
+
+
+        except Exception as e:
+            return self.internal_server_error(p_exception=e)
+
     def actions_after_user_change(self, p_session_context: SessionContext):
         self._persistence.clear_cache()
         self.app_control.send_config_to_all_clients()

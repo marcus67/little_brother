@@ -89,6 +89,9 @@ API_URL_USER = os.path.join(API_URL, API_REL_URL_USER)
 API_REL_URL_PUT_USER = "user/<username>"
 API_URL_PUT_USER = os.path.join(API_URL, API_REL_URL_PUT_USER)
 
+API_REL_URL_DELETE_USER = "user/<username>"
+API_URL_DELETE_USER = os.path.join(API_URL, API_REL_URL_DELETE_USER)
+
 API_REL_URL_CONTROL = "control"
 API_URL_CONTROL = os.path.join(API_URL, API_REL_URL_CONTROL)
 

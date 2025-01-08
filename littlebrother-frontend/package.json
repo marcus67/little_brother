@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^16.2.12",
     "@angular/platform-browser-dynamic": "^16.2.12",
     "@angular/router": "^16.2.12",
+    "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
     "jsonpickle": "^1.1.2",
     "rxjs": "~7.8.0",

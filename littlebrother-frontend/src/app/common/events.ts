@@ -14,5 +14,6 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 export const EVENT_UPDATE_USER :string = "update-user";
+export const EVENT_UPDATE_USER_LIST :string = "update-user-list";
 export const EVENT_UPDATE_USER_ADMIN_DETAILS :string = "update-user-admin-details";
 export const EVENT_UPDATE_USER_STATUS_DETAILS :string = "update-user-status-details";

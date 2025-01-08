@@ -29,7 +29,7 @@
           <option *ngFor="let value of getUnconfiguredUsers()" [value]="value">{{ value }}</option>
         </select>
         &nbsp;
-        <button [disabled]="!getUnconfiguredUsers().length || selectedUnconfiguredUser === ''" (click)="addUnconfiguredUser(selectedUnconfiguredUser)" 
+        <button [disabled]="!getUnconfiguredUsers().length || selectedUnconfiguredUser === ''" (click)="addUserToMonitoring(selectedUnconfiguredUser)" 
           class="btn btn-time-extension-plus" title="Add user '{{ selectedUnconfiguredUser }}' to monitoring.">
           <I class="fas fa-plus"></I>
         </button>

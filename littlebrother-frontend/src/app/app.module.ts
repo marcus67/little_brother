@@ -28,6 +28,7 @@ import { StatusComponent } from './components/status/status.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { HelpersComponent } from './components/helpers/helpers.component';
 import { AboutComponent } from './components/about/about.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 import { AuthService } from './services/auth.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -65,7 +66,8 @@ export function initializeApp(configService: ConfigService) {
     SpinnerComponent,
     UsersComponent,
     UserRowComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -122,10 +122,7 @@ class UsersViewHandler(BaseViewHandler):
         if p_submit_id == p_user.delete_html_key:
             self.user_entity_manager.delete_user(
                 p_session_context=p_session_context, p_username=p_user.username)
-            self.persistence.clear_cache()
-            self.user_manager.reset_users(p_session_context=p_session_context)
-            self.app_control.send_config_to_all_clients()
-            self.app_control.reset_process_patterns()
+            self.actions_after_user_change(p_session_context=p_session_context)
 
         elif p_submit_id == p_user.new_ruleset_html_key:
             self.user_entity_manager.assign_ruleset(
@@ -258,7 +255,7 @@ class UsersViewHandler(BaseViewHandler):
                 self.actions_after_user_change(p_session_context=session_context)
 
     def actions_after_user_change(self, p_session_context: SessionContext):
-        self._persistence.clear_cache()
+        self.persistence.clear_cache()
         self.app_control.send_config_to_all_clients()
         self.user_manager.reset_users(p_session_context=p_session_context)
         self.app_control.reset_process_patterns()

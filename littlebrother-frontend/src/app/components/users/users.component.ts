@@ -7,6 +7,8 @@ import { my_handlers } from '../../models/registry'
 import { Control } from 'src/app/models/control';
 import { format_text_array } from 'src/app/common/tools'; 
 import { Router } from '@angular/router';
+import { EventBusService } from 'src/app/services/event-bus.service';
+import { EVENT_UPDATE_USER_LIST } from 'src/app/common/events';
 
 @Component({
   selector: 'app-users',
@@ -21,6 +23,7 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private controlService: ControlService,
+    private eventBusService: EventBusService,
     private router: Router
   ) {
   }
@@ -57,8 +60,8 @@ export class UsersComponent implements OnInit {
     return Array.from(this.users.filter( user => ! user.configured), (user, i) => user.username).sort();
   }
 
-  addUnconfiguredUser(username: string) {
-    this.userService.addUser(username).subscribe( jsonData => {
+  addUserToMonitoring(username: string) {
+    this.userService.addUserToMonitoring(username).subscribe( jsonData => {
       var user_id = jsonData.user_id;
       this.router.navigate(['/user', user_id])
     });
@@ -67,5 +70,8 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.getUsers();
     this.getControl();
+    this.eventBusService.on(EVENT_UPDATE_USER_LIST, (value: any) => {
+      this.getUsers();
+    });
   }
 }

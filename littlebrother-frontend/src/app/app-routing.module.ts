@@ -52,7 +52,7 @@ const routes: Routes = [
     component: UsersComponent,
     canActivate: [EnsureAuthenticated]
   },
-  { path: 'user/:user_id',
+  { path: 'users/:user_id',
     component: UserDetailsComponent,
     canActivate: [EnsureAuthenticated]
   },
