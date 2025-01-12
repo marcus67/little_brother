@@ -101,11 +101,11 @@ jobs:
       - store_artifacts:
           path: htmlcov
       - store_artifacts:
-          path: debian/little-brother_0.5.5_206.deb
+          path: debian/little-brother_0.5.6_207.deb
       - persist_to_workspace:
           root: "."
           paths:
-            - debian/little-brother_0.5.5_206.deb
+            - debian/little-brother_0.5.6_207.deb
       
   
   
@@ -126,19 +126,19 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - store_artifacts:
-          path: "dist/little_brother-0.5.5.tar.gz"
+          path: "dist/little_brother-0.5.6.tar.gz"
       # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
       # with each other in common downstream jobs.
-      - run: mv ./dist/little_brother-0.5.5.tar.gz ./dist/little_brother-0.5.5.tar.gz_3_10
+      - run: mv ./dist/little_brother-0.5.6.tar.gz ./dist/little_brother-0.5.6.tar.gz_3_10
       - persist_to_workspace:
           root: "."
           paths:
-            - ./dist/little_brother-0.5.5.tar.gz_3_10
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10
+            - ./dist/little_brother-0.5.6.tar.gz_3_10
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_10
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10
+            - ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_10
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10
       - persist_to_workspace:
           root: "."
@@ -162,19 +162,19 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - store_artifacts:
-          path: "dist/little_brother-0.5.5.tar.gz"
+          path: "dist/little_brother-0.5.6.tar.gz"
       # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
       # with each other in common downstream jobs.
-      - run: mv ./dist/little_brother-0.5.5.tar.gz ./dist/little_brother-0.5.5.tar.gz_3_11
+      - run: mv ./dist/little_brother-0.5.6.tar.gz ./dist/little_brother-0.5.6.tar.gz_3_11
       - persist_to_workspace:
           root: "."
           paths:
-            - ./dist/little_brother-0.5.5.tar.gz_3_11
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11
+            - ./dist/little_brother-0.5.6.tar.gz_3_11
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_11
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11
+            - ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_11
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11
       - persist_to_workspace:
           root: "."
@@ -198,19 +198,19 @@ jobs:
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - store_artifacts:
-          path: "dist/little_brother-0.5.5.tar.gz"
+          path: "dist/little_brother-0.5.6.tar.gz"
       # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
       # with each other in common downstream jobs.
-      - run: mv ./dist/little_brother-0.5.5.tar.gz ./dist/little_brother-0.5.5.tar.gz_3_12
+      - run: mv ./dist/little_brother-0.5.6.tar.gz ./dist/little_brother-0.5.6.tar.gz_3_12
       - persist_to_workspace:
           root: "."
           paths:
-            - ./dist/little_brother-0.5.5.tar.gz_3_12
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12
+            - ./dist/little_brother-0.5.6.tar.gz_3_12
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_12
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12
+            - ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_12
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12
       - persist_to_workspace:
           root: "."
@@ -232,8 +232,8 @@ jobs:
 
       - attach_workspace:
           at: "."
-      - run: mv ./dist/little_brother-0.5.5.tar.gz_3_10 ./dist/little_brother-0.5.5.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
+      - run: mv ./dist/little_brother-0.5.6.tar.gz_3_10 ./dist/little_brother-0.5.6.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
@@ -254,8 +254,8 @@ jobs:
 
       - attach_workspace:
           at: "."
-      - run: mv ./dist/little_brother-0.5.5.tar.gz_3_11 ./dist/little_brother-0.5.5.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
+      - run: mv ./dist/little_brother-0.5.6.tar.gz_3_11 ./dist/little_brother-0.5.6.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
@@ -276,8 +276,8 @@ jobs:
 
       - attach_workspace:
           at: "."
-      - run: mv ./dist/little_brother-0.5.5.tar.gz_3_12 ./dist/little_brother-0.5.5.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.2.tar.gz
+      - run: mv ./dist/little_brother-0.5.6.tar.gz_3_12 ./dist/little_brother-0.5.6.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.3.tar.gz
       - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
@@ -301,7 +301,7 @@ jobs:
       - attach_workspace:
           at: "."
       # Choose the artifact of the last Python image (having the most up-to-date Python version)...
-      - run: mv dist/little_brother-0.5.5.tar.gz_3_12 dist/little_brother-0.5.5.tar.gz
+      - run: mv dist/little_brother-0.5.6.tar.gz_3_12 dist/little_brother-0.5.6.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
   deploy:
     docker:
