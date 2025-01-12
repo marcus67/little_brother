@@ -78,8 +78,8 @@ extended_setup_params = {
 #                         ('little-brother-arch-linux-base', False),
 #                         ('little-brother-arch-linux-client', True),
                          ('little-brother-alpine-client', True),
+                         ('little-brother-alpine-server', True),
                          ],
-
     # additional setup configuration used by CI stages
     "scan_id": "little-brother",
     "owasp": True,

@@ -19,6 +19,7 @@ The latest major feature changes are:
 
 | Version | Feature/Fix                                                                    | (Issue) Link                                                         |
 |---------|--------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.5.6   | *New*: Provide an Alpine server image                                          | [Issue 209](https://github.com/marcus67/little_brother/issues/209)   |
 | 0.5.4   | *Bug Fix*: Proper deletion of table histories                                  | [Issue 203](https://github.com/marcus67/little_brother/issues/203)   |
 | 0.5.2   | *Bug Fix*: Installation problems due to unsupported `playsound`                | [Issue 205](https://github.com/marcus67/little_brother/issues/205)   |
 | 0.5.1   | New feature: Provide the first rudimentary version of the Angular web frontend | [Issue 191](https://github.com/marcus67/little_brother/issues/191)   |

@@ -23,7 +23,8 @@ import { ConfigService } from './config.service';
 interface ILoginResult {
   status: string,
   is_admin: boolean,
-  username: string
+  username: string,
+  user_id: number
 }
 
 interface ILogoutResult {
@@ -35,6 +36,7 @@ interface ILogoutResult {
 export class AuthService {
   private LOCAL_STORAGE_KEY_LOGGED_IN = "logged_in";
   private LOCAL_STORAGE_KEY_IS_ADMIN = "is_admin";
+  private LOCAL_STORAGE_KEY_ACTIVE_USER_ID = "active_user_id";
   private REL_URL_DEFAULT_REDIRECT: string = '/status';
   private REL_URL_LOGIN: string = '/login';
   private REL_URL_LOGOUT: string = '/logout';
@@ -54,6 +56,7 @@ export class AuthService {
       map( result => {
         localStorage.setItem(this.LOCAL_STORAGE_KEY_LOGGED_IN, "true")
         localStorage.setItem(this.LOCAL_STORAGE_KEY_IS_ADMIN, result.is_admin.toString())
+        localStorage.setItem(this.LOCAL_STORAGE_KEY_ACTIVE_USER_ID, result.user_id.toString())
         return result;
       })
     ).toPromise();
@@ -89,6 +92,9 @@ export class AuthService {
     localStorage.removeItem(this.LOCAL_STORAGE_KEY_LOGGED_IN)
   }
 
+  getActiveUserId() : number {
+    return Number(localStorage.getItem(this.LOCAL_STORAGE_KEY_ACTIVE_USER_ID));
+  }
 
   refreshToken() {
     let url: string = `${this.configService.baseUrl}${this.REL_URL_REFRESH}`;

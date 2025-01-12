@@ -29,7 +29,14 @@
       <UL class="nav navbar-nav  d-lg-flex col-lg-8">
         <LI class="nav-item"><a id="button-status" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'status'}" routerLink="/status">Status</a></LI>
         <LI class="nav-item" *ngIf="isAdmin"><a id="button-admin" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'admin'}" routerLink="/admin">Admin</a></LI>
-        <LI class="nav-item" *ngIf="isAdmin"><a id="button-users" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'users'}" routerLink="/users">Users</a></LI>
+        <LI class="nav-item" *ngIf="!isAdmin">
+          <a id="button-admin" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'admin'}" [routerLink]="['/admin', getActiveUserId()]"]>Admin</a>
+        </LI>
+        <LI class="nav-item" *ngIf="isAdmin"><A id="button-users" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'users'}" routerLink="/users">Users</A></LI>
+
+        <LI class="nav-item" *ngIf="!isAdmin"> 
+          <A id="button-users" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'users'}"  [routerLink]="['/users', getActiveUserId()]">Users</A>
+        </LI>
         <!--
         <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/devices">Devices</a></LI>
         <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/topology">Topology</a></LI>

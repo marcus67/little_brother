@@ -38,6 +38,7 @@ from little_brother import entity_forms
 from little_brother.api import api_view_handler
 from little_brother.api.new_api_view_handler import NewApiViewHandler
 from little_brother.persistence.persistent_dependency_injection_mix_in import PersistenceDependencyInjectionMixIn
+from little_brother.persistence.session_context import SessionContext
 from little_brother.settings import extended_settings
 from little_brother.token_handler import TokenHandler, SECTION_NAME as TOKEN_HANDLER_SECTION_NAME
 from little_brother.web.about_view_handler import AboutViewHandler
@@ -189,7 +190,10 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
                 self._angular_auth_view_handler = angular_auth_view_handler.AngularAuthViewHandler(
                     p_app=self._app, p_user_handler=p_user_handler,
                     p_url_prefix=self._config.angular_api_base_url,
-                    p_token_handler=self._token_handler)
+                    p_token_handler=self._token_handler,
+                    p_auth_result_processor= lambda p_authorization_result :
+                        self.add_user_id_to_authorization_result(p_authorization_result=p_authorization_result)
+                )
                 dependency_injection.container[angular_auth_view_handler.AngularAuthViewHandler] = \
                     self._angular_auth_view_handler
                 self._new_api_view_handler = NewApiViewHandler(p_package=little_brother, p_languages=p_languages)
@@ -228,6 +232,12 @@ class StatusServer(PersistenceDependencyInjectionMixIn, base_web_server.BaseWebS
         gettext.bindtextdomain("messages", "little_brother/translations")
 
         entity_forms.set_get_text(self.gettext)
+
+
+    def add_user_id_to_authorization_result(self, p_authorization_result:dict):
+        with SessionContext(self.persistence) as session_context:
+            self.user_entity_manager.add_user_id_to_authorization_result(
+                p_session_context=session_context, p_authorization_result=p_authorization_result)
 
     def get_angular_url(self, p_rel_url=None):
 

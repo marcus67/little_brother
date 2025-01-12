@@ -143,16 +143,38 @@ class NewApiViewHandler(BaseViewHandler):
         msg = f"user id '{p_user_id}' does not exist or is not being monitored"
         return self.api_error(p_message=msg, p_status_code=404)
 
+    def user_not_authorized_error(self, p_user_id:int):
+        return self.api_error(p_message=f"User id {p_user_id} does not have access to this ressource",
+                              p_status_code=constants.HTTP_STATUS_CODE_UNAUTHORIZED)
+
     def invalid_secret_error(self):
         return self.api_error(p_message="invalid access code",
                               p_status_code=constants.HTTP_STATUS_CODE_UNAUTHORIZED)
 
     def internal_server_error(self, p_exception: Exception):
-        return self.api_error(p_message=f"internal server error: {p_exception!s}",
+        return self.api_error(p_message=f"internal server error: {p_exception.__class__.__name__}: {p_exception!s}",
                               p_status_code=constants.HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR)
 
     def destroy(self):
         API_BLUEPRINT_ADAPTER.unassign_view_handler_instances()
+
+    def check_access(self, p_session_context:SessionContext, p_authorization_result: dict,
+                     p_active_user_id: int = None) -> bool:
+
+        if p_authorization_result["is_admin"]:
+            return True
+
+        if p_active_user_id is None:
+
+            return False
+
+        logged_user_id = p_authorization_result.get("user_id", None)
+
+        if not logged_user_id:
+            return False
+
+        return  logged_user_id == p_active_user_id
+
 
     #  TODO: Remove copy in api_view_handler!
     def extend_time_extension_for_session(self, p_session_context, p_user_name, p_delta_extension,
@@ -442,22 +464,26 @@ class NewApiViewHandler(BaseViewHandler):
     def api_users(self):
         request = flask.request
         try:
-            with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
-                                                                   p_service=self.simplify_url(request.url_rule),
-                                                                   p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+            with (tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                                    p_service=self.simplify_url(request.url_rule),
+                                                                    p_duration=duration))):
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
                     return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
 
+                    active_user_id = self.user_entity_manager.add_user_id_to_authorization_result(
+                        p_session_context=session_context, p_authorization_result=result["authorization"]
+                    )
+
                     users = self.user_entity_manager.get_sorted_users(session_context)
                     unmonitored_users = self.app_control.get_unmonitored_users(session_context)
 
                     user_tos = UserTransportManager.get_user_tos(
-                        p_users=users, p_unmonitored_users=unmonitored_users
-                    )
+                        p_users=users, p_unmonitored_users=unmonitored_users, p_active_user_id=active_user_id)
 
                 return jsonpickle.encode(user_tos), 200
 
@@ -471,12 +497,19 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request,
+                                                                                 p_admin_required=False)
+
 
                 if http_status != 200:
                     return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
+                    if not self.check_access(p_session_context=session_context,
+                                             p_authorization_result=result['authorization'],
+                                             p_active_user_id=int(user_id)):
+                        return self.user_not_authorized_error(p_user_id=user_id)
+
                     user = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
                     user_to = UserTransportManager.get_user_to(p_user=user)
 

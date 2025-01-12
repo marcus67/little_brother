@@ -65,6 +65,10 @@ export class NavBarComponent implements OnInit {
     return this.currentUrl.split("/")[1];
   }
 
+  getActiveUserId(): number {
+    return this.auth.getActiveUserId();
+  }
+
   onLogout(): void {
     if (this.auth.isLoggedIn()) {
       this.auth.logout().then((result) => {

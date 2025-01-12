@@ -4,6 +4,10 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.6 Revision 207 (January 12th, 2025)
+* Provide initial, partial support for tab "Users" of Angular GUI 
+* Provide an Alpine server image; closes #209
+
 ## Version 0.5.5 Revision 206 (December 28th, 2024)
 * Handle duplicate entries in iptables table, closes #204
 * Provide initial version of user configuration in Angular

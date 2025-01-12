@@ -36,15 +36,18 @@ class UserTransportManager:
 
     @staticmethod
     def get_user_tos(p_users: List[User],
-                     p_unmonitored_users: List[str]) -> List[UserTO]:
+                     p_unmonitored_users: List[str],
+                     p_active_user_id: int) -> List[UserTO]:
         tos = [ UserTransportManager.get_user_to(user) for user in p_users
-        ]
-        tos.extend(
-            [ UserTO(
-                p_username=username,
-                p_configured=False
-            ) for username in p_unmonitored_users
-            ]
-        )
+                if user.id == p_active_user_id or p_active_user_id is None]
+
+        if p_active_user_id is None:
+            tos.extend(
+                [ UserTO(
+                    p_username=username,
+                    p_configured=False
+                ) for username in p_unmonitored_users
+                ]
+            )
 
         return tos

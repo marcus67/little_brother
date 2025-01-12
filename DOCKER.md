@@ -13,6 +13,9 @@ Currently, there are four Docker images available for `LittleBrother`:
 * [little-brother-alpine-client](https://hub.docker.com/repository/docker/marcusrickert/little-brother-alpine-client) 
   containing a LittleBrother client based on an Alpine Linux base image. This is the smallest image for
   `LittleBrother`!
+* [little-brother-alpine-server](https://hub.docker.com/repository/docker/marcusrickert/little-brother-alpine-server) 
+  containing a LittleBrother client based on an Alpine Linux base image. This is the smallest image for
+  `LittleBrother`!
 * [little-brother-slave](https://hub.docker.com/repository/docker/marcusrickert/little-brother-slave) 
   containing a LittleBrother client based on a Debian base image. This image is obsolete for naming reasons
   and **will not be updated**. Please, migrate to one of the images above.
