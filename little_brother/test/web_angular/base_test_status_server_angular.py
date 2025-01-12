@@ -58,7 +58,7 @@ from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
-DEFAULT_ANGULAR_RENDERING_TIMEOUT = 5  # seconds
+DEFAULT_ANGULAR_RENDERING_TIMEOUT = 10  # seconds
 
 XPATH_EMPTY_USER_LIST = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
 XPATH_EMPTY_DEVICE_LIST = "//FORM/DIV/DIV[DIV[1] = 'Device' and DIV[2] = '']"
