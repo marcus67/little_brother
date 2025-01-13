@@ -16,32 +16,35 @@
 -->
 
 <app-helpers></app-helpers>
-<DIV class="d-flex min-vh-100 justify-content-center align-items-center">
-  <!-- Note: the tag "form" must be lowercase! -->
-  <form class="form-signin col-12" (ngSubmit)="onLogin()" novalidate>
-    <IMG CLASS="mx-auto d-block" SRC="assets/icons/icon-baby-panda-128x128.png">
-    <DIV id="login-title" class="h2 fw-normal text-center">
-      Little Brother Login
-    </DIV>
-    <DIV class="form-group">
-      <DIV *ngIf="message">
-        <DIV class="alert alert-warning">
-          {{ message }}
+<app-spinner *ngIf="isLoading"></app-spinner>
+<ng-container *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
+  <DIV class="d-flex min-vh-100 justify-content-center align-items-center">
+    <!-- Note: the tag "form" must be lowercase! -->
+    <form class="form-signin col-12" (ngSubmit)="onLogin()" novalidate>
+      <IMG CLASS="mx-auto d-block" SRC="assets/icons/icon-baby-panda-128x128.png">
+      <DIV id="login-title" class="h2 fw-normal text-center">
+        Little Brother Login
+      </DIV>
+      <DIV class="form-group">
+        <DIV *ngIf="message">
+          <DIV class="alert alert-warning">
+            {{ message }}
+          </DIV>
+        </DIV>
+        <DIV class="form-floating">
+          <!-- Note: the tag "input" must be lowercase! -->
+          <input type="text" class="form-control" placeholder="Username" [(ngModel)]="user.username"
+                name="username" autofocus="" required="" id="username">
+          <LABEL for="username">Username</LABEL>
+        </DIV>
+        <DIV class="form-floating">
+          <!-- Note: the tag "input" must be lowercase! -->
+          <input type="password" class="form-control" placeholder="Password" [(ngModel)]="user.password"
+                name="password" required="" id="password">
+          <LABEL for="password">Password</LABEL>
         </DIV>
       </DIV>
-      <DIV class="form-floating">
-        <!-- Note: the tag "input" must be lowercase! -->
-        <input type="text" class="form-control" placeholder="Username" [(ngModel)]="user.username"
-               name="username" autofocus="" required="" id="username">
-        <LABEL for="username">Username</LABEL>
-      </DIV>
-      <DIV class="form-floating">
-        <!-- Note: the tag "input" must be lowercase! -->
-        <input type="password" class="form-control" placeholder="Password" [(ngModel)]="user.password"
-               name="password" required="" id="password">
-        <LABEL for="password">Password</LABEL>
-      </DIV>
-    </DIV>
-    <BUTTON type="submit" class="btn btn-default btn-lg btn-primary btn-block w-100 py-2">Login</BUTTON>
-  </form>
-</DIV>
+      <BUTTON type="submit" class="btn btn-default btn-lg btn-primary btn-block w-100 py-2">Login</BUTTON>
+    </form>
+  </DIV>
+</ng-container>

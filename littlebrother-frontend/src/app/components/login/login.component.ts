@@ -27,7 +27,10 @@ export class LoginComponent {
   user: Login = new Login();
   message: string = "";
 
-  constructor(private router: Router, private auth: AuthService) {}
+  constructor(private router: Router, private auth: AuthService) {
+
+  }
+
   onLogin(): void {
     if (this.user.username == '') {
       this.user.username = undefined;
@@ -49,5 +52,9 @@ export class LoginComponent {
         this.message = err.error.error_details;
       }
     });
+  }
+
+  get isLoading() : boolean {
+    return this.auth.isLoading;
   }
 }

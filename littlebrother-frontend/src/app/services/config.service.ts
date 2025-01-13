@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class ConfigService {
 
   private config: any;
+  private _isLoading: boolean = true;
 
   constructor(private http: HttpClient) {}
 
@@ -15,10 +16,15 @@ export class ConfigService {
       .toPromise()
       .then(data => {
         this.config = data;
+        this._isLoading = false;
       });
   }
 
   get baseUrl() {
     return this.config?.baseUrl;
+  }
+
+  get isLoading() : boolean {
+    return this._isLoading;
   }
 }

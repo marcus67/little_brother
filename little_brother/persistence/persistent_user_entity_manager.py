@@ -53,17 +53,23 @@ class UserEntityManager(BaseEntityManager):
     def add_user_id_to_authorization_result(self, p_session_context: SessionContext,
                                             p_authorization_result: dict) -> int | None:
 
-        if not p_authorization_result["is_admin"]:
-            username = p_authorization_result["username"]
-            user = self.get_by_username(p_session_context=p_session_context, p_username=username)
+        username = p_authorization_result.get("username")
 
-            if user is None:
+        if username is None:
+            raise ConfigurationException("Field 'username' not found in authorization result!")
+
+        user = self.get_by_username(p_session_context=p_session_context, p_username=username)
+
+        if user is None:
+            if p_authorization_result["is_admin"]:
+                p_authorization_result["user_id"] = 0
+                return None
+            else:
                 raise ConfigurationException(f"Cannot find username '{username}' ")
 
-            p_authorization_result["user_id"] = user.id
-            return user.id
+        p_authorization_result["user_id"] = user.id
+        return user.id
 
-        return None
 
     def users(self, p_session_context):
 

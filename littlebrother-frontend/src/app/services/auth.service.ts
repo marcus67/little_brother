@@ -124,4 +124,8 @@ export class AuthService {
       })
     ).toPromise();
   }
+
+  get isLoading() : boolean {
+    return this.configService.isLoading;
+  }
 }
