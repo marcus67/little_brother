@@ -24,6 +24,7 @@ import time
 import unittest
 
 import selenium
+from selenium.common import TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -263,9 +264,15 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         self._driver.get(url)
 
     def retrieve_element_by_id_with_timeout(self, p_id):
-        return WebDriverWait(self._driver, DEFAULT_ANGULAR_RENDERING_TIMEOUT).until(
-            ec.presence_of_element_located((By.ID, p_id))
-        )
+        try:
+            return WebDriverWait(self._driver, DEFAULT_ANGULAR_RENDERING_TIMEOUT).until(
+                ec.presence_of_element_located((By.ID, p_id))
+            )
+
+        except TimeoutException as e:
+            self._logger.error(f"Timeout while retrieving element with id {p_id}!")
+            self._logger.error(f"Page content: {self._driver.page_source!s}")
+            raise e
 
     def wait_until_page_ready(self):
         self.retrieve_element_by_id_with_timeout(p_id="page-ready")

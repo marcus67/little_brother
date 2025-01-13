@@ -130,6 +130,8 @@ class App(base_app.BaseApp):
         self._admin_data_handler = None
         self._version_checker = None
 
+        self._logger.info(f"class {self.__class__.__name__} is located at {__file__}")
+
     def prepare_configuration(self, p_configuration: configuration.Configuration):
 
         app_control_section = AppControlConfigModel()
