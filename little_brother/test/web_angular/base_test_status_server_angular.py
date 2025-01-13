@@ -59,7 +59,7 @@ from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
-DEFAULT_ANGULAR_RENDERING_TIMEOUT = 10  # seconds
+DEFAULT_ANGULAR_RENDERING_TIMEOUT = 5  # seconds
 
 XPATH_EMPTY_USER_LIST = "//FORM/DIV/DIV[DIV[1] = 'User' and DIV[2] = '']"
 XPATH_EMPTY_DEVICE_LIST = "//FORM/DIV/DIV[DIV[1] = 'Device' and DIV[2] = '']"
@@ -188,6 +188,8 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         options.add_argument('disable-dev-shm-usage')
         options.add_argument("--incognito")
 
+        options.set_capability('goog:loggingPrefs', {'browser': 'ALL'})  # Enable browser console logs
+
         chrome_binary = os.getenv("CHROME_BINARY")
 
         if chrome_binary:
@@ -195,6 +197,13 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
             options.binary_location = os.getenv(chrome_binary)
 
         self._driver = selenium.webdriver.Chrome(options=options)
+
+    def dump_browser_log(self):
+
+        logs = self._driver.get_log('browser')
+
+        for entry in logs:
+            self._logger.info(f"[{entry['level']}] {entry['message']}")
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs, p_create_complex_handlers=False):
 
@@ -272,6 +281,7 @@ class BaseTestStatusServerAngular(base_test.BaseTestCase):
         except TimeoutException as e:
             self._logger.error(f"Timeout while retrieving element with id {p_id}!")
             self._logger.error(f"Page content: {self._driver.page_source!s}")
+            self.dump_browser_log()
             raise e
 
     def wait_until_page_ready(self):
