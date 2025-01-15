@@ -25,13 +25,13 @@ import { ConfigService } from './config.service';
 })
 export class UserAdminService {
 
-  private REL_URL_ADMIN: string = '/admin';
-  private REL_URL_ADMIN_DETAILS(userId:number): string { return `/admin-details/${userId}` };
-  private REL_URL_ADMIN_TIME_EXTENSIONS(userId:number): string { return `/admin-time-extensions/${userId}` };
+  private REL_URL_ADMIN: string = "/override";
+  private REL_URL_ADMIN_DETAILS(userId:number): string { return `/override-details/${userId}` };
+  private REL_URL_ADMIN_TIME_EXTENSIONS(userId:number): string { return `/list-time-extensions/${userId}` };
   private REL_URL_ADMIN_DELTA_TIME_EXTENSIONS(userId:number,
-    deltaTimeExtension: number): string { return `/admin-time-extensions/${userId}/${deltaTimeExtension}` };
+    deltaTimeExtension: number): string { return `/update-time-extension/${userId}/${deltaTimeExtension}` };
   private REL_URL_ADMIN_UPDATE_RULE_OVERRIDE(userId?:number,
-    reference_date_in_iso_8601?: string): string { return `/admin-rule-overrides/${userId}/${reference_date_in_iso_8601}` };
+    reference_date_in_iso_8601?: string): string { return `/override-rules/${userId}/${reference_date_in_iso_8601}` };
   private HEADERS: HttpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(

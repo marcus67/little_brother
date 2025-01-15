@@ -61,7 +61,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
 
         self.initial_login()
 
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
         self.wait_until_page_ready()
 
         # The admin page is empty...
@@ -77,7 +77,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
 
         self.initial_login()
 
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
 
         # we are on the admin page right away...
         assert 0 == self.count_user_rows()
@@ -100,7 +100,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         self.initial_login()
 
         # Go to the admin overview page
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
 
         # There is one user row
         assert 1 == self.count_user_rows()
@@ -179,7 +179,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
 
         self.initial_login()
         # Go to the admin overview page
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
 
         # There is one user row
         assert 1 == self.count_user_rows()
@@ -233,7 +233,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         self.initial_login()
 
         # Go to the admin overview page
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
 
         # There is one user row
         assert 1 == self.count_user_rows()
@@ -282,7 +282,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         self.initial_login()
 
         # Go to the admin overview page
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
 
         # There is one user row
         assert 1 == self.count_user_rows()
@@ -328,7 +328,7 @@ class TestStatusServerAngularAdmin(BaseTestStatusServerAngular):
         self.initial_login()
 
         # Go to the admin overview page
-        self.switch_to_angular_page(p_button_id="button-admin")
+        self.switch_to_angular_page(p_button_id="button-override")
 
         # There is one user row
         assert 1 == self.count_user_rows()

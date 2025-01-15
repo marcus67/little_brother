@@ -65,20 +65,20 @@ API_URL_STATUS = os.path.join(API_URL, API_REL_URL_STATUS)
 API_REL_URL_STATUS_DETAILS = "status-details/<user_id>"
 API_URL_STATUS_DETAILS = os.path.join(API_URL, API_REL_URL_STATUS_DETAILS)
 
-API_REL_URL_ADMIN = "admin"
-API_URL_ADMIN = os.path.join(API_URL, API_REL_URL_ADMIN)
+API_REL_URL_OVERRIDE = "override"
+API_URL_OVERRIDE = os.path.join(API_URL, API_REL_URL_OVERRIDE)
 
-API_REL_URL_ADMIN_DETAILS = "admin-details/<user_id>"
-API_URL_ADMIN_DETAILS = os.path.join(API_URL, API_REL_URL_ADMIN_DETAILS)
+API_REL_URL_OVERRIDE_DETAILS = "override-details/<user_id>"
+API_URL_OVERRIDE_DETAILS = os.path.join(API_URL, API_REL_URL_OVERRIDE_DETAILS)
 
-API_REL_URL_ADMIN_LIST_TIME_EXTENSIONS = "admin-time-extensions/<user_id>"  # with GET
-API_URL_ADMIN_LIST_TIME_EXTENSIONS = os.path.join(API_URL, API_REL_URL_ADMIN_LIST_TIME_EXTENSIONS)
+API_REL_URL_LIST_TIME_EXTENSIONS = "list-time-extensions/<user_id>"  # with GET
+API_URL_LIST_TIME_EXTENSIONS = os.path.join(API_URL, API_REL_URL_LIST_TIME_EXTENSIONS)
 
-API_REL_URL_ADMIN_EXTEND_TIME_EXTENSION = "admin-time-extensions/<user_id>/<delta_time_extension_in_minutes>"  # with POST
-API_URL_ADMIN_EXTEND_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_ADMIN_EXTEND_TIME_EXTENSION)
+API_REL_URL_UPDATE_TIME_EXTENSION = "update-time-extension/<user_id>/<delta_time_extension_in_minutes>"  # with POST
+API_URL_UPDATE_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_UPDATE_TIME_EXTENSION)
 
-API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE = "admin-rule-overrides/<user_id>/<reference_date>"  # with DELETE
-API_URL_ADMIN_UPDATE_RULE_OVERRIDE = os.path.join(API_URL, API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE)
+API_REL_URL_OVERRIDE_RULES = "override-rules/<user_id>/<reference_date>"  # with DELETE
+API_URL_OVERRIDE_RULES = os.path.join(API_URL, API_REL_URL_OVERRIDE_RULES)
 
 API_REL_URL_USERS = "users"
 API_URL_USERS = os.path.join(API_URL, API_REL_URL_USERS)

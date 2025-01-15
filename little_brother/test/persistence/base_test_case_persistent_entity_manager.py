@@ -75,7 +75,7 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
         # Clean out the history with a maximum history length one day LONGER than the age of the entry...
         with SessionContext(p_persistence=p_persistence) as session_context:
             self._entity_manager.delete_generic_historic_entries(
-                p_session_context=session_context, p_history_length_in_days=p_age_in_days+1,
+                p_session_context=session_context, p_history_length_in_days=p_age_in_days+2,
                 p_reference_time_column=p_reference_time_column)
 
         # The entry should still be there!
@@ -84,10 +84,10 @@ class BaseTestCasePersistentEntityManager(base_test.BaseTestCase):
             count = session.query(func.count(p_reference_time_column)).scalar()
             self.assertEqual(1, count)
 
-        # Now, Clean out the history with a maximum history length one day SHORTER than the age of the entry...
+        # Now, clean out the history with a maximum history length one day SHORTER than the age of the entry...
         with SessionContext(p_persistence=p_persistence) as session_context:
             self._entity_manager.delete_generic_historic_entries(
-                p_session_context=session_context, p_history_length_in_days=p_age_in_days-1,
+                p_session_context=session_context, p_history_length_in_days=p_age_in_days-2,
                 p_reference_time_column=p_reference_time_column)
 
         # The entry should be gone!

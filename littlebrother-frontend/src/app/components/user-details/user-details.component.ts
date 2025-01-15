@@ -27,6 +27,8 @@ import { my_handlers } from 'src/app/models/registry';
 import { ActivatedRoute } from '@angular/router';
 import { Control } from 'src/app/models/control';
 import { ControlService } from 'src/app/services/control.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { emitKeypressEvents } from 'readline';
 
 @Component({
   selector: 'app-user-details',
@@ -55,7 +57,8 @@ export class UserDetailsComponent {
     private saveMessageSnackBar: MatSnackBar,
     private eventBusService: EventBusService,
     private route: ActivatedRoute,
-    private controlService: ControlService
+    private controlService: ControlService,
+    private auth: AuthService
   ) {
 
   }
@@ -97,7 +100,7 @@ export class UserDetailsComponent {
       this.first_name = new FormControl(this.user?.first_name)
       this.last_name = new FormControl(this.user?.last_name)
       this.locale = new FormControl(this.user?.locale)
-      this.active = new FormControl(this.user?.active)
+      this.active = new FormControl({ value: this.user?.active, disabled: !this.isAdmin})
   
       this.userDetailsForm = this.formBuilder.group({
         first_name: this.first_name,
@@ -115,6 +118,10 @@ export class UserDetailsComponent {
 
       this.languages = control.languages;
     })
+  }
+
+  get isAdmin() : boolean {
+    return this.auth.isAdmin;
   }
 
   ngOnInit(): void {

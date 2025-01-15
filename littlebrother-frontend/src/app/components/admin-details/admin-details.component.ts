@@ -25,6 +25,7 @@ import { Control } from '../../models/control'
 import { my_handlers } from '../../models/registry'
 import { EventBusService } from 'src/app/services/event-bus.service';
 import { EVENT_UPDATE_USER_ADMIN_DETAILS, EVENT_UPDATE_USER_STATUS_DETAILS } from '../../common/events';
+import { AuthService } from 'src/app/services/auth.service';
 
 declare var jQuery: any;
 
@@ -32,14 +33,14 @@ declare var jQuery: any;
 
 function eventListenerShowAccordion (event:any) {
   console.log(event);
-  console.log("Show " + event.originalTarget.id);
-  localStorage.setItem(event.originalTarget.id, "true");
+  console.log("Show " + event.currentTarget.id);
+  localStorage.setItem(event.currentTarget.id, "true");
 };
 
 function eventListenerHideAccordion (event:any) {
   console.log(event);
-  console.log("Hide " + event.originalTarget.id);
-  localStorage.setItem(event.originalTarget.id, "false");
+  console.log("Hide " + event.currentTarget.id);
+  localStorage.setItem(event.currentTarget.id, "false");
 };
 
 @Component({
@@ -59,13 +60,15 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
   public userId: number = -1;
   private intervalId?: number;
   private eventHandlersReady: boolean = false;
+  private _isAdmin: boolean = false;
 
 
   constructor(private controlService: ControlService,
               public userAdminService: UserAdminService,
               private userStatusService: UserStatusService,
               private eventBusServices: EventBusService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private auth: AuthService) {
     this.userId = Number(this.route.snapshot.params['user_id']);
   }
 
@@ -129,6 +132,10 @@ export class AdminDetailsComponent implements OnInit, OnDestroy, AfterViewChecke
         // console.log("Adding event listeners to " + element.id);
       });
     }
+  }
+
+  get isAdmin() : boolean {
+    return this.auth.isAdmin;
   }
 
   ngOnInit(): void {

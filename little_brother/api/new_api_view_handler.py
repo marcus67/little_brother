@@ -143,8 +143,9 @@ class NewApiViewHandler(BaseViewHandler):
         msg = f"user id '{p_user_id}' does not exist or is not being monitored"
         return self.api_error(p_message=msg, p_status_code=404)
 
-    def user_not_authorized_error(self, p_user_id:int):
-        return self.api_error(p_message=f"User id {p_user_id} does not have access to this ressource",
+    def user_not_authorized_error(self, p_authorization_result: dict):
+        user_id = p_authorization_result["user_id"]
+        return self.api_error(p_message=f"User id {user_id} does not have access to this ressource",
                               p_status_code=constants.HTTP_STATUS_CODE_UNAUTHORIZED)
 
     def invalid_secret_error(self):
@@ -227,8 +228,7 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(
-                    p_request=request, p_admin_required=False)
+                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
 
                 if http_status != 200:
                     return self.api_error(p_message=result, p_status_code=http_status)
@@ -259,6 +259,11 @@ class NewApiViewHandler(BaseViewHandler):
                     return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
+                    if not self.check_access(p_session_context=session_context,
+                                             p_authorization_result=result['authorization'],
+                                             p_active_user_id=int(user_id)):
+                        return self.user_not_authorized_error(p_authorization_result=result['authorization'])
+
                     user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
 
                     if user is None:
@@ -275,8 +280,8 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN, methods=["GET"])
-    def api_admin(self):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_OVERRIDE, methods=["GET"])
+    def api_override(self):
         request = flask.request
         try:
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
@@ -298,8 +303,8 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_LIST_TIME_EXTENSIONS, methods=["GET"])
-    def api_admin_time_extensions(self, user_id):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_LIST_TIME_EXTENSIONS, methods=["GET"])
+    def api_list_time_extensions(self, user_id):
         request = flask.request
         try:
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
@@ -326,19 +331,25 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_DETAILS, methods=["GET"])
-    def api_admin_detail(self, user_id):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_OVERRIDE_DETAILS, methods=["GET"])
+    def api_override_detail(self, user_id):
         request = flask.request
         try:
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
                     return self.api_error(p_message=result, p_status_code=http_status)
 
                 with SessionContext(p_persistence=self.persistence) as session_context:
+                    if not self.check_access(p_session_context=session_context,
+                                             p_authorization_result=result['authorization'],
+                                             p_active_user_id=int(user_id)):
+                        return self.user_not_authorized_error(p_authorization_result=result['authorization'])
+
                     user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
 
                     if user is None:
@@ -375,8 +386,8 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_EXTEND_TIME_EXTENSION, methods=["POST"])
-    def api_admin_extend_time_extension(self, user_id, delta_time_extension_in_minutes):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_UPDATE_TIME_EXTENSION, methods=["POST"])
+    def api_update_time_extension(self, user_id, delta_time_extension_in_minutes):
         request = flask.request
 
         try:
@@ -411,8 +422,8 @@ class NewApiViewHandler(BaseViewHandler):
         except Exception as e:
             return self.internal_server_error(p_exception=e)
 
-    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_ADMIN_UPDATE_RULE_OVERRIDE, methods=["POST"])
-    def api_admin_update_rule_override(self, user_id, reference_date):
+    @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_REL_URL_OVERRIDE_RULES, methods=["POST"])
+    def api_override_rules(self, user_id, reference_date):
         request = flask.request
 
         try:
@@ -508,7 +519,7 @@ class NewApiViewHandler(BaseViewHandler):
                     if not self.check_access(p_session_context=session_context,
                                              p_authorization_result=result['authorization'],
                                              p_active_user_id=int(user_id)):
-                        return self.user_not_authorized_error(p_user_id=user_id)
+                        return self.user_not_authorized_error(p_authorization_result=result['authorization'])
 
                     user = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
                     user_to = UserTransportManager.get_user_to(p_user=user)
@@ -525,12 +536,19 @@ class NewApiViewHandler(BaseViewHandler):
             with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
                                                                    p_service=self.simplify_url(request.url_rule),
                                                                    p_duration=duration)):
-                result, http_status = self.auth_view_handler.check_authorization(p_request=request)
+                result, http_status = self.auth_view_handler.check_authorization(
+                    p_request=request, p_admin_required=False)
 
                 if http_status != 200:
                     return self.api_error(p_message=result, p_status_code=http_status)
 
+                authorization_result = result["authorization"]
+
                 with SessionContext(p_persistence=self.persistence) as session_context:
+                    if not self.check_access(p_session_context=session_context,
+                                             p_authorization_result=authorization_result,
+                                             p_active_user_id=int(user_id)):
+                        return self.user_not_authorized_error(p_authorization_result=authorization_result)
 
                     user: User = self.user_entity_manager.get_by_id(p_session_context=session_context, p_id=user_id)
 
@@ -540,11 +558,13 @@ class NewApiViewHandler(BaseViewHandler):
                     user_to: UserTO = objectify_dict(request.json, UserTO)
 
                     session = session_context.get_session()
-                    user.active = user_to.active
                     user.first_name = user_to.first_name
                     user.last_name = user_to.last_name
                     user.locale = user_to.locale
-                    
+
+                    if authorization_result["is_admin"]:
+                        user.active = user_to.active
+
                     session.commit()
                     self.actions_after_user_change(p_session_context=session_context)
 

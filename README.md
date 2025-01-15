@@ -43,6 +43,8 @@ The latest major feature changes are:
 Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments 
 to little-brother(at)web.de.
 
+<a href="https://www.buymeacoffee.com/marcus.rickert" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 ## Screenshots
 
 The following screenshots show the web frontend of `LittleBrother`. Click on the thumbnails to enlarge. 

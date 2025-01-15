@@ -38,6 +38,8 @@ export class AuthService {
   private LOCAL_STORAGE_KEY_IS_ADMIN = "is_admin";
   private LOCAL_STORAGE_KEY_ACTIVE_USER_ID = "active_user_id";
   private REL_URL_DEFAULT_REDIRECT: string = '/status';
+  private REL_URL_DEFAULT_REDIRECT_NON_ADMIN(user_id: number): string { return `/status/${user_id}` };
+  private REL_URL_USERNAME(username:string): string { return `/user/${username}` };
   private REL_URL_LOGIN: string = '/login';
   private REL_URL_LOGOUT: string = '/logout';
   private REL_URL_REFRESH: string = '/refresh';
@@ -62,12 +64,16 @@ export class AuthService {
     ).toPromise();
   }
 
+  get isAdmin(): boolean {
+    return this.isLoggedIn() && (localStorage.getItem(this.LOCAL_STORAGE_KEY_IS_ADMIN) || "false") == "true";
+  }
+
   setRedirect(redirect: string) {
     this.redirect = redirect;
   }
 
   getDefaultRedirect(): string {
-    return this.REL_URL_DEFAULT_REDIRECT;
+      return this.REL_URL_DEFAULT_REDIRECT;
   }
 
   getRedirect(): string {
@@ -76,7 +82,10 @@ export class AuthService {
       this.redirect = undefined;
       return temp;
     } else {
-      return this.REL_URL_DEFAULT_REDIRECT;
+      if (this.isAdmin)
+        return this.REL_URL_DEFAULT_REDIRECT;
+      else
+        return this.REL_URL_DEFAULT_REDIRECT_NON_ADMIN(this.getActiveUserId());
     }
   }
 

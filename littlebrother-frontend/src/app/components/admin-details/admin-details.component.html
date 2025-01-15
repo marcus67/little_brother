@@ -51,6 +51,7 @@
         <ng-container *ngIf="period == 0">
           <!-- See https://angular.io/tutorial/tour-of-heroes/toh-pt4#bind-to-the-messageservice -->
           <BUTTON id="time_extension_0"
+                  [disabled]="!isAdmin"
                   (click)="extendTimeExtension(userId, 0)"
                   class="btn btn-time-extension-off"
                   value="time_extension_0"
@@ -61,6 +62,7 @@
         <ng-container *ngIf="period < 0">
           <!--suppress XmlDuplicatedId -->
           <BUTTON id="time_extension_{{period}}"
+                  [disabled]="!isAdmin"
                   (click)="extendTimeExtension(userId, period)"
                   class="btn btn-time-extension-minus"
                   value="time_extension_{{period}}"
@@ -71,6 +73,7 @@
         <ng-container *ngIf="period > 0">
           <!--suppress XmlDuplicatedId -->
           <BUTTON id="time_extension_{{period}}"
+                  [disabled]="!isAdmin"
                   (click)="extendTimeExtension(userId, period)"
                   class="btn btn-time-extension-plus"
                   value="time_extension_{{period}}"
@@ -175,6 +178,7 @@
           </DIV>
         </DIV>
         <app-admin-details-override
+        *ngIf="isAdmin"
           [override]="detail.override"
           [userId]="userId"
           [referenceDateInIso8601]="detail.date_in_iso_8601">

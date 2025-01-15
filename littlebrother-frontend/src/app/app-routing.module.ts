@@ -44,7 +44,7 @@ const routes: Routes = [
     component: StatusDetailsComponent,
     canActivate: [EnsureAuthenticated]
   },
-  { path: 'admin',
+  { path: 'override',
     component: AdminComponent,
     canActivate: [EnsureAuthenticated]
   },
@@ -56,7 +56,7 @@ const routes: Routes = [
     component: UserDetailsComponent,
     canActivate: [EnsureAuthenticated]
   },
-  { path: 'admin/:user_id',
+  { path: 'override/:user_id',
     component: AdminDetailsComponent,
     canActivate: [EnsureAuthenticated]
   },
