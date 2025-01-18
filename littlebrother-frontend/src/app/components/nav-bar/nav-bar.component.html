@@ -43,7 +43,7 @@
           <A id="button-users" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'users'}" routerLink="/users">Users</A>
         </LI>
         <LI class="nav-item" *ngIf="!isAdmin"> 
-          <A id="button-users" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'users'}"  [routerLink]="['/users', getActiveUserId()]">Users</A>
+          <A id="button-users" class="nav-link rounded-2" [ngClass]="{'active': currentNavBarTab() == 'users'}"  [routerLink]="['/users', getActiveUserId()]">User</A>
         </LI>
         <!--
         <LI class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/devices">Devices</a></LI>

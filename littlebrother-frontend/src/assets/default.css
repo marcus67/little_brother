@@ -26,9 +26,6 @@
   color: red;
 }
 
-input {
-  margin: 0px 0px 2px -3px;
-}
 
 /* mark rule entries overriding the defaults
 */
@@ -92,161 +89,6 @@ input {
   color: yellow;
 }
 
-.col-xs-1 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-2 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-3 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-4 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-5 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-6 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-7 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-8 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-9 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-10 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-11 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-12 {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-lg-1 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-lg-2 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-lg-3 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-lg-4 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-lg-5 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-lg-6 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-md-1 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-md-2 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-md-3 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-md-4 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-md-5 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-md-6 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-sm-1 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-sm-2 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.col-sm-3 {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-
-.col-xs-1 input {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-2 input {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-3 input {
-  padding-left: 1px;
-  padding-right: 1px;
-}
-
-.col-xs-4 input {
-  padding-left: 1px;
-  padding-right: 1px;
-}
 
 .nav-link.active {
     background-color: var(--bs-secondary-bg-subtle) !important;;
@@ -261,8 +103,16 @@ input {
   width: auto;
 }
 
+.row {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border: 1px solid white;
+}
 
-.form-control {
-  padding-left: 1px;
-  padding-right: 1px;
+textarea {
+  width: 100%;
+}
+
+ul {
+  padding-left: 15px;
 }

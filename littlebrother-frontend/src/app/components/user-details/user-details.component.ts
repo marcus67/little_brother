@@ -46,6 +46,8 @@ export class UserDetailsComponent {
   last_name: FormControl = new FormControl()
   locale: FormControl = new FormControl()
   active: FormControl = new FormControl()
+  process_name_pattern: FormControl = new FormControl()
+  prohibited_process_name_pattern: FormControl = new FormControl()
 
   // see https://angular.io/start/start-forms
   userDetailsForm : FormGroup = new FormGroup({
@@ -75,6 +77,11 @@ export class UserDetailsComponent {
     updated_user.last_name = this.userDetailsForm.value["last_name"];
     updated_user.locale = this.userDetailsForm.value["locale"];
 
+    if (this.isAdmin) {
+      updated_user.process_name_pattern = this.userDetailsForm.value["process_name_pattern"]
+      updated_user.prohibited_process_name_pattern = this.userDetailsForm.value["prohibited_process_name_pattern"]
+    }
+
     this.userService.updateUser(updated_user).subscribe(
         result  => {
           if ("error" in result)
@@ -101,14 +108,21 @@ export class UserDetailsComponent {
       this.last_name = new FormControl(this.user?.last_name)
       this.locale = new FormControl(this.user?.locale)
       this.active = new FormControl({ value: this.user?.active, disabled: !this.isAdmin})
-  
+      this.process_name_pattern = new FormControl({ value: this.user?.process_name_pattern, disabled: !this.isAdmin})
+      this.prohibited_process_name_pattern = new FormControl({ value: this.user?.prohibited_process_name_pattern, disabled: !this.isAdmin})
+      //this.process_name_pattern = new FormControl({ value: this.user?.process_name_pattern, disabled: false})
+      //this.prohibited_process_name_pattern = new FormControl({ value: this.user?.prohibited_process_name_pattern, disabled: false})
+      
       this.userDetailsForm = this.formBuilder.group({
         first_name: this.first_name,
         last_name: this.last_name,
         locale: this.locale,
-        active: this.active
+        active: this.active,
+        process_name_pattern: this.process_name_pattern,
+        prohibited_process_name_pattern: this.prohibited_process_name_pattern
       });
-        this.isLoading = false;
+
+      this.isLoading = false;
     })
   }
 

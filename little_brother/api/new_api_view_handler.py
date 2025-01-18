@@ -564,6 +564,8 @@ class NewApiViewHandler(BaseViewHandler):
 
                     if authorization_result["is_admin"]:
                         user.active = user_to.active
+                        user.process_name_pattern = user_to.process_name_pattern
+                        user.prohibited_process_name_pattern = user_to.prohibited_process_name_pattern
 
                     session.commit()
                     self.actions_after_user_change(p_session_context=session_context)

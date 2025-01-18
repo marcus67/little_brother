@@ -98,7 +98,10 @@ export class AuthService {
   }
 
   markLoggedOut() {
-    localStorage.removeItem(this.LOCAL_STORAGE_KEY_LOGGED_IN)
+    localStorage.removeItem(this.LOCAL_STORAGE_KEY_LOGGED_IN);
+    localStorage.removeItem(this.LOCAL_STORAGE_KEY_IS_ADMIN);
+    localStorage.removeItem(this.LOCAL_STORAGE_KEY_ACTIVE_USER_ID);
+    this.redirect = undefined;
   }
 
   getActiveUserId() : number {
