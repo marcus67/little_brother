@@ -41,6 +41,7 @@ RUN apk update && \
             gcc \
             musl-dev \
             libffi-dev \
+            libldap \
             openldap-dev \
             openssl-dev \
             curl && \
@@ -50,14 +51,13 @@ RUN apk update && \
     unzip /tmp/repo.zip && \
     /tmp/little_brother-*/bin/generic-install.sh && \
     echo 'INPUT ( libldap.so )' > /usr/lib/libldap_r.so && \
-    pip install --ignore-installed python-base-app-ldap-extension>=0.1.4 && \
+    /var/lib/little-brother/virtualenv/bin/pip install --ignore-installed python-base-app-ldap-extension>=0.1.4 --use-pep517 && \
     rm -rf /tmp/little_brother-* && \
     rm -f /tmp/*.apk && \
     rm -f /tmp/repo.zip && \
     apk del py3-pip \
             python3-dev \
             musl-dev \
-            libffi-dev \
             openldap-dev \
             openssl-dev \
             build-base \
