@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -27,8 +27,9 @@ from little_brother.test.persistence import test_persistence
 from python_base_app import tools
 from python_base_app.test import base_test
 
-SPECIFIC_DNS_NAME = "example.com"
-SPECIFIC_DNS_NAMES = [ "example.com", "dns.google" ]
+# These DNS names have permanently static IP addresses! If they were variable, the test cases would break!
+SPECIFIC_DNS_NAME = "a.root-servers.net"
+SPECIFIC_DNS_NAMES = [ SPECIFIC_DNS_NAME, "c.root-servers.net" ]
 SPECIFIC_DNS_NAMES_STRING = "\n".join(SPECIFIC_DNS_NAMES)
 
 class TestDevice(base_test.BaseTestCase):

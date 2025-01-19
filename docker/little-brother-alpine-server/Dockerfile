@@ -1,4 +1,4 @@
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2025  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# See https://stackoverflow.com/questions/70182720/python-ldap-3-4-installation-fails-on-alpine-images
 
 FROM alpine:3.18.2
 LABEL maintainer="marcus.rickert@web.de"
@@ -37,17 +39,27 @@ RUN apk update && \
             linux-headers \
             build-base \
             gcc \
+            musl-dev \
+            libffi-dev \
+            openldap-dev \
+            openssl-dev \
             curl && \
     pip install --ignore-installed --upgrade pip && \
     curl -L ${REPO_DOWNLOAD_BASE_URL}${BRANCH}.zip -o /tmp/repo.zip && \
     cd /tmp && \
     unzip /tmp/repo.zip && \
     /tmp/little_brother-*/bin/generic-install.sh && \
+    echo 'INPUT ( libldap.so )' > /usr/lib/libldap_r.so && \
+    pip install --ignore-installed python-base-app-ldap-extension>=0.1.4 && \
     rm -rf /tmp/little_brother-* && \
     rm -f /tmp/*.apk && \
     rm -f /tmp/repo.zip && \
     apk del py3-pip \
             python3-dev \
+            musl-dev \
+            libffi-dev \
+            openldap-dev \
+            openssl-dev \
             build-base \
             linux-headers \
             unzip \

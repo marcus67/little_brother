@@ -9,6 +9,9 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Use user specific views for non-admin access
 * Make user details editable for non-admins
 * Rename view/api "admin" to "override" (in most places)
+* Only use permanently static ip addresses for test cases
+* Move all Docker aspects to https://github.com/marcus67/little-brother-server-docker-setup.
+* Closes #211
 
 ## Version 0.5.6 Revision 207 (January 12th, 2025)
 * Provide initial, partial support for tab "Users" of Angular GUI 

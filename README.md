@@ -151,9 +151,6 @@ extension all other restrictions (maximum time per session, time of day, and max
 Time extension can even extend into the next day making long night session possible. However, any computer time
 actually spent during a time extension will contribute to the overall time played in the course of a day.   
 
-*   There is a Docker image available (currently for the client only) which makes it really easy to run a client on a 
-Linux host with a Docker daemon available.
-
 *   The application uses voice generation to inform the user over impending logouts. Also, these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
 functionality of the `LittleBrother` application has been replaced by the `LittleBrotherTaskbar.` 
@@ -189,8 +186,10 @@ There is a snap available for the client process. See [snap-little-brother](http
 ## Quick Install (Debian Package)
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
-on your system. This guide works both for master and client setups. For setting up a client there is a second option
-using Docker. See the [Docker](DOCKER.md) page for more details.
+on your system. This guide works both for master and client setups. 
+
+See the repository [little-brother-server-docker-setup](https://github.com/marcus67/little-brother-server-docker-setup)
+for setting up LittleBrother using Docker (and Docker Compose). 
 
 ### YouTube Videos
 
@@ -236,7 +235,7 @@ various additional aspects that may require additional configuration.
 | Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 | Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 | Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
-| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                 |
+| Docker Support              | Client and/or server is installed as a Debian package                      | Client and/or server is run as a Docker container               | See [little-brother-server-docker-setup](https://github.com/marcus67/little-brother-server-docker-setup)             |
 | Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md). |
 | Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 | Firewall support            | Do not restrict network access of client hosts                             | Configure targets IP addresses to be blocked                    | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
