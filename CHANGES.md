@@ -4,6 +4,24 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.8 Revision 209 (December 26th, 2025)
+* Support Python 3.13
+* Bump `alembic` to 1.17.2
+* Bump `distro` to 1.9.0
+* Bump `flask-migrate` to 4.1.0
+* Bump `humanize` to 4.15.0
+* Bump `lagom` to 2.7.7
+* Bump `prometheus-client` to 0.23.1
+* Bump `psutil` to 7.2.0
+* Bump `pyjwt` to 2.10.1
+* Bump `pymysql` to 1.1.2
+* Bump `pytest` to 9.0.2
+* Bump `equests` to 2.32.5
+* Bump `secure` to 2.0.0
+* Bump `semver` to 3.0.4
+* Bump `setuptools` to 80.9.0
+* Bump `urllib3` to 2.6.2
+
 ## Version 0.5.7 Revision 208 (January 14th, 2025)
 * Provide BuyMeACoffee link
 * Use user specific views for non-admin access
