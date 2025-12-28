@@ -9,6 +9,7 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Bump `alembic` to 1.17.2
 * Bump `distro` to 1.9.0
 * Bump `flask-migrate` to 4.1.0
+* Bump `flask-wtf` to 1.2.2
 * Bump `humanize` to 4.15.0
 * Bump `lagom` to 2.7.7
 * Bump `prometheus-client` to 0.23.1
