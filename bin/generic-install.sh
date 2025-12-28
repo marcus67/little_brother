@@ -137,9 +137,9 @@ chmod +x ${PIP3}
 echo "Downloading Pip packages to $LIB_DIR..."
 ${PIP3} download -d $LIB_DIR --no-deps little_brother==0.5.8
 
-${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.3.5
+${PIP3} download -d $LIB_DIR --no-deps python_base_app==0.3.6
 
-${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.9
+${PIP3} download -d $LIB_DIR --no-deps some_flask_helpers==0.2.10
 
 
 echo "Checking if all Pip packages have been downloaded to $LIB_DIR..."
@@ -151,20 +151,20 @@ else
   echo "Package little_brother-0.5.8.tar.gz was found."
 fi
 
-if [ ! -f $LIB_DIR/python_base_app-0.3.5.tar.gz ] ; then
-  echo "ERROR: package python_base_app-0.3.5.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/python_base_app-0.3.6.tar.gz ] ; then
+  echo "ERROR: package python_base_app-0.3.6.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package python_base_app-0.3.5.tar.gz was found."
+  echo "Package python_base_app-0.3.6.tar.gz was found."
 fi
 
-if [ ! -f $LIB_DIR/some_flask_helpers-0.2.9.tar.gz ] ; then
-  echo "ERROR: package some_flask_helpers-0.2.9.tar.gz not found in $LIB_DIR!"
+if [ ! -f $LIB_DIR/some_flask_helpers-0.2.10.tar.gz ] ; then
+  echo "ERROR: package some_flask_helpers-0.2.10.tar.gz not found in $LIB_DIR!"
   echo "Download from test.pypi.org and execute again."
   exit 2
 else
-  echo "Package some_flask_helpers-0.2.9.tar.gz was found."
+  echo "Package some_flask_helpers-0.2.10.tar.gz was found."
 fi
 
 if [ "$RUNNING_IN_DOCKER" == "" ] ; then
@@ -278,13 +278,13 @@ echo "Upgrading packages 'wheel' and 'setuptools'..."
 ${PIP3} install wheel setuptools
 echo "Installing PIP packages..."
 echo "  * little_brother-0.5.8.tar.gz"
-echo "  * python_base_app-0.3.5.tar.gz"
-echo "  * some_flask_helpers-0.2.9.tar.gz"
+echo "  * python_base_app-0.3.6.tar.gz"
+echo "  * some_flask_helpers-0.2.10.tar.gz"
 # see https://stackoverflow.com/questions/19548957/can-i-force-pip-to-reinstall-the-current-version
 ${PIP3} install --upgrade --ignore-installed \
      ${LIB_DIR}/little_brother-0.5.8.tar.gz\
-     ${LIB_DIR}/python_base_app-0.3.5.tar.gz\
-     ${LIB_DIR}/some_flask_helpers-0.2.9.tar.gz
+     ${LIB_DIR}/python_base_app-0.3.6.tar.gz\
+     ${LIB_DIR}/some_flask_helpers-0.2.10.tar.gz
 
 if [ "${VIRTUAL_ENV_DIR}" != "" ] ; then
   echo "Changing ownership of virtual environment ${VIRTUAL_ENV_DIR} to little-brother:little-brother..."
@@ -295,10 +295,10 @@ fi
 
 echo "Removing installation file ${LIB_DIR}/little_brother-0.5.8.tar.gz..."
 rm ${LIB_DIR}/little_brother-0.5.8.tar.gz
-echo "Removing installation file ${LIB_DIR}/python_base_app-0.3.5.tar.gz..."
-rm ${LIB_DIR}/python_base_app-0.3.5.tar.gz
-echo "Removing installation file ${LIB_DIR}/some_flask_helpers-0.2.9.tar.gz..."
-rm ${LIB_DIR}/some_flask_helpers-0.2.9.tar.gz
+echo "Removing installation file ${LIB_DIR}/python_base_app-0.3.6.tar.gz..."
+rm ${LIB_DIR}/python_base_app-0.3.6.tar.gz
+echo "Removing installation file ${LIB_DIR}/some_flask_helpers-0.2.10.tar.gz..."
+rm ${LIB_DIR}/some_flask_helpers-0.2.10.tar.gz
 if [ "$RUNNING_IN_DOCKER" == "" ] ; then
   echo "Execute systemctl daemon-reload..."
   set +e

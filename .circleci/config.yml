@@ -154,16 +154,16 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.8.tar.gz_3_10
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_10
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_10
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_10
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_10
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_10
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_10
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_10
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_10
   
   build_pypi_3_11:
     #working_directory: ~
@@ -190,16 +190,16 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.8.tar.gz_3_11
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_11
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_11
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_11
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_11
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_11
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_11
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_11
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_11
   
   build_pypi_3_12:
     #working_directory: ~
@@ -226,16 +226,16 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.8.tar.gz_3_12
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_12
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_12
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_12
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_12
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_12
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_12
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_12
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_12
   
   build_pypi_3_13:
     #working_directory: ~
@@ -262,16 +262,16 @@ jobs:
           root: "."
           paths:
             - ./dist/little_brother-0.5.8.tar.gz_3_13
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_13
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_13
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_13
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_13
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_13
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_13
       - persist_to_workspace:
           root: "."
           paths:
-            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_13
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_13
   
   
   install_pypi_3_10:
@@ -289,8 +289,8 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.8.tar.gz_3_10 ./dist/little_brother-0.5.8.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
@@ -311,8 +311,8 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.8.tar.gz_3_11 ./dist/little_brother-0.5.8.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
@@ -333,8 +333,8 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.8.tar.gz_3_12 ./dist/little_brother-0.5.8.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=6 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
@@ -355,8 +355,8 @@ jobs:
       - attach_workspace:
           at: "."
       - run: mv ./dist/little_brother-0.5.8.tar.gz_3_13 ./dist/little_brother-0.5.8.tar.gz
-      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz_3_13 ./contrib/python_base_app/dist/python_base_app-0.3.5.tar.gz
-      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz_3_13 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.9.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_13 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_13 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
       - run: DELTA_PORT=7 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
