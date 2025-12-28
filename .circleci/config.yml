@@ -1,4 +1,4 @@
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/python_base_app
 #
@@ -24,98 +24,382 @@
 version: 2.0
 
 jobs:
-  build:
-    #working_directory: ~
+  build_angular_app:
     docker:
-      - image: marcusrickert/docker-python-app:latest
+      - image: "marcusrickert/docker-python-app:3.12"
     steps:
       - checkout
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_ANGULAR_APP --use-dev-dir=.
+      - persist_to_workspace:
+          root: littlebrother-frontend/dist/littlebrother-frontend
+          paths:
+            - "**"
+  
+  build_3_10:
+    docker:
+      - image: "marcusrickert/docker-python-app:3.10"
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
-      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: DELTA_PORT=0 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
       - run: codecov
-      - store_artifacts:
-          path: htmlcov
-      - store_artifacts:
-          path: debian/little-brother_0.4.36_143.deb
-      - persist_to_workspace:
-          root: debian
-          paths:
-            - little-brother_0.4.36_143.deb
-  build_pypi:
-    #working_directory: ~
+      
+  
+  build_3_11:
     docker:
-      - image: marcusrickert/docker-python-app:latest
+      - image: "marcusrickert/docker-python-app:3.11"
     steps:
       - checkout
+
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+      - run: DELTA_PORT=1 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: codecov
+      
+  
+  build_3_12:
+    docker:
+      - image: "marcusrickert/docker-python-app:3.12"
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+      - run: DELTA_PORT=2 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: codecov
+      
+  
+  build_3_13:
+    docker:
+      - image: "marcusrickert/docker-python-app:3.13"
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL
+      - run: DELTA_PORT=3 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: codecov
+      
+      - store_artifacts:
+          path: htmlcov
+      - store_artifacts:
+          path: debian/little-brother_0.5.8_209.deb
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - debian/little-brother_0.5.8_209.deb
+      
+  
+  
+  build_pypi_3_10:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.10"
+    steps:
+      - checkout
+  
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
+  
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
       - store_artifacts:
-          path: "dist/little-brother-0.4.36.tar.gz"
+          path: "dist/little_brother-0.5.8.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv ./dist/little_brother-0.5.8.tar.gz ./dist/little_brother-0.5.8.tar.gz_3_10
       - persist_to_workspace:
-          root: dist
+          root: "."
           paths:
-            - "little-brother-0.4.36.tar.gz"
-  install_pypi:
+            - ./dist/little_brother-0.5.8.tar.gz_3_10
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_10
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_10
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_10
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_10
+  
+  build_pypi_3_11:
     #working_directory: ~
     docker:
-      - image: marcusrickert/docker-python-app:latest
+      - image: "marcusrickert/docker-python-app:3.11"
     steps:
       - checkout
+  
       - attach_workspace:
-          at: "dist"
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
+  
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - store_artifacts:
+          path: "dist/little_brother-0.5.8.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv ./dist/little_brother-0.5.8.tar.gz ./dist/little_brother-0.5.8.tar.gz_3_11
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./dist/little_brother-0.5.8.tar.gz_3_11
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_11
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_11
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_11
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_11
+  
+  build_pypi_3_12:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.12"
+    steps:
+      - checkout
+  
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
+  
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - store_artifacts:
+          path: "dist/little_brother-0.5.8.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv ./dist/little_brother-0.5.8.tar.gz ./dist/little_brother-0.5.8.tar.gz_3_12
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./dist/little_brother-0.5.8.tar.gz_3_12
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_12
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_12
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_12
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_12
+  
+  build_pypi_3_13:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.13"
+    steps:
+      - checkout
+  
+      - attach_workspace:
+          at: "littlebrother-frontend/dist/littlebrother-frontend"
+  
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage DEPLOY_ANGULAR_APP --use-dev-dir .
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD --use-dev-dir=.
+      - store_artifacts:
+          path: "dist/little_brother-0.5.8.tar.gz"
+      # Rename the artifact to a specific name, so that the artifacts uploaded by parallel jobs do not collide
+      # with each other in common downstream jobs.
+      - run: mv ./dist/little_brother-0.5.8.tar.gz ./dist/little_brother-0.5.8.tar.gz_3_13
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./dist/little_brother-0.5.8.tar.gz_3_13
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_13
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_13
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_13
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_13
+  
+  
+  install_pypi_3_10:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.10"
+    steps:
+      - checkout
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.8.tar.gz_3_10 ./dist/little_brother-0.5.8.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_10 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_10 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
-      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST --use-dev-dir .
+      - run: DELTA_PORT=4 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
       - run: codecov
+      
+  
+  install_pypi_3_11:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.11"
+    steps:
+      - checkout
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.8.tar.gz_3_11 ./dist/little_brother-0.5.8.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_11 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_11 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+      - run: DELTA_PORT=5 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+      - run: codecov
+      
+  
+  install_pypi_3_12:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.12"
+    steps:
+      - checkout
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.8.tar.gz_3_12 ./dist/little_brother-0.5.8.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_12 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_12 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+      - run: DELTA_PORT=6 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+      - run: codecov
+      
+  
+  install_pypi_3_13:
+    #working_directory: ~
+    docker:
+      - image: "marcusrickert/docker-python-app:3.13"
+    steps:
+      - checkout
+
+      # Check out all sub modules
+      # See https://circleci.com/docs/2.0/configuration-reference/#checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+
+      - attach_workspace:
+          at: "."
+      - run: mv ./dist/little_brother-0.5.8.tar.gz_3_13 ./dist/little_brother-0.5.8.tar.gz
+      - run: mv ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz_3_13 ./contrib/python_base_app/dist/python_base_app-0.3.6.tar.gz
+      - run: mv ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz_3_13 ./contrib/some_flask_helpers/dist/some_flask_helpers-0.2.10.tar.gz
+      - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage INSTALL-PYPI-PACKAGE --use-dev-dir=.
+      - run: DELTA_PORT=7 PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage TEST
+      - run: codecov
+      
       - store_artifacts:
           path: htmlcov
+      
+  
   publish_pypi:
     #working_directory: ~
     docker:
-      - image: marcusrickert/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:3.12
     steps:
       - checkout
-      - attach_workspace:
-          at: "dist"
 
       # Check out all sub modules
       # See https://circleci.com/docs/2.0/configuration-reference/#checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - attach_workspace:
+          at: "."
+      # Choose the artifact of the last Python image (having the most up-to-date Python version)...
+      - run: mv dist/little_brother-0.5.8.tar.gz_3_13 dist/little_brother-0.5.8.tar.gz
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PYPI-PACKAGE --use-dev-dir=.
   deploy:
     docker:
-      - image: marcusrickert/docker-python-app:latest
+      - image: marcusrickert/docker-python-app:3.12
     steps:
       - checkout
       - attach_workspace:
-          at: debian
+          at: "."
       - run: git submodule sync
       - run: git submodule update --init
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage PUBLISH-PACKAGE
   docker:
     docker:
-      - image: marcusrickert/docker-docker-ci:release-0.9.1
+      - image: marcusrickert/docker-docker-ci:3.11
     steps:
       - checkout
-      - attach_workspace:
-          at: debian
       - run: git submodule sync
       - run: git submodule update --init
+      - attach_workspace:
+          at: "."
       - setup_remote_docker:
           docker_layer_caching: false
       - run: PYTHONPATH=contrib/python_base_app python3 ci_toolbox.py --execute-stage BUILD_DOCKER_IMAGES
@@ -124,10 +408,39 @@ workflows:
     version: 2
     build_and_deploy:
       jobs:
-        - build
+  
+        - build_angular_app
+  
+  
+  
+        - build_3_10:
+            requires:
+              - build_angular_app
+  
+        - build_3_11:
+            requires:
+              - build_angular_app
+  
+        - build_3_12:
+            requires:
+              - build_angular_app
+  
+        - build_3_13:
+            requires:
+              - build_angular_app
+  
+  
         - deploy:
             requires:
-              - build
+  
+              - build_3_10
+  
+              - build_3_11
+  
+              - build_3_12
+  
+              - build_3_13
+  
             filters:
               branches:
                 only:
@@ -135,15 +448,58 @@ workflows:
                   - release
         - docker:
             requires:
-              - build
               - publish_pypi
-        - build_pypi
-        - install_pypi:
+  
+              - build_3_10
+  
+              - build_3_11
+  
+              - build_3_12
+  
+              - build_3_13
+  
+  
+  
+        - build_pypi_3_10:
             requires:
-              - build_pypi
+              - build_angular_app
+  
+        - build_pypi_3_11:
+            requires:
+              - build_angular_app
+  
+        - build_pypi_3_12:
+            requires:
+              - build_angular_app
+  
+        - build_pypi_3_13:
+            requires:
+              - build_angular_app
+  
+  
+  
+        - install_pypi_3_10:
+            requires:
+              - build_pypi_3_10
+  
+        - install_pypi_3_11:
+            requires:
+              - build_pypi_3_11
+  
+        - install_pypi_3_12:
+            requires:
+              - build_pypi_3_12
+  
+        - install_pypi_3_13:
+            requires:
+              - build_pypi_3_13
+  
         - publish_pypi:
             requires:
-              - install_pypi
+              - install_pypi_3_10
+              - install_pypi_3_11
+              - install_pypi_3_12
+              - install_pypi_3_13
             filters:
               branches:
                 only:

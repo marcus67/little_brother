@@ -21,7 +21,7 @@ import flask_login
 from little_brother import constants
 from little_brother import entity_forms
 from little_brother.persistence.session_context import SessionContext
-from little_brother.web.base_view_handler import BaseViewHandler
+from little_brother.base_view_handler import BaseViewHandler
 from python_base_app import custom_fields
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
@@ -122,10 +122,7 @@ class UsersViewHandler(BaseViewHandler):
         if p_submit_id == p_user.delete_html_key:
             self.user_entity_manager.delete_user(
                 p_session_context=p_session_context, p_username=p_user.username)
-            self.persistence.clear_cache()
-            self.user_manager.reset_users(p_session_context=p_session_context)
-            self.app_control.send_config_to_all_clients()
-            self.app_control.reset_process_patterns()
+            self.actions_after_user_change(p_session_context=p_session_context)
 
         elif p_submit_id == p_user.new_ruleset_html_key:
             self.user_entity_manager.assign_ruleset(
@@ -255,10 +252,13 @@ class UsersViewHandler(BaseViewHandler):
 
             if changed:
                 session.commit()
-                self._persistence.clear_cache()
-                self.app_control.send_config_to_all_clients()
-                self.user_manager.reset_users(p_session_context=session_context)
-                self.app_control.reset_process_patterns()
+                self.actions_after_user_change(p_session_context=session_context)
+
+    def actions_after_user_change(self, p_session_context: SessionContext):
+        self.persistence.clear_cache()
+        self.app_control.send_config_to_all_clients()
+        self.user_manager.reset_users(p_session_context=p_session_context)
+        self.app_control.reset_process_patterns()
 
     def save_for_user(self, p_forms, p_session_context, p_user):
 

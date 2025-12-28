@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -33,8 +33,9 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.process_handler_manager import ProcessHandlerManager
 from little_brother.rule_handler import RuleHandler
 from little_brother.user_manager import UserManager
-from python_base_app import log_handling
+from python_base_app import log_handling, configuration
 from python_base_app import tools
+from python_base_app.tools import RepetitiveObjectWriter
 from some_flask_helpers import blueprint_adapter
 
 MIME_TYPE_APPLICATION_JSON = 'application/json'
@@ -42,16 +43,34 @@ MIME_TYPE_APPLICATION_JSON = 'application/json'
 API_BLUEPRINT_NAME = "API"
 API_BLUEPRINT_ADAPTER = blueprint_adapter.BlueprintAdapter()
 
+
 # Dummy function to trigger extraction by pybabel...
-_ = lambda x: x
+def _(x):
+    return x
+
+
+SECTION_NAME = "ApiViewHandler"
+
+
+class ApiViewHandlerConfigModel(configuration.ConfigModel):
+
+    def __init__(self):
+        super().__init__(p_section_name=SECTION_NAME)
+
+        self.dump_client2server_api = False
+        self.dump_client2server_api_base_filename_pattern = "/tmp/objects/client2server.{index:04d}.{type}.json"
+        self.dump_server2client_api = False
+        self.dump_server2client_api_base_filename_pattern = "/tmp/objects/server2client.{index:04d}.{type}.json"
+
 
 # ToDo: Derive ApiViewHandler from BaseViewHandler!
 class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
-    def __init__(self, p_app):
+    def __init__(self, p_app, p_config: ApiViewHandlerConfigModel):
 
         super().__init__()
 
+        self._config = p_config
         self._appcontrol = None
         self._master_connector = None
         self._event_handler = None
@@ -67,16 +86,27 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
         API_BLUEPRINT_ADAPTER.check_view_methods()
         p_app.register_blueprint(self._blueprint)
 
+        self._client2server_object_writer = None
+        self._server2client_object_writer = None
+
+        if self._config.dump_client2server_api:
+            self._client2server_object_writer = RepetitiveObjectWriter(
+                p_base_filename_pattern=self._config.dump_client2server_api_base_filename_pattern)
+
+        if self._config.dump_server2client_api:
+            self._server2client_object_writer = RepetitiveObjectWriter(
+                p_base_filename_pattern=self._config.dump_server2client_api_base_filename_pattern)
+
     @property
     def blueprint(self):
         return self._blueprint
 
     @property
     def app_control(self) -> AppControl:
-        
+
         if self._appcontrol is None:
             self._appcontrol = dependency_injection.container[AppControl]
-            
+
         return self._appcontrol
 
     @property
@@ -120,12 +150,11 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
         return self._admin_data_handler
 
     @property
-    def processs_handler_manager(self) -> ProcessHandlerManager:
+    def process_handler_manager(self) -> ProcessHandlerManager:
         if self._process_handler_manager is None:
             self._process_handler_manager = dependency_injection.container[ProcessHandlerManager]
 
         return self._process_handler_manager
-
 
     def measure(self, p_hostname, p_service, p_duration):
 
@@ -161,8 +190,8 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
     def api_events(self):
         request = flask.request
 
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
             data = request.get_json()
 
             event_info = self.master_connector.receive_events(p_json_data=data)
@@ -174,11 +203,17 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
 
             if len(event_info) > 2:
                 # new format: 3 entries including client statistics
+                if self._client2server_object_writer:
+                    self._client2server_object_writer.write_object(p_object=data, p_object_type="events_new")
+
                 (hostname, json_events, json_client_stats) = event_info
                 client_stats = self.app_control.receive_client_stats(p_json_data=json_client_stats)
 
             else:
                 # old format: 2 entries without client statistics
+                if self._client2server_object_writer:
+                    self._client2server_object_writer.write_object(p_object=data, p_object_type="events_old")
+
                 (hostname, json_events) = event_info
 
             msg = "Received {count} events from host '{hostname}'"
@@ -192,16 +227,21 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
             msg = "Sending {count} events back to host '{hostname}'"
             self._logger.debug(msg.format(count=len(return_events), hostname=hostname))
 
-            return flask.Response(json.dumps(return_events, cls=tools.ObjectEncoder), status=constants.HTTP_STATUS_CODE_OK,
-                                                  mimetype=MIME_TYPE_APPLICATION_JSON)
+            response = json.dumps(return_events, cls=tools.ObjectEncoder)
 
+            if self._server2client_object_writer:
+                self._server2client_object_writer.write_object(p_object=response, p_object_type="events_response")
+
+            return flask.Response(response,
+                                  status=constants.HTTP_STATUS_CODE_OK,
+                                  mimetype=MIME_TYPE_APPLICATION_JSON)
 
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_URL_STATUS, methods=["GET"])
     def api_status(self):
         request = flask.request
 
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
             username = request.args.get(constants.API_URL_PARAM_USERNAME)
 
             if username is None:
@@ -228,13 +268,12 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                                       status=constants.HTTP_STATUS_CODE_OK,
                                       mimetype=MIME_TYPE_APPLICATION_JSON)
 
-
     @API_BLUEPRINT_ADAPTER.route_method(p_rule=constants.API_URL_REQUEST_TIME_EXTENSION, methods=["POST"])
     def api_request_time_extension(self):
         request = flask.request
 
-        with tools.TimingContext(lambda duration:self.measure(p_hostname=request.remote_addr,
-                                                         p_service=request.url_rule, p_duration=duration)):
+        with tools.TimingContext(lambda duration: self.measure(p_hostname=request.remote_addr,
+                                                               p_service=request.url_rule, p_duration=duration)):
             username = request.args.get(constants.API_URL_PARAM_USERNAME)
             secret = request.args.get(constants.API_URL_PARAM_SECRET)
             extension_length_string = request.args.get(constants.API_URL_PARAM_EXTENSION_LENGTH)
@@ -252,7 +291,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 user = self.user_entity_manager.get_by_username(p_session_context=session_context, p_username=username)
 
                 if user is None:
-                    return  self.user_does_not_exist_error(p_username=username)
+                    return self.user_does_not_exist_error(p_username=username)
 
                 if secret != user.access_code:
                     return self.invalid_secret_error()
@@ -260,7 +299,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                 try:
                     extension_length = int(extension_length_string)
 
-                except:
+                except Exception:
                     return self.wrong_parameter_format_error(p_parameter_name=constants.API_URL_PARAM_EXTENSION_LENGTH,
                                                              p_value=extension_length_string)
 
@@ -271,7 +310,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
                                                    p_time_extension_length=extension_length)
 
     def get_optional_time_available_in_minutes(self, p_session_context: SessionContext, p_user: User,
-                                               p_reference_date: datetime.date=None):
+                                               p_reference_date: datetime.date = None):
 
         if p_reference_date is None:
             p_reference_date = datetime.date.today()
@@ -286,7 +325,7 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
             return None
 
         if active_rule_set is not None:
-            optional_time_per_day = int (active_rule_set.optional_time_per_day / 60)
+            optional_time_per_day = int(active_rule_set.optional_time_per_day / 60)
 
         else:
             optional_time_per_day = 0
@@ -297,25 +336,39 @@ class ApiViewHandler(PersistenceDependencyInjectionMixIn):
         else:
             optional_time_used = user_status.optional_time_used
 
-
         return optional_time_per_day - optional_time_used
 
-    def request_time_extension(self, p_session_context: SessionContext, p_user: User,
-                               p_time_extension_length: int, p_reference_date: datetime.date=None):
+    def extend_time_extension_for_session(self, p_session_context, p_user_name, p_delta,
+                                          p_reference_time=None):
 
-        optional_time_available= self.get_optional_time_available_in_minutes(p_session_context=p_session_context,
-                                                                             p_user=p_user, p_reference_date=p_reference_date)
+        process_infos = self.process_handler_manager.get_process_infos()
+
+        admin_info = self.admin_data_handler.get_admin_info(
+            p_session_context=p_session_context, p_user_name=p_user_name, p_process_infos=process_infos)
+
+        session_active = admin_info.user_info[
+                             "active_stat_info"].current_activity_start_time is not None
+
+        active_rule_result_info = admin_info.user_info["active_rule_result_info"]
+        session_end_datetime = active_rule_result_info.session_end_datetime
+
+        self.time_extension_entity_manager.set_time_extension_for_session(
+            p_session_context=p_session_context, p_user_name=p_user_name,
+            p_session_active=session_active, p_delta_extension=p_delta,
+            p_session_end_datetime=session_end_datetime,
+            p_reference_time=p_reference_time)
+
+    def request_time_extension(self, p_session_context: SessionContext, p_user: User,
+                               p_time_extension_length: int, p_reference_date: datetime.date = None):
+
+        optional_time_available = self.get_optional_time_available_in_minutes(p_session_context=p_session_context,
+                                                                              p_user=p_user,
+                                                                              p_reference_date=p_reference_date)
 
         if p_time_extension_length <= optional_time_available:
 
-            process_infos = self.processs_handler_manager.get_process_infos()
-
-            admin_info = self.admin_data_handler.get_admin_info(
-                p_session_context=p_session_context, p_user_name=p_user.username, p_process_infos=process_infos)
-
-            self.time_extension_entity_manager.set_time_extension_for_admin_info_and_session(
-                p_session_context=p_session_context, p_admin_info=admin_info,
-                p_user_name=p_user.username, p_delta=p_time_extension_length)
+            self.extend_time_extension_for_session(
+                p_session_context=p_session_context, p_user_name=p_user.username, p_delta=p_time_extension_length)
 
             session = p_session_context.get_session()
 

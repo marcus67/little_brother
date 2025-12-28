@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
-#    Copyright (C) 2019-2022  Marcus Rickert
+import time
+#    Copyright (C) 2019-2025  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -78,6 +78,7 @@ class TestStatusServerDevices(BaseTestStatusServer):
 
             add_button = self._driver.find_element(By.ID, "add_device")
             add_button.click()
+            time.sleep(1)
 
             device: Device = device_entity_manager.get_by_device_name(
                 p_session_context=session_context, p_device_name=new_device_name)
@@ -90,6 +91,7 @@ class TestStatusServerDevices(BaseTestStatusServer):
 
         delete_button = self._driver.find_element(By.ID, "delete_device_1")
         delete_button.click()
+        time.sleep(1)
 
         delete_button = self._driver.find_element(By.ID, "delete_device_1-modal-confirm")
 

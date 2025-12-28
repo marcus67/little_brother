@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from packaging import version
+import semver
 
 from little_brother.client_stats import ClientStats
 from python_base_app import tools
@@ -113,7 +113,7 @@ class ClientInfo(object):
             else:
                 client_version = LAST_VERSION_WITHOUT_CLIENT_STAT_SUPPORT
 
-            if version.parse(client_version) < version.parse(self.master_version):
+            if semver.VersionInfo.parse(client_version) < semver.VersionInfo.parse(self.master_version):
                 return CSS_CLASS_CLIENT_VERSION_OUTDATED
 
         return ""

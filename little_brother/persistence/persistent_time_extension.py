@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -33,12 +33,12 @@ class TimeExtension(Base, BaseEntity):
     end_datetime = Column(DateTime)
 
     def __init__(self):
+        super(BaseEntity).__init__()
 
-        self.username:str = None
-        self.reference_datetime:datetime.datetime = None
-        self.start_datetime:datetime.datetime = None
-        self.end_datetime:datetime.datetime = None
+        self.username: str | None = None
+        self.reference_datetime: datetime.datetime | None = None
+        self.start_datetime: datetime.datetime | None = None
+        self.end_datetime: datetime.datetime | None = None
 
     def get_length_in_minutes(self):
-
         return int((self.end_datetime - self.start_datetime).total_seconds() / 60.0 + 0.5)

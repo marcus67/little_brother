@@ -1,0 +1,70 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+<app-nav-bar></app-nav-bar>
+<app-spinner *ngIf="isLoading"></app-spinner>
+<DIV *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
+    <SPAN id="page-ready"></SPAN>
+    <FORM [formGroup]="userDetailsForm" (ngSubmit)="updateUser()">
+        <DIV CLASS="row title-row bg-primary-subtle align-items-center">
+            <DIV CLASS="col col-2 col-lg-2 locale-text">Username</DIV>
+            <DIV CLASS="col col-1 col-lg-1 locale-text">Monitoring Active</DIV>
+            <DIV CLASS="col col-3 col-lg-3 locale-text">First Name</DIV>
+            <DIV CLASS="col col-3 col-lg-3 locale-text">Last Name</DIV>
+            <DIV CLASS="col col-3 col-lg-2 locale-text">Locale</DIV>
+            <DIV CLASS="col col-3 col-lg-1 locale-text"></DIV>
+        </DIV>
+        <DIV CLASS="row align-items-center bg-secondary-subtle">
+            <DIV CLASS="col col-2 col-lg-2 locale-text">
+                {{ user?.username }}
+            </DIV>
+            <DIV CLASS="col col-1 col-lg-1 locale-text">
+                <input id="active" type="checkbox" [formControl]="active" [class]="'input-active'">
+            </DIV>
+            <DIV CLASS="col col-3 col-lg-3 locale-text">
+                <input id="first_name" type="text" [formControl]="first_name" size="20" [class]="'input-first-name'">        
+            </DIV>
+            <DIV CLASS="col col-3 col-lg-3 locale-text">
+                <input id="last_name" type="text" [formControl]="last_name" size="20" [class]="'input-last-name'">
+            </DIV>
+            <DIV CLASS="col col-2 col-lg-2 locale-text">
+                <select id="locale" [formControl]="locale" class="form-control inline-field" style="width: 20ch;">
+                    <option *ngFor="let item of itemsArray" [value]="item.key">{{ item.value }}</option>
+                </select>
+            </DIV>
+            <DIV CLASS="col col-1 col-lg-1 locale-text">
+                <BUTTON [disabled]="userDetailsForm.pristine || userDetailsForm.invalid"
+                        id="save" [class]="'input-save btn btn-save align-self-end'" type="submit" name="submit" title="Save user">
+                    <I class="fas fa-save"></I>
+                </BUTTON>
+            </DIV>
+        </DIV>
+        <DIV CLASS="row title-row bg-primary-subtle align-items-center">
+            <DIV CLASS="col col-6 col-lg-6 locale-text">Process Name Pattern</DIV>
+            <DIV CLASS="col col-6 col-lg-6 locale-text">Prohibited Process Name Pattern</DIV>
+        </DIV>
+        <DIV CLASS="row bg-secondary-subtle">
+            <DIV CLASS="col col-6 col-lg-6 locale-text">
+                <!-- See https://stackoverflow.com/questions/58807090/how-to-add-formcontrol-to-a-textarea-in-angular-8-->
+                <TEXTAREA ngDefaultControl id="process_name_pattern" [formControl]="process_name_pattern" rows="10" [class]="'input-process-name-pattern'"></TEXTAREA>
+            </DIV>
+            <DIV CLASS="col col-6 col-lg-6 locale-text">
+                <TEXTAREA ngDefaultControl id="prohibited_process_name_pattern" [formControl]="prohibited_process_name_pattern" rows="10" [class]="'input-prohibited-process-name-pattern'"></TEXTAREA>
+            </DIV>
+        </DIV>
+    </FORM>
+</DIV>

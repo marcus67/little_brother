@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2024  Marcus Rickert
+# Copyright (C) 2019-2025  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 settings = {
-    "name": "little-brother",
+    "name": "little_brother",
     "url": "https://github.com/marcus67/little_brother",
-    "version": "0.4.36",
+    "version": "0.5.8",
     "description": "Simple parental control application monitoring specific processes on Linux hosts "
                    "to monitor and limit the play time of (young) children.",
     "author": "Marcus Rickert",
@@ -27,10 +27,11 @@ settings = {
 
 extended_settings = {
     "display_url": "github.com/marcus67/little_brother",
-    "debian_package_revision": "143",
+    "debian_package_revision": "209",
     "debian_package_architecture": "all",
     "babel_rel_directory": "translations",
     "analyze_extra_coverage_exclusions": "run_python_base_app_test_suite_no_venv.py",
+    "angular_deployment_dest_directory": "static/angular",
 }
 
 RELEASE_BRANCH_NAME = "release"

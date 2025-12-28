@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2024  Marcus Rickert
+#    Copyright (C) 2019-2025  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -31,6 +31,7 @@ with open(path.join(this_directory, 'requirements.txt')) as f:
 
 setup_params = {
     # standard setup configuration
+    "python_requires": '>=3.10, <3.14',
 
     "install_requires": install_requires,
 
@@ -38,13 +39,15 @@ setup_params = {
                  'little_brother.api',
                  'little_brother.devices',
                  'little_brother.persistence',
-                 'little_brother.web',
                  'little_brother.test',
                  'little_brother.test.persistence',
                  'little_brother.test.pytests.devices',
                  'little_brother.test.pytests',
                  'little_brother.test.web',
+                 'little_brother.test.web_angular',
                  'little_brother.test.api',
+                 'little_brother.transport',
+                 'little_brother.web',
                  ],
 
     "include_package_data": True,
@@ -52,6 +55,7 @@ setup_params = {
     "scripts": [
         "run_little_brother.py",
         "run_little_brother_test_suite.py",
+        "run_little_brother_test_suite_no_venv.py",
     ],
     "long_description": "Tool to monitor login time of users on Debian hosts and terminate processes if usage times "
                         "are exceeded. Note that this package is not meant as a simple install with PIP since it "
@@ -63,7 +67,7 @@ setup_params = {
 extended_setup_params = {
 
     # Target version to be used to upgrade the database
-    "target_alembic_version": "8802c76063af",
+    "target_alembic_version": "a6ff3cabbf7d",
 
     "docker_registry_user": "marcusrickert",
     # Docker image contexts to be built. The second entry of the tuple denotes if the resulting image is to be uploaded
@@ -74,15 +78,27 @@ extended_setup_params = {
 #                         ('little-brother-arch-linux-base', False),
 #                         ('little-brother-arch-linux-client', True),
                          ('little-brother-alpine-client', True),
+                         ('little-brother-alpine-server', True),
                          ],
-
     # additional setup configuration used by CI stages
+    "scan_id": "little-brother",
     "owasp": True,
+    "analyze": False,
+    "analyze_branch_map": {
+        "master": 'SONAR_PROJECT_KEY',
+        "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
+    },
+    "owasp_check_branch_map": {
+        "master": ('SECURECHECKPLUS_PROJECT_ID', 'SECURECHECKPLUS_API_KEY'),
+        "fb-angular": ('SECURECHECKPLUS_PROJECT_ID_FB_ANGULAR', 'SECURECHECKPLUS_API_KEY_FB_ANGULAR')
+    },
 
     # technical name used for e.g. directories, PIP-package, and users
     "create_user": True,
     "create_group": True,
-    "user_group_mappings": [("little-brother", "audio")],
+    "user_group_mappings": [
+        ("little-brother", "audio")
+    ],
     "deploy_systemd_service": True,
     # "deploy_tmpfile_conf": True,
     "deploy_sudoers_file": True,
@@ -107,9 +123,21 @@ extended_setup_params = {
         little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
     },
     "generate_generic_install": True,
-    "analyze": True,
+    "docker_image_build_angular": "marcusrickert/docker-python-app:3.12",
+    "docker_image_make_package": "marcusrickert/docker-python-app:3.12",
+    "docker_images_test": [
+        ("3_10", "marcusrickert/docker-python-app:3.10"),
+        ("3_11", "marcusrickert/docker-python-app:3.11"),
+        ("3_12", "marcusrickert/docker-python-app:3.12"),
+        ("3_13", "marcusrickert/docker-python-app:3.13"),
+    ],
+    "docker_image_publish_pypi": "marcusrickert/docker-python-app:3.12",
+    "docker_image_publish_debian": "marcusrickert/docker-python-app:3.12",
+    "docker_image_docker": "marcusrickert/docker-docker-ci:3.11",
+    "docker_image_analyze": "marcusrickert/docker-python-app:3.12",
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
+    "angular_app_dir": "littlebrother-frontend",
 }
 
 setup_params.update(little_brother.settings.settings)

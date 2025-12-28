@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2021  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -89,14 +89,6 @@ class ProcessInfoEntityManager(base_entity_manager.BaseEntityManager):
 
     def delete_historic_entries(self, p_session_context: SessionContext, p_history_length_in_days: int):
 
-        session = p_session_context.get_session()
-        reference_time = datetime.datetime.now() + datetime.timedelta(days=-p_history_length_in_days)
-        result = session.query(ProcessInfo).filter(ProcessInfo.start_time < reference_time).all()
-
-        msg = "Deleting {count} process infos..."
-        self._logger.info(msg.format(count=len(result)))
-
-        for pinfo in result:
-            session.delete(pinfo)
-
-        session.commit()
+        self.delete_generic_historic_entries(p_session_context=p_session_context,
+                                             p_history_length_in_days=p_history_length_in_days,
+                                             p_reference_time_column=ProcessInfo.start_time)

@@ -23,7 +23,7 @@ import flask_login
 from little_brother import constants, entity_forms
 from little_brother import rule_override
 from little_brother.persistence.session_context import SessionContext
-from little_brother.web.base_view_handler import BaseViewHandler
+from little_brother.base_view_handler import BaseViewHandler
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
 
@@ -104,9 +104,8 @@ class AdminViewHandler(BaseViewHandler):
             if result is not None:
                 delta = int(result.group(1))
 
-                self.time_extension_entity_manager.set_time_extension_for_admin_info_and_session(
-                    p_session_context=p_session_context, p_user_name=username,
-                    p_admin_info=admin_info, p_delta=delta)
+                self.api_view_handler.extend_time_extension_for_session(
+                    p_session_context=p_session_context, p_user_name=username, p_delta=delta)
 
     @staticmethod
     def get_admin_forms(p_admin_infos):

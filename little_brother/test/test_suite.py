@@ -20,7 +20,7 @@
 
 import unittest
 
-from little_brother.test import test_app, test_client_info, test_pytest
+from little_brother.test import test_app, test_client_info, test_pytest, test_token_handler
 from little_brother.test import test_app_control
 from little_brother.test import test_client_device_handler
 from little_brother.test import test_client_process_handler
@@ -37,11 +37,16 @@ from little_brother.test import test_user_status
 from little_brother.test.api import test_suite as api_test_suite
 from little_brother.test.persistence import test_suite as persistence_test_suite
 from little_brother.test.web import test_suite as web_test_suite
+from little_brother.test.web_angular import test_suite as web_angular_test_suite
 from python_base_app import log_handling
 from python_base_app.test import base_test
 
 
 def add_test_cases(p_test_suite, p_config_filename=None):
+    base_test.add_tests_in_test_unit(
+        p_test_suite=p_test_suite,
+        p_test_unit_class=test_token_handler.TestTokenHandler, p_config_filename=p_config_filename)
+
     base_test.add_tests_in_test_unit(
         p_test_suite=p_test_suite,
         p_test_unit_class=test_pytest.TestPytest, p_config_filename=p_config_filename)
@@ -121,6 +126,7 @@ def add_test_cases(p_test_suite, p_config_filename=None):
         p_test_unit_class=test_client_info.TestClientInfo, p_config_filename=p_config_filename)
 
 
+
 def main():
     log_handling.start_logging(p_use_filter=False)
     test_suite = unittest.TestSuite()
@@ -128,6 +134,7 @@ def main():
 
     persistence_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     web_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
+    web_angular_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
     api_test_suite.add_test_cases(p_test_suite=test_suite, p_config_filename=base_test.get_config_filename())
 
     base_test.run_test_suite(p_test_suite=test_suite)

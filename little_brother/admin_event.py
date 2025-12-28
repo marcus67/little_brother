@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -19,11 +19,11 @@ import datetime
 
 from little_brother import process_info
 
+# For a description of the event types and how the eventing system works
+# see https://github.com/marcus67/little_brother/blob/master/API.md
+
 EVENT_TYPE_START_MASTER = "START_MASTER"
 EVENT_TYPE_START_CLIENT = "START_CLIENT"
-EVENT_TYPE_STOP_CLIENT = "STOP_CLIENT"
-EVENT_TYPE_LOGIN_NOT_PERMITTED = "LOGIN_NOT_PERMITTED"
-EVENT_TYPE_LOGIN_PERMITTED = "LOGIN_PERMITTED"
 EVENT_TYPE_KILL_PROCESS = "KILL_PROCESS"
 EVENT_TYPE_UPDATE_CONFIG = "UPDATE_CONFIG"
 EVENT_TYPE_UPDATE_LOGIN_MAPPING = "UPDATE_LOGIN_MAPPING"

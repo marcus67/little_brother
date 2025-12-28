@@ -353,12 +353,14 @@ class AppControl(PersistenceDependencyInjectionMixIn):
         self._logger.info(msg.format(days=history_length_in_days))
 
         with SessionContext(p_persistence=self.persistence) as session_context:
-            self.rule_override_entity_manager.delete_historic_entries(p_session_context=session_context,
-                                                                      p_history_length_in_days=history_length_in_days)
-            self.process_info_entity_manager.delete_historic_entries(p_session_context=session_context,
-                                                                     p_history_length_in_days=history_length_in_days)
-            self.admin_event_entity_manager.delete_historic_entries(p_session_context=session_context,
-                                                                    p_history_length_in_days=history_length_in_days)
+            self.rule_override_entity_manager.delete_historic_entries(
+                p_session_context=session_context, p_history_length_in_days=history_length_in_days)
+            self.process_info_entity_manager.delete_historic_entries(
+                p_session_context=session_context, p_history_length_in_days=history_length_in_days)
+            self.admin_event_entity_manager.delete_historic_entries(
+                p_session_context=session_context, p_history_length_in_days=history_length_in_days)
+            self.time_extension_entity_manager.delete_historic_entries(
+                p_session_context=session_context, p_history_length_in_days=history_length_in_days)
 
     def handle_event_update_config(self, p_event):
 
@@ -628,7 +630,7 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
         except Exception as e:
 
-            fmt = "Exception '{estr}' while sending events to master. Requeueing events..."
+            fmt = "Exception '{estr}' while sending events to master. Re-queueing events..."
             self._logger.error(fmt.format(estr=str(e)))
             self._event_handler.queue_outgoing_events(p_events=outgoing_events)
 
@@ -650,10 +652,15 @@ class AppControl(PersistenceDependencyInjectionMixIn):
 
             self._event_handler.queue_events(p_events=events, p_to_master=True)
 
-    def add_new_user(self, p_session_context, p_username, p_locale=None):
+    def add_new_user(self, p_session_context, p_username, p_locale=None) -> int | None:
 
-        self.user_entity_manager.add_new_user(p_session_context=p_session_context, p_username=p_username,
-                                              p_locale=p_locale)
+        user_id = self.user_entity_manager.add_new_user(
+            p_session_context=p_session_context, p_username=p_username, p_locale=p_locale)
+
+        if user_id is None:
+            return None
+
         self._user_manager.add_monitored_user(p_username=p_username)
         self._user_manager.reset_users(p_session_context=p_session_context)
         self.send_config_to_all_clients()
+        return user_id

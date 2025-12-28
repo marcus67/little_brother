@@ -21,6 +21,7 @@ from little_brother.persistence.base_entity_manager import BaseEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_user import User
 from little_brother.persistence.session_context import SessionContext
+from python_base_app.configuration import ConfigurationException
 
 
 class UserEntityManager(BaseEntityManager):
@@ -39,7 +40,7 @@ class UserEntityManager(BaseEntityManager):
 
         return self._rule_set_entity_manager
 
-    def get_by_username(self, p_session_context: SessionContext, p_username: str) -> User:
+    def get_by_username(self, p_session_context: SessionContext, p_username: str) -> User | None:
         session = p_session_context.get_session()
         query = session.query(User).filter(User.username == p_username)
 
@@ -48,6 +49,27 @@ class UserEntityManager(BaseEntityManager):
 
         else:
             return None
+
+    def add_user_id_to_authorization_result(self, p_session_context: SessionContext,
+                                            p_authorization_result: dict) -> int | None:
+
+        username = p_authorization_result.get("username")
+
+        if username is None:
+            raise ConfigurationException("Field 'username' not found in authorization result!")
+
+        user = self.get_by_username(p_session_context=p_session_context, p_username=username)
+
+        if user is None:
+            if p_authorization_result["is_admin"]:
+                p_authorization_result["user_id"] = 0
+                return None
+            else:
+                raise ConfigurationException(f"Cannot find username '{username}' ")
+
+        p_authorization_result["user_id"] = user.id
+        return user.id
+
 
     def users(self, p_session_context):
 

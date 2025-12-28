@@ -49,7 +49,7 @@ msgstr "''আগামীকাল'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/admin_data_handler.py:119
 msgid "yyyy-MM-dd' ('EEE')'"
-msgstr "'<span class=\"nonlocaletext\">'dd-MM-yyyy'</span> ('EEE')'"
+msgstr "'<span class=\"non-locale-text\">'dd-MM-yyyy'</span> ('EEE')'"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/admin_data_handler.py:120
 msgid "EEE"
@@ -209,13 +209,13 @@ msgstr "ফ্রী খেলা"
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:263
 msgid "No activity before {hh_mm} hours"
 msgstr ""
-"<span class=\"nonlocaletext\">{hh_mm}</span> ঘণ্টার আগে আর কিছু করতে "
+"<span class=\"non-locale-text\">{hh_mm}</span> ঘণ্টার আগে আর কিছু করতে "
 "পারবেনা।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:271
 msgid "No activity after {hh_mm} hours"
 msgstr ""
-"<span class=\"nonlocaletext\">{hh_mm}</span> ঘণ্টার পর আর কিছু করতে "
+"<span class=\"non-locale-text\">{hh_mm}</span> ঘণ্টার পর আর কিছু করতে "
 "পারবেনা।"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:300
@@ -224,15 +224,15 @@ msgstr "নিষিদ্ধ দিনঃ কোন কাজ করা যা�
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:306
 msgid "Activity limited to {hh_mm} per day"
-msgstr "প্রতিদিন কাজ <span class=\"nonlocaletext\">{hh_mm}</span> -এ সীমাবদ্ধ"
+msgstr "প্রতিদিন কাজ <span class=\"non-locale-text\">{hh_mm}</span> -এ সীমাবদ্ধ"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:336
 msgid "No activity exceeding {hh_mm}"
-msgstr "কোন কাজ <span class=\"nonlocaletext\">{hh_mm}</span>-এর বেশী হতে পারবেনা"
+msgstr "কোন কাজ <span class=\"non-locale-text\">{hh_mm}</span>-এর বেশী হতে পারবেনা"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:376
 msgid "Minimum break time {hh_mm} not reached, {hh_mm_to_go} to go"
-msgstr "ন্যুনতম বিরতি <span class=\"nonlocaletext\">{hh_mm}</span> এখনও শেষ হয়নি"
+msgstr "ন্যুনতম বিরতি <span class=\"non-locale-text\">{hh_mm}</span> এখনও শেষ হয়নি"
 
 #: /home/mr/projects/LittleBrotherGitHub/little_brother/rule_handler.py:389
 msgid "Remaining play time today: {hh_mm}"

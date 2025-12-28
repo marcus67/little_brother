@@ -17,27 +17,33 @@ that she can log out gracefully in time.
 
 The latest major feature changes are:
 
-| Version | Feature/Fix                                                   | (Issue) Link                                                         |
-|---------|---------------------------------------------------------------|----------------------------------------------------------------------|
-| 0.4.33  | Support partial persistence of basic user settings on clients | [Issue 190](https://github.com/marcus67/little_brother/issues/190)   |
-| 0.4.28  | *Bug Fix*: Remove incompatibility with Python 3.8             | [Issue 180](https://github.com/marcus67/little_brother/issues/180)   |
-| 0.4.23  | Optionally use `iptables` to restrict network access          | [Issue 169](https://github.com/marcus67/little_brother/issues/169)   |
-| 0.4.20  | *Bug Fix*: Use Python virtual environment again               | [Issue 170](https://github.com/marcus67/little_brother/issues/170)   |
-| 0.4.17  | *Bug Fix*: Remove incompatibility with new `alembic` version  | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
-| 0.4.16  | *Bug Fix*: Ignore invalid hosts during ping                   | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
-| 0.4.15  | *Bug Fix*: Do not fail on Debian package upgrades             | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
-| 0.4.14  | *Bug Fix*: Correct detection of users in master-only setups   | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
-| 0.4.12  | *New*: Client process available as snap                       | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
-| 0.4.9   | *New*: Automatic check for new versions of `LittleBrother`    | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
-|         | *Improvement*: Separate LDAP search DN for groups and users   | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
-|         | *Improvement*: Cache timeout for LDAP data                    | [Issue 138](https://github.com/marcus67/little_brother/issues/138)   |
-| 0.4.8   | *New*: Full support for requesting optional time by users     | [Issue 130](https://github.com/marcus67/little_brother/issues/130)   |
-| 0.4.4   | *New*: Use user specific patterns to prohibit applications    | [Issue 129](https://github.com/marcus67/little_brother/issues/129)   |
+| Version | Feature/Fix                                                                    | (Issue) Link                                                         |
+|---------|--------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| 0.5.6   | *New*: Provide an Alpine server image                                          | [Issue 209](https://github.com/marcus67/little_brother/issues/209)   |
+| 0.5.4   | *Bug Fix*: Proper deletion of table histories                                  | [Issue 203](https://github.com/marcus67/little_brother/issues/203)   |
+| 0.5.2   | *Bug Fix*: Installation problems due to unsupported `playsound`                | [Issue 205](https://github.com/marcus67/little_brother/issues/205)   |
+| 0.5.1   | New feature: Provide the first rudimentary version of the Angular web frontend | [Issue 191](https://github.com/marcus67/little_brother/issues/191)   |
+| 0.4.33  | Support partial persistence of basic user settings on clients                  | [Issue 190](https://github.com/marcus67/little_brother/issues/190)   |
+| 0.4.28  | *Bug Fix*: Remove incompatibility with Python 3.8                              | [Issue 180](https://github.com/marcus67/little_brother/issues/180)   |
+| 0.4.23  | Optionally use `iptables` to restrict network access                           | [Issue 169](https://github.com/marcus67/little_brother/issues/169)   |
+| 0.4.20  | *Bug Fix*: Use Python virtual environment again                                | [Issue 170](https://github.com/marcus67/little_brother/issues/170)   |
+| 0.4.17  | *Bug Fix*: Remove incompatibility with new `alembic` version                   | [Issue 166](https://github.com/marcus67/little_brother/issues/166)   |
+| 0.4.16  | *Bug Fix*: Ignore invalid hosts during ping                                    | [Issue 165](https://github.com/marcus67/little_brother/issues/165)   |
+| 0.4.15  | *Bug Fix*: Do not fail on Debian package upgrades                              | [Issue 158](https://github.com/marcus67/little_brother/issues/158)   |
+| 0.4.14  | *Bug Fix*: Correct detection of users in master-only setups                    | [Issue 163](https://github.com/marcus67/little_brother/issues/163)   |
+| 0.4.12  | *New*: Client process available as snap                                        | [Snapcraft Support](https://github.com/marcus67/snap-little-brother) |
+| 0.4.9   | *New*: Automatic check for new versions of `LittleBrother`                     | [Issue 150](https://github.com/marcus67/little_brother/issues/150)   |
+|         | *Improvement*: Separate LDAP search DN for groups and users                    | [Issue 144](https://github.com/marcus67/little_brother/issues/144)   |
+|         | *Improvement*: Cache timeout for LDAP data                                     | [Issue 138](https://github.com/marcus67/little_brother/issues/138)   |
+| 0.4.8   | *New*: Full support for requesting optional time by users                      | [Issue 130](https://github.com/marcus67/little_brother/issues/130)   |
+| 0.4.4   | *New*: Use user specific patterns to prohibit applications                     | [Issue 129](https://github.com/marcus67/little_brother/issues/129)   |
 
 ## Contact
 
 Visit the project at [Facebook](https://www.facebook.com/littlebrotherdebian) or write comments 
 to little-brother(at)web.de.
+
+<a href="https://www.buymeacoffee.com/marcus.rickert" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## Screenshots
 
@@ -145,9 +151,6 @@ extension all other restrictions (maximum time per session, time of day, and max
 Time extension can even extend into the next day making long night session possible. However, any computer time
 actually spent during a time extension will contribute to the overall time played in the course of a day.   
 
-*   There is a Docker image available (currently for the client only) which makes it really easy to run a client on a 
-Linux host with a Docker daemon available.
-
 *   The application uses voice generation to inform the user over impending logouts. Also, these spoken
 messages are internationalized. Optionally, users can be notified using four different popup tools. Note that this
 functionality of the `LittleBrother` application has been replaced by the `LittleBrotherTaskbar.` 
@@ -164,7 +167,7 @@ See [this page](NON-DEBIAN-INSTALLATION.md) for details.
 
 | Distribution | Version       | Architecture | Comments                                                                                                                                                    | Most Recent Test |
 |--------------|---------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
-| Ubuntu       | 20.04         | amd64        | This version is used as base image for the [Ubuntu Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-ubuntu-client)       | 28.JAN.2022      |
+| Ubuntu       | 24.04         | amd64        | This version is used as base image for the [Ubuntu Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-ubuntu-client)       | 22.DEC.2024      |
 | Debian       | 11 (bullseye) | amd64        | Feedback from a user as regular install using Mate desktop                                                                                                  | 06.MAR.2022      |
 | Ubuntu       | 18.10         | amd64        | See [pip3 issue](https://github.com/marcus67/little_brother/issues/53)                                                                                      | 03.JUN.2019      |
 | Debian       | buster        | amd64        | The version `buster-slim` is used as base image for the [Debian Docker image](https://hub.docker.com/repository/docker/marcusrickert/little-brother-client) | 01.JAN.2020      |
@@ -183,8 +186,10 @@ There is a snap available for the client process. See [snap-little-brother](http
 ## Quick Install (Debian Package)
 
 This guide will take you through the steps required to install, configure, and run the `LittleBrother` application 
-on your system. This guide works both for master and client setups. For setting up a client there is a second option
-using Docker. See the [Docker](DOCKER.md) page for more details.
+on your system. This guide works both for master and client setups. 
+
+See the repository [little-brother-server-docker-setup](https://github.com/marcus67/little-brother-server-docker-setup)
+for setting up LittleBrother using Docker (and Docker Compose). 
 
 ### YouTube Videos
 
@@ -230,10 +235,11 @@ various additional aspects that may require additional configuration.
 | Mapping UIDs                | UIDs are synchronized across all hosts                                     | Each host (group) can have different UIDs                       | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 | Scanning Interval           | Every 5 seconds                                                            | Any other interval                                              | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 | Reverse proxy setup         | No reverse proxy                                                           | Run little-brother behind a reverse proxy (e.g. `nginx`)        | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
-| Docker Support              | Client is installed as Debian package                                      | Client is run as Docker container                               | See [Docker](DOCKER.md).                                 |
+| Docker Support              | Client and/or server is installed as a Debian package                      | Client and/or server is run as a Docker container               | See [little-brother-server-docker-setup](https://github.com/marcus67/little-brother-server-docker-setup)             |
 | Prometheus Support          | Not activated                                                              | Activate Prometheus server port and provide run time statistics | See [Operational Monitoring](OPERATIONAL_MONITORING.md). |
 | Network Tempering Detection | Automatic logout of monitored users after a network downtime of 50 seconds | Set a different time out                                        | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 | Firewall support            | Do not restrict network access of client hosts                             | Configure targets IP addresses to be blocked                    | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
+| Frontends                   | Only activate the classic frontend                                         | Configure the new Angular frontend                              | See [Advanced Configuration](ADVANCED_TOPICS.md)         |
 
 ### Setting the Admin Password
 
@@ -259,6 +265,8 @@ From now on the new password will have to be used to access the administration p
 
 You are all set now. It's time to set up users to be monitored and optionally devices. See the 
 [Web Frontend Manual](WEB_FRONTEND_MANUAL.md). 
+
+To get a glimpse of the new Angular frontend see [here](ANGULAR_WEB_FRONTEND_MANUAL.md).
 
 ### Troubleshooting
 

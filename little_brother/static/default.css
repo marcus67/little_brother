@@ -488,3 +488,10 @@ input[type=checkbox]
 .node_outdated {
   color: red;
 }
+
+.row {
+  margin-left: -13px;
+  margin-right: -13px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}

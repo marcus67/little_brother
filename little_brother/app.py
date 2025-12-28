@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019-2022  Marcus Rickert
+# Copyright (C) 2019-2024  Marcus Rickert
 #
 # See https://github.com/marcus67/little_brother
 # This program is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@ from little_brother import login_mapping
 from little_brother import rule_handler
 from little_brother.admin_data_handler import AdminDataHandler
 from little_brother.alembic.versions import version_0_3_added_tables_for_configuration_gui as alembic_version_gui
+from little_brother.api.api_view_handler import ApiViewHandlerConfigModel
 from little_brother.api.master_connector import MasterConnector, MasterConnectorConfigModel, \
     SECTION_NAME as MASTER_CONNECTOR_SECTION_NAME
 from little_brother.api.version_checker import VersionChecker
@@ -44,8 +45,8 @@ from little_brother.devices.firewall_device_activation_handler import FirewallDe
 from little_brother.devices.firewall_handler import FirewallHandler
 from little_brother.devices.firewall_handler_config_model import FirewallHandlerConfigModel, \
     SECTION_NAME as FIREWALL_HANDLER_SECTION_NAME
-from little_brother.german_vacation_context_rule_handler import GermanVacationContextRuleHandler
 from little_brother.persistence import persistence
+from little_brother.persistence.persistent_blacklisted_token_entity_manager import BlacklistedTokenEntityManager
 from little_brother.persistence.persistent_rule_set_entity_manager import RuleSetEntityManager
 from little_brother.persistence.persistent_time_extension_entity_manager import TimeExtensionEntityManager
 from little_brother.persistence.persistent_user import User
@@ -53,13 +54,13 @@ from little_brother.persistence.session_context import SessionContext
 from little_brother.prometheus import PrometheusClient, PrometheusClientConfigModel, \
     SECTION_NAME as PROMETHEUS_SECTION_NAME
 from little_brother.rule_handler import RuleHandler
-from little_brother.simple_context_rule_handlers import DefaultContextRuleHandler, WeekplanContextRuleHandler
 from little_brother.web import web_server
 from python_base_app import audio_handler
 from python_base_app import base_app
 from python_base_app import configuration
 from python_base_app import pinger
 from python_base_app import unix_user_handler
+from python_base_app.base_token_handler import BaseTokenHandlerConfigModel
 from python_base_app.base_user_handler import BaseUserHandler
 from python_base_app.locale_helper import LocaleHelper
 
@@ -123,6 +124,13 @@ class App(base_app.BaseApp):
         self._pinger = None
         self._firewall_handler: Optional[FirewallHandler] = None
         self._device_activation_manager: Optional[DeviceActivationManager] = None
+        self.app_config = None
+        self._login_mapping_section_handler = None
+        self._login_mapping = None
+        self._admin_data_handler = None
+        self._version_checker = None
+
+        self._logger.info(f"class {self.__class__.__name__} is located at {__file__}")
 
     def prepare_configuration(self, p_configuration: configuration.Configuration):
 
@@ -161,6 +169,9 @@ class App(base_app.BaseApp):
         prometheus_client_section = PrometheusClientConfigModel()
         p_configuration.add_section(prometheus_client_section)
 
+        api_view_handler_section = ApiViewHandlerConfigModel()
+        p_configuration.add_section(api_view_handler_section)
+
         self.app_config = AppConfigModel()
         p_configuration.add_section(self.app_config)
 
@@ -191,6 +202,9 @@ class App(base_app.BaseApp):
         device_activation_manager_section = DeviceActivationManagerConfigModel()
         p_configuration.add_section(device_activation_manager_section)
 
+        token_handler_section = BaseTokenHandlerConfigModel()
+        p_configuration.add_section(token_handler_section)
+
         return super(App, self).prepare_configuration(p_configuration=p_configuration)
 
     def is_master(self):
@@ -211,7 +225,7 @@ class App(base_app.BaseApp):
             rows = session.query(User).count()
 
             if rows == 0:
-                # if there are no users in the database yet we assume that the migration has never run yet
+                # if there are no users in the database yet, we assume that the migration has never run yet
                 db_mig.migrate_ruleset_configs(
                     p_ruleset_configs=self._rule_set_section_handler.rule_set_configs)
 
@@ -231,11 +245,6 @@ class App(base_app.BaseApp):
 
             session.close()
 
-    def register_rule_context_handlers(self, p_rule_handler):
-        p_rule_handler.register_context_rule_handler(DefaultContextRuleHandler(), p_default=True)
-        p_rule_handler.register_context_rule_handler(WeekplanContextRuleHandler())
-        p_rule_handler.register_context_rule_handler(GermanVacationContextRuleHandler())
-
     def prepare_services(self, p_full_startup=True):
 
         super().prepare_services(p_full_startup=p_full_startup)
@@ -251,6 +260,7 @@ class App(base_app.BaseApp):
         dependency_injection.container[persistence.Persistence] = self._persistence
         dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
         dependency_injection.container[TimeExtensionEntityManager] = TimeExtensionEntityManager()
+        dependency_injection.container[BlacklistedTokenEntityManager] = BlacklistedTokenEntityManager()
 
         if self.is_master():
             self._rule_handler = RuleHandler(
@@ -258,8 +268,7 @@ class App(base_app.BaseApp):
                 p_persistence=self._persistence)
 
             dependency_injection.container[RuleHandler] = self._rule_handler
-
-            self.register_rule_context_handlers(p_rule_handler=self._rule_handler)
+            self._rule_handler.register_rule_context_handlers()
 
         self._master_connector = MasterConnector(p_config=self._config[MASTER_CONNECTOR_SECTION_NAME])
 
@@ -291,6 +300,7 @@ class App(base_app.BaseApp):
         config = self._config[PROMETHEUS_SECTION_NAME]
 
         if config.is_active():
+            config.port = int(os.getenv("PROMETHEUS_SERVER_PORT", config.port))
             self._prometheus_client = PrometheusClient(
                 p_logger=self._logger, p_config=config)
 
@@ -345,10 +355,8 @@ class App(base_app.BaseApp):
         self._login_mapping = login_mapping.LoginMapping()
 
         with SessionContext(p_persistence=self._persistence) as session_context:
-
-            self._login_mapping.read_from_configuration(
-                p_login_mapping_section_handler=self._login_mapping_section_handler,
-                p_session_context=session_context)
+            self._login_mapping.read_from_configuration(p_session_context=session_context,
+                                                        p_login_mapping_section_handler=self._login_mapping_section_handler)
 
         self._admin_data_handler = AdminDataHandler(p_config=self._config[APP_CONTROL_SECTION_NAME])
 
@@ -366,10 +374,11 @@ class App(base_app.BaseApp):
         dependency_injection.container[AppControl] = self._app_control
 
         if self._config[APP_CONTROL_SECTION_NAME].scan_active:
-            task = base_app.RecurringTask(p_name="app_control.scan_processes(ProcessHandler)",
-                                          p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
-                                              p_process_handler=process_handler),
-                                          p_interval=process_handler.check_interval)
+            task = base_app.RecurringTask(
+                p_name="app_control.scan_processes(ProcessHandler)",
+                p_handler_method=lambda: self._app_control._process_handler_manager.scan_processes(
+                    p_process_handler=process_handler),
+                p_interval=process_handler.check_interval)
             self.add_recurring_task(p_recurring_task=task)
 
         else:
@@ -393,7 +402,7 @@ class App(base_app.BaseApp):
 
         if status_server_config.is_active():
             self._status_server = web_server.StatusServer(
-                p_config=self._config[web_server.SECTION_NAME],
+                p_configs=self._config,
                 p_package_name=PACKAGE_NAME,
                 p_app_control=self._app_control,
                 p_master_connector=self._master_connector,
@@ -403,6 +412,8 @@ class App(base_app.BaseApp):
                 p_languages=constants.LANGUAGES,
                 p_user_handler=self._user_handler
             )
+            for task in self._status_server.get_recurring_tasks():
+                self.add_recurring_task(p_recurring_task=task)
 
         elif self.is_master():
             msg = "Master instance requires port number for web server"
@@ -417,7 +428,7 @@ class App(base_app.BaseApp):
 
         dependency_injection.container[VersionChecker] = self._version_checker
 
-        task = base_app.RecurringTask(p_name="app_control.check", p_handler_method=self._app_control.check,
+        task = base_app.RecurringTask(p_name="AppControl.check", p_handler_method=self._app_control.check,
                                       p_interval=self._app_control.check_interval)
         self.add_recurring_task(p_recurring_task=task)
 

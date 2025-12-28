@@ -1,0 +1,71 @@
+<!--
+// Copyright (C) 2019-24  Marcus Rickert
+//
+// See https://github.com/marcus67/little_brother
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+<app-nav-bar></app-nav-bar>
+<app-spinner *ngIf="isLoading"></app-spinner>
+<DIV *ngIf="!isLoading" class="container rounded-2 overflow-hidden">
+  <SPAN id="page-ready"></SPAN>
+  <DIV CLASS="row title-row bg-primary-subtle">
+    <DIV CLASS="col col-2 col-lg-1 locale-text">User</DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">Context</DIV>
+    <DIV CLASS="col col-2 col-lg-2 locale-text">
+      Today's Activity
+      <DIV CLASS="downtime" *ngIf="hasDowntime">Downtime</DIV>
+    </DIV>
+
+    <DIV CLASS="col col-2 col-lg-2  locale-text">Current Start Time</DIV>
+    <DIV CLASS="col col-2 col-lg-2  locale-text">
+      Current Duration
+      <DIV CLASS="downtime" *ngIf="hasDowntime">Downtime</DIV>
+    </DIV>
+    <DIV CLASS="col col-2 col-lg-1  locale-text">Activity permitted</DIV>
+    <DIV CLASS="col col-2 col-lg-3 locale-text">Reasons</DIV>
+  </DIV>
+
+  <DIV *ngFor="let entry of userAdmin" CLASS="row title-row bg-secondary-subtle user-row" >
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
+      <a [id]="'button-detail-' + (entry.user_status?.user_id || '')" [routerLink]="['/override', entry.user_status?.user_id]">{{ entry.user_status?.full_name }}</a>
+    </DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">{{ entry.user_status?.context_label }}</DIV>
+    <DIV CLASS="col col-2 col-lg-2 locale-text">
+      {{ entry.user_status?.todays_activity_duration() }} /
+      <DIV *ngIf="entry.user_status?.free_play; then freePlay else noFreePlay"></DIV>
+        <ng-template #freePlay>unlimited</ng-template>
+        <ng-template #noFreePlay>{{ entry.user_status?.max_time_per_day() }}</ng-template>
+        <DIV CLASS="downtime" *ngIf="entry.user_status?.todays_downtime_in_seconds">{{ entry.user_status?.todays_downtime() }}</DIV>
+    </DIV>
+    <DIV CLASS="col col-2 col-lg-2 locale-text">{{ entry.user_status?.current_activity_start_time_as_string() }}</DIV>
+    <DIV CLASS="col col-2 col-lg-2 locale-text">
+      <div [ngClass] = "{'blink': entry.user_status?.current_activity_duration_in_seconds }">{{ entry.user_status?.current_activity_duration() }}</div>
+      <DIV CLASS="downtime" *ngIf="entry.user_status?.current_activity_downtime_in_seconds"> {{ entry.user_status?.current_activity_downtime() }}</DIV>
+    </DIV>
+    <DIV CLASS="col col-2 col-lg-1 locale-text">
+      <DIV *ngIf="entry.user_status?.activity_permitted">
+        <I class="fas fa-check active"></I>
+      </DIV>
+      <div *ngIf="! entry.user_status?.activity_permitted">
+        <I class="fas fa-times inactive"></I>
+      </div>
+    </DIV>
+    <DIV CLASS="col col-2 col-lg-3 locale-text">
+      <UL>
+        <LI *ngFor="let reason of entry.user_status?.reasons">
+          {{ reason }}
+        </LI>
+      </UL>
+    </DIV>
+  </DIV>
+</DIV>

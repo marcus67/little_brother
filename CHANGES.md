@@ -4,6 +4,68 @@
 
 This document lists all changes of `LittleBrother` with the most recent changes at the top.
 
+## Version 0.5.8 Revision 209 (December 26th, 2025)
+* Support Python 3.13
+* Bump `alembic` to 1.17.2
+* Bump `distro` to 1.9.0
+* Bump `flask-migrate` to 4.1.0
+* Bump `flask-wtf` to 1.2.2
+* Bump `humanize` to 4.15.0
+* Bump `lagom` to 2.7.7
+* Bump `prometheus-client` to 0.23.1
+* Bump `psutil` to 7.2.0
+* Bump `pyjwt` to 2.10.1
+* Bump `pymysql` to 1.1.2
+* Bump `pytest` to 9.0.2
+* Bump `requests` to 2.32.5
+* Bump `secure` to 2.0.0
+* Bump `semver` to 3.0.4
+* Bump `setuptools` to 80.9.0
+* Bump `sqlalchemy` to 2.0.45
+* Bump `urllib3` to 2.6.2
+* Bump `werkzeug` to 3.1.4
+* Bump `python_base_app` to 0.3.5
+* Temporarily disable analyze step
+* Add some waiting periods in GUI tests
+* In Trigger default action in login dialog through button click 
+
+## Version 0.5.7 Revision 208 (January 14th, 2025)
+* Provide BuyMeACoffee link
+* Use user specific views for non-admin access
+* Make user details editable for non-admins
+* Rename view/api "admin" to "override" (in most places)
+* Only use permanently static ip addresses for test cases
+* Move all Docker aspects to https://github.com/marcus67/little-brother-server-docker-setup.
+* Closes #211
+
+## Version 0.5.6 Revision 207 (January 12th, 2025)
+* Provide initial, partial support for tab "Users" of Angular GUI 
+* Provide an Alpine server image; closes #209
+
+## Version 0.5.5 Revision 206 (December 28th, 2024)
+* Handle duplicate entries in iptables table, closes #204
+* Provide initial version of user configuration in Angular
+
+## Version 0.5.4 Revision 205 (December 27th, 2024)
+* Always deactivate CSRF for the REST APIs
+* Closes #203
+
+## Version 0.5.3 Revision 204 (December 26th, 2024)
+* Finalize new build pipeline
+
+## Version 0.5.2 Revision 203
+* Upgrade `python_base_app` to 0.3.2 (fixes #205)
+* Bump `jinja2` to 3.1.5
+* Bump `setuptools` to 75.6.0
+* Upgrade `some_flask_helpers` to 0.2.8
+* Use underscores for pip package name
+
+## Version 0.5.1 Revision 200
+* Add Angular frontend
+* Add debug dump for `ApiViewHandler`
+* Add documentation for API calls in API.md
+* Add configuration options for database pool and pool overflow sizes
+
 ## Version 0.4.36 Revision 143 (March 29th, 2024)
 * Add missing PIP package `py3-virtualenv` to Alpine Docker image
 

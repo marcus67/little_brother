@@ -51,19 +51,6 @@ DEVICE_MAX_SAMPLE_SIZE = 100
 
 LANGUAGES = {
     'en': 'English',
-    'de': 'Deutsch',
-    'fr': 'Français',
-    'hr': 'Hrvatski',
-    'it': 'Italiano',
-    'nl': 'Nederlands',
-    'fi': 'Suomen kieli',
-    'tr': 'Türkçe',
-    'ru': 'Русский язык',
-    'ja': '日本語',
-    'bn': 'বাংলা',
-    'th': 'ภาษาไทย',
-    'da': 'Dansk',
-    'es': 'Español'
 }
 
 TEXT_SEPERATOR = ' <i style="font-size: 0.5rem; vertical-align: +25%" class="fas fa-circle fa-sm"></i> '
@@ -75,8 +62,43 @@ API_URL_EVENTS = os.path.join(API_URL, API_REL_URL_EVENTS)
 API_REL_URL_STATUS = "status"
 API_URL_STATUS = os.path.join(API_URL, API_REL_URL_STATUS)
 
+API_REL_URL_STATUS_DETAILS = "status-details/<user_id>"
+API_URL_STATUS_DETAILS = os.path.join(API_URL, API_REL_URL_STATUS_DETAILS)
+
+API_REL_URL_OVERRIDE = "override"
+API_URL_OVERRIDE = os.path.join(API_URL, API_REL_URL_OVERRIDE)
+
+API_REL_URL_OVERRIDE_DETAILS = "override-details/<user_id>"
+API_URL_OVERRIDE_DETAILS = os.path.join(API_URL, API_REL_URL_OVERRIDE_DETAILS)
+
+API_REL_URL_LIST_TIME_EXTENSIONS = "list-time-extensions/<user_id>"  # with GET
+API_URL_LIST_TIME_EXTENSIONS = os.path.join(API_URL, API_REL_URL_LIST_TIME_EXTENSIONS)
+
+API_REL_URL_UPDATE_TIME_EXTENSION = "update-time-extension/<user_id>/<delta_time_extension_in_minutes>"  # with POST
+API_URL_UPDATE_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_UPDATE_TIME_EXTENSION)
+
+API_REL_URL_OVERRIDE_RULES = "override-rules/<user_id>/<reference_date>"  # with DELETE
+API_URL_OVERRIDE_RULES = os.path.join(API_URL, API_REL_URL_OVERRIDE_RULES)
+
+API_REL_URL_USERS = "users"
+API_URL_USERS = os.path.join(API_URL, API_REL_URL_USERS)
+
+API_REL_URL_USER = "user/<user_id>"
+API_URL_USER = os.path.join(API_URL, API_REL_URL_USER)
+
+API_REL_URL_PUT_USER = "user/<username>"
+API_URL_PUT_USER = os.path.join(API_URL, API_REL_URL_PUT_USER)
+
+API_REL_URL_DELETE_USER = "user/<username>"
+API_URL_DELETE_USER = os.path.join(API_URL, API_REL_URL_DELETE_USER)
+
+API_REL_URL_CONTROL = "control"
+API_URL_CONTROL = os.path.join(API_URL, API_REL_URL_CONTROL)
+
 API_REL_URL_REQUEST_TIME_EXTENSION = "request-time-extension"
 API_URL_REQUEST_TIME_EXTENSION = os.path.join(API_URL, API_REL_URL_REQUEST_TIME_EXTENSION)
+
+API_REL_URL_ABOUT = "about"
 
 API_URL_PARAM_USERNAME = "username"
 API_URL_PARAM_SECRET = "secret"
@@ -91,6 +113,8 @@ JSON_PROCESS_NAME_PATTERN = "process_name_pattern"
 JSON_PROHIBITED_PROCESS_NAME_PATTERN = "prohibited_process_name_pattern"
 JSON_ACTIVE = "active"
 JSON_ACCESS_TOKEN = "secret"
+JSON_STATUS = "status"
+JSON_RESULT = "result"
 JSON_ERROR = "error"
 JSON_USER_CONFIG = "config:user_config"
 JSON_MAXIMUM_TIME_WITHOUT_SEND = "config:maximum_time_without_send"
@@ -99,7 +123,9 @@ JSON_MAXIMUM_TIME_WITHOUT_SEND = "config:maximum_time_without_send"
 HTTP_STATUS_CODE_OK = 200
 HTTP_STATUS_CODE_UNAUTHORIZED = 401
 HTTP_STATUS_CODE_NOT_FOUND = 404
+HTTP_STATUS_CODE_CONFLICT = 409
 HTTP_STATUS_CODE_RANGE_NOT_SATISFIABLE = 416
+HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 503
 
 INTERNAL_ERROR_HTML_TEMPLATE = "internal_error.template.html"
 
@@ -140,5 +166,4 @@ CSS_CLASS_EMPHASIZE_RULE_OVERRIDE = "rule-override"
 
 SOURCEFORGE_VERSION_RSS_URL = "https://sourceforge.net/projects/little-brother/rss?path=/"
 SOURCEFORGE_VERSION_XPATH = "./channel/item/title"
-SOURCEFORGE_VERSION_REGEX = "^/([a-z]+)/little-brother_([.0-9]+)_([0-9]+)\.deb$"
-
+SOURCEFORGE_VERSION_REGEX = "^/([a-z]+)/little-brother_([.0-9]+)_([0-9]+)\\.deb$"

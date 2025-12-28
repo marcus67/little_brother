@@ -27,6 +27,7 @@ from little_brother import process_info
 from little_brother.persistence import persistence_base
 from little_brother.persistence.persistence import Persistence, PersistenceConfigModel
 from little_brother.persistence.persistent_admin_event_entity_manager import AdminEventEntityManager
+from little_brother.persistence.persistent_blacklisted_token_entity_manager import BlacklistedTokenEntityManager
 from little_brother.persistence.persistent_device_entity_manager import DeviceEntityManager
 from little_brother.persistence.persistent_process_info import ProcessInfo
 from little_brother.persistence.persistent_process_info_entity_manager import ProcessInfoEntityManager
@@ -82,6 +83,7 @@ class TestPersistence(base_test.BaseTestCase):
         dependency_injection.container[RuleOverrideEntityManager] = RuleOverrideEntityManager()
         dependency_injection.container[RuleSetEntityManager] = RuleSetEntityManager()
         dependency_injection.container[DeviceEntityManager] = DeviceEntityManager()
+        dependency_injection.container[BlacklistedTokenEntityManager] = BlacklistedTokenEntityManager()
         dependency_injection.container[UidMappingEntityManager] = UidMappingEntityManager()
 
     def test_create_database(self):

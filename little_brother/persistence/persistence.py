@@ -51,11 +51,11 @@ class PersistenceConfigModel(configuration.ConfigModel):
         self.sqlite_dir = None
         self.sqlite_filename = "little-brother.sqlite.db"
 
-        #: Number of seconds that a database connection will be kept in the pool before it is discarded.
-        #: It has to be shorter than the maximum time that a database server will keep a connection alive.
-        #: In case of MySql this will be eight hours.
-        #: See https://stackoverflow.com/questions/6471549/avoiding-mysql-server-has-gone-away-on-infrequently-used-python-flask-server
-        #: Default value: :data:``
+        # Number of seconds that a database connection will be kept in the pool before it is discarded.
+        # It has to be shorter than the maximum time that a database server will keep a connection alive.
+        # In case of MySql this will be eight hours.
+        # See https://stackoverflow.com/questions/6471549/avoiding-mysql-server-has-gone-away-on-infrequently-used-python-flask-server
+        # Default value: :data:``
         self.pool_recycle = 3600
 
         self.pool_size = 10
@@ -127,7 +127,8 @@ class Persistence(object):
         # if DATABASE_DRIVER_SQLITE in self._config.database_driver:
         #     options['check_same_thread'] = False
 
-        self._engine = sqlalchemy.create_engine(url, **options)
+        self._engine = sqlalchemy.create_engine(
+            url, **options)
 
     def build_url(self):
 
@@ -187,7 +188,7 @@ class Persistence(object):
 
     def enable_caching(self):
         # SQLite has some restrictions with persistent entities used in threads other that the one they
-        # were created in so we turn out caching.
+        # were created in, so we turn off caching.
         return persistence_base.DATABASE_DRIVER_SQLITE not in self._config.database_driver
 
     def get_session(self):

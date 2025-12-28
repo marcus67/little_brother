@@ -20,7 +20,7 @@ import flask_login
 
 from little_brother import constants
 from little_brother.persistence.session_context import SessionContext
-from little_brother.web.base_view_handler import BaseViewHandler
+from little_brother.base_view_handler import BaseViewHandler
 from python_base_app import tools
 from some_flask_helpers import blueprint_adapter
 

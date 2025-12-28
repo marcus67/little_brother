@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2021-2022  Marcus Rickert
+#    Copyright (C) 2021-2024  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -48,7 +48,7 @@ DEFAULT_SERVER_GROUP = "default-group"
 DEFAULT_TARGET_IP = "0.0.0.0"
 DEFAULT_SOURCE_IP = "192.1.0.254"
 
-DEFAULT_SPECIFIC_TARGET_IPS = [ "1.2.3.4", "4.3.2.1" ]
+DEFAULT_SPECIFIC_TARGET_IPS = ["1.2.3.4", "4.3.2.1"]
 
 
 @pytest.fixture
@@ -108,6 +108,7 @@ def default_firewall_handler_config():
     config.target_ip = [DEFAULT_TARGET_IP]
     return config
 
+
 @pytest.fixture
 def firewall_handler_config_with_several_ips():
     config = FirewallHandlerConfigModel()
@@ -122,6 +123,7 @@ def firewall_device_activation_handler(default_firewall_handler_config):
     dependency_injection.container[FirewallHandler] = firewall_handler
     return handler
 
+
 @pytest.fixture
 def firewall_device_activation_handler_with_several_ips(firewall_handler_config_with_several_ips):
     handler = FirewallDeviceActivationHandler()
@@ -130,7 +132,7 @@ def firewall_device_activation_handler_with_several_ips(firewall_handler_config_
     return handler
 
 
-def populate_user_and_device(p_session_context : SessionContext, p_blocked_urls : list[str]=None):
+def populate_user_and_device(p_session_context: SessionContext, p_blocked_urls: list[str] = None):
     session = p_session_context.get_session()
     user = User()
     session.add(user)
@@ -204,7 +206,7 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden(dummy_pe
             forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
 
             entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=DEFAULT_TARGET_IP)
-            assert entry_key not in forward_entries
+            assert 0 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             entries = handler.entries
             number_of_entries = len(entries)
@@ -212,12 +214,13 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden(dummy_pe
             manager.check_device_activation_status()
 
             forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
-            assert entry_key in forward_entries
+            assert 1 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             assert len(entries) == number_of_entries + 1
 
         finally:
             manager.shutdown()
+
 
 @pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
 def test_set_usage_permission_status_for_device_with_activity_forbidden_check_comment(
@@ -240,14 +243,15 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden_check_co
             manager.check_device_activation_status()
 
             forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
-            assert entry_key in forward_entries
+            assert 1 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
-            forward_entry = forward_entries.get(entry_key)
+            forward_entry = forward_entries[0]
 
             assert DEFAULT_COMMENT in forward_entry.comment
 
         finally:
             manager.shutdown()
+
 
 @pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
 def test_set_usage_permission_status_for_device_with_activity_forbidden_several_ip_addresses(
@@ -259,7 +263,7 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden_several_
 
         device = populate_user_and_device(p_session_context=session_context)
 
-        firewall_device_activation_handler.target_ip = DEFAULT_SPECIFIC_TARGET_IPS
+        firewall_device_activation_handler_with_several_ips.target_ip = DEFAULT_SPECIFIC_TARGET_IPS
 
         manager = DeviceActivationManager(default_device_activation_manager_config)
 
@@ -272,7 +276,7 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden_several_
 
             for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
                 entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
-                assert entry_key not in forward_entries
+                assert 0 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             entries = handler.entries
             number_of_entries = len(entries)
@@ -281,16 +285,17 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden_several_
             forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
 
             entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=DEFAULT_TARGET_IP)
-            assert entry_key not in forward_entries
+            assert 0 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
                 entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
-                assert entry_key in forward_entries
+                assert 1 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             assert len(entries) == number_of_entries + len(DEFAULT_SPECIFIC_TARGET_IPS)
 
         finally:
             manager.shutdown()
+
 
 @pytest.mark.skipif(os.getenv("NO_IPTABLES"), reason="no iptables allowed")
 def test_set_usage_permission_status_for_device_with_activity_forbidden_device_ip_addresses_override(
@@ -315,7 +320,7 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden_device_i
 
             for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
                 entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
-                assert entry_key not in forward_entries
+                assert 0 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             entries = handler.entries
             number_of_entries = len(entries)
@@ -324,11 +329,11 @@ def test_set_usage_permission_status_for_device_with_activity_forbidden_device_i
             forward_entries = handler.get_active_forward_entries(p_ip_address=device.hostname)
 
             entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=DEFAULT_TARGET_IP)
-            assert entry_key not in forward_entries
+            assert 0 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             for ip_address in DEFAULT_SPECIFIC_TARGET_IPS:
                 entry_key = key(p_source=tools.get_ip_address_by_dns_name(device.hostname), p_destination=ip_address)
-                assert entry_key in forward_entries
+                assert 1 == FirewallHandler.count_key_in_entry_list(p_key=entry_key, p_entries=forward_entries)
 
             assert len(entries) == number_of_entries + len(DEFAULT_SPECIFIC_TARGET_IPS)
 

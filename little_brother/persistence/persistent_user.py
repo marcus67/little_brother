@@ -20,6 +20,7 @@ import re
 import sqlalchemy.orm
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
+from typing_extensions import deprecated
 
 from little_brother import constants
 from little_brother.persistence.base_entity import BaseEntity
@@ -100,6 +101,9 @@ class User(Base, BaseEntity):
 
     @property
     def full_name(self):
+        """
+        @obsolete
+        """
         if self.first_name is not None and self.first_name != '':
             if self.last_name is not None and self.last_name != '':
                 return self.first_name + " " + self.last_name

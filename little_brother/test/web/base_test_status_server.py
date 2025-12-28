@@ -24,7 +24,6 @@ import unittest
 
 import selenium
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 
 from little_brother import app
@@ -32,7 +31,7 @@ from little_brother import client_process_handler
 from little_brother import constants
 from little_brother import dependency_injection
 from little_brother.admin_data_handler import AdminDataHandler
-from little_brother.api import master_connector
+from little_brother.api import master_connector, api_view_handler
 from little_brother.api.master_connector import MasterConnector
 from little_brother.api.version_checker import VersionCheckerConfigModel, VersionChecker, SOURCEFORGE_CHANNEL_INFOS
 from little_brother.app_control import AppControl, AppControlConfigModel
@@ -51,7 +50,6 @@ from little_brother.user_manager import UserManager
 from little_brother.web import web_server
 from python_base_app import locale_helper
 from python_base_app.base_user_handler import BaseUserHandler
-from python_base_app.configuration import ConfigurationException
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
@@ -96,7 +94,7 @@ class BaseTestStatusServer(base_test.BaseTestCase):
     def create_dummy_status_server(self, p_process_handlers=None, p_create_dummy_persistence=True,
                                    p_login_mapping=None):
 
-        # TODO: Add rule set configs as parameters again and migrate them into the datamodel
+        # TODO: Add rule set configs as parameters again and migrate them into the data model
 
         if p_process_handlers is None:
             p_process_handlers = {}
@@ -140,36 +138,50 @@ class BaseTestStatusServer(base_test.BaseTestCase):
             status_server_config = web_server.StatusServerConfigModel()
             status_server_config.app_secret = "123456"
 
-            status_server_config.port = int(os.getenv("STATUS_SERVER_PORT", "5555"))
+        status_server_config.port = self.get_status_server_port()
 
-            version_checker_config = VersionCheckerConfigModel()
-            version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
-            dependency_injection.container[VersionChecker] = version_checker
+        version_checker_config = VersionCheckerConfigModel()
+        version_checker = VersionChecker(p_config=version_checker_config, p_channel_infos=SOURCEFORGE_CHANNEL_INFOS)
+        dependency_injection.container[VersionChecker] = version_checker
+        configs = {web_server.SECTION_NAME: status_server_config,
+                   api_view_handler.SECTION_NAME: api_view_handler.ApiViewHandlerConfigModel()}
 
-            self._status_server = web_server.StatusServer(
-                p_config=status_server_config,
-                p_package_name=app.PACKAGE_NAME,
-                p_app_control=self._app_control,
-                p_master_connector=self._master_connector,
-                p_is_master=True,
-                p_user_handler=self._user_handler,
-                p_locale_helper=locale_helper.LocaleHelper(),
-                p_languages=constants.LANGUAGES)
+        self._status_server = web_server.StatusServer(
+            p_configs=configs,
+            p_package_name=app.PACKAGE_NAME,
+            p_app_control=self._app_control,
+            p_master_connector=self._master_connector,
+            p_is_master=True,
+            p_user_handler=self._user_handler,
+            p_locale_helper=locale_helper.LocaleHelper(),
+            p_languages=constants.LANGUAGES)
 
     def create_selenium_driver(self):
 
-        if os.getenv("SELENIUM_CHROME_DRIVER") is not None:
-            options = selenium.webdriver.ChromeOptions()
-            options.add_argument('headless')
+        options = selenium.webdriver.ChromeOptions()
 
-            # See https://stackoverflow.com/questions/50642308
-            options.add_argument('no-sandbox')
-            options.add_argument('disable-dev-shm-usage')
-
-            self._driver = selenium.webdriver.Chrome(options=options)
+        if os.getenv("NEW_CHROME"):
+            options.add_argument(f"--explicitly-allowed-ports={self._status_server.get_port()}")
+            # https://stackoverflow.com/questions/77585943/selenium-headless-chrome-empty-page-source-not-ua-issue
+            options.add_argument('--headless=new')
 
         else:
-            raise ConfigurationException("No valid Selenium driver selected! Use SELENIUM_CHROME_DRIVER=1.")
+            options.add_argument('--headless')
+
+        # See https://stackoverflow.com/questions/50642308
+        options.add_argument('no-sandbox')
+        options.add_argument('disable-dev-shm-usage')
+        options.add_argument("--incognito")
+
+        # options.add_argument("--disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure")
+
+        chrome_binary = os.getenv("CHROME_BINARY")
+
+        if chrome_binary:
+            self._logger.info(f"Using Chrome binary at {chrome_binary}.")
+            options.binary_location = chrome_binary
+
+        self._driver = selenium.webdriver.Chrome(options=options)
 
     def create_status_server_using_ruleset_configs(self, p_ruleset_configs):
 
@@ -242,7 +254,9 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         elem = self._driver.find_element(By.NAME, "password")
         elem.clear()
         elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
-        elem.send_keys(Keys.RETURN)
+
+        submit_button = self._driver.find_element(By.CSS_SELECTOR, "button[type=submit]")
+        self.click(submit_button)
 
     def click(self, p_elem):
         # See https://stackoverflow.com/questions/56194094/how-to-fix-this-issue-element-not-interactable-selenium-python
@@ -272,7 +286,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
 
             return user_id
 
-    def get_new_user_name(self):
+    @staticmethod
+    def get_new_user_name():
         return test_unix_user_handler.USER_2_UID
 
 
