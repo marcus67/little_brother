@@ -16,11 +16,17 @@ This document lists all changes of `LittleBrother` with the most recent changes 
 * Bump `pyjwt` to 2.10.1
 * Bump `pymysql` to 1.1.2
 * Bump `pytest` to 9.0.2
-* Bump `equests` to 2.32.5
+* Bump `requests` to 2.32.5
 * Bump `secure` to 2.0.0
 * Bump `semver` to 3.0.4
 * Bump `setuptools` to 80.9.0
+* Bump `sqlalchemy` to 2.0.45
 * Bump `urllib3` to 2.6.2
+* Bump `werkzeug` to 3.1.4
+* Bump `python_base_app` to 0.3.5
+* Temporarily disable analyze step
+* Add some waiting periods in GUI tests
+* In Trigger default action in login dialog through button click 
 
 ## Version 0.5.7 Revision 208 (January 14th, 2025)
 * Provide BuyMeACoffee link

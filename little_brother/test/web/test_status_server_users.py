@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-#    Copyright (C) 2019-2022  Marcus Rickert
+#    Copyright (C) 2019-2025  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -77,6 +77,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
         add_button = self._driver.find_element(By.ID, "add_user")
         add_button.click()
+        time.sleep(1)
 
         user_entity_manager: UserEntityManager = dependency_injection.container[UserEntityManager]
 
@@ -95,6 +96,7 @@ class TestStatusServerUsers(BaseTestStatusServer):
 
         delete_button = self._driver.find_element(By.ID, "delete_user_1-modal-confirm")
         self.click(delete_button)
+        time.sleep(1)
 
         with SessionContext(self._persistence) as session_context:
             user = user_entity_manager.get_by_id(

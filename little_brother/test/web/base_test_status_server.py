@@ -24,7 +24,6 @@ import unittest
 
 import selenium
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 
 from little_brother import app
@@ -51,7 +50,6 @@ from little_brother.user_manager import UserManager
 from little_brother.web import web_server
 from python_base_app import locale_helper
 from python_base_app.base_user_handler import BaseUserHandler
-from python_base_app.configuration import ConfigurationException
 from python_base_app.test import base_test
 from python_base_app.test import test_unix_user_handler
 
@@ -175,6 +173,8 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         options.add_argument('disable-dev-shm-usage')
         options.add_argument("--incognito")
 
+        # options.add_argument("--disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure")
+
         chrome_binary = os.getenv("CHROME_BINARY")
 
         if chrome_binary:
@@ -254,7 +254,9 @@ class BaseTestStatusServer(base_test.BaseTestCase):
         elem = self._driver.find_element(By.NAME, "password")
         elem.clear()
         elem.send_keys(test_unix_user_handler.ADMIN_PASSWORD)
-        elem.send_keys(Keys.RETURN)
+
+        submit_button = self._driver.find_element(By.CSS_SELECTOR, "button[type=submit]")
+        self.click(submit_button)
 
     def click(self, p_elem):
         # See https://stackoverflow.com/questions/56194094/how-to-fix-this-issue-element-not-interactable-selenium-python
