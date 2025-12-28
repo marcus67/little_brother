@@ -32,7 +32,6 @@ extended_settings = {
     "babel_rel_directory": "translations",
     "analyze_extra_coverage_exclusions": "run_python_base_app_test_suite_no_venv.py",
     "angular_deployment_dest_directory": "static/angular",
-    "analyze": False,
 }
 
 RELEASE_BRANCH_NAME = "release"

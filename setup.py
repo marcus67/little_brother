@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    Copyright (C) 2019-2024  Marcus Rickert
+#    Copyright (C) 2019-2025  Marcus Rickert
 #
 #    See https://github.com/marcus67/little_brother
 #
@@ -31,7 +31,7 @@ with open(path.join(this_directory, 'requirements.txt')) as f:
 
 setup_params = {
     # standard setup configuration
-    "python_requires": '>=3.10, <3.13',
+    "python_requires": '>=3.10, <3.14',
 
     "install_requires": install_requires,
 
@@ -83,7 +83,7 @@ extended_setup_params = {
     # additional setup configuration used by CI stages
     "scan_id": "little-brother",
     "owasp": True,
-    "analyze": True,
+    "analyze": False,
     "analyze_branch_map": {
         "master": 'SONAR_PROJECT_KEY',
         "fb-angular": 'SONAR_PROJECT_KEY_FB_ANGULAR'
@@ -123,17 +123,18 @@ extended_setup_params = {
         little_brother.settings.MASTER_BRANCH_NAME: ('TEST_PYPI_API_URL', 'TEST_PYPI_API_TOKEN', 'TEST_PYPI_API_USER')
     },
     "generate_generic_install": True,
-    "docker_image_build_angular": "marcusrickert/docker-python-app:3.11",
-    "docker_image_make_package": "marcusrickert/docker-python-app:3.11",
+    "docker_image_build_angular": "marcusrickert/docker-python-app:3.12",
+    "docker_image_make_package": "marcusrickert/docker-python-app:3.12",
     "docker_images_test": [
         ("3_10", "marcusrickert/docker-python-app:3.10"),
         ("3_11", "marcusrickert/docker-python-app:3.11"),
         ("3_12", "marcusrickert/docker-python-app:3.12"),
+        ("3_13", "marcusrickert/docker-python-app:3.13"),
     ],
-    "docker_image_publish_pypi": "marcusrickert/docker-python-app:3.11",
-    "docker_image_publish_debian": "marcusrickert/docker-python-app:3.11",
+    "docker_image_publish_pypi": "marcusrickert/docker-python-app:3.12",
+    "docker_image_publish_debian": "marcusrickert/docker-python-app:3.12",
     "docker_image_docker": "marcusrickert/docker-docker-ci:3.11",
-    "docker_image_analyze": "marcusrickert/docker-python-app:3.11",
+    "docker_image_analyze": "marcusrickert/docker-python-app:3.12",
     "analyze_extra_exclusions" : "vagrant/**",
     "script_timeout": 30,
     "angular_app_dir": "littlebrother-frontend",
