@@ -5,7 +5,7 @@ flask-babel==3.1.0
 flask-login==0.6.3
 flask-migrate==4.1.0
 flask-wtf==1.2.2
-flask==2.3.3
+flask==3.1.3
 humanize==4.15.0
 jinja2~=3.1.5
 jsonpickle==3.0.2
