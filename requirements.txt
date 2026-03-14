@@ -13,7 +13,7 @@ lagom==2.7.7
 mockito==1.4.0
 prometheus-client==0.23.1
 psutil==7.2.0
-pyjwt==2.10.1
+pyjwt==2.12.0
 pymysql==1.1.2
 pytest==9.0.2
 python-dateutil==2.8.2
